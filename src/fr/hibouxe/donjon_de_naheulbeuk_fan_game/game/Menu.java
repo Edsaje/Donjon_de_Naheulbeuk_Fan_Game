@@ -1,6 +1,8 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.*;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 
 import java.util.Scanner;
 
@@ -27,13 +29,33 @@ public class Menu {
         return keyboard.nextLine();
     }
 
-    public void display(Maze maze) {
+    public String askPlayerMovement(){
+        System.out.print("\n Déplacement (Z: Nord, S: Sud, Q: Ouest, D: Est | C: Fiche de la compagnie | X: Quitter) : ");
+        return keyboard.nextLine().trim().toUpperCase(); //éviter la casse
+    }
+
+    public void displayWallCollision(){ //à améliorer avec de l'aléatoire
+        System.out.println("Tu vas dans un mur");
+    }
+
+    public void displayTeamStats(Team team){
+        System.out.println("\n=================== Fiche de la compagnie de Naheulbeuk ===================");
+        for (Character c : team.getMembers()){
+            System.out.printf("🔹 %-12s | Niv %d | PV: %2d | Mana: %2d | Attaque: %2d | Défense: %2d%n",
+                    c.getName(), c.getLevel(), c.getHealthPoint(), c.getManaPoint(), c.getAttack(), c.getDefense());
+        }
+        System.out.println("===========================================================================\n");
+
+    }
+
+
+    public void display(Maze maze, Team team){
         int width = maze.getWidth();
         int height = maze.getHeight();
         Cell[][] grid = maze.getGrid();
 
         // 1. Dessiner le bord tout en haut du labyrinthe
-        for (int x = 0; x < width; x++) {
+        for (int x = 0; x < width; x++){
             System.out.print("+---");
         }
         System.out.println("+");
@@ -45,7 +67,11 @@ public class Menu {
             System.out.print("|"); // Bordure gauche
             for (int x = 0; x < width; x++) {
                 Cell cell = grid[x][y];
-                System.out.print("   "); // Espace intérieur de la case
+                if (x == team.getX() && y == team.getY()) {
+                    System.out.print(" @ "); // Le symbole de la compagnie de Naheulbeuk !
+                } else {
+                    System.out.print("   "); // Case vide
+                }
                 if (cell.isWallEast()) {
                     System.out.print("|");
                 } else {
