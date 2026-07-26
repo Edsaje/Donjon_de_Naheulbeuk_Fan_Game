@@ -3,6 +3,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Cell;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Maze;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 
 public class Game {
     //Attributs
@@ -13,9 +14,11 @@ public class Game {
 
     public void startGame(){
         //génération du Maze
-        this.maze = new Maze(20, 20);
+        this.maze = new Maze(10, 10);
         this.maze.generateMaze();
         this.maze.generateRandomRooms(6, 2,4);
+
+        this.maze.generateMonsters(5);
 
         this.running = true;
         //création de la Team
@@ -59,6 +62,18 @@ public class Game {
 
         if (!moved && !choice.equals("X") && "ZSQD".contains(choice)) {
             menu.displayWallCollision();
+        }
+
+        if (moved) {
+            Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
+            if (currentCell.hasMonster()) {
+                Character monster = currentCell.getMonster();
+                System.out.println("\n UN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
+
+                startBattle(monster);
+
+                currentCell.setMonster(null); //on supprime le monstre si on gagne
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+
 public class Cell {
     //attributs
     private int x, y;
@@ -8,6 +10,8 @@ public class Cell {
     private boolean wallSouth = true;
     private boolean wallWest = true;
     private boolean wallEast = true;
+
+    private Character monster = null; //pas de monstre par défaut
 
     //constructeur
     public Cell(int x, int y){
@@ -48,6 +52,10 @@ public class Cell {
             neighbor.wallSouth = false;
         }
 
+    }
+
+    public boolean hasMonster() {
+        return monster != null;
     }
 
     public int getX() {
@@ -104,5 +112,13 @@ public class Cell {
 
     public void setWallEast(boolean wallEast) {
         this.wallEast = wallEast;
+    }
+
+    public Character getMonster() {
+        return monster;
+    }
+
+    public void setMonster(Character monster) {
+        this.monster = monster;
     }
 }

@@ -1,5 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.enemy.Goblin;
+
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
@@ -102,6 +104,16 @@ public class Maze {
         return neighbors;
     }
 
+    public void generateMonsters(int count) {
+        for (int i = 0; i < count; i++){
+            int x = random.nextInt(width);
+            int y = random.nextInt(height);
+
+            if (x != 0 || y !=0) { //pas de monstre sur 0
+                grid[x][y].setMonster(new Goblin()); //je place un monstre (défini pour le moment)
+            }
+        }
+    }
 
     public int getWidth() {
         return width;

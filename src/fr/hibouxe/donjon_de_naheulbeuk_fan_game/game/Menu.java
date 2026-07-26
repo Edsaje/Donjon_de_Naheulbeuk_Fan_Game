@@ -69,7 +69,11 @@ public class Menu {
                 Cell cell = grid[x][y];
                 if (x == team.getX() && y == team.getY()) {
                     System.out.print(" @ "); // Le symbole de la compagnie de Naheulbeuk !
-                } else {
+                }
+                else if (cell.hasMonster()){
+                    System.out.print(" M "); // Le symbole des monstres
+                }
+                else {
                     System.out.print("   "); // Case vide
                 }
                 if (cell.isWallEast()) {
