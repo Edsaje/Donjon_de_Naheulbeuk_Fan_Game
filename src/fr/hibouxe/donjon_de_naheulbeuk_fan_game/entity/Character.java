@@ -29,6 +29,10 @@ public class Character {
 
     //méthodes
 
+    public void useSpecialSkill(Character target) {
+        System.out.println(this.name + "n'a pas appris de compétence spéciale, le nul !");
+    }
+
     public String getName() {
         return name;
     }

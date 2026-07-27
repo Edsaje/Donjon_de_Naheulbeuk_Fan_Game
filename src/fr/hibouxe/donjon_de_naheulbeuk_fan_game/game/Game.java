@@ -68,7 +68,7 @@ public class Game {
             Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
             if (currentCell.hasMonster()) {
                 Character monster = currentCell.getMonster();
-                System.out.println("\n UN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
+                System.out.println("\nUN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
 
                 Battle battle = new Battle(team, monster);
                 boolean victory = battle.start();

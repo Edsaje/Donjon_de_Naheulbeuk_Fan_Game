@@ -34,14 +34,14 @@ public class Battle {
             playerTurn();
 
             if (monster.getHealthPoint() <= 0) { //vérification si le monstre est dcd
-                System.out.println("\n C'est trop facile");
+                System.out.println("\nC'est trop facile");
                 return true; //Victoire
             }
 
             monsterTurn();
 
             if (!isTeamAlive()) { //vérification si la team est dcd
-                System.out.println("\n Plutôt paradis des Nains ou des Aventuriers ?");
+                System.out.println("\nPlutôt paradis des Nains ou des Aventuriers ?");
                 return false; //GameOver
             }
         }
@@ -57,17 +57,34 @@ public class Battle {
             }
         }
 
-        System.out.println("Qui passe à l'action ?");
+        System.out.println("\nQui passe à l'action ?");
         System.out.print("> ");
         int choice = Integer.parseInt(keyboard.nextLine().trim());
         Character attacker = team.getMembers().get(choice); //on récupère le héro choisi
 
-        if (attacker.getHealthPoint() > 0) {
-            int damage = Math.max(1, attacker.getAttack() - monster.getDefense()); //Calcule des dégats
-            monster.setHealthPoint(monster.getHealthPoint() - damage); //On retire les pdv
-            System.out.println(attacker.getName() + " tape de toute ses forces");
-        } else {
-            System.out.println(attacker.getName() +" est un peu trop mort pour faire ça");
+        System.out.println("\n" + attacker.getName() + " réfléchi à sa prochaine action...");
+        System.out.println("1. Attaque Physique");
+        System.out.println("2. Compétence Spéciale / Magie");
+        System.out.print("> ");
+        int action = Integer.parseInt(keyboard.nextLine().trim());
+
+        if (action == 1) {
+            if (attacker.getHealthPoint() > 0) {
+                int damage = Math.max(1, attacker.getAttack() - monster.getDefense()); //Calcule des dégats
+                monster.setHealthPoint(monster.getHealthPoint() - damage); //On retire les pdv
+                System.out.println(attacker.getName() + " tape de toute ses forces et inflige " + damage + " point(s) de dégât !");
+                System.out.println("\nIl reste" + monster.getHealthPoint() + " PV au " + monster.getName() + " !");
+            } else {
+                System.out.println("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
+            }
+        }
+
+        if (action == 2) {
+            if (attacker.getHealthPoint() > 0) {
+                attacker.useSpecialSkill(monster);
+            } else {
+                System.out.println("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
+            }
         }
 
     }

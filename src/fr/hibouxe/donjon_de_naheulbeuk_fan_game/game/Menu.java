@@ -30,12 +30,12 @@ public class Menu {
     }
 
     public String askPlayerMovement(){
-        System.out.print("\n Déplacement (Z: Nord, S: Sud, Q: Ouest, D: Est | C: Fiche de la compagnie | X: Quitter) : ");
+        System.out.print("\nDéplacement (Z: Nord, S: Sud, Q: Ouest, D: Est | C: Fiche de la compagnie | X: Quitter) : ");
         return keyboard.nextLine().trim().toUpperCase(); //éviter la casse
     }
 
     public void displayWallCollision(){ //à améliorer avec de l'aléatoire
-        System.out.println("Tu vas dans un mur");
+        System.out.println("\nTu vas dans un mur");
     }
 
     public void displayTeamStats(Team team){
