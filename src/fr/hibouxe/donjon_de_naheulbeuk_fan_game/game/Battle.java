@@ -71,9 +71,9 @@ public class Battle {
         if (action == 1) {
             if (attacker.getHealthPoint() > 0) {
                 int damage = Math.max(1, attacker.getAttack() - monster.getDefense()); //Calcule des dégats
-                monster.setHealthPoint(monster.getHealthPoint() - damage); //On retire les pdv
+                monster.setHealthPoint(Math.max(0, monster.getHealthPoint() - damage)); //On retire les pdv
                 System.out.println(attacker.getName() + " tape de toute ses forces et inflige " + damage + " point(s) de dégât !");
-                System.out.println("\nIl reste" + monster.getHealthPoint() + " PV au " + monster.getName() + " !");
+                System.out.println("\nIl reste " + monster.getHealthPoint() + " PV au " + monster.getName() + " !");
             } else {
                 System.out.println("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
             }
@@ -81,7 +81,7 @@ public class Battle {
 
         if (action == 2) {
             if (attacker.getHealthPoint() > 0) {
-                attacker.useSpecialSkill(monster);
+                attacker.useSpecialSkill(team, monster, keyboard);
             } else {
                 System.out.println("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
             }

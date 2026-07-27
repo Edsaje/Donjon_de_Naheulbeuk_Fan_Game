@@ -2,25 +2,30 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.Item.*;
 
+import java.util.Scanner;
+
 public class Character {
     //attributs
     protected String name;
     protected String type; //classe du personnage
     protected int level;
     protected int healthPoint;
-    protected int manaPoint;
+    protected int resourcePoint;
     protected int attack;
     protected int magicAttack;
     protected int defense;
     protected int magicDefense;
+    protected String resourceName; // "Mana", "Rage" ou "Énergie"
+    protected int currentResource; // Valeur actuelle (ex: 10)
+    protected int maxResource;     // Valeur maximale (ex: 20)
 
     //constructeur
-    public Character(String name, String type, int level, int healthPoint, int manaPoint,int attack, int magicAttack, int defense, int magicDefense){
+    public Character(String name, String type, int level, int healthPoint, int resourcePoint,int attack, int magicAttack, int defense, int magicDefense){
         this.name = name;
         this.type = type;
         this.level = level;
         this.healthPoint = healthPoint;
-        this.manaPoint = manaPoint;
+        this.resourcePoint = resourcePoint;
         this.attack = attack;
         this.magicAttack = magicAttack;
         this.defense = defense;
@@ -29,7 +34,7 @@ public class Character {
 
     //méthodes
 
-    public void useSpecialSkill(Character target) {
+    public void useSpecialSkill(Team team, Character monster, Scanner keyboard) {
         System.out.println(this.name + "n'a pas appris de compétence spéciale, le nul !");
     }
 
@@ -73,12 +78,16 @@ public class Character {
         this.attack = attack;
     }
 
-    public int getManaPoint() {
-        return manaPoint;
+    public int getResourcePoint() {
+        return resourcePoint;
     }
 
-    public void setManaPoint(int manaPoint) {
-        this.manaPoint = manaPoint;
+    public int getManaPoint() {
+        return resourcePoint;
+    }
+
+    public void setManaPoint(int resourcePoint) {
+        this.resourcePoint = resourcePoint;
     }
 
     public int getHealthPoint() {
@@ -105,6 +114,10 @@ public class Character {
         this.level = level;
     }
 
+    public String getResourceStatus() { //helper
+        return resourceName + ": " + currentResource + "/" + maxResource;
+    }
+
     @Override
     public String toString() {
         return "Character{" +
@@ -112,7 +125,7 @@ public class Character {
                 ", type='" + type + '\'' +
                 ", level=" + level +
                 ", healthPoint=" + healthPoint +
-                ", manaPoint=" + manaPoint +
+                ", manaPoint=" + resourcePoint +
                 ", attack=" + attack +
                 ", magicAttack=" + magicAttack +
                 ", defense=" + defense +
