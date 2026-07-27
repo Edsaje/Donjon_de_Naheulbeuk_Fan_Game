@@ -70,7 +70,14 @@ public class Game {
                 Character monster = currentCell.getMonster();
                 System.out.println("\n UN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
 
-                startBattle(monster);
+                Battle battle = new Battle(team, monster);
+                boolean victory = battle.start();
+
+                if (victory) {
+                    currentCell.setMonster(null); //on retire le monstre
+                } else {
+                    running = false; //on ferme le jeu
+                }
 
                 currentCell.setMonster(null); //on supprime le monstre si on gagne
             }
