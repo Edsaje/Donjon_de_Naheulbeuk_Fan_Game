@@ -76,6 +76,7 @@ public class Battle {
      * Gère le tour d'action de la compagnie.
      * Affiche les statistiques des héros, sélectionne l'attaquant et exécute l'action choisie
      * (Attaque physique ou Compétence spéciale/Sort).
+     * Gère le gain potentiel de ressources. (Rage/Energie)
      */
     private void playerTurn() {
         System.out.println("\n" + monster.getName().toUpperCase() + " (PV : " + Math.max(0, monster.getHealthPoint()) + ") \n");
@@ -84,7 +85,12 @@ public class Battle {
             if (c.getHealthPoint() > 0) {
                 System.out.println(i + ". " + c.getName() + " | PV: " + c.getHealthPoint() + " | Attaque: " + c.getAttack());
             }
+
+            if ("Energie".equals(c.getResourceName())){
+                c.addResource(20); //+20 Energie par tour
+            }
         }
+
 
         System.out.println("\nQui passe à l'action ?");
         System.out.print("> ");
@@ -103,6 +109,11 @@ public class Battle {
                 monster.setHealthPoint(monster.getHealthPoint() - damage); // On retire les PV
                 System.out.println(attacker.getName() + " tape de toutes ses forces et inflige " + damage + " point(s) de dégât !");
                 System.out.println("\nIl reste " + Math.max(0, monster.getHealthPoint()) + " PV au " + monster.getName() + " !");
+
+                if ("Rage".equals(attacker.getResourceName())){
+                    attacker.addResource(10); //+10 de Rage quand il frappe
+                }
+
             } else {
                 System.out.println("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
             }
@@ -120,6 +131,7 @@ public class Battle {
     /**
      * Gère la riposte de l'ennemi.
      * Filtre les héros vivants et frappe une cible aléatoire parmi eux.
+     * Gère l'augmentation de rage quand un coup est subit
      */
     private void monsterTurn() {
         List<Character> aliveHeroes = new ArrayList<>(); // On cherche les membres vivants de la compagnie
@@ -133,6 +145,11 @@ public class Battle {
             Character target = aliveHeroes.get(random.nextInt(aliveHeroes.size())); // Cible au hasard
             int damage = Math.max(1, monster.getAttack() - target.getDefense()); // Calcul des dégâts
             target.setHealthPoint(target.getHealthPoint() - damage); // On retire les PV
+
+            if("Rage".equals(target.getResourceName())){
+                target.addResource(15); //+15 de Rage quand il prend un coup
+            }
         }
     }
+
 }

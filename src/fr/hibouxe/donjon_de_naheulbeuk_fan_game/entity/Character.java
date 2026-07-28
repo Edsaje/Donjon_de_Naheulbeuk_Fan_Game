@@ -63,6 +63,17 @@ public class Character {
         System.out.println(this.name + " n'a pas appris de compétence spéciale, le nul !");
     }
 
+    /**
+     * Ajoute de la ressource au personnage (ex : Rage, Energie)
+     * Cette méthode est destinée à être redéfinie dans les sous-classes.
+     *
+     * @param amount
+     */
+    public void addResource(int amount){
+        this.currentResource = Math.min(this.maxResource, this.currentResource + amount);
+    }
+
+
     /** @return Nom du personnage */
     public String getName() {
         return name;
@@ -156,6 +167,37 @@ public class Character {
     /** @param level Nouveau niveau */
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    /** @param resourcePoint Nouveau nombre de ressource*/
+    public void setResourcePoint(int resourcePoint) {
+        this.resourcePoint = resourcePoint;
+    }
+
+    /** @return Nom de la ressource */
+    public String getResourceName() {
+        return resourceName;
+    }
+
+
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
+
+    public int getMaxResource() {
+        return maxResource;
+    }
+
+    public void setMaxResource(int maxResource) {
+        this.maxResource = maxResource;
+    }
+
+    public int getCurrentResource() {
+        return currentResource;
+    }
+
+    public void setCurrentResource(int currentResource) {
+        this.currentResource = currentResource;
     }
 
     /**

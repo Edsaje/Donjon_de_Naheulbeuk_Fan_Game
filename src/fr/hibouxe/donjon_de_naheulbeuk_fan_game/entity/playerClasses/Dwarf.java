@@ -20,7 +20,7 @@ public class Dwarf extends Character {
     public Dwarf() {
         super("Le Nain", "Nain", 1, 12, 0, 7, 0, 6, 6);
         this.resourceName = "Rage";
-        this.maxResource = 10;
+        this.maxResource = 100;
         this.currentResource = 0;
     }
 
