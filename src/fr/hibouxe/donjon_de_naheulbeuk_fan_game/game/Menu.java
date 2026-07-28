@@ -87,24 +87,17 @@ public class Menu {
         return choice == 1;
     }
     /**
-     * Affiche un message d'avertissement en cas de collision avec un mur.
-     */
-    public void displayWallCollision() {
-        System.out.println("\nTu vas dans un mur");
-    }
-
-    /**
      * Affiche la fiche récapitulative des statistiques de tous les aventuriers de l'équipe.
      *
      * @param team L'équipe de héros à afficher
      */
     public void displayTeamStats(Team team) {
-        System.out.println("\n=================== Fiche de la compagnie de Naheulbeuk ===================");
+        displayMessage("\n=================== Fiche de la compagnie de Naheulbeuk ===================");
         for (Character c : team.getMembers()) {
-            System.out.printf("🔹 %-12s | Niv %d | PV: %2d | " + c.getResourceName() + " : %2d | Attaque: %2d | Attaque Magique: %2d | Défense: %2d | Défense Magique : %2d%n",
-                    c.getName(), c.getLevel(), c.getHealthPoint(), c.getResourcePoint(), c.getAttack(), c.getMagicAttack(), c.getDefense(), c.getMagicDefense());
+            displayMessage(String.format("🔹 %-12s | Niv %d | PV: %2d | %s : %2d | Attaque: %2d | Attaque Magique: %2d | Défense: %2d | Défense Magique : %2d",
+                    c.getName(), c.getLevel(), c.getHealthPoint(), c.getResourceName(), c.getResourcePoint(), c.getAttack(), c.getMagicAttack(), c.getDefense(), c.getMagicDefense()));
         }
-        System.out.println("===========================================================================\n");
+        displayMessage("===========================================================================\n");
     }
 
     /**
@@ -119,49 +112,53 @@ public class Menu {
         int height = maze.getHeight();
         Cell[][] grid = maze.getGrid();
 
+        StringBuilder sb = new StringBuilder();
+
         // 1. Dessiner le bord tout en haut du labyrinthe
         for (int x = 0; x < width; x++) {
-            System.out.print("+---");
+            sb.append("+---");
         }
-        System.out.println("+");
+        sb.append("+\n");
 
         // 2. Parcourir ligne par ligne (y de 0 à height-1)
         for (int y = 0; y < height; y++) {
 
             // Ligne A : Le contenu des cases et les murs Est/Ouest
-            System.out.print("|"); // Bordure gauche
+            sb.append("|"); // Bordure gauche
             for (int x = 0; x < width; x++) {
                 Cell cell = grid[x][y];
                 if (x == team.getX() && y == team.getY()) {
-                    System.out.print(" @ "); // Le symbole de la compagnie de Naheulbeuk !
+                    sb.append(" @ "); // Le symbole de la compagnie de Naheulbeuk !
                 } else if (cell.hasMonster()) {
-                    System.out.print(" M "); // Le symbole des monstres
+                    sb.append(" M "); // Le symbole des monstres
                 } else if (cell.hasItem()){
-                    System.out.print(" C "); // Le symbole des coffres
+                    sb.append(" C "); // Le symbole des coffres
                 } else {
-                    System.out.print("   "); // Case vide
+                    sb.append("   "); // Case vide
                 }
                 if (cell.isWallEast()) {
-                    System.out.print("|");
+                    sb.append("|");
                 } else {
-                    System.out.print(" "); // Passage ouvert vers l'Est
+                    sb.append(" "); // Passage ouvert vers l'Est
                 }
             }
-            System.out.println(); // Fin de la ligne des cases
+            sb.append("\n"); // Fin de la ligne des cases
 
             // Ligne B : Les murs du bas (Sud) et les coins '+'
-            System.out.print("+");
+            sb.append("+");
             for (int x = 0; x < width; x++) {
                 Cell cell = grid[x][y];
                 if (cell.isWallSouth()) {
-                    System.out.print("---");
+                    sb.append("---");
                 } else {
-                    System.out.print("   "); // Passage ouvert vers le Sud
+                    sb.append("   "); // Passage ouvert vers le Sud
                 }
-                System.out.print("+");
+                sb.append("+");
             }
-            System.out.println(); // Fin de la ligne des murs Sud
+            sb.append("\n"); // Fin de la ligne des murs Sud
         }
+
+        displayMessage(sb.toString());
     }
 
     /**
@@ -170,18 +167,18 @@ public class Menu {
      * @param team L'équipe du joueur contenant le sac à dos
      */
     public void displayInventory(Team team) {
-        System.out.println("\n=================== Sac à dos de la Compagnie ===================");
+        displayMessage("\n=================== Sac à dos de la Compagnie ===================");
         List<Item> items = team.getInventory();
 
         if (items.isEmpty()) {
-            System.out.println("  Le sac est vide... Damned !");
+            displayMessage("  Le sac est vide... Damned !");
         } else {
             for (int i = 0; i < items.size(); i++) {
                 Item item = items.get(i);
-                System.out.println("  " + (i + 1) + ". " + item.getName() + " : " + item.getDescription());
+                displayMessage("  " + (i + 1) + ". " + item.getName() + " : " + item.getDescription());
             }
         }
-        System.out.println("=================================================================\n");
+        displayMessage("=================================================================\n");
     }
 
     /**
@@ -191,7 +188,7 @@ public class Menu {
      * @param team    La compagnie de Naheulbeuk
      */
     public void displayBattleStatus(Character monster, Team team) {
-        System.out.println("\n" + monster.getName().toUpperCase() + " (PV: " + Math.max(0, monster.getHealthPoint())
+        displayMessage("\n" + monster.getName().toUpperCase() + " (PV: " + Math.max(0, monster.getHealthPoint())
                 + " | Attaque: " + monster.getAttack()
                 + " | Attaque Magique: " + monster.getMagicAttack()
                 + " | Defense: " + monster.getDefense()
@@ -200,36 +197,13 @@ public class Menu {
         for (int i = 0; i < team.getMembers().size(); i++) {
             Character c = team.getMembers().get(i);
             if (c.getHealthPoint() > 0) {
-                System.out.println(i + ". " + c.getName() + " (PV: " + c.getHealthPoint()
+                displayMessage(i + ". " + c.getName() + " (PV: " + c.getHealthPoint()
                         + " | Attaque: " + c.getAttack()
                         + " | " + c.getResourceName() + ": " + c.getResourcePoint()
                         + " | Defense: " + c.getDefense()
                         + " | Defense Magique: " + c.getMagicDefense() + ")");
             }
         }
-    }
-
-    /**
-     * Affiche un message de confirmation lorsqu'un objet est ramassé.
-     *
-     * @param item L'objet ramassé
-     */
-    public void displayItemPickedUp(Item item) {
-        System.out.println("\n" + item.getName() + " ramassé(e), espérons que le Nain ne vole rien !");
-    }
-
-    /**
-     * Affiche un message d'avertissement lorsque le sac à dos est plein.
-     */
-    public void displayInventoryFull() {
-        System.out.println("\nJe crois que le Nain essaye encore de porter trop d'objets !");
-    }
-
-    /**
-     * Affiche un message lorsque la compagnie choisit de laisser le coffre intact.
-     */
-    public void displayChestLeftBehind() {
-        System.out.println("\nVous laissez le coffre intact.");
     }
 
     /**

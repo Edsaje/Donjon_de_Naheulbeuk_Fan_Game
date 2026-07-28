@@ -117,7 +117,7 @@ public class Game {
         }
 
         if (!moved && !choice.equals("X") && "ZSQD".contains(choice)) {
-            menu.displayWallCollision();
+            menu.displayMessage("\nTu vas dans un mur");
         }
 
         if (moved) {
@@ -143,17 +143,16 @@ public class Game {
                 Item item = currentCell.getItem();
                 boolean take = menu.askPickupItem(item);
 
-                if(take) {
+                if (take) {
                     boolean added = team.addItem(item);
                     if (added) {
-                        menu.displayItemPickedUp(item);
+                        menu.displayMessage("\n" + item.getName() + " ramassé(e), espérons que le Nain ne vole rien !");
                         currentCell.setItem(null); // On retire le coffre une fois ramassé
                     } else {
-                        menu.displayInventoryFull();
+                        menu.displayMessage("\nJe crois que le Nain essaye encore de porter trop d'objets !");
                     }
-                }
-                else {
-                    menu.displayChestLeftBehind();
+                } else {
+                    menu.displayMessage("\nVous laissez le coffre intact.");
                 }
             }
         }
