@@ -21,17 +21,19 @@ public class Battle {
     private Character monster;
     private Scanner keyboard = new Scanner(System.in);
     private Random random = new Random();
-    private Menu menu = new Menu();
+    private Menu menu;
 
     /**
-     * Initialise un nouvel affrontement entre l'équipe du joueur et un monstre.
+     * Initialise un nouvel affrontement entre l'équipe du joueur et un monstre (avec injection de la vue Menu).
      *
      * @param team    La compagnie des héros
      * @param monster Le monstre affronté
+     * @param menu    La vue principale du jeu (Injectée)
      */
-    public Battle(Team team, Character monster) {
+    public Battle(Team team, Character monster, Menu menu) {
         this.team = team;
         this.monster = monster;
+        this.menu = menu;
     }
 
     /**

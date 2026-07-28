@@ -19,7 +19,23 @@ public class Game {
     private Maze maze;
     private Team team;
     private boolean running;
-    Menu menu = new Menu();
+    private Menu menu;
+
+    /**
+     * Constructeur par défaut (instancie un Menu si aucun n'est fourni).
+     */
+    public Game() {
+        this.menu = new Menu();
+    }
+
+    /**
+     * Constructeur avec injection de dépendance de la Vue (Menu).
+     *
+     * @param menu L'instance unique de la vue Menu
+     */
+    public Game(Menu menu) {
+        this.menu = menu;
+    }
 
     /**
      * Démarre la boucle de jeu principale.
@@ -98,7 +114,7 @@ public class Game {
                 Character monster = currentCell.getMonster();
                 System.out.println("\nUN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
 
-                Battle battle = new Battle(team, monster);
+                Battle battle = new Battle(team, monster, menu);
                 boolean victory = battle.start();
 
                 if (victory) {
@@ -111,12 +127,19 @@ public class Game {
             // 2. Découverte d'un coffre d'objet
             if (currentCell.hasItem()) {
                 Item item = currentCell.getItem();
-                boolean added = team.addItem(item);
-                if (added) {
-                    menu.displayItemPickedUp(item);
-                    currentCell.setItem(null); // On retire le coffre une fois ramassé
-                } else {
-                    menu.displayInventoryFull();
+                boolean take = menu.askPickupItem(item);
+
+                if(take) {
+                    boolean added = team.addItem(item);
+                    if (added) {
+                        menu.displayItemPickedUp(item);
+                        currentCell.setItem(null); // On retire le coffre une fois ramassé
+                    } else {
+                        menu.displayInventoryFull();
+                    }
+                }
+                else {
+                    menu.displayChestLeftBehind();
                 }
             }
         }

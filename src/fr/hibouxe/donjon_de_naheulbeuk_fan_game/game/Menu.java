@@ -62,6 +62,27 @@ public class Menu {
     }
 
     /**
+     * Demande au joueur s'il souhaite ramasser un objet découvert dans un coffre.
+     *
+     * @param item L'objet trouvé dans le coffre
+     * @return true si le joueur choisit de ramasser l'objet (1), false sinon.
+     */
+    public boolean askPickupItem(Item item) {
+        System.out.println("\n LA COMPAGNIE FOUILLE L'ENDROIT ET TROUVE UN COFFRE !");
+        System.out.println("\n Il contient un(e) " + item.getName() + " - " + item.getDescription());
+        System.out.println("Ca peut nous être utile ! On le récupère ?");
+        System.out.println("1. Oui, on ramasse !");
+        System.out.println("2. Non, on laisse,c'est surement un piège..");
+        System.out.print("> ");
+
+        try {
+            int choice = Integer.parseInt(keyboard.nextLine().trim());
+            return choice == 1;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    /**
      * Affiche un message d'avertissement en cas de collision avec un mur.
      */
     public void displayWallCollision() {
@@ -198,6 +219,13 @@ public class Menu {
      */
     public void displayInventoryFull() {
         System.out.println("\nJe crois que le Nain essaye encore de porter trop d'objets !");
+    }
+
+    /**
+     * Affiche un message lorsque la compagnie choisit de laisser le coffre intact.
+     */
+    public void displayChestLeftBehind() {
+        System.out.println("\nVous laissez le coffre intact.");
     }
 
     /**
