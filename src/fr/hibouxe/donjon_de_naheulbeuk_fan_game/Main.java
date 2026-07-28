@@ -9,8 +9,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
  * @version 1.0
  */
 void main() {
-    System.out.println("=== Bienvenue dans le Donjon de Naheulbeuk ===");
     Menu menu = new Menu();
+    menu.displayMessage("=== Bienvenue dans le Donjon de Naheulbeuk ===");
     Game game = new Game(menu);
     game.startGame();
 }

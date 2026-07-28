@@ -61,14 +61,14 @@ public class Battle {
             playerTurn();
 
             if (monster.getHealthPoint() <= 0) { // Vérification si le monstre est vaincu
-                System.out.println("\n C'est trop facile");
+                menu.displayMessage("\n C'est trop facile");
                 return true; // Victoire
             }
 
             monsterTurn();
 
             if (!isTeamAlive()) { // Vérification si l'équipe est vaincue
-                System.out.println("\n Plutôt paradis des Nains ou des Aventuriers ?");
+                menu.displayMessage("\n Plutôt paradis des Nains ou des Aventuriers ?");
                 return false; // Game Over
             }
         }
@@ -99,15 +99,15 @@ public class Battle {
             if (attacker.getHealthPoint() > 0) {
                 int damage = Math.max(1, attacker.getAttack() - monster.getDefense()); // Calcul des dégâts
                 monster.setHealthPoint(monster.getHealthPoint() - damage); // On retire les PV
-                System.out.println(attacker.getName() + " tape de toutes ses forces et inflige " + damage + " point(s) de dégât !");
-                System.out.println("\nIl reste " + Math.max(0, monster.getHealthPoint()) + " PV au " + monster.getName() + " !");
+                menu.displayMessage(attacker.getName() + " tape de toutes ses forces et inflige " + damage + " point(s) de dégât !");
+                menu.displayMessage("\nIl reste " + Math.max(0, monster.getHealthPoint()) + " PV au " + monster.getName() + " !");
 
                 if ("Rage".equals(attacker.getResourceName())){
                     attacker.addResource(10); //+10 de Rage quand il frappe
                 }
 
             } else {
-                System.out.println("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
+                menu.displayMessage("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
             }
         }
 
@@ -115,7 +115,7 @@ public class Battle {
             if (attacker.getHealthPoint() > 0) {
                 attacker.useSpecialSkill(team, monster, keyboard);
             } else {
-                System.out.println("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
+                menu.displayMessage("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
             }
         }
     }

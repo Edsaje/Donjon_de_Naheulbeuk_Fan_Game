@@ -20,6 +20,16 @@ public class Menu {
     private Scanner keyboard = new Scanner(System.in);
 
     /**
+     * Affiche un message personnalisé dans la console.
+     * Centralise l'ensemble des sorties textuelles du jeu.
+     *
+     * @param message Le texte à afficher
+     */
+    public void displayMessage(String message) {
+        System.out.println(message);
+    }
+
+    /**
      * Affiche le message d'introduction du jeu.
      */
     public void introduction() {

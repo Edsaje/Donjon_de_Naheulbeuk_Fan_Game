@@ -87,7 +87,7 @@ public class Game {
 
             case "X":
                 running = false; // Stop le jeu
-                System.out.println("Tchoss Nulloss");
+                menu.displayMessage("Tchoss Nulloss");
                 break;
 
             case "C":
@@ -99,7 +99,7 @@ public class Game {
                 break;
 
             default:
-                System.out.println("Commande inconnue");
+                menu.displayMessage("Commande inconnue");
         }
 
         if (!moved && !choice.equals("X") && "ZSQD".contains(choice)) {
@@ -112,7 +112,7 @@ public class Game {
             // 1. Rencontre avec un monstre
             if (currentCell.hasMonster()) {
                 Character monster = currentCell.getMonster();
-                System.out.println("\nUN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
+                menu.displayMessage("\nUN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
 
                 Battle battle = new Battle(team, monster, menu);
                 boolean victory = battle.start();
