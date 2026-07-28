@@ -1,7 +1,5 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity;
 
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.Item.*;
-
 import java.util.Scanner;
 
 /**
