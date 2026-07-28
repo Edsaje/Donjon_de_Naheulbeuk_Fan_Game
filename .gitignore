@@ -1,20 +1,32 @@
-### IntelliJ IDEA ###
+### Java & Compiled Classes ###
+*.class
+*.jar
+*.war
+*.ear
+
+### Build Directories ###
+bin/
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
-.kotlin
+target/
+build/
+
+### IntelliJ IDEA ###
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/shelf/
+.idea/caches/
+*.iws
 
 ### Eclipse ###
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+.sts4-cache/
 
 ### NetBeans ###
 /nbproject/private/
@@ -26,5 +38,8 @@ bin/
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
+### OS & Temporary Files ###
 .DS_Store
+Thumbs.db
+*.log
+*.tmp
