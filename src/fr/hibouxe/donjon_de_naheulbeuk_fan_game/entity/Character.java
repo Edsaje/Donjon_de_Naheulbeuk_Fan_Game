@@ -1,6 +1,6 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity;
 
-import java.util.Scanner;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * Classe parente représentant une entité vivante du jeu (Héros, Monstre ou Boss).
@@ -53,12 +53,12 @@ public class Character {
      * Exécute la compétence spéciale ou le sort du personnage.
      * Cette méthode est destinée à être redéfinie dans les sous-classes.
      *
-     * @param team     La compagnie de Naheulbeuk
-     * @param monster  Le monstre affronté
-     * @param keyboard Le scanner de saisie utilisateur
+     * @param team    La compagnie de Naheulbeuk
+     * @param monster Le monstre affronté
+     * @param menu    La vue principale du jeu (Injectée)
      */
-    public void useSpecialSkill(Team team, Character monster, Scanner keyboard) {
-        System.out.println(this.name + " n'a pas appris de compétence spéciale, le nul !");
+    public void useSpecialSkill(Team team, Character monster, Menu menu) {
+        menu.displayMessage(this.name + " n'a pas appris de compétence spéciale, le nul !");
     }
 
     /**

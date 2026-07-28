@@ -2,8 +2,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
-
-import java.util.Scanner;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * Représente la Magicienne dans la Compagnie de Naheulbeuk.
@@ -28,19 +27,19 @@ public class Magician extends Character {
      * Exécute le sort offensif Boule de Feu contre le monstre.
      * Consomme 4 points de Mana et inflige des dégâts magiques.
      *
-     * @param team     La compagnie de Naheulbeuk
-     * @param target   Le monstre ciblé par le sort
-     * @param keyboard Le scanner de saisie utilisateur
+     * @param team   La compagnie de Naheulbeuk
+     * @param target Le monstre ciblé par le sort
+     * @param menu   La vue principale du jeu (Injectée)
      */
     @Override
-    public void useSpecialSkill(Team team, Character target, Scanner keyboard) {
+    public void useSpecialSkill(Team team, Character target, Menu menu) {
         if (this.currentResource >= 4) { // Vérifie si possède le mana requis
             this.currentResource -= 4; // Retire le mana nécessaire
             int damage = Math.max(1, this.getMagicAttack() - target.getMagicDefense()); // Calcule les dégâts magiques
             target.setHealthPoint(target.getHealthPoint() - damage);
-            System.out.println(this.name + " lance une BOULE DE FEU pas trop mal réussie !");
+            menu.displayMessage(this.name + " lance une BOULE DE FEU pas trop mal réussie !");
         } else {
-            System.out.println(this.name + " n'a plus de sort de combat disponible..");
+            menu.displayMessage(this.name + " n'a plus de sort de combat disponible..");
         }
     }
 }

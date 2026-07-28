@@ -1,6 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.item;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * Classe parente représentant tout objet du jeu (Potion, Équipement, Trésor).
@@ -27,9 +28,10 @@ public class Item {
      * Utilise l'objet sur un personnage cible.
      *
      * @param target Le personnage qui bénéficie de l'objet
+     * @param menu   La vue principale du jeu (Injectée)
      */
-    public void use(Character target) {
-        System.out.println(target.getName() + " utilise " + this.name);
+    public void use(Character target, Menu menu) {
+        menu.displayMessage(target.getName() + " utilise " + this.name);
     }
 
     /** @return Nom de l'objet */

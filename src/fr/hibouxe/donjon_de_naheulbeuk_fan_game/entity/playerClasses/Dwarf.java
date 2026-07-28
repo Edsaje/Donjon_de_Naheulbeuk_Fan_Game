@@ -2,8 +2,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
-
-import java.util.Scanner;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * Représente le Nain dans la Compagnie de Naheulbeuk.
@@ -28,19 +27,19 @@ public class Dwarf extends Character {
      * Exécute l'attaque lourde du Nain en consommant de la Rage.
      * Inflige des dégâts physiques accrus.
      *
-     * @param team     La compagnie de Naheulbeuk
-     * @param target   Le monstre ciblé par le coup de hache
-     * @param keyboard Le scanner de saisie utilisateur
+     * @param team   La compagnie de Naheulbeuk
+     * @param target Le monstre ciblé par le coup de hache
+     * @param menu   La vue principale du jeu (Injectée)
      */
     @Override
-    public void useSpecialSkill(Team team, Character target, Scanner keyboard) {
+    public void useSpecialSkill(Team team, Character target, Menu menu) {
         if (this.currentResource >= 1) { // Vérifie si possède la rage requise
             this.currentResource -= 1; // Retire la rage nécessaire
             int damage = Math.max(1, this.getAttack() + (this.getAttack() / 2) - target.getDefense()); // Calcul des dégâts
             target.setHealthPoint(target.getHealthPoint() - damage);
-            System.out.println(this.name + " plante sa hache dans la jambe du " + target.getName() + " !");
+            menu.displayMessage(this.name + " plante sa hache dans la jambe du " + target.getName() + " !");
         } else {
-            System.out.println(this.name + " n'a plus de compétence disponible..");
+            menu.displayMessage(this.name + " n'a plus de compétence disponible..");
         }
     }
 }

@@ -48,6 +48,14 @@ public class Team {
         return false;
     }
 
+    /**
+     * Retire un objet du sac à dos de la compagnie.
+     *
+     * @param item L'objet à retirer
+     */
+    public void removeItem(Item item) {
+        this.inventory.remove(item);
+    }
 
     /** Déplace la compagnie d'une case vers le Nord (y diminue). */
     public void moveNorth() { this.y--; }

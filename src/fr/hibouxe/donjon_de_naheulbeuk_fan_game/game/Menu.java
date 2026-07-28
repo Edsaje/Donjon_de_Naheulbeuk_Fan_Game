@@ -39,15 +39,15 @@ public class Menu {
     /**
      * Saisit un entier auprès du joueur avec gestion des erreurs de type.
      *
-     * @return L'entier saisi par l'utilisateur (ou 0 en cas d'erreur).
+     * @return L'entier saisi par l'utilisateur (ou -1 en cas d'erreur).
      */
     public int askPlayerInt() {
         System.out.print("> ");
         try {
-            return keyboard.nextInt();
-        } catch (java.util.InputMismatchException e) {
+            return Integer.parseInt(keyboard.nextLine().trim());
+        } catch (Exception e) {
+            return -1;
         }
-        return 0;
     }
 
     /**
@@ -56,7 +56,6 @@ public class Menu {
      * @return La ligne saisie.
      */
     public String askPlayerString() {
-        keyboard.nextLine(); // Vider le buffer
         System.out.print("> ");
         return keyboard.nextLine();
     }
@@ -67,8 +66,8 @@ public class Menu {
      * @return La commande nettoyée en majuscules (ex: "Z", "Q", "S", "D").
      */
     public String askPlayerMovement() {
-        System.out.print("\nDéplacement (Z: Nord, S: Sud, Q: Ouest, D: Est | C: Fiche de la compagnie, I: Inventaire | X: Quitter) : ");
-        return keyboard.nextLine().trim().toUpperCase(); // Éviter la casse
+        displayMessage("\nDéplacement (Z: Nord, S: Sud, Q: Ouest, D: Est | C: Fiche de la compagnie, I: Inventaire | X: Quitter) :");
+        return askPlayerString().trim().toUpperCase();
     }
 
     /**
@@ -78,19 +77,14 @@ public class Menu {
      * @return true si le joueur choisit de ramasser l'objet (1), false sinon.
      */
     public boolean askPickupItem(Item item) {
-        System.out.println("\n LA COMPAGNIE FOUILLE L'ENDROIT ET TROUVE UN COFFRE !");
-        System.out.println("\n Il contient un(e) " + item.getName() + " - " + item.getDescription());
-        System.out.println("Ca peut nous être utile ! On le récupère ?");
-        System.out.println("1. Oui, on ramasse !");
-        System.out.println("2. Non, on laisse,c'est surement un piège..");
-        System.out.print("> ");
+        displayMessage("\n LA COMPAGNIE FOUILLE L'ENDROIT ET TROUVE UN COFFRE !");
+        displayMessage("\n Il contient un(e) " + item.getName() + " - " + item.getDescription());
+        displayMessage("Ca peut nous être utile ! On le récupère ?");
+        displayMessage("1. Oui, on ramasse !");
+        displayMessage("2. Non, on laisse,c'est surement un piège..");
 
-        try {
-            int choice = Integer.parseInt(keyboard.nextLine().trim());
-            return choice == 1;
-        } catch (Exception e) {
-            return false;
-        }
+        int choice = askPlayerInt();
+        return choice == 1;
     }
     /**
      * Affiche un message d'avertissement en cas de collision avec un mur.
@@ -244,13 +238,9 @@ public class Menu {
      * @return L'index du personnage choisi
      */
     public int askAttacker() {
-        System.out.println("\nQui passe à l'action ?");
-        System.out.print("> ");
-        try {
-            return Integer.parseInt(keyboard.nextLine().trim());
-        } catch (Exception e) {
-            return 0;
-        }
+        displayMessage("\nQui passe à l'action ?");
+        int choice = askPlayerInt();
+        return (choice >= 0) ? choice : 0;
     }
 
     /**
@@ -260,14 +250,72 @@ public class Menu {
      * @return L'option choisie (1 pour Physique, 2 pour Compétence)
      */
     public int askBattleAction(Character attacker) {
-        System.out.println("\n" + attacker.getName() + " réfléchit à sa prochaine action...");
-        System.out.println("1. Attaque Physique");
-        System.out.println("2. Compétence Spéciale / Magie");
-        System.out.print("> ");
-        try {
-            return Integer.parseInt(keyboard.nextLine().trim());
-        } catch (Exception e) {
-            return 1;
+        displayMessage("\n" + attacker.getName() + " réfléchit à sa prochaine action...");
+        displayMessage("1. Attaque Physique");
+        displayMessage("2. Compétence Spéciale / Magie");
+        int choice = askPlayerInt();
+        return (choice > 0) ? choice : 1;
+    }
+
+    /**
+     * Demande au joueur s'il souhaite utiliser un objet du sac à dos.
+     *
+     * @return true si le joueur choisit d'utiliser un objet, false sinon.
+     */
+    public boolean askUseItem() {
+        displayMessage("\nVoulez-vous utiliser un objet du sac ?");
+        displayMessage("1. Oui, consommer un objet");
+        displayMessage("2. Non, fermer le sac");
+        int choice = askPlayerInt();
+        return choice == 1;
+    }
+
+    /**
+     * Demande au joueur de choisir le numéro de l'objet à utiliser.
+     *
+     * @return L'index choisi (0-indexed) ou -1 si invalide.
+     */
+    public int askItemIndex() {
+        displayMessage("Quel objet voulez-vous utiliser ? (Entrez le numéro)");
+        int choice = askPlayerInt();
+        return (choice > 0) ? choice - 1 : -1;
+    }
+
+    /**
+     * Demande au joueur de choisir sur quel aventurier utiliser un objet.
+     *
+     * @param team La compagnie de Naheulbeuk
+     * @return Le membre choisi ou null si invalide.
+     */
+    public Character askItemTarget(Team team) {
+        displayMessage("\nSur quel aventurier voulez-vous l'utiliser ?");
+        for (int i = 0; i < team.getMembers().size(); i++) {
+            Character c = team.getMembers().get(i);
+            displayMessage(i + ". " + c.getName() + " (PV: " + c.getHealthPoint() + ")");
         }
+        int choice = askPlayerInt();
+        if (choice >= 0 && choice < team.getMembers().size()) {
+            return team.getMembers().get(choice);
+        }
+        return null;
+    }
+
+    /**
+     * Demande au joueur de choisir quel coéquipier l'Élfette doit soigner.
+     *
+     * @param team La compagnie de Naheulbeuk
+     * @return Le membre choisi à soigner ou null si invalide.
+     */
+    public Character askAllyToHeal(Team team) {
+        displayMessage("\nChoisissez le coéquipier à soigner :");
+        for (int i = 0; i < team.getMembers().size(); i++) {
+            Character c = team.getMembers().get(i);
+            displayMessage(i + ". " + c.getName() + " | PV: " + Math.max(0, c.getHealthPoint()));
+        }
+        int choice = askPlayerInt();
+        if (choice >= 0 && choice < team.getMembers().size()) {
+            return team.getMembers().get(choice);
+        }
+        return null;
     }
 }

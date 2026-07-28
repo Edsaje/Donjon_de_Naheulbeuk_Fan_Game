@@ -96,6 +96,20 @@ public class Game {
 
             case "I":
                 menu.displayInventory(team);
+                if (!team.getInventory().isEmpty()) {
+                    boolean wantToUse = menu.askUseItem();
+                    if (wantToUse) {
+                        int itemIndex = menu.askItemIndex();
+                        if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
+                            Item selectedItem = team.getInventory().get(itemIndex);
+                            Character target = menu.askItemTarget(team);
+                            if (target != null) {
+                                selectedItem.use(target, menu);
+                                team.removeItem(selectedItem);
+                            }
+                        }
+                    }
+                }
                 break;
 
             default:

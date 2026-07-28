@@ -6,7 +6,6 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * Moteur de combat tour par tour entre la Compagnie de Naheulbeuk et un Ennemi.
@@ -19,7 +18,6 @@ import java.util.Scanner;
 public class Battle {
     private Team team;
     private Character monster;
-    private Scanner keyboard = new Scanner(System.in);
     private Random random = new Random();
     private Menu menu;
 
@@ -113,7 +111,7 @@ public class Battle {
 
         if (action == 2) {
             if (attacker.getHealthPoint() > 0) {
-                attacker.useSpecialSkill(team, monster, keyboard);
+                attacker.useSpecialSkill(team, monster, menu);
             } else {
                 menu.displayMessage("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
             }
