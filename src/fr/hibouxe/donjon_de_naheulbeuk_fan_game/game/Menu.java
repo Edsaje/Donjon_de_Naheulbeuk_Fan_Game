@@ -3,7 +3,9 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.*;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -55,7 +57,7 @@ public class Menu {
      * @return La commande nettoyée en majuscules (ex: "Z", "Q", "S", "D").
      */
     public String askPlayerMovement() {
-        System.out.print("\nDéplacement (Z: Nord, S: Sud, Q: Ouest, D: Est | C: Fiche de la compagnie | X: Quitter) : ");
+        System.out.print("\nDéplacement (Z: Nord, S: Sud, Q: Ouest, D: Est | C: Fiche de la compagnie, I: Inventaire | X: Quitter) : ");
         return keyboard.nextLine().trim().toUpperCase(); // Éviter la casse
     }
 
@@ -133,5 +135,25 @@ public class Menu {
             }
             System.out.println(); // Fin de la ligne des murs Sud
         }
+    }
+
+    /**
+     * Affiche le contenu du sac à dos (inventaire) de la Compagnie de Naheulbeuk.
+     *
+     * @param team L'équipe du joueur contenant le sac à dos
+     */
+    public void displayInventory(Team team) {
+        System.out.println("\n=================== Sac à dos de la Compagnie ===================");
+        List<Item> items = team.getInventory();
+
+        if (items.isEmpty()) {
+            System.out.println("  Le sac est vide... Damned !");
+        } else {
+            for (int i = 0; i < items.size(); i++) {
+                Item item = items.get(i);
+                System.out.println("  " + (i + 1) + ". " + item.getName() + " : " + item.getDescription());
+            }
+        }
+        System.out.println("=================================================================\n");
     }
 }

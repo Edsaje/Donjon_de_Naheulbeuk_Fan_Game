@@ -76,6 +76,10 @@ public class Game {
                 menu.displayTeamStats(team);
                 break;
 
+            case "I":
+                menu.displayInventory(team);
+                break;
+
             default:
                 System.out.println("Commande inconnue");
         }
