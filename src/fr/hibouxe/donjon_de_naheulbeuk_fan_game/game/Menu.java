@@ -111,6 +111,8 @@ public class Menu {
                     System.out.print(" @ "); // Le symbole de la compagnie de Naheulbeuk !
                 } else if (cell.hasMonster()) {
                     System.out.print(" M "); // Le symbole des monstres
+                } else if (cell.hasItem()){
+                    System.out.print(" C "); // Le symbole des coffres
                 } else {
                     System.out.print("   "); // Case vide
                 }

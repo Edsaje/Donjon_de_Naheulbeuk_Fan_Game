@@ -4,6 +4,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Cell;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Maze;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
 /**
  * Contrôleur principal du jeu.
@@ -31,6 +32,7 @@ public class Game {
         this.maze.generateRandomRooms(6, 2, 4);
 
         this.maze.generateMonsters(5);
+        this.maze.generateItems(3);
 
         this.running = true;
         // Création de la Team
@@ -44,7 +46,7 @@ public class Game {
 
     /**
      * Gère la saisie utilisateur du déplacement et exécute la tentative de mouvement.
-     * Déclenche un combat via la classe Battle en cas de rencontre avec un monstre.
+     * Déclenche un combat en cas de rencontre avec un monstre et ramasse les coffres d'objets.
      */
     public void playerMovement() {
         String choice = menu.askPlayerMovement();
@@ -90,6 +92,8 @@ public class Game {
 
         if (moved) {
             Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
+
+            // 1. Rencontre avec un monstre
             if (currentCell.hasMonster()) {
                 Character monster = currentCell.getMonster();
                 System.out.println("\nUN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
@@ -101,6 +105,18 @@ public class Game {
                     currentCell.setMonster(null); // On retire le monstre vaincu
                 } else {
                     running = false; // Fin de partie si défaite
+                }
+            }
+
+            // 2. Découverte d'un coffre d'objet
+            if (currentCell.hasItem()) {
+                Item item = currentCell.getItem();
+                boolean added = team.addItem(item);
+                if (added) {
+                    menu.displayItemPickedUp(item);
+                    currentCell.setItem(null); // On retire le coffre une fois ramassé
+                } else {
+                    menu.displayInventoryFull();
                 }
             }
         }

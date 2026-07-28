@@ -1,6 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
 /**
  * Représente une case individuelle dans la grille 2D du donjon.
@@ -20,6 +21,7 @@ public class Cell {
     private boolean wallEast = true;
 
     private Character monster = null; // Pas de monstre par défaut
+    private Item item = null;
 
     /**
      * Initialise une cellule avec ses coordonnées (X, Y).
@@ -158,5 +160,24 @@ public class Cell {
     /** @param monster Monstre à placer sur la case (ou null pour retirer) */
     public void setMonster(Character monster) {
         this.monster = monster;
+    }
+
+    /**
+     * Indique si un coffre ou un objet est présent sur cette case.
+     *
+     * @return true si la case contient un objet, false sinon.
+     */
+    public boolean hasItem() {
+        return item != null;
+    }
+
+    /** @return L'objet présent sur la case (ou null si aucun) */
+    public Item getItem() {
+        return item;
+    }
+
+    /** @param item Objet à placer sur la case (ou null pour retirer) */
+    public void setItem(Item item) {
+        this.item = item;
     }
 }

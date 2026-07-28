@@ -9,7 +9,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
  * @author Hibouxe
  * @version 1.0
  */
-public class HealthPotion extends Item {
+public class Potion extends Item {
     private int healAmount;
 
     /**
@@ -19,7 +19,7 @@ public class HealthPotion extends Item {
      * @param description Description des effets
      * @param healAmout   Quantité de points de vie restaurés
      */
-    public HealthPotion(String name, String description, int healAmout) {
+    public Potion(String name, String description, int healAmout) {
         super(name, description);
         this.healAmount = healAmout;
     }

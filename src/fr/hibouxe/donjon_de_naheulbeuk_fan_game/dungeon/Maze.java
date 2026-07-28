@@ -1,6 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.enemy.Goblin;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.potion.Potion;
 
 import java.util.Random;
 import java.util.List;
@@ -155,6 +156,22 @@ public class Maze {
 
             if (x != 0 || y != 0) { // Pas de monstre sur la case de départ (0, 0)
                 grid[x][y].setMonster(new Goblin()); // Placement d'un Gobelin par défaut
+            }
+        }
+    }
+
+    /**
+     * Place aléatoirement un nombre de coffres d'objets sur les cases du labyrinthe (hors case 0,0).
+     *
+     * @param count Nombre de coffres à générer
+     */
+    public void generateItems(int count) {
+        for (int i = 0; i < count; i++) {
+            int x = random.nextInt(width);
+            int y = random.nextInt(height);
+
+            if (x != 0 || y != 0) {
+                grid[x][y].setItem(new Potion("Potion de soin", "une potion de vie simple. Rend +10 PV. Usage Unique.", 10));
             }
         }
     }
