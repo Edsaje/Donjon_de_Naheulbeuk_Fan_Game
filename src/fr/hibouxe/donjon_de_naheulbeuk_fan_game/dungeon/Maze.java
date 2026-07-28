@@ -8,74 +8,107 @@ import java.util.ArrayList;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+/**
+ * Moteur du Labyrinthe (Dungeon Map).
+ * Gère la matrice 2D de cellules, la génération procédurale par Backtracking (DFS),
+ * le creusement de salles ouvertes (Carving) et le placement aléatoire de monstres.
+ *
+ * @author Hibouxe
+ * @version 1.0
+ */
 public class Maze {
-    //attributs
+    // Attributs
     private int width;
     private int height;
     private Cell[][] grid;
     private Random random = new Random();
 
-    //méthode
+    /**
+     * Construit une grille de labyrinthe de dimensions (width x height).
+     * Instancie chaque cellule Cell(x, y).
+     *
+     * @param width  Largeur de la grille en nombre de colonnes
+     * @param height Hauteur de la grille en nombre de lignes
+     */
     public Maze(int width, int height) {
         this.width = width;
         this.height = height;
-        this.grid = new Cell[width][height]; //aloue la grille
+        this.grid = new Cell[width][height]; // Alloue la grille
 
-        //boucle for
-        for (int x = 0; x < width; x++){
-            for (int y = 0; y < height; y++){
-                grid[x][y] = new Cell(x,y);
+        // Double boucle for pour initialiser chaque cellule
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                grid[x][y] = new Cell(x, y);
             }
         }
     }
 
-    public void generateMaze(){
-        Cell startCell = grid[0][0]; //case de départ
-        startCell.setVisited(true); //marquer comme visité
-        Deque<Cell> stack = new ArrayDeque<>(); // création pile
-        stack.push(startCell); //pose la cellule au sommet de la pile
+    /**
+     * Génère un labyrinthe parfait à l'aide de l'algorithme de Backtracking récursif (DFS).
+     * Utilise une pile (ArrayDeque) pour dérouler et rembobiner les couloirs du donjon.
+     */
+    public void generateMaze() {
+        Cell startCell = grid[0][0]; // Case de départ
+        startCell.setVisited(true); // Marquer comme visitée
+        Deque<Cell> stack = new ArrayDeque<>(); // Création de la pile
+        stack.push(startCell); // Pose la cellule au sommet de la pile
 
         while (!stack.isEmpty()) {
-            Cell current = stack.peek(); //regarde la cellule qui se trouve au sommet
+            Cell current = stack.peek(); // Regarde la cellule au sommet
             List<Cell> neighbors = getUnvisitedNeighbors(current);
 
-            if (!neighbors.isEmpty()){
-                //choisir un voisin au hasard
+            if (!neighbors.isEmpty()) {
+                // Choisir un voisin au hasard
                 Cell chosen = neighbors.get(random.nextInt(neighbors.size()));
 
-                //enlever le mur
+                // Enlever le mur entre la case actuelle et le voisin
                 current.removeWallBetween(chosen);
 
-                //marquer comme visité et mettre au sommet
+                // Marquer comme visité et empiler
                 chosen.setVisited(true);
                 stack.push(chosen);
             } else {
-                //sinon on retire de la pile
+                // Impasse : backtrack
                 stack.pop();
             }
         }
     }
 
-    public void createRoom(int startX, int startY, int roomWidth, int roomHeight){
-        for (int x = startX; x < startX + roomWidth; x++){
-            for (int y = startY; y < startY + roomHeight; y++){
-                if (x + 1 < startX + roomWidth && x + 1 < width){
+    /**
+     * Creuse une salle rectangulaire dans le labyrinthe en abattant les murs intérieurs.
+     *
+     * @param startX     Coordonnée X du coin supérieur gauche de la salle
+     * @param startY     Coordonnée Y du coin supérieur gauche de la salle
+     * @param roomWidth  Largeur de la salle
+     * @param roomHeight Hauteur de la salle
+     */
+    public void createRoom(int startX, int startY, int roomWidth, int roomHeight) {
+        for (int x = startX; x < startX + roomWidth; x++) {
+            for (int y = startY; y < startY + roomHeight; y++) {
+                if (x + 1 < startX + roomWidth && x + 1 < width) {
                     grid[x][y].removeWallBetween(grid[x + 1][y]);
                 }
-                if (y + 1 < startY + roomHeight && y +1 < height){
+                if (y + 1 < startY + roomHeight && y + 1 < height) {
                     grid[x][y].removeWallBetween(grid[x][y + 1]);
                 }
             }
         }
     }
 
+    /**
+     * Génère un nombre défini de salles rectangulaires de tailles et positions aléatoires.
+     *
+     * @param numberOfRooms Nombre de salles à creuser
+     * @param minSize       Taille minimale d'une salle
+     * @param maxSize       Taille maximale d'une salle
+     */
     public void generateRandomRooms(int numberOfRooms, int minSize, int maxSize) {
         for (int i = 0; i < numberOfRooms; i++) {
             // 1. Taille aléatoire pour cette salle
             int roomWidth = random.nextInt(maxSize - minSize + 1) + minSize;
             int roomHeight = random.nextInt(maxSize - minSize + 1) + minSize;
 
-            // 2. Position aléatoire (en s'assurant que la salle ne déborde pas de la grille)
+            // 2. Position aléatoire valide (sans dépasser la grille)
             int startX = random.nextInt(width - roomWidth);
             int startY = random.nextInt(height - roomHeight);
 
@@ -84,57 +117,74 @@ public class Maze {
         }
     }
 
-    private List<Cell> getUnvisitedNeighbors(Cell current){ //savoir quels voisins ne sont pas visités
+    /**
+     * Retourne la liste des cellules voisines de 'current' qui n'ont pas encore été visitées.
+     *
+     * @param current La cellule analysée
+     * @return Liste des cellules voisines non visitées
+     */
+    private List<Cell> getUnvisitedNeighbors(Cell current) {
         int x = current.getX();
         int y = current.getY();
         List<Cell> neighbors = new ArrayList<>();
 
-        if (y - 1 >= 0 && grid[x][y - 1].isVisited() == false){
+        if (y - 1 >= 0 && grid[x][y - 1].isVisited() == false) {
             neighbors.add(grid[x][y - 1]);
         }
-        if (y + 1 < height && grid[x][y + 1].isVisited() == false){
+        if (y + 1 < height && grid[x][y + 1].isVisited() == false) {
             neighbors.add(grid[x][y + 1]);
         }
-        if (x - 1 >= 0 && grid[x - 1][y].isVisited() == false){
+        if (x - 1 >= 0 && grid[x - 1][y].isVisited() == false) {
             neighbors.add(grid[x - 1][y]);
         }
-        if (x + 1 < width && grid[x + 1][y].isVisited() == false){
+        if (x + 1 < width && grid[x + 1][y].isVisited() == false) {
             neighbors.add(grid[x + 1][y]);
         }
         return neighbors;
     }
 
+    /**
+     * Place aléatoirement un nombre d'ennemis sur les cases du labyrinthe (hors case 0,0).
+     *
+     * @param count Nombre de monstres à faire apparaître
+     */
     public void generateMonsters(int count) {
-        for (int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
 
-            if (x != 0 || y !=0) { //pas de monstre sur 0
-                grid[x][y].setMonster(new Goblin()); //je place un monstre (défini pour le moment)
+            if (x != 0 || y != 0) { // Pas de monstre sur la case de départ (0, 0)
+                grid[x][y].setMonster(new Goblin()); // Placement d'un Gobelin par défaut
             }
         }
     }
 
+    /** @return Largeur du labyrinthe (Nombre de colonnes) */
     public int getWidth() {
         return width;
     }
 
+    /** @param width Nouvelle largeur */
     public void setWidth(int width) {
         this.width = width;
     }
 
+    /** @return Hauteur du labyrinthe (Nombre de lignes) */
     public int getHeight() {
         return height;
     }
 
+    /** @param height Nouvelle hauteur */
     public void setHeight(int height) {
         this.height = height;
     }
 
+    /** @return La matrice 2D des cellules */
     public Cell[][] getGrid() {
         return grid;
     }
 
+    /** @param grid Nouvelle matrice de cellules */
     public void setGrid(Cell[][] grid) {
         this.grid = grid;
     }

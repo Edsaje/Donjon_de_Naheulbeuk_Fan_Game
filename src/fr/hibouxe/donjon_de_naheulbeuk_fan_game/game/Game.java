@@ -5,23 +5,35 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Maze;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 
+/**
+ * Contrôleur principal du jeu.
+ * Gère la boucle globale de jeu, l'initialisation de la carte et de l'équipe,
+ * les déplacements du joueur et les collisions avec les murs et les monstres.
+ *
+ * @author Hibouxe
+ * @version 1.0
+ */
 public class Game {
-    //Attributs
+    // Attributs
     private Maze maze;
     private Team team;
     private boolean running;
     Menu menu = new Menu();
 
-    public void startGame(){
-        //génération du Maze
+    /**
+     * Démarre la boucle de jeu principale.
+     * Génère le labyrinthe, les salles, les monstres et instancie la compagnie de Naheulbeuk.
+     */
+    public void startGame() {
+        // Génération du Maze
         this.maze = new Maze(10, 10);
         this.maze.generateMaze();
-        this.maze.generateRandomRooms(6, 2,4);
+        this.maze.generateRandomRooms(6, 2, 4);
 
         this.maze.generateMonsters(5);
 
         this.running = true;
-        //création de la Team
+        // Création de la Team
         this.team = new Team();
 
         while (running) {
@@ -30,25 +42,33 @@ public class Game {
         }
     }
 
-    public void playerMovement(){
+    /**
+     * Gère la saisie utilisateur du déplacement et exécute la tentative de mouvement.
+     * Déclenche un combat via la classe Battle en cas de rencontre avec un monstre.
+     */
+    public void playerMovement() {
         String choice = menu.askPlayerMovement();
         boolean moved = false;
 
-        switch (choice){
-            case "Z": moved = tryMoveNorth();
-            break;
+        switch (choice) {
+            case "Z":
+                moved = tryMoveNorth();
+                break;
 
-            case "S": moved = tryMoveSouth();
-            break;
+            case "S":
+                moved = tryMoveSouth();
+                break;
 
-            case "Q": moved = tryMoveWest();
-            break;
+            case "Q":
+                moved = tryMoveWest();
+                break;
 
-            case "D": moved = tryMoveEast();
-            break;
+            case "D":
+                moved = tryMoveEast();
+                break;
 
             case "X":
-                running= false; //stop le jeu
+                running = false; // Stop le jeu
                 System.out.println("Tchoss Nulloss");
                 break;
 
@@ -74,57 +94,67 @@ public class Game {
                 boolean victory = battle.start();
 
                 if (victory) {
-                    currentCell.setMonster(null); //on retire le monstre
+                    currentCell.setMonster(null); // On retire le monstre vaincu
                 } else {
-                    running = false; //on ferme le jeu
+                    running = false; // Fin de partie si défaite
                 }
-
-                currentCell.setMonster(null); //on supprime le monstre si on gagne
             }
         }
     }
 
+    /**
+     * Tente de déplacer l'équipe vers le Nord si aucun mur ne bloque le passage.
+     *
+     * @return true si le mouvement a réussi, false s'il y a un mur.
+     */
     public boolean tryMoveNorth() {
-        //this demande à Maze la cellule de ma team
         Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        // il vérifie si le mur est là ou non
-        if (!currentCell.isWallNorth()){
+        if (!currentCell.isWallNorth()) {
             team.moveNorth();
             return true;
         }
-        return false; //il y a un mur
+        return false;
     }
 
+    /**
+     * Tente de déplacer l'équipe vers le Sud si aucun mur ne bloque le passage.
+     *
+     * @return true si le mouvement a réussi, false s'il y a un mur.
+     */
     public boolean tryMoveSouth() {
-        //this demande à Maze la cellule de ma team
         Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        // il vérifie si le mur est là ou non
-        if (!currentCell.isWallSouth()){
+        if (!currentCell.isWallSouth()) {
             team.moveSouth();
             return true;
         }
-        return false; //il y a un mur
+        return false;
     }
 
+    /**
+     * Tente de déplacer l'équipe vers l'Ouest si aucun mur ne bloque le passage.
+     *
+     * @return true si le mouvement a réussi, false s'il y a un mur.
+     */
     public boolean tryMoveWest() {
-        //this demande à Maze la cellule de ma team
         Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        // il vérifie si le mur est là ou non
-        if (!currentCell.isWallWest()){
+        if (!currentCell.isWallWest()) {
             team.moveWest();
             return true;
         }
-        return false; //il y a un mur
+        return false;
     }
 
+    /**
+     * Tente de déplacer l'équipe vers l'Est si aucun mur ne bloque le passage.
+     *
+     * @return true si le mouvement a réussi, false s'il y a un mur.
+     */
     public boolean tryMoveEast() {
-        //this demande à Maze la cellule de ma team
         Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        // il vérifie si le mur est là ou non
-        if (!currentCell.isWallEast()){
+        if (!currentCell.isWallEast()) {
             team.moveEast();
             return true;
         }
-        return false; //il y a un mur
+        return false;
     }
 }
