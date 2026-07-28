@@ -76,8 +76,8 @@ public class Menu {
     public void displayTeamStats(Team team) {
         System.out.println("\n=================== Fiche de la compagnie de Naheulbeuk ===================");
         for (Character c : team.getMembers()) {
-            System.out.printf("🔹 %-12s | Niv %d | PV: %2d | Mana: %2d | Attaque: %2d | Défense: %2d%n",
-                    c.getName(), c.getLevel(), c.getHealthPoint(), c.getManaPoint(), c.getAttack(), c.getDefense());
+            System.out.printf("🔹 %-12s | Niv %d | PV: %2d | " + c.getResourceName() + " : %2d | Attaque: %2d | Attaque Magique: %2d | Défense: %2d | Défense Magique : %2d%n",
+                    c.getName(), c.getLevel(), c.getHealthPoint(), c.getResourcePoint(), c.getAttack(), c.getMagicAttack(), c.getDefense(), c.getMagicDefense());
         }
         System.out.println("===========================================================================\n");
     }
@@ -155,5 +155,30 @@ public class Menu {
             }
         }
         System.out.println("=================================================================\n");
+    }
+
+    /**
+     * Affiche l'état de l'ennemi et les statistiques des membres de la compagnie au début de chaque tour de combat.
+     *
+     * @param monster Le monstre affronté
+     * @param team    La compagnie de Naheulbeuk
+     */
+    public void displayBattleStatus(Character monster, Team team) {
+        System.out.println("\n" + monster.getName().toUpperCase() + " (PV: " + Math.max(0, monster.getHealthPoint())
+                + " | Attaque: " + monster.getAttack()
+                + " | Attaque Magique: " + monster.getMagicAttack()
+                + " | Defense: " + monster.getDefense()
+                + " | Defense Magique: " + monster.getMagicDefense() + ")\n");
+
+        for (int i = 0; i < team.getMembers().size(); i++) {
+            Character c = team.getMembers().get(i);
+            if (c.getHealthPoint() > 0) {
+                System.out.println(i + ". " + c.getName() + " (PV: " + c.getHealthPoint()
+                        + " | Attaque: " + c.getAttack()
+                        + " | " + c.getResourceName() + ": " + c.getResourcePoint()
+                        + " | Defense: " + c.getDefense()
+                        + " | Defense Magique: " + c.getMagicDefense() + ")");
+            }
+        }
     }
 }

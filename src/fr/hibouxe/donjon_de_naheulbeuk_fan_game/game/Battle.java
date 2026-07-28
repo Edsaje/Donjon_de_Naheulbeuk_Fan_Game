@@ -21,6 +21,7 @@ public class Battle {
     private Character monster;
     private Scanner keyboard = new Scanner(System.in);
     private Random random = new Random();
+    private Menu menu = new Menu();
 
     /**
      * Initialise un nouvel affrontement entre l'équipe du joueur et un monstre.
@@ -74,23 +75,18 @@ public class Battle {
 
     /**
      * Gère le tour d'action de la compagnie.
-     * Affiche les statistiques des héros, sélectionne l'attaquant et exécute l'action choisie
-     * (Attaque physique ou Compétence spéciale/Sort).
-     * Gère le gain potentiel de ressources. (Rage/Energie)
+     * Fait appel à la Vue (Menu) pour l'affichage de l'état du combat,
+     * sélectionne l'attaquant et exécute l'action choisie.
+     * Gère la régénération automatique d'Énergie et la montée de Rage.
      */
     private void playerTurn() {
-        System.out.println("\n" + monster.getName().toUpperCase() + " (PV : " + Math.max(0, monster.getHealthPoint()) + ") \n");
-        for (int i = 0; i < team.getMembers().size(); i++) { // Affiche les stats de la team
-            Character c = team.getMembers().get(i);
-            if (c.getHealthPoint() > 0) {
-                System.out.println(i + ". " + c.getName() + " | PV: " + c.getHealthPoint() + " | Attaque: " + c.getAttack());
-            }
+        menu.displayBattleStatus(monster, team);
 
-            if ("Energie".equals(c.getResourceName())){
-                c.addResource(20); //+20 Energie par tour
+        for (Character c : team.getMembers()) {
+            if ("Energie".equals(c.getResourceName())) {
+                c.addResource(20); // +20 Énergie par tour
             }
         }
-
 
         System.out.println("\nQui passe à l'action ?");
         System.out.print("> ");
