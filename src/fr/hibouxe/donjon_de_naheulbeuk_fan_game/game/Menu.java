@@ -181,4 +181,53 @@ public class Menu {
             }
         }
     }
+
+    /**
+     * Affiche un message de confirmation lorsqu'un objet est ramassé.
+     *
+     * @param item L'objet ramassé
+     */
+    public void displayItemPickedUp(Item item) {
+        System.out.println("\n" + item.getName() + " ramassé(e), espérons que le Nain ne vole rien !");
+    }
+
+    /**
+     * Affiche un message d'avertissement lorsque le sac à dos est plein.
+     */
+    public void displayInventoryFull() {
+        System.out.println("\nJe crois que le Nain essaye encore de porter trop d'objets !");
+    }
+
+    /**
+     * Demande au joueur de choisir quel membre de la compagnie passe à l'action.
+     *
+     * @return L'index du personnage choisi
+     */
+    public int askAttacker() {
+        System.out.println("\nQui passe à l'action ?");
+        System.out.print("> ");
+        try {
+            return Integer.parseInt(keyboard.nextLine().trim());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Demande au joueur de choisir le type d'action (Attaque physique ou Compétence).
+     *
+     * @param attacker Le personnage qui agit
+     * @return L'option choisie (1 pour Physique, 2 pour Compétence)
+     */
+    public int askBattleAction(Character attacker) {
+        System.out.println("\n" + attacker.getName() + " réfléchit à sa prochaine action...");
+        System.out.println("1. Attaque Physique");
+        System.out.println("2. Compétence Spéciale / Magie");
+        System.out.print("> ");
+        try {
+            return Integer.parseInt(keyboard.nextLine().trim());
+        } catch (Exception e) {
+            return 1;
+        }
+    }
 }

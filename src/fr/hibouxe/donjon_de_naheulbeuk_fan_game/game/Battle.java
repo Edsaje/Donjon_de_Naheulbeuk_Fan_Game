@@ -88,16 +88,10 @@ public class Battle {
             }
         }
 
-        System.out.println("\nQui passe à l'action ?");
-        System.out.print("> ");
-        int choice = Integer.parseInt(keyboard.nextLine().trim());
+        int choice = menu.askAttacker();
         Character attacker = team.getMembers().get(choice); // On récupère le héros choisi
 
-        System.out.println("\n" + attacker.getName() + " réfléchit à sa prochaine action...");
-        System.out.println("1. Attaque Physique");
-        System.out.println("2. Compétence Spéciale / Magie");
-        System.out.print("> ");
-        int action = Integer.parseInt(keyboard.nextLine().trim());
+        int action = menu.askBattleAction(attacker);
 
         if (action == 1) {
             if (attacker.getHealthPoint() > 0) {

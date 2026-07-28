@@ -43,10 +43,8 @@ public class Team {
     public boolean addItem(Item item) {
         if (this.inventory.size() < maxCapacity) {
             this.inventory.add(item);
-            System.out.println("\n" + item.getName() + " ramassé(e), espérons que le Nain ne vole rien !");
             return true;
         }
-        System.out.println("\nJe crois que le Nain essaye encore de porter trop d'objets !");
         return false;
     }
 
