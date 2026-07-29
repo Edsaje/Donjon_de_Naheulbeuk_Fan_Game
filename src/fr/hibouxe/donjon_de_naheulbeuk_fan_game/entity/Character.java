@@ -3,6 +3,10 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.Equipment;
 
+import java.util.List;
+import java.util.ArrayList;
+
+
 /**
  * Classe parente représentant une entité vivante du jeu (Héros, Monstre ou Boss).
  * Gère les caractéristiques fondamentales (points de vie, attaque, défense, ressources).
@@ -172,13 +176,6 @@ public class Character {
     }
 
     /**
-     * @param attack Nouvelle valeur d'attaque physique
-     */
-    public void setAttack(int attack) {
-        this.attack = attack;
-    }
-
-    /**
      * Tente d'équiper un objet dans l'emplacement dédié du personnage.
      *
      * @param equipment L'équipement à porter
@@ -216,6 +213,30 @@ public class Character {
 
         menu.displayMessage(this.name + " équipe désormais " + equipment.getName() + " !");
         return true;
+    }
+
+    public String getEquippedSummary(){
+        List<String> items = new ArrayList<>();
+
+        if (weaponSlot != null) items.add("Arme: " + weaponSlot.getName());
+        if (leftHandSlot != null) items.add("Main gauche: " + leftHandSlot.getName());
+        if (headSlot != null) items.add("Tête: " + headSlot.getName());
+        if (chestSlot != null) items.add("Torse: " + chestSlot.getName());
+        if (legsSlot != null) items.add("Jambes: " + legsSlot.getName());
+        if (jewelrySlot != null) items.add("Bijou: " + jewelrySlot.getName());
+
+        if (items.isEmpty()){
+            return "Aucun équipement. EXHIBITIONNISTE !";
+        }
+        return String.join(", ", items);
+    }
+
+
+    /**
+     * @param attack Nouvelle valeur d'attaque physique
+     */
+    public void setAttack(int attack) {
+        this.attack = attack;
     }
 
     /**
