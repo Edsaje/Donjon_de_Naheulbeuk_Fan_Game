@@ -1,7 +1,11 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.enemy.Goblin;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.usable.potion.Potion;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.defensiveEquipment.ArchmageRobe;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.defensiveEquipment.BarbarianLoincloth;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.offensiveEquipment.DwarfBattleAxe;
 
 import java.util.*;
 
@@ -167,7 +171,23 @@ public class Maze {
             int y = random.nextInt(height);
 
             if (x != 0 || y != 0) {
-                grid[x][y].setItem(new Potion("Potion de soin", "une potion de vie simple. Rend +10 PV. Usage Unique.", 10));
+                int roll = random.nextInt(4);
+                Item loot;
+                switch (roll) {
+                    case 1:
+                        loot = new DwarfBattleAxe();
+                        break;
+                    case 2:
+                        loot = new BarbarianLoincloth();
+                        break;
+                    case 3:
+                        loot = new ArchmageRobe();
+                        break;
+                    default:
+                        loot = new Potion("Potion de soin", "une potion de vie simple. Rend +10 PV. Usage Unique.", 10);
+                        break;
+                }
+                grid[x][y].setItem(loot);
             }
         }
     }
