@@ -34,12 +34,16 @@ public class Item {
         menu.displayMessage(target.getName() + " utilise " + this.name);
     }
 
-    /** @return Nom de l'objet */
+    /**
+     * @return Nom de l'objet
+     */
     public String getName() {
         return name;
     }
 
-    /** @return Description de l'objet */
+    /**
+     * @return Description de l'objet
+     */
     public String getDescription() {
         return description;
     }

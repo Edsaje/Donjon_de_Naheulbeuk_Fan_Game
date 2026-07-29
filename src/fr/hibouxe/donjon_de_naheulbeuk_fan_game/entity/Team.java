@@ -1,10 +1,10 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity;
 
-import java.util.List;
-import java.util.ArrayList;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses.*;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Gère la Compagnie de Naheulbeuk (l'équipe des héros).
@@ -57,54 +57,86 @@ public class Team {
         this.inventory.remove(item);
     }
 
-    /** Déplace la compagnie d'une case vers le Nord (y diminue). */
-    public void moveNorth() { this.y--; }
+    /**
+     * Déplace la compagnie d'une case vers le Nord (y diminue).
+     */
+    public void moveNorth() {
+        this.y--;
+    }
 
-    /** Déplace la compagnie d'une case vers le Sud (y augmente). */
-    public void moveSouth() { this.y++; }
+    /**
+     * Déplace la compagnie d'une case vers le Sud (y augmente).
+     */
+    public void moveSouth() {
+        this.y++;
+    }
 
-    /** Déplace la compagnie d'une case vers l'Est (x augmente). */
-    public void moveEast()  { this.x++; }
+    /**
+     * Déplace la compagnie d'une case vers l'Est (x augmente).
+     */
+    public void moveEast() {
+        this.x++;
+    }
 
-    /** Déplace la compagnie d'une case vers l'Ouest (x diminue). */
-    public void moveWest()  { this.x--; }
+    /**
+     * Déplace la compagnie d'une case vers l'Ouest (x diminue).
+     */
+    public void moveWest() {
+        this.x--;
+    }
 
-    /** @return Position X actuelle de l'équipe */
+    /**
+     * @return Position X actuelle de l'équipe
+     */
     public int getX() {
         return x;
     }
 
-    /** @param x Nouvelle position X */
+    /**
+     * @param x Nouvelle position X
+     */
     public void setX(int x) {
         this.x = x;
     }
 
-    /** @return Position Y actuelle de l'équipe */
+    /**
+     * @return Position Y actuelle de l'équipe
+     */
     public int getY() {
         return y;
     }
 
-    /** @param y Nouvelle position Y */
+    /**
+     * @param y Nouvelle position Y
+     */
     public void setY(int y) {
         this.y = y;
     }
 
-    /** @return Liste des membres de l'équipe */
+    /**
+     * @return Liste des membres de l'équipe
+     */
     public List<Character> getMembers() {
         return members;
     }
 
-    /** @param members Nouvelle liste de membres */
+    /**
+     * @param members Nouvelle liste de membres
+     */
     public void setMembers(List<Character> members) {
         this.members = members;
     }
 
-    /** @return La liste des objets contenus dans le sac à dos */
+    /**
+     * @return La liste des objets contenus dans le sac à dos
+     */
     public List<Item> getInventory() {
         return inventory;
     }
 
-    /** @param inventory Nouveau contenu du sac à dos */
+    /**
+     * @param inventory Nouveau contenu du sac à dos
+     */
     public void setInventory(List<Item> inventory) {
         this.inventory = inventory;
     }

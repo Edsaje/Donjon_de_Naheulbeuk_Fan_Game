@@ -82,82 +82,114 @@ public class Cell {
         return monster != null;
     }
 
-    /** @return Coordonnée X de la case */
+    /**
+     * @return Coordonnée X de la case
+     */
     public int getX() {
         return x;
     }
 
-    /** @param x Nouvelle coordonnée X */
+    /**
+     * @param x Nouvelle coordonnée X
+     */
     public void setX(int x) {
         this.x = x;
     }
 
-    /** @return Coordonnée Y de la case */
+    /**
+     * @return Coordonnée Y de la case
+     */
     public int getY() {
         return y;
     }
 
-    /** @param y Nouvelle coordonnée Y */
+    /**
+     * @param y Nouvelle coordonnée Y
+     */
     public void setY(int y) {
         this.y = y;
     }
 
-    /** @return true si la case a été visitée par le générateur */
+    /**
+     * @return true si la case a été visitée par le générateur
+     */
     public boolean isVisited() {
         return visited;
     }
 
-    /** @param visited Nouveau statut de visite */
+    /**
+     * @param visited Nouveau statut de visite
+     */
     public void setVisited(boolean visited) {
         this.visited = visited;
     }
 
-    /** @return true si le mur Nord est présent */
+    /**
+     * @return true si le mur Nord est présent
+     */
     public boolean isWallNorth() {
         return wallNorth;
     }
 
-    /** @param wallNorth Présence du mur Nord */
+    /**
+     * @param wallNorth Présence du mur Nord
+     */
     public void setWallNorth(boolean wallNorth) {
         this.wallNorth = wallNorth;
     }
 
-    /** @return true si le mur Sud est présent */
+    /**
+     * @return true si le mur Sud est présent
+     */
     public boolean isWallSouth() {
         return wallSouth;
     }
 
-    /** @param wallSouth Présence du mur Sud */
+    /**
+     * @param wallSouth Présence du mur Sud
+     */
     public void setWallSouth(boolean wallSouth) {
         this.wallSouth = wallSouth;
     }
 
-    /** @return true si le mur Ouest est présent */
+    /**
+     * @return true si le mur Ouest est présent
+     */
     public boolean isWallWest() {
         return wallWest;
     }
 
-    /** @param wallWest Présence du mur Ouest */
+    /**
+     * @param wallWest Présence du mur Ouest
+     */
     public void setWallWest(boolean wallWest) {
         this.wallWest = wallWest;
     }
 
-    /** @return true si le mur Est est présent */
+    /**
+     * @return true si le mur Est est présent
+     */
     public boolean isWallEast() {
         return wallEast;
     }
 
-    /** @param wallEast Présence du mur Est */
+    /**
+     * @param wallEast Présence du mur Est
+     */
     public void setWallEast(boolean wallEast) {
         this.wallEast = wallEast;
     }
 
-    /** @return Le monstre présent sur la case (ou null si aucun) */
+    /**
+     * @return Le monstre présent sur la case (ou null si aucun)
+     */
     public Character getMonster() {
         return monster;
     }
 
-    /** @param monster Monstre à placer sur la case (ou null pour retirer) */
+    /**
+     * @param monster Monstre à placer sur la case (ou null pour retirer)
+     */
     public void setMonster(Character monster) {
         this.monster = monster;
     }
@@ -171,12 +203,16 @@ public class Cell {
         return item != null;
     }
 
-    /** @return L'objet présent sur la case (ou null si aucun) */
+    /**
+     * @return L'objet présent sur la case (ou null si aucun)
+     */
     public Item getItem() {
         return item;
     }
 
-    /** @param item Objet à placer sur la case (ou null pour retirer) */
+    /**
+     * @param item Objet à placer sur la case (ou null pour retirer)
+     */
     public void setItem(Item item) {
         this.item = item;
     }

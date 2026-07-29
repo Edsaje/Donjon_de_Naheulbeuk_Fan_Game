@@ -1,8 +1,9 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
 
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.*;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Cell;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Maze;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
 import java.util.List;
@@ -86,6 +87,7 @@ public class Menu {
         int choice = askPlayerInt();
         return choice == 1;
     }
+
     /**
      * Affiche la fiche récapitulative des statistiques de tous les aventuriers de l'équipe.
      *
@@ -131,7 +133,7 @@ public class Menu {
                     sb.append(" @ "); // Le symbole de la compagnie de Naheulbeuk !
                 } else if (cell.hasMonster()) {
                     sb.append(" M "); // Le symbole des monstres
-                } else if (cell.hasItem()){
+                } else if (cell.hasItem()) {
                     sb.append(" C "); // Le symbole des coffres
                 } else {
                     sb.append("   "); // Case vide

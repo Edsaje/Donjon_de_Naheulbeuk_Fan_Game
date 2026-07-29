@@ -1,8 +1,8 @@
-package fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.potion;
+package fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.usable.potion;
 
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
 /**
  * Représente une potion de soin restaurant des points de vie (PV).
@@ -37,7 +37,9 @@ public class Potion extends Item {
         menu.displayMessage("\n" + target.getName() + " boit une potion et récupère +" + healAmount + " PV !");
     }
 
-    /** @return La quantité de soins apportée par la potion */
+    /**
+     * @return La quantité de soins apportée par la potion
+     */
     public int getHealAmout() {
         return healAmount;
     }

@@ -100,7 +100,7 @@ public class Battle {
                 menu.displayMessage(attacker.getName() + " tape de toutes ses forces et inflige " + damage + " point(s) de dégât !");
                 menu.displayMessage("\nIl reste " + Math.max(0, monster.getHealthPoint()) + " PV au " + monster.getName() + " !");
 
-                if ("Rage".equals(attacker.getResourceName())){
+                if ("Rage".equals(attacker.getResourceName())) {
                     attacker.addResource(10); //+10 de Rage quand il frappe
                 }
 
@@ -136,7 +136,7 @@ public class Battle {
             int damage = Math.max(1, monster.getAttack() - target.getDefense()); // Calcul des dégâts
             target.setHealthPoint(target.getHealthPoint() - damage); // On retire les PV
 
-            if("Rage".equals(target.getResourceName())){
+            if ("Rage".equals(target.getResourceName())) {
                 target.addResource(15); //+15 de Rage quand il prend un coup
             }
         }

@@ -1,13 +1,9 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.enemy.Goblin;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.potion.Potion;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.usable.potion.Potion;
 
-import java.util.Random;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.*;
 
 /**
  * Moteur du Labyrinthe (Dungeon Map).
@@ -176,32 +172,44 @@ public class Maze {
         }
     }
 
-    /** @return Largeur du labyrinthe (Nombre de colonnes) */
+    /**
+     * @return Largeur du labyrinthe (Nombre de colonnes)
+     */
     public int getWidth() {
         return width;
     }
 
-    /** @param width Nouvelle largeur */
+    /**
+     * @param width Nouvelle largeur
+     */
     public void setWidth(int width) {
         this.width = width;
     }
 
-    /** @return Hauteur du labyrinthe (Nombre de lignes) */
+    /**
+     * @return Hauteur du labyrinthe (Nombre de lignes)
+     */
     public int getHeight() {
         return height;
     }
 
-    /** @param height Nouvelle hauteur */
+    /**
+     * @param height Nouvelle hauteur
+     */
     public void setHeight(int height) {
         this.height = height;
     }
 
-    /** @return La matrice 2D des cellules */
+    /**
+     * @return La matrice 2D des cellules
+     */
     public Cell[][] getGrid() {
         return grid;
     }
 
-    /** @param grid Nouvelle matrice de cellules */
+    /**
+     * @param grid Nouvelle matrice de cellules
+     */
     public void setGrid(Cell[][] grid) {
         this.grid = grid;
     }

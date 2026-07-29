@@ -1,6 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.Equipment;
 
 /**
  * Classe parente représentant une entité vivante du jeu (Héros, Monstre ou Boss).
@@ -23,6 +24,13 @@ public class Character {
     protected String resourceName; // "Mana", "Rage" ou "Énergie"
     protected int currentResource; // Valeur actuelle (ex: 10)
     protected int maxResource;     // Valeur maximale (ex: 20)
+
+    protected Equipment headSlot = null;
+    protected Equipment chestSlot = null;
+    protected Equipment legsSlot = null;
+    protected Equipment jewelrySlot = null;
+    protected Equipment weaponSlot = null;
+    protected Equipment leftHandSlot = null;
 
     /**
      * Constructeur complet d'un personnage.
@@ -67,112 +75,222 @@ public class Character {
      *
      * @param amount
      */
-    public void addResource(int amount){
+    public void addResource(int amount) {
         this.currentResource = Math.min(this.maxResource, this.currentResource + amount);
     }
 
 
-    /** @return Nom du personnage */
+    /**
+     * @return Nom du personnage
+     */
     public String getName() {
         return name;
     }
 
-    /** @param name Nouveau nom */
+    /**
+     * @param name Nouveau nom
+     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** @return Valeur de défense magique */
+    /**
+     * @return Valeur de défense magique totale (base + équipements)
+     */
     public int getMagicDefense() {
-        return magicDefense;
+        int bonus = 0;
+        if (headSlot != null) bonus += headSlot.getMagicDefenseBonus();
+        if (chestSlot != null) bonus += chestSlot.getMagicDefenseBonus();
+        if (legsSlot != null) bonus += legsSlot.getMagicDefenseBonus();
+        if (jewelrySlot != null) bonus += jewelrySlot.getMagicDefenseBonus();
+        if (weaponSlot != null) bonus += weaponSlot.getMagicDefenseBonus();
+        if (leftHandSlot != null) bonus += leftHandSlot.getMagicDefenseBonus();
+        return magicDefense + bonus;
     }
 
-    /** @param magicDefense Nouvelle valeur de défense magique */
+    /**
+     * @param magicDefense Nouvelle valeur de défense magique
+     */
     public void setMagicDefense(int magicDefense) {
         this.magicDefense = magicDefense;
     }
 
-    /** @return Valeur d'attaque magique */
+    /**
+     * @return Valeur d'attaque magique totale (base + équipements)
+     */
     public int getMagicAttack() {
-        return magicAttack;
+        int bonus = 0;
+        if (headSlot != null) bonus += headSlot.getMagicAttackBonus();
+        if (chestSlot != null) bonus += chestSlot.getMagicAttackBonus();
+        if (legsSlot != null) bonus += legsSlot.getMagicAttackBonus();
+        if (jewelrySlot != null) bonus += jewelrySlot.getMagicAttackBonus();
+        if (weaponSlot != null) bonus += weaponSlot.getMagicAttackBonus();
+        if (leftHandSlot != null) bonus += leftHandSlot.getMagicAttackBonus();
+        return magicAttack + bonus;
     }
 
-    /** @param magicAttack Nouvelle valeur d'attaque magique */
+    /**
+     * @param magicAttack Nouvelle valeur d'attaque magique
+     */
     public void setMagicAttack(int magicAttack) {
         this.magicAttack = magicAttack;
     }
 
-    /** @return Valeur de défense physique */
+    /**
+     * @return Valeur de défense physique totale (base + équipements)
+     */
     public int getDefense() {
-        return defense;
+        int bonus = 0;
+        if (headSlot != null) bonus += headSlot.getDefenseBonus();
+        if (chestSlot != null) bonus += chestSlot.getDefenseBonus();
+        if (legsSlot != null) bonus += legsSlot.getDefenseBonus();
+        if (jewelrySlot != null) bonus += jewelrySlot.getDefenseBonus();
+        if (weaponSlot != null) bonus += weaponSlot.getDefenseBonus();
+        if (leftHandSlot != null) bonus += leftHandSlot.getDefenseBonus();
+        return defense + bonus;
     }
 
-    /** @param defense Nouvelle valeur de défense physique */
+    /**
+     * @param defense Nouvelle valeur de défense physique
+     */
     public void setDefense(int defense) {
         this.defense = defense;
     }
 
-    /** @return Valeur d'attaque physique */
+    /**
+     * @return Valeur d'attaque physique totale (base + équipements)
+     */
     public int getAttack() {
-        return attack;
+        int bonus = 0;
+        if (headSlot != null) bonus += headSlot.getAttackBonus();
+        if (chestSlot != null) bonus += chestSlot.getAttackBonus();
+        if (legsSlot != null) bonus += legsSlot.getAttackBonus();
+        if (jewelrySlot != null) bonus += jewelrySlot.getAttackBonus();
+        if (weaponSlot != null) bonus += weaponSlot.getAttackBonus();
+        if (leftHandSlot != null) bonus += leftHandSlot.getAttackBonus();
+        return attack + bonus;
     }
 
-    /** @param attack Nouvelle valeur d'attaque physique */
+    /**
+     * @param attack Nouvelle valeur d'attaque physique
+     */
     public void setAttack(int attack) {
         this.attack = attack;
     }
 
-    /** @return Points de ressource (Générique) */
+    /**
+     * Tente d'équiper un objet dans l'emplacement dédié du personnage.
+     *
+     * @param equipment L'équipement à porter
+     * @param menu      La vue principale (Injectée)
+     * @return true si l'objet a été équipé avec succès, false sinon.
+     */
+    public boolean equip(Equipment equipment, Menu menu) {
+        if (equipment == null) return false;
+
+        if (!equipment.canBeEquippedBy(this)) {
+            menu.displayMessage(this.name + " ne peut pas équiper " + equipment.getName() + " !");
+            return false;
+        }
+
+        switch (equipment.getSlot()) {
+            case HEAD:
+                this.headSlot = equipment;
+                break;
+            case CHEST:
+                this.chestSlot = equipment;
+                break;
+            case LEGS:
+                this.legsSlot = equipment;
+                break;
+            case JEWELRY:
+                this.jewelrySlot = equipment;
+                break;
+            case WEAPON:
+                this.weaponSlot = equipment;
+                break;
+            case LEFT_HAND:
+                this.leftHandSlot = equipment;
+                break;
+        }
+
+        menu.displayMessage(this.name + " équipe désormais " + equipment.getName() + " !");
+        return true;
+    }
+
+    /**
+     * @return Points de ressource (Générique)
+     */
     public int getResourcePoint() {
         return resourcePoint;
     }
 
-    /** @return Points de mana (Alias pour compatibilité) */
-    public int getManaPoint() {
-        return resourcePoint;
-    }
-
-    /** @param resourcePoint Nouveaux points de mana / ressource */
-    public void setManaPoint(int resourcePoint) {
-        this.resourcePoint = resourcePoint;
-    }
-
-    /** @return Points de vie actuels */
-    public int getHealthPoint() {
-        return healthPoint;
-    }
-
-    /** @param healthPoint Nouveaux points de vie */
-    public void setHealthPoint(int healthPoint) {
-        this.healthPoint = healthPoint;
-    }
-
-    /** @return Type / Classe du personnage */
-    public String getType() {
-        return type;
-    }
-
-    /** @param type Nouveau type / classe */
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /** @return Niveau actuel */
-    public int getLevel() {
-        return level;
-    }
-
-    /** @param level Nouveau niveau */
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    /** @param resourcePoint Nouveau nombre de ressource*/
+    /**
+     * @param resourcePoint Nouveau nombre de ressource
+     */
     public void setResourcePoint(int resourcePoint) {
         this.resourcePoint = resourcePoint;
     }
 
-    /** @return Nom de la ressource */
+    /**
+     * @return Points de mana (Alias pour compatibilité)
+     */
+    public int getManaPoint() {
+        return resourcePoint;
+    }
+
+    /**
+     * @param resourcePoint Nouveaux points de mana / ressource
+     */
+    public void setManaPoint(int resourcePoint) {
+        this.resourcePoint = resourcePoint;
+    }
+
+    /**
+     * @return Points de vie actuels
+     */
+    public int getHealthPoint() {
+        return healthPoint;
+    }
+
+    /**
+     * @param healthPoint Nouveaux points de vie
+     */
+    public void setHealthPoint(int healthPoint) {
+        this.healthPoint = healthPoint;
+    }
+
+    /**
+     * @return Type / Classe du personnage
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type Nouveau type / classe
+     */
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /**
+     * @return Niveau actuel
+     */
+    public int getLevel() {
+        return level;
+    }
+
+    /**
+     * @param level Nouveau niveau
+     */
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    /**
+     * @return Nom de la ressource
+     */
     public String getResourceName() {
         return resourceName;
     }

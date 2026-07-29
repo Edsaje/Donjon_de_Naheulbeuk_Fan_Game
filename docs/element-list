@@ -6,4 +6,7 @@ fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.enemy
 fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses
 fr.hibouxe.donjon_de_naheulbeuk_fan_game.game
 fr.hibouxe.donjon_de_naheulbeuk_fan_game.item
-fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.potion
+fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment
+fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.defensiveEquipment
+fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.offensiveEquipment
+fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.usable.potion

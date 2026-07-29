@@ -2,8 +2,8 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Cell;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Maze;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
 /**
@@ -61,7 +61,7 @@ public class Game {
     }
 
     /**
-     * Gère la saisie utilisateur du déplacement et exécute la tentative de mouvement.
+     * Gère les saisies de déplacement et les commandes du joueur dans le donjon.
      * Déclenche un combat en cas de rencontre avec un monstre et ramasse les coffres d'objets.
      */
     public void playerMovement() {
@@ -72,46 +72,25 @@ public class Game {
             case "Z":
                 moved = tryMoveNorth();
                 break;
-
             case "S":
                 moved = tryMoveSouth();
                 break;
-
             case "Q":
                 moved = tryMoveWest();
                 break;
-
             case "D":
                 moved = tryMoveEast();
                 break;
-
             case "X":
-                running = false; // Stop le jeu
+                running = false;
                 menu.displayMessage("Tchoss Nulloss");
                 break;
-
             case "C":
                 menu.displayTeamStats(team);
                 break;
-
             case "I":
-                menu.displayInventory(team);
-                if (!team.getInventory().isEmpty()) {
-                    boolean wantToUse = menu.askUseItem();
-                    if (wantToUse) {
-                        int itemIndex = menu.askItemIndex();
-                        if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
-                            Item selectedItem = team.getInventory().get(itemIndex);
-                            Character target = menu.askItemTarget(team);
-                            if (target != null) {
-                                selectedItem.use(target, menu);
-                                team.removeItem(selectedItem);
-                            }
-                        }
-                    }
-                }
+                handleInventoryAction();
                 break;
-
             default:
                 menu.displayMessage("Commande inconnue");
         }
@@ -122,38 +101,67 @@ public class Game {
 
         if (moved) {
             Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
+            handleCellEvents(currentCell);
+        }
+    }
 
-            // 1. Rencontre avec un monstre
-            if (currentCell.hasMonster()) {
-                Character monster = currentCell.getMonster();
-                menu.displayMessage("\nUN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
-
-                Battle battle = new Battle(team, monster, menu);
-                boolean victory = battle.start();
-
-                if (victory) {
-                    currentCell.setMonster(null); // On retire le monstre vaincu
-                } else {
-                    running = false; // Fin de partie si défaite
+    /**
+     * Gère la consultation et l'utilisation des objets du sac à dos.
+     */
+    private void handleInventoryAction() {
+        menu.displayInventory(team);
+        if (!team.getInventory().isEmpty()) {
+            boolean wantToUse = menu.askUseItem();
+            if (wantToUse) {
+                int itemIndex = menu.askItemIndex();
+                if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
+                    Item selectedItem = team.getInventory().get(itemIndex);
+                    Character target = menu.askItemTarget(team);
+                    if (target != null) {
+                        selectedItem.use(target, menu);
+                        team.removeItem(selectedItem);
+                    }
                 }
             }
+        }
+    }
 
-            // 2. Découverte d'un coffre d'objet
-            if (currentCell.hasItem()) {
-                Item item = currentCell.getItem();
-                boolean take = menu.askPickupItem(item);
+    /**
+     * Gère les événements d'une case (combat avec monstre, coffre à trésor).
+     *
+     * @param currentCell La case sur laquelle se trouve la compagnie
+     */
+    private void handleCellEvents(Cell currentCell) {
+        // 1. Rencontre avec un monstre
+        if (currentCell.hasMonster()) {
+            Character monster = currentCell.getMonster();
+            menu.displayMessage("\nUN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
 
-                if (take) {
-                    boolean added = team.addItem(item);
-                    if (added) {
-                        menu.displayMessage("\n" + item.getName() + " ramassé(e), espérons que le Nain ne vole rien !");
-                        currentCell.setItem(null); // On retire le coffre une fois ramassé
-                    } else {
-                        menu.displayMessage("\nJe crois que le Nain essaye encore de porter trop d'objets !");
-                    }
+            Battle battle = new Battle(team, monster, menu);
+            boolean victory = battle.start();
+
+            if (victory) {
+                currentCell.setMonster(null); // On retire le monstre vaincu
+            } else {
+                running = false; // Fin de partie si défaite
+            }
+        }
+
+        // 2. Découverte d'un coffre d'objet
+        if (currentCell.hasItem()) {
+            Item item = currentCell.getItem();
+            boolean take = menu.askPickupItem(item);
+
+            if (take) {
+                boolean added = team.addItem(item);
+                if (added) {
+                    menu.displayMessage("\n" + item.getName() + " ramassé(e), espérons que le Nain ne vole rien !");
+                    currentCell.setItem(null); // On retire le coffre une fois ramassé
                 } else {
-                    menu.displayMessage("\nVous laissez le coffre intact.");
+                    menu.displayMessage("\nJe crois que le Nain essaye encore de porter trop d'objets !");
                 }
+            } else {
+                menu.displayMessage("\nVous laissez le coffre intact.");
             }
         }
     }
