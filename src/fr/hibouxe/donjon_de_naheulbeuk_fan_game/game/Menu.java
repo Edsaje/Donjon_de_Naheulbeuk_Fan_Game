@@ -240,7 +240,7 @@ public class Menu {
      */
     public boolean askUseItem() {
         displayMessage("\nVoulez-vous utiliser un objet du sac ?");
-        displayMessage("1. Oui, consommer un objet");
+        displayMessage("1. Oui, utiliser un objet");
         displayMessage("2. Non, fermer le sac");
         int choice = askPlayerInt();
         return choice == 1;

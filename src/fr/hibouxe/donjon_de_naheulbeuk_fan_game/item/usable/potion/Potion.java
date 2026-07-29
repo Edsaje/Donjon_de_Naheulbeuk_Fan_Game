@@ -30,11 +30,13 @@ public class Potion extends Item {
      *
      * @param target Le personnage qui consomme la potion
      * @param menu   La vue principale du jeu (Injectée)
+     * @return true car la potion a été consommée avec succès.
      */
     @Override
-    public void use(Character target, Menu menu) {
+    public boolean use(Character target, Menu menu) {
         target.setHealthPoint(target.getHealthPoint() + healAmount);
         menu.displayMessage("\n" + target.getName() + " boit une potion et récupère +" + healAmount + " PV !");
+        return true;
     }
 
     /**

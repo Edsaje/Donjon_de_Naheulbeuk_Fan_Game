@@ -8,13 +8,13 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.EquipmentCategory
  * @author Hibouxe
  * @version 1.0
  */
-public class DwarfBattleAxe extends OffensiveEquipment {
+public class DurandilAxe extends OffensiveEquipment {
 
     /**
      * Initialise la Hache de Choc avec ses bonus d'attaque et sa restriction de classe (Dwarf).
      */
-    public DwarfBattleAxe() {
-        super("Hache de Choc du Nain", "Une lourde hache à double tranchant gravée de runes. Réservée au Nain (+8 Attaque).",
-              EquipmentCategory.HEAVY_WEAPON, "Dwarf", 8, 0);
+    public DurandilAxe() {
+        super("Hache de jet Durandil", "J'ai trouvé une super hache Durandil, en farfouillant dans un p'tit magasin ! Réservée au Nain (+8 Attaque).",
+              EquipmentCategory.HEAVY_WEAPON, "Nain", 8, 0);
     }
 }

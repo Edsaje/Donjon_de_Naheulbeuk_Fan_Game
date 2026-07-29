@@ -17,7 +17,7 @@ public class DefensiveEquipment extends Equipment {
     }
 
     @Override
-    public void use(Character target, Menu menu){
-        target.equip(this, menu);
+    public boolean use(Character target, Menu menu){
+        return target.equip(this, menu);
     }
 }

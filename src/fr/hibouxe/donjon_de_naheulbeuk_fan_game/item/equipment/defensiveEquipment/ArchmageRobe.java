@@ -15,7 +15,7 @@ public class ArchmageRobe extends DefensiveEquipment {
      * Initialise la Robe d'Archimage avec ses bonus magiques et sa restriction (Magician).
      */
     public ArchmageRobe() {
-        super("Robe d'Archimage", "Robe en soie tressée de fils d'argent infusés d'éthanol magique. Réservée à la Magicienne (+2 Défense, +8 Défense Magique).",
-              EquipmentSlot.CHEST, EquipmentCategory.CLOTH_ROBE, "Magician", 2, 8);
+        super("Robe de l'Archimage Tholsadum", "C'est une relique, un vêtement pour les sorciers ! Avec fonction chauffante (+2 Défense, +8 Défense Magique).",
+              EquipmentSlot.CHEST, EquipmentCategory.CLOTH_ROBE, "Magicienne", 2, 8);
     }
 }

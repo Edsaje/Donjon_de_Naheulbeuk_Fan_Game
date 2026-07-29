@@ -118,8 +118,10 @@ public class Game {
                     Item selectedItem = team.getInventory().get(itemIndex);
                     Character target = menu.askItemTarget(team);
                     if (target != null) {
-                        selectedItem.use(target, menu);
-                        team.removeItem(selectedItem);
+                        boolean used = selectedItem.use(target, menu);
+                        if (used) {
+                            team.removeItem(selectedItem);
+                        }
                     }
                 }
             }

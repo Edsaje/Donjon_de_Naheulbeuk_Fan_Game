@@ -29,9 +29,11 @@ public class Item {
      *
      * @param target Le personnage qui bénéficie de l'objet
      * @param menu   La vue principale du jeu (Injectée)
+     * @return true si l'objet a été utilisé ou équipé avec succès, false sinon.
      */
-    public void use(Character target, Menu menu) {
+    public boolean use(Character target, Menu menu) {
         menu.displayMessage(target.getName() + " utilise " + this.name);
+        return true;
     }
 
     /**

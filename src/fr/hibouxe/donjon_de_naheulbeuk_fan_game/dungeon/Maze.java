@@ -5,7 +5,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.usable.potion.Potion;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.defensiveEquipment.ArchmageRobe;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.defensiveEquipment.BarbarianLoincloth;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.offensiveEquipment.DwarfBattleAxe;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.offensiveEquipment.DurandilAxe;
 
 import java.util.*;
 
@@ -175,7 +175,7 @@ public class Maze {
                 Item loot;
                 switch (roll) {
                     case 1:
-                        loot = new DwarfBattleAxe();
+                        loot = new DurandilAxe();
                         break;
                     case 2:
                         loot = new BarbarianLoincloth();

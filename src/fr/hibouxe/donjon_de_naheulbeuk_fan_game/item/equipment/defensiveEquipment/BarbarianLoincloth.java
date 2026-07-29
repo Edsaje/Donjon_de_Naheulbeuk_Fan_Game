@@ -16,6 +16,6 @@ public class BarbarianLoincloth extends DefensiveEquipment {
      */
     public BarbarianLoincloth() {
         super("Pagne Sauvage en Cuir", "Un pagne en peau de loup tannée à la bière. Réservé au Barbare (+5 Défense, +2 Défense Magique).",
-              EquipmentSlot.CHEST, EquipmentCategory.WRAP_SKIRT, "Barbarian", 5, 2);
+              EquipmentSlot.CHEST, EquipmentCategory.WRAP_SKIRT, "Barbare", 5, 2);
     }
 }
