@@ -1,45 +1,37 @@
-### Java & Compiled Classes ###
+### Fichiers d'IDE ###
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+
+### Fichiers d'outils de build ###
+bin/
+out/
+target/
+.gradle/
+build/
+
+### Fichiers de compilation ###
 *.class
+
+### Logs ###
+*.log
+
+### Fichiers de l'OS ###
+.DS_Store
+Thumbs.db
+*.tmp
+
+### Packages ###
 *.jar
 *.war
 *.ear
 
-### Build Directories ###
-bin/
-out/
-target/
-build/
-
-### IntelliJ IDEA ###
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/usage.statistics.xml
-.idea/dictionaries/
-.idea/shelf/
-.idea/caches/
-*.iws
-
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings/
-.springBeans
-.sts4-cache/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
-.vscode/
-
-### OS & Temporary Files ###
-.DS_Store
-Thumbs.db
-*.log
-*.tmp
+### Variables d'environnement / Configuration locale ###
+*.env
+application-local.properties
+application-local.yml
