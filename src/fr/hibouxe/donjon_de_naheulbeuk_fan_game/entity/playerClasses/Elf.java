@@ -1,5 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
+
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 
@@ -20,6 +22,7 @@ public class Elf extends Character {
         this.resourceName = "Mana";
         this.maxResource = 100;
         this.currentResource = 100;
+        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill("Soin Magique", 15, "Rend 15 PV à un allié.", true));
     }
 
     /**
@@ -31,21 +34,24 @@ public class Elf extends Character {
      * @param menu   La vue principale du jeu (InjectÃ©e)
      */
     @Override
-    public String useSpecialSkill(Team team, Character target) {
-        int cost = 15;
-        if (this.currentResource >= cost) {
-            this.currentResource -= cost;
-            
-            if (target != null) {
-                int healAmount = 15;
-                target.setHealthPoint(target.getHealthPoint() + healAmount);
-                return this.name + " lance un sort de soin sur " + target.getName() + " et lui rend " + healAmount + " PV !";
+    public String useSpecialSkill(fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill skill, Team team, Character target) {
+        if (skill.getName().equals("Soin Magique")) {
+            int cost = skill.getCost();
+            if (this.currentResource >= cost) {
+                this.currentResource -= cost;
+                
+                if (target != null) {
+                    int healAmount = 15;
+                    target.setHealthPoint(target.getHealthPoint() + healAmount);
+                    return this.name + " lance un sort de soin sur " + target.getName() + " et lui rend " + healAmount + " PV !";
+                } else {
+                    return this.name + " essaie de soigner mais la cible est invalide...";
+                }
             } else {
-                return this.name + " essaie de soigner mais la cible est invalide...";
+                return this.name + " n'a pas assez de Mana (" + this.currentResource + "/" + cost + ") pour soigner !";
             }
-        } else {
-            return this.name + " n'a pas assez de Mana (" + this.currentResource + "/" + cost + ") pour soigner !";
         }
+        return super.useSpecialSkill(skill, team, target);
     }
     @Override
     public void levelUp() {

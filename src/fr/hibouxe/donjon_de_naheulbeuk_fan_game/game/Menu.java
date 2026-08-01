@@ -252,6 +252,31 @@ public class Menu {
     }
 
     /**
+     * Demande au joueur de choisir une compétence spéciale.
+     * @return La compétence choisie ou null si annulé (0)
+     */
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill askSkill(Character attacker) {
+        List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill> skills = attacker.getSkills();
+        if (skills.isEmpty()) {
+            displayMessage("  Aucune compétence apprise !");
+            return null;
+        }
+        displayMessage("\n--- Compétences de " + attacker.getName() + " (0. ↩️ Retour) ---");
+        for (int i = 0; i < skills.size(); i++) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill s = skills.get(i);
+            displayMessage((i + 1) + ". " + s.getName() + " (Coût : " + s.getCost() + " " + attacker.getResourceName() + ") - " + s.getDescription());
+        }
+        while (true) {
+            int choice = askPlayerInt();
+            if (choice == 0) return null;
+            if (choice > 0 && choice <= skills.size()) {
+                return skills.get(choice - 1);
+            }
+            displayMessage("❌ Choix invalide.");
+        }
+    }
+
+    /**
      * Demande au joueur quel monstre attaquer parmi ceux encore en vie.
      *
      * @param monsters La liste des monstres

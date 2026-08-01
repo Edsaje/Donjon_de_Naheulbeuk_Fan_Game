@@ -1,6 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 
 /**
@@ -20,26 +21,30 @@ public class Barbarian extends Character {
         this.resourceName = "Rage";
         this.maxResource = 100;
         this.currentResource = 0;
+        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill("Hurlement Barbare", 30, "Une attaque d'une violence inouïe.", false));
     }
 
     /**
      * ExÃ©cute l'attaque dÃ©vastatrice du Barbare en consommant 20 points de Rage.
      *
      * @param team    La compagnie de Naheulbeuk
-     * @param monster Le monstre ciblÃ©
-     * @param menu    La vue principale du jeu (InjectÃ©e)
+     * @param monster Le monstre ciblé
+     * @param menu    La vue principale du jeu (Injectée)
      */
     @Override
-    public String useSpecialSkill(Team team, Character monster) {
-        int cost = 30;
-        if (this.currentResource >= cost) {
-            this.currentResource -= cost;
-            int damage = Math.max(1, (int)(this.getAttack() * 2.5) - monster.getDefense());
-            monster.setHealthPoint(monster.getHealthPoint() - damage);
-            return this.name + " pousse un HURLEMENT BARBARE et frappe avec une violence inouÃƒÂ¯e ! Inflige " + damage + " dÃ©gÃ¢ts !";
-        } else {
-            return this.name + " n'a pas assez de Rage (" + this.currentResource + "/" + cost + ") pour hurler !";
+    public String useSpecialSkill(Skill skill, Team team, Character monster) {
+        if (skill.getName().equals("Hurlement Barbare")) {
+            int cost = skill.getCost();
+            if (this.currentResource >= cost) {
+                this.currentResource -= cost;
+                int damage = Math.max(1, (int)(this.getAttack() * 2.5) - monster.getDefense());
+                monster.setHealthPoint(monster.getHealthPoint() - damage);
+                return this.name + " pousse un HURLEMENT BARBARE et frappe avec une violence inouïe ! Inflige " + damage + " dégâts !";
+            } else {
+                return this.name + " n'a pas assez de Rage (" + this.currentResource + "/" + cost + ") pour hurler !";
+            }
         }
+        return super.useSpecialSkill(skill, team, monster);
     }
     @Override
     public void levelUp() {

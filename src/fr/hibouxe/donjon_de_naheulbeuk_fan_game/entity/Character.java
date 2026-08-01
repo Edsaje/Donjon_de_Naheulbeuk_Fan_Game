@@ -39,6 +39,8 @@ public class Character {
     protected Equipment weaponSlot = null;
     protected Equipment leftHandSlot = null;
 
+    protected List<Skill> skills = new ArrayList<>();
+
     /**
      * Constructeur complet d'un personnage.
      *
@@ -66,15 +68,15 @@ public class Character {
     }
 
     /**
-     * Exécute la compétence spéciale ou le sort du personnage.
+     * Exécute la compétence spéciale choisie.
      * Cette méthode est destinée à être redéfinie dans les sous-classes.
-     *
-     * @param team    La compagnie de Naheulbeuk
-     * @param monster Le monstre affronté
-     * @return Le message décrivant l'action effectuée.
      */
-    public String useSpecialSkill(Team team, Character monster) {
-        return this.name + " n'a pas appris de compétence spéciale, le nul !";
+    public String useSpecialSkill(Skill skill, Team team, Character monster) {
+        return this.name + " ne sait pas comment utiliser " + skill.getName() + " !";
+    }
+
+    public List<Skill> getSkills() {
+        return skills;
     }
 
     /**

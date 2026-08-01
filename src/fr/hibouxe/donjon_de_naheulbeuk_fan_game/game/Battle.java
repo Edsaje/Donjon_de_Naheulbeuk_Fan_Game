@@ -183,8 +183,11 @@ public class Battle {
                 actionConfirmed = true;
 
             } else if (action == 2) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill chosenSkill = menu.askSkill(attacker);
+                if (chosenSkill == null) continue;
+
                 Character target = null;
-                if ("Elfe".equals(attacker.getType())) {
+                if (chosenSkill.isHealing()) {
                     target = menu.askAllyToHeal(team);
                 } else {
                     target = menu.askMonsterTarget(monsters);
@@ -194,12 +197,18 @@ public class Battle {
                     continue; // L'utilisateur a annulé (Retour)
                 }
 
-                String actionText = attacker.useSpecialSkill(team, target);
+                String actionText = attacker.useSpecialSkill(chosenSkill, team, target);
                 menu.displayMessage("\n" + actionText);
                 if (target.getHealthPoint() <= 0) {
                     menu.displayMessage("☠️ Le " + target.getName() + " s'effondre sans vie !");
                 }
-                actionConfirmed = true;
+                
+                // Si la compétence n'a pas été lancée (ex: pas assez de mana), on ne valide pas le tour
+                if (actionText.contains("n'a pas assez")) {
+                    // On ne met pas actionConfirmed = true
+                } else {
+                    actionConfirmed = true;
+                }
 
             } else if (action == 3) {
                 menu.displayInventory(team);

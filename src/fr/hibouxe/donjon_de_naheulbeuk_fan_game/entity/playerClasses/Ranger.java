@@ -1,5 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
+
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 
@@ -13,33 +15,37 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 public class Ranger extends Character {
 
     /**
-     * Initialise le Ranger avec ses statistiques de dÃ©part et sa ressource Ã‰nergie.
+     * Initialise le Ranger avec ses statistiques de départ et sa ressource Énergie.
      */
     public Ranger() {
         super("Le Ranger", "Ranger", 1, 10, 100, 5, 2, 10, 10, 14);
-        this.resourceName = "Ã‰nergie";
+        this.resourceName = "Énergie";
         this.maxResource = 100;
         this.currentResource = 100;
+        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill("Tir de Précision", 30, "Un tir ajusté qui inflige de lourds dégâts.", false));
     }
 
     /**
-     * ExÃ©cute le tir Ã  l'arc ajustÃ© du Ranger en consommant 30 points d'Ã‰nergie.
+     * Exécute le tir à l'arc ajusté du Ranger en consommant 30 points d'Énergie.
      *
      * @param team    La compagnie de Naheulbeuk
-     * @param monster Le monstre ciblÃ©
-     * @param menu    La vue principale du jeu (InjectÃ©e)
+     * @param monster Le monstre ciblé
+     * @param menu    La vue principale du jeu (Injectée)
      */
     @Override
-    public String useSpecialSkill(Team team, Character monster) {
-        int cost = 30;
-        if (this.currentResource >= cost) {
-            this.currentResource -= cost;
-            int damage = Math.max(1, (this.getAttack() * 2) - monster.getDefense());
-            monster.setHealthPoint(monster.getHealthPoint() - damage);
-            return this.name + " dÃ©coche un TIR DE PRÃ‰CISION au sang-froid impressionnant ! Inflige " + damage + " dÃ©gÃ¢ts !";
-        } else {
-            return this.name + " n'a pas assez d'Ã‰nergie pour ajuster son tir (" + this.currentResource + "/" + cost + ") !";
+    public String useSpecialSkill(fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill skill, Team team, Character monster) {
+        if (skill.getName().equals("Tir de Précision")) {
+            int cost = skill.getCost();
+            if (this.currentResource >= cost) {
+                this.currentResource -= cost;
+                int damage = Math.max(1, (this.getAttack() * 2) - monster.getDefense());
+                monster.setHealthPoint(monster.getHealthPoint() - damage);
+                return this.name + " décoche un TIR DE PRÉCISION au sang-froid impressionnant ! Inflige " + damage + " dégâts !";
+            } else {
+                return this.name + " n'a pas assez d'Énergie pour ajuster son tir (" + this.currentResource + "/" + cost + ") !";
+            }
         }
+        return super.useSpecialSkill(skill, team, monster);
     }
     @Override
     public void levelUp() {
