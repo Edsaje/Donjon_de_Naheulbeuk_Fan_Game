@@ -14,6 +14,6 @@ public class Orc extends Character {
      * Initialise un Orc de niveau 2.
      */
     public Orc() {
-        super("Orc bruyant", "Monstre", 2, 12, 0, 7, 0, 4, 1);
+        super("Orc bruyant", "Monstre", 2, 12, 0, 7, 0, 4, 1, 8);
     }
 }

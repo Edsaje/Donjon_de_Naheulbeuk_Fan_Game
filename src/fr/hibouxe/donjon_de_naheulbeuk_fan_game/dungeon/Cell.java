@@ -3,6 +3,9 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Représente une case individuelle dans la grille 2D du donjon.
  * Une cellule possède 4 murs (Nord, Sud, Est, Ouest), un statut de visite,
@@ -20,7 +23,7 @@ public class Cell {
     private boolean wallWest = true;
     private boolean wallEast = true;
 
-    private Character monster = null; // Pas de monstre par défaut
+    private List<Character> monsters = new ArrayList<>(); // groupe de monstres
     private Item item = null;
     private boolean stairs = false;
     /**
@@ -79,8 +82,8 @@ public class Cell {
      * @return true si la case contient un monstre, false sinon.
      */
     public boolean hasMonster() {
-        return monster != null;
-    }
+        return !monsters.isEmpty();
+    } //true si la liste n'est pas vide
 
     /**
      * @return Coordonnée X de la case
@@ -181,17 +184,17 @@ public class Cell {
     }
 
     /**
-     * @return Le monstre présent sur la case (ou null si aucun)
+     * @return Les monstres présent sur la case (ou null si aucun)
      */
-    public Character getMonster() {
-        return monster;
+    public List<Character> getMonsters() {
+        return monsters;
     }
 
     /**
-     * @param monster Monstre à placer sur la case (ou null pour retirer)
+     * @param monsters Monstre à placer sur la case (ou null pour retirer)
      */
-    public void setMonster(Character monster) {
-        this.monster = monster;
+    public void setMonsters(List<Character> monsters) {
+        this.monsters = monsters;
     }
 
     /**

@@ -14,6 +14,6 @@ public class Undead extends Character {
      * Initialise un Mort-Vivant de niveau 1.
      */
     public Undead() {
-        super("Mort Vivant pestilentiel", "Monstre", 1, 10, 5, 6, 4, 3, 3);
+        super("Mort Vivant pestilentiel", "Monstre", 1, 10, 5, 6, 4, 3, 3, 6);
     }
 }

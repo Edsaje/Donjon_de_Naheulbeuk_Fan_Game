@@ -24,6 +24,7 @@ public class Character {
     protected int magicAttack;
     protected int defense;
     protected int magicDefense;
+    protected int speed;
     protected String resourceName; // "Mana", "Rage" ou "Énergie"
     protected int currentResource; // Valeur actuelle (ex: 10)
     protected int maxResource;     // Valeur maximale (ex: 20)
@@ -48,7 +49,7 @@ public class Character {
      * @param defense       Défense physique
      * @param magicDefense  Défense magique
      */
-    public Character(String name, String type, int level, int healthPoint, int resourcePoint, int attack, int magicAttack, int defense, int magicDefense) {
+    public Character(String name, String type, int level, int healthPoint, int resourcePoint, int attack, int magicAttack, int defense, int magicDefense, int speed) {
         this.name = name;
         this.type = type;
         this.level = level;
@@ -58,6 +59,7 @@ public class Character {
         this.magicAttack = magicAttack;
         this.defense = defense;
         this.magicDefense = magicDefense;
+        this.speed = speed;
     }
 
     /**
@@ -82,6 +84,14 @@ public class Character {
         this.currentResource = Math.min(this.maxResource, this.currentResource + amount);
     }
 
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
 
     /**
      * @return Nom du personnage

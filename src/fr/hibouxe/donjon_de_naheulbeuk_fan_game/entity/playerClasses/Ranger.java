@@ -16,7 +16,7 @@ public class Ranger extends Character {
      * Initialise le Ranger avec ses statistiques de départ et sa ressource Énergie.
      */
     public Ranger() {
-        super("Le Ranger", "Ranger", 1, 10, 100, 5, 2, 10, 10);
+        super("Le Ranger", "Ranger", 1, 10, 100, 5, 2, 10, 10, 14);
         this.resourceName = "Énergie";
         this.maxResource = 100;
         this.currentResource = 100;

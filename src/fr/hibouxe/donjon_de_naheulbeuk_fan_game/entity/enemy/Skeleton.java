@@ -14,6 +14,6 @@ public class Skeleton extends Character {
      * Initialise un Squelette de niveau 1.
      */
     public Skeleton() {
-        super("Squelette bien membré", "Monstre", 1, 10, 0, 7, 0, 1, 3);
+        super("Squelette bien membré", "Monstre", 1, 10, 0, 7, 0, 1, 3, 10);
     }
 }

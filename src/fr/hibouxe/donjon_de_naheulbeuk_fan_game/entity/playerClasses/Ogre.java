@@ -16,7 +16,7 @@ public class Ogre extends Character {
      * Initialise l'Ogre avec ses statistiques de départ et sa ressource Rage.
      */
     public Ogre() {
-        super("L'Ogre", "Ogre", 1, 20, 0, 5, 0, 10, 5);
+        super("L'Ogre", "Ogre", 1, 20, 0, 5, 0, 10, 5, 4);
         this.resourceName = "Rage";
         this.maxResource = 100;
         this.currentResource = 0;

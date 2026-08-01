@@ -96,8 +96,8 @@ public class Menu {
     public void displayTeamStats(Team team) {
         displayMessage("\n=================== Fiche de la compagnie de Naheulbeuk ===================");
         for (Character c : team.getMembers()) {
-            displayMessage(String.format("🔹 %-12s | Niv %d | PV: %2d | %s : %2d | Attaque: %2d | Attaque Magique: %2d | Défense: %2d | Défense Magique : %2d",
-                    c.getName(), c.getLevel(), c.getHealthPoint(), c.getResourceName(), c.getResourcePoint(), c.getAttack(), c.getMagicAttack(), c.getDefense(), c.getMagicDefense()));
+            displayMessage(String.format("🔹 %-12s | Niv %d | PV: %2d | %s : %2d | Attaque: %2d | Magie: %2d | Défense: %2d | Def.Mag: %2d | Vitesse: %2d",
+                    c.getName(), c.getLevel(), c.getHealthPoint(), c.getResourceName(), c.getResourcePoint(), c.getAttack(), c.getMagicAttack(), c.getDefense(), c.getMagicDefense(), c.getSpeed()));
             displayMessage("   └ Équipement : " + c.getEquippedSummary());
         }
         displayMessage("===========================================================================\n");
@@ -189,37 +189,37 @@ public class Menu {
     /**
      * Affiche l'état de l'ennemi et les statistiques des membres de la compagnie au début de chaque tour de combat.
      *
-     * @param monster Le monstre affronté
+     * @param monsters La liste des monstres affrontés
      * @param team    La compagnie de Naheulbeuk
      */
-    public void displayBattleStatus(Character monster, Team team) {
-        displayMessage("\n" + monster.getName().toUpperCase() + " (PV: " + Math.max(0, monster.getHealthPoint())
-                + " | Attaque: " + monster.getAttack()
-                + " | Attaque Magique: " + monster.getMagicAttack()
-                + " | Defense: " + monster.getDefense()
-                + " | Defense Magique: " + monster.getMagicDefense() + ")\n");
+    public void displayBattleStatus(List<Character> monsters, Team team) {
+        displayMessage("\n--- MONSTRES ---");
+        for (int i = 0; i < monsters.size(); i++) {
+            Character m = monsters.get(i);
+            if (m.getHealthPoint() > 0) {
+                displayMessage(i + ". " + m.getName().toUpperCase() + " (PV: " + Math.max(0, m.getHealthPoint())
+                        + " | Attaque: " + m.getAttack()
+                        + " | Magie: " + m.getMagicAttack()
+                        + " | Defense: " + m.getDefense()
+                        + " | Def.Mag: " + m.getMagicDefense()
+                        + " | Vitesse: " + m.getSpeed() + ")");
+            }
+        }
+
+        displayMessage("\n--- COMPAGNIE ---");
 
         for (int i = 0; i < team.getMembers().size(); i++) {
             Character c = team.getMembers().get(i);
             if (c.getHealthPoint() > 0) {
                 displayMessage(i + ". " + c.getName() + " (PV: " + c.getHealthPoint()
-                        + " | Attaque: " + c.getAttack()
                         + " | " + c.getResourceName() + ": " + c.getResourcePoint()
+                        + " | Attaque: " + c.getAttack()
+                        + " | Magie: " + c.getMagicAttack()
                         + " | Defense: " + c.getDefense()
-                        + " | Defense Magique: " + c.getMagicDefense() + ")");
+                        + " | Def.Mag: " + c.getMagicDefense()
+                        + " | Vitesse: " + c.getSpeed() + ")");
             }
         }
-    }
-
-    /**
-     * Demande au joueur de choisir quel membre de la compagnie passe à l'action.
-     *
-     * @return L'index du personnage choisi
-     */
-    public int askAttacker() {
-        displayMessage("\nQui passe à l'action ?");
-        int choice = askPlayerInt();
-        return (choice >= 0) ? choice : 0;
     }
 
     /**
@@ -234,6 +234,32 @@ public class Menu {
         displayMessage("2. Compétence Spéciale / Magie");
         int choice = askPlayerInt();
         return (choice > 0) ? choice : 1;
+    }
+
+    /**
+     * Demande au joueur quel monstre attaquer parmi ceux encore en vie.
+     *
+     * @param monsters La liste des monstres
+     * @return Le monstre ciblé
+     */
+    public Character askMonsterTarget(List<Character> monsters) {
+        displayMessage("\nLequel voulez-vous cibler ? (Entrez le numéro du monstre)");
+        for (int i = 0; i < monsters.size(); i++) {
+            Character m = monsters.get(i);
+            if (m.getHealthPoint() > 0) {
+                displayMessage(i + ". " + m.getName().toUpperCase() + " | PV: " + Math.max(0, m.getHealthPoint()));
+            }
+        }
+        int choice = askPlayerInt();
+        if (choice >= 0 && choice < monsters.size() && monsters.get(choice).getHealthPoint() > 0) {
+            return monsters.get(choice);
+        }
+        
+        // Si le joueur se trompe de cible, le premier monstre vivant prend le coup par défaut !
+        for (Character m : monsters) {
+            if (m.getHealthPoint() > 0) return m;
+        }
+        return null;
     }
 
     /**

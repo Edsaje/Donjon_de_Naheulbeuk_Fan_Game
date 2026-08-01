@@ -1,6 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.enemy.Goblin;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.enemy.*;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.usable.potion.Potion;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.defensiveEquipment.ArchmageRobe;
@@ -163,8 +164,37 @@ public class Maze {
             int y = random.nextInt(height);
 
             if (x != startX || y != startY) { // Pas de monstre sur la case du joueur
-                grid[x][y].setMonster(new Goblin()); // Placement d'un Gobelin par défaut
+                // 1. Création du groupe vide
+                List<Character> enemyGroup = new ArrayList<>();
+
+                // 2. Taille aléatoire entre 1 et 3
+                int groupSize = random.nextInt(3) + 1;
+
+                // 3. Ajout des gobelins dans le groupe
+                for(int j = 0; j < groupSize; j++) {
+                    enemyGroup.add(getRandomMonster());
+                }
+
+                // 4. On place le groupe complet sur la case
+                grid[x][y].setMonsters(enemyGroup);
             }
+        }
+    }
+
+    /**
+     * Table de rencontres aléatoires.
+     * Renvoie un monstre au hasard parmi le bestiaire.
+     */
+    private Character getRandomMonster() {
+        int roll = random.nextInt(6); // Car tu as 6 types de monstres de base
+
+        switch (roll) {
+            case 0: return new Orc();
+            case 1: return new Skeleton();
+            case 2: return new Spider();
+            case 3: return new Troll();
+            case 4: return new Undead();
+            default: return new Goblin();
         }
     }
 

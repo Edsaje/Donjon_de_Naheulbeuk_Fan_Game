@@ -16,7 +16,7 @@ public class Barbarian extends Character {
      * Initialise le Barbare avec ses statistiques de départ.
      */
     public Barbarian() {
-        super("Le Barbare", "Barbare", 1, 12, 0, 10, 0, 3, 3);
+        super("Le Barbare", "Barbare", 1, 12, 0, 10, 0, 3, 3, 11);
         this.resourceName = "Rage";
         this.maxResource = 100;
         this.currentResource = 0;
@@ -36,7 +36,7 @@ public class Barbarian extends Character {
             this.currentResource -= cost;
             int damage = Math.max(1, (int)(this.getAttack() * 2.5) - monster.getDefense());
             monster.setHealthPoint(monster.getHealthPoint() - damage);
-            return this.name + " pousse un HURLEMENT BARBARE et frappe avec une violence inouïe ! Inflige " + damage + " dégâts !";
+            return this.name + " pousse un HURLEMENT BARBARE et frappe avec une violence inouÃ¯e ! Inflige " + damage + " dégâts !";
         } else {
             return this.name + " n'a pas assez de Rage (" + this.currentResource + "/" + cost + ") pour hurler !";
         }

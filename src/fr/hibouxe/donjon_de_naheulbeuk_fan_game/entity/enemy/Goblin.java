@@ -14,6 +14,6 @@ public class Goblin extends Character {
      * Initialise un Gobelin de niveau 1.
      */
     public Goblin() {
-        super("Gobelin pas très futé", "Monstre", 1, 6, 0, 4, 0, 2, 1);
+        super("Gobelin pas très futé", "Monstre", 1, 6, 0, 4, 0, 2, 1, 15);
     }
 }

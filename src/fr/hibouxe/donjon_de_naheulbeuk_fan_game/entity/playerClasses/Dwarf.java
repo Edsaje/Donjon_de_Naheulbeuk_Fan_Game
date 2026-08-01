@@ -16,7 +16,7 @@ public class Dwarf extends Character {
      * Initialise le Nain avec ses statistiques de départ et sa ressource Rage.
      */
     public Dwarf() {
-        super("Le Nain", "Nain", 1, 12, 0, 7, 0, 6, 6);
+        super("Le Nain", "Nain", 1, 12, 0, 7, 0, 6, 6, 5);
         this.resourceName = "Rage";
         this.maxResource = 100;
         this.currentResource = 0;
@@ -28,11 +28,10 @@ public class Dwarf extends Character {
      *
      * @param team   La compagnie de Naheulbeuk
      * @param target Le monstre ciblé par le coup de hache
-     * @param menu   La vue principale du jeu (Injectée)
      */
     @Override
     public String useSpecialSkill(Team team, Character target) {
-        int cost = 20; // Équilibrage : Un coup puissant coûte 20 de Rage, et non plus 1.
+        int cost = 20; // Équilibrage : Un coup puissant coÃ»te 20 de Rage, et non plus 1.
         if (this.currentResource >= cost) { 
             this.currentResource -= cost; 
             int damage = Math.max(1, (int)(this.getAttack() * 1.5) - target.getDefense()); 

@@ -16,7 +16,7 @@ public class Magician extends Character {
      * Initialise la Magicienne avec ses statistiques de départ et sa ressource Mana.
      */
     public Magician() {
-        super("La Magicienne", "Magicienne", 1, 5, 100, 2, 8, 3, 3);
+        super("La Magicienne", "Magicienne", 1, 5, 100, 2, 8, 3, 3, 12);
         this.resourceName = "Mana";
         this.maxResource = 100;
         this.currentResource = 100;

@@ -6,6 +6,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
+import java.util.List;
+
 /**
  * Contrôleur principal du jeu.
  * Gère la boucle globale de jeu, l'initialisation de la carte et de l'équipe,
@@ -120,9 +122,12 @@ public class Game {
                     Item selectedItem = team.getInventory().get(itemIndex);
                     Character target = menu.askItemTarget(team);
                     if (target != null) {
-                        boolean used = selectedItem.use(target, menu);
+                        boolean used = selectedItem.use(target);
                         if (used) {
                             team.removeItem(selectedItem);
+                            menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !");
+                        } else {
+                            menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C'est pour une autre classe...");
                         }
                     }
                 }
@@ -138,14 +143,14 @@ public class Game {
     private void handleCellEvents(Cell currentCell) {
         // 1. Rencontre avec un monstre
         if (currentCell.hasMonster()) {
-            Character monster = currentCell.getMonster();
-            menu.displayMessage("\nUN " + monster.getName().toUpperCase() + " ! BASTOOON ! ");
+            List<Character> monsters = currentCell.getMonsters();
+            menu.displayMessage("\nUNE HORDE DE " + monsters.size() + " MONSTRES APPARAÎT ! BASTOOON ! ");
 
-            Battle battle = new Battle(team, monster, menu);
+            Battle battle = new Battle(team, monsters, menu);
             boolean victory = battle.start();
 
             if (victory) {
-                currentCell.setMonster(null); // On retire le monstre vaincu
+                currentCell.getMonsters().clear(); // On retire le monstre vaincu
             } else {
                 running = false; // Fin de partie si défaite
             }

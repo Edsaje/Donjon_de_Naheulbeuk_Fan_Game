@@ -16,7 +16,7 @@ public class Elf extends Character {
      * Initialise l'Élfette avec ses statistiques de départ et sa ressource Mana.
      */
     public Elf() {
-        super("L'Elfe", "Elfe", 1, 6, 100, 6, 3, 5, 5);
+        super("L'Elfe", "Elfe", 1, 6, 100, 6, 3, 5, 5, 20);
         this.resourceName = "Mana";
         this.maxResource = 100;
         this.currentResource = 100;
@@ -36,23 +36,12 @@ public class Elf extends Character {
         if (this.currentResource >= cost) {
             this.currentResource -= cost;
             
-            // Recherche de l'allié avec le moins de PV
-            Character allyToHeal = null;
-            if (team != null && team.getMembers() != null && !team.getMembers().isEmpty()) {
-                allyToHeal = team.getMembers().get(0);
-                for (Character member : team.getMembers()) {
-                    if (member.getHealthPoint() < allyToHeal.getHealthPoint()) {
-                        allyToHeal = member;
-                    }
-                }
-            }
-            
-            if (allyToHeal != null) {
+            if (target != null) {
                 int healAmount = 15;
-                allyToHeal.setHealthPoint(allyToHeal.getHealthPoint() + healAmount);
-                return this.name + " lance un sort de soin (ou de chirurgie approximative) sur " + allyToHeal.getName() + " et lui rend " + healAmount + " PV !";
+                target.setHealthPoint(target.getHealthPoint() + healAmount);
+                return this.name + " lance un sort de soin sur " + target.getName() + " et lui rend " + healAmount + " PV !";
             } else {
-                return this.name + " essaie de soigner mais il n'y a personne dans l'équipe...";
+                return this.name + " essaie de soigner mais la cible est invalide...";
             }
         } else {
             return this.name + " n'a pas assez de Mana (" + this.currentResource + "/" + cost + ") pour soigner !";

@@ -9,7 +9,7 @@ Jeu de rôle textuel et d'exploration de donjon en Java, inspiré de l'univers d
 - **Gestion de la compagnie et compétences** : Gestion des caractéristiques des aventuriers (Ranger, Nain, Élfette, Magicienne, Barbare, Ogre, Voleur) avec compétences spéciales uniques (Hurlement Barbare, Écrasement d'Ogre, Tir de Précision, Attaque Sournoise, Soin, Boule de Feu).
 - **Système d'équipements et emplacements (Slots)** : 6 emplacements dédiés (Tête, Torse, Jambes, Bijou, Arme, Main gauche), gestion des bonus d'attaque/défense et restrictions de classe (Hache Durandil, Pagne Sauvage, Robe d'Archimage).
 - **Inventaire et coffres au trésor** : Loot aléatoire dans les coffres, consultation du sac à dos (`I`) et utilisation polymorphique d'objets (potions de soin, équipements).
-- **Système de combat tour par tour** : Combat tactique alternant attaques physiques et compétences spéciales contre divers types d'ennemis (Gobelins, Orcs, Squelettes, Trolls).
+- **Système de combat tour par tour (JRPG)** : File d'attente d'Initiative basée sur la Vitesse des personnages. Combat tactique alternant attaques physiques et compétences spéciales contre des groupes d'ennemis.
 
 ## Diagrammes UML
 
@@ -46,7 +46,7 @@ classDiagram
     class Item {
         #String name
         #String description
-        +use(Character target, Menu menu) boolean
+        +use(Character target) boolean
     }
 
     class Equippable {
@@ -79,8 +79,16 @@ classDiagram
         #int defense
         #Equipment weaponSlot
         #Equipment chestSlot
-        +equip(Equipment equipment, Menu menu) boolean
-        +useSpecialSkill(Team team, Character monster, Menu menu)
+        #int speed
+        +equip(Equipment equipment) boolean
+        +useSpecialSkill(Team team, Character target) String
+    }
+
+    class Cell {
+        -List~Character~ monsters
+        -Item item
+        -boolean stairs
+        +hasMonster() boolean
     }
 
     class Menu {
@@ -103,6 +111,8 @@ classDiagram
     Character --> Equipment
     Game --> Menu
     Game --> Team
+    Cell --> Character : 0..* (Groupes d'Ennemis)
+    Cell --> Item : 0..1 (Coffres)
 ```
 
 ## Architecture et Conception

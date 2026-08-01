@@ -4,7 +4,6 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.Equipment;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.EquipmentCategory;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.EquipmentSlot;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 public class DefensiveEquipment extends Equipment {
 
@@ -17,7 +16,7 @@ public class DefensiveEquipment extends Equipment {
     }
 
     @Override
-    public boolean use(Character target, Menu menu){
-        return target.equip(this, menu);
+    public boolean use(Character target){
+        return target.equip(this);
     }
 }

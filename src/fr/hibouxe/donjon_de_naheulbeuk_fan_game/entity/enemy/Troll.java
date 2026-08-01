@@ -14,6 +14,6 @@ public class Troll extends Character {
      * Initialise un Troll de niveau 1.
      */
     public Troll() {
-        super("Troll des cavernes", "Monstre", 1, 20, 0, 10, 0, 2, 2);
+        super("Troll des cavernes", "Monstre", 1, 20, 0, 10, 0, 2, 2, 4);
     }
 }

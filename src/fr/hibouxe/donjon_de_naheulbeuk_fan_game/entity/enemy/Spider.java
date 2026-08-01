@@ -14,6 +14,6 @@ public class Spider extends Character {
      * Initialise une Araignée de niveau 1.
      */
     public Spider() {
-        super("Araignée effrayante", "Monstre", 1, 15, 5, 3, 5, 4, 4);
+        super("Araignée effrayante", "Monstre", 1, 15, 5, 3, 5, 4, 4, 18);
     }
 }
