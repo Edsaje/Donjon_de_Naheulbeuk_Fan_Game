@@ -29,6 +29,9 @@ public class Character {
     protected int currentResource; // Valeur actuelle (ex: 10)
     protected int maxResource;     // Valeur maximale (ex: 20)
 
+    protected int xp = 0;
+    protected int xpToNextLevel = 100; //palier initial
+
     protected Equipment headSlot = null;
     protected Equipment chestSlot = null;
     protected Equipment legsSlot = null;
@@ -84,6 +87,19 @@ public class Character {
         this.currentResource = Math.min(this.maxResource, this.currentResource + amount);
     }
 
+    public void gainXp(int amount) {
+        this.xp += amount;
+        while (this.xp >= this.xpToNextLevel) {
+            levelUp();
+        }
+    }
+
+    public void levelUp() {
+        this.level++;
+        this.xp -= this.xpToNextLevel; // On retire l'XP consommée
+        this.xpToNextLevel = (int) (100 * Math.pow(this.level, 1.5)); // Le prochain niveau sera plus long à atteindre
+        // (Les augmentations de stats se feront dans les sous-classes)
+    }
 
     public int getSpeed() {
         return speed;
@@ -341,6 +357,22 @@ public class Character {
 
     public void setCurrentResource(int currentResource) {
         this.currentResource = currentResource;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public void setXp(int xp) {
+        this.xp = xp;
+    }
+
+    public int getXpToNextLevel() {
+        return xpToNextLevel;
+    }
+
+    public void setXpToNextLevel(int xpToNextLevel) {
+        this.xpToNextLevel = xpToNextLevel;
     }
 
     /**

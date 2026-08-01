@@ -237,14 +237,15 @@ public class Menu {
     public int askBattleAction(Character attacker) {
         int choice = 0;
 
-        while (choice != 1 && choice != 2) {
+        while (choice != 1 && choice != 2 && choice != 3) {
             displayMessage("\n" + attacker.getName() + " réfléchit à sa prochaine action...");
             displayMessage("1. Attaque Physique");
             displayMessage("2. Compétence Spéciale / Magie");
+            displayMessage("3. Fouiller dans le Sac (Inventaire)");
             choice = askPlayerInt();
 
-            if (choice != 1 && choice != 2) {
-                displayMessage("❌ Choix invalide. Veuillez entrer 1 ou 2.");
+            if (choice != 1 && choice != 2 && choice != 3) {
+                displayMessage("❌ Choix invalide. Veuillez entrer 1, 2 ou 3.");
             }
         }
         return choice;
@@ -270,20 +271,21 @@ public class Menu {
             return lastAlive;
         }
 
-        displayMessage("\nLequel voulez-vous cibler ? (Entrez le numéro du monstre)");
+        displayMessage("\nLequel voulez-vous cibler ? (0. ↩️ Retour)");
         for (int i = 0; i < monsters.size(); i++) {
             Character m = monsters.get(i);
             if (m.getHealthPoint() > 0) {
-                displayMessage(i + ". " + m.getName().toUpperCase() + " | PV: " + Math.max(0, m.getHealthPoint()));
+                displayMessage((i + 1) + ". " + m.getName().toUpperCase() + " | PV: " + Math.max(0, m.getHealthPoint()));
             }
         }
         int choice = -1;
         while (true) {
             choice = askPlayerInt();
-            if (choice >= 0 && choice < monsters.size() && monsters.get(choice).getHealthPoint() > 0) {
-                return monsters.get(choice);
+            if (choice == 0) return null;
+            if (choice > 0 && choice <= monsters.size() && monsters.get(choice - 1).getHealthPoint() > 0) {
+                return monsters.get(choice - 1);
             }
-            displayMessage("❌ Cible invalide. Veuillez entrer un numéro valide.");
+            displayMessage("❌ Cible invalide. Veuillez entrer un numéro valide (ou 0 pour annuler).");
         }
     }
 
@@ -312,7 +314,7 @@ public class Menu {
      * @return L'index choisi (0-indexed) ou -1 si invalide.
      */
     public int askItemIndex() {
-        displayMessage("Quel objet voulez-vous utiliser ? (Entrez le numéro)");
+        displayMessage("Quel objet voulez-vous utiliser ? (Entrez le numéro, ou 0 pour Retour)");
         int choice = askPlayerInt();
         return (choice > 0) ? choice - 1 : -1;
     }
@@ -324,18 +326,19 @@ public class Menu {
      * @return Le membre choisi ou null si invalide.
      */
     public Character askItemTarget(Team team) {
-        displayMessage("\nSur quel aventurier voulez-vous l'utiliser ?");
+        displayMessage("\nSur quel aventurier voulez-vous l'utiliser ? (0. ↩️ Retour)");
         for (int i = 0; i < team.getMembers().size(); i++) {
             Character c = team.getMembers().get(i);
-            displayMessage(i + ". " + c.getName() + " (PV: " + c.getHealthPoint() + ")");
+            displayMessage((i + 1) + ". " + c.getName() + " (PV: " + c.getHealthPoint() + ")");
         }
         int choice = -1;
         while (true) {
             choice = askPlayerInt();
-            if (choice >= 0 && choice < team.getMembers().size()) {
-                return team.getMembers().get(choice);
+            if (choice == 0) return null;
+            if (choice > 0 && choice <= team.getMembers().size()) {
+                return team.getMembers().get(choice - 1);
             }
-            displayMessage("❌ Cible invalide. Veuillez entrer un numéro valide.");
+            displayMessage("❌ Cible invalide (ou 0 pour annuler).");
         }
     }
 
@@ -346,18 +349,19 @@ public class Menu {
      * @return Le membre choisi à soigner ou null si invalide.
      */
     public Character askAllyToHeal(Team team) {
-        displayMessage("\nChoisissez le coéquipier à soigner :");
+        displayMessage("\nChoisissez le coéquipier à soigner (0. ↩️ Retour) :");
         for (int i = 0; i < team.getMembers().size(); i++) {
             Character c = team.getMembers().get(i);
-            displayMessage(i + ". " + c.getName() + " | PV: " + Math.max(0, c.getHealthPoint()));
+            displayMessage((i + 1) + ". " + c.getName() + " | PV: " + Math.max(0, c.getHealthPoint()));
         }
         int choice = -1;
         while (true) {
             choice = askPlayerInt();
-            if (choice >= 0 && choice < team.getMembers().size()) {
-                return team.getMembers().get(choice);
+            if (choice == 0) return null;
+            if (choice > 0 && choice <= team.getMembers().size()) {
+                return team.getMembers().get(choice - 1);
             }
-            displayMessage("❌ Coéquipier invalide. Veuillez entrer un numéro valide.");
+            displayMessage("❌ Coéquipier invalide (ou 0 pour annuler).");
         }
     }
 }

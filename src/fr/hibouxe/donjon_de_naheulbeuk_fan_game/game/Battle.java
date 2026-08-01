@@ -2,6 +2,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,35 @@ public class Battle {
             playRound();
 
             if (!areMonstersAlive()) { // Vérification si les monstres sont vaincus
-                menu.displayMessage("\n C'est trop facile");
+                menu.displayMessage("\n C'est trop facile..");
+
+                int totalXp = 0;
+                for (Character m : monsters) { //on récupère l'xp des monstres
+                    totalXp += m.getXp();
+                }
+
+                int aliveCount = 0;
+                for (Character c : team.getMembers()) { //on compte les héro en vie
+                    if (c.getHealthPoint() > 0) aliveCount++;
+                }
+
+                if (aliveCount > 0) {
+                    int xpPerHero = totalXp / aliveCount;
+                    menu.displayMessage("Chaque héro en vie reçoit " + xpPerHero + " points d'expérience !");
+
+                    for (Character c : team.getMembers()) { //on donne l'xp aux vivants
+                        if (c.getHealthPoint() > 0) {
+                            c.gainXp(xpPerHero);
+                        }
+                    }
+
+                    for (Character c : team.getMembers()) { //on revive avec 1pv les persos morts en cas de vistoire
+                        if (c.getHealthPoint() <= 0) {
+                            c.setHealthPoint(1);
+                            menu.displayMessage(c.getName() + " n'est plus inconscient !");
+                        }
+                    }
+                }
                 return true; // Victoire
             }
 
@@ -126,16 +155,18 @@ public class Battle {
         }
     }
 
-    /**
-     * Gère le tour d'action d'un seul héros.
-     */
     private void heroTurn(Character attacker) {
         menu.displayMessage("\n⚡ C'est au tour de " + attacker.getName() + " !");
-        int action = menu.askBattleAction(attacker);
+        boolean actionConfirmed = false;
 
-        if (action == 1) {
-            Character target = menu.askMonsterTarget(monsters);
-            if (target != null) {
+        while (!actionConfirmed) {
+            int action = menu.askBattleAction(attacker);
+
+            if (action == 1) {
+                Character target = menu.askMonsterTarget(monsters);
+                if (target == null) {
+                    continue; // L'utilisateur a annulé (Retour)
+                }
                 int damage = Math.max(1, attacker.getAttack() - target.getDefense()); // Calcul des dégâts
                 target.setHealthPoint(target.getHealthPoint() - damage); // On retire les PV
                 menu.displayMessage("\n" + attacker.getName() + " tape de toutes ses forces et inflige " + damage + " dégât(s) au " + target.getName() + " !");
@@ -149,20 +180,50 @@ public class Battle {
                 if ("Rage".equals(attacker.getResourceName())) {
                     attacker.addResource(10); //+10 de Rage quand il frappe
                 }
-            }
-        } else if (action == 2) {
-            Character target = null;
-            if ("Elfe".equals(attacker.getType())) {
-                target = menu.askAllyToHeal(team);
-            } else {
-                target = menu.askMonsterTarget(monsters);
-            }
+                actionConfirmed = true;
 
-            if (target != null) {
+            } else if (action == 2) {
+                Character target = null;
+                if ("Elfe".equals(attacker.getType())) {
+                    target = menu.askAllyToHeal(team);
+                } else {
+                    target = menu.askMonsterTarget(monsters);
+                }
+
+                if (target == null) {
+                    continue; // L'utilisateur a annulé (Retour)
+                }
+
                 String actionText = attacker.useSpecialSkill(team, target);
                 menu.displayMessage("\n" + actionText);
                 if (target.getHealthPoint() <= 0) {
                     menu.displayMessage("☠️ Le " + target.getName() + " s'effondre sans vie !");
+                }
+                actionConfirmed = true;
+
+            } else if (action == 3) {
+                menu.displayInventory(team);
+                if (team.getInventory().isEmpty()) {
+                    continue; // Rien dans le sac, on recommence
+                }
+                int itemIndex = menu.askItemIndex();
+                if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
+                    Item selectedItem = team.getInventory().get(itemIndex);
+                    Character target = menu.askItemTarget(team);
+                    
+                    if (target == null) {
+                        continue; // Cible annulée, on recommence
+                    }
+                    
+                    boolean used = selectedItem.use(target);
+                    if (used) {
+                        team.removeItem(selectedItem);
+                        menu.displayMessage("\n" + target.getName() + " utilise " + selectedItem.getName() + " !");
+                        actionConfirmed = true;
+                    } else {
+                        menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça !");
+                        // On ne met pas actionConfirmed = true, il peut rechoisir
+                    }
                 }
             }
         }

@@ -4,8 +4,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 
 /**
- * Représente l'Élfette dans la Compagnie de Naheulbeuk.
- * Héros spécialisé dans le soutien et les soins magiques.
+ * ReprÃ©sente l'Ã‰lfette dans la Compagnie de Naheulbeuk.
+ * HÃ©ros spÃ©cialisÃ© dans le soutien et les soins magiques.
  *
  * @author Hibouxe
  * @version 1.0
@@ -13,7 +13,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 public class Elf extends Character {
 
     /**
-     * Initialise l'Élfette avec ses statistiques de départ et sa ressource Mana.
+     * Initialise l'Ã‰lfette avec ses statistiques de dÃ©part et sa ressource Mana.
      */
     public Elf() {
         super("L'Elfe", "Elfe", 1, 6, 100, 6, 3, 5, 5, 20);
@@ -23,12 +23,12 @@ public class Elf extends Character {
     }
 
     /**
-     * Exécute la compétence spéciale de soin magique sur un coéquipier de la compagnie.
+     * ExÃ©cute la compÃ©tence spÃ©ciale de soin magique sur un coÃ©quipier de la compagnie.
      * Consomme 2 points de Mana.
      *
-     * @param team   La compagnie contenant la cible à soigner
-     * @param target Le monstre affronté (non utilisé pour le soin)
-     * @param menu   La vue principale du jeu (Injectée)
+     * @param team   La compagnie contenant la cible Ã  soigner
+     * @param target Le monstre affrontÃ© (non utilisÃ© pour le soin)
+     * @param menu   La vue principale du jeu (InjectÃ©e)
      */
     @Override
     public String useSpecialSkill(Team team, Character target) {
@@ -47,4 +47,16 @@ public class Elf extends Character {
             return this.name + " n'a pas assez de Mana (" + this.currentResource + "/" + cost + ") pour soigner !";
         }
     }
+    @Override
+    public void levelUp() {
+        super.levelUp();
+        this.healthPoint += 2;
+        this.attack += 1;
+        this.magicAttack += 3;
+        this.defense += 1;
+        this.magicDefense += 2;
+        this.speed += 3;
+        System.out.println(this.name + " gagne encore en charisme, il va encore falloir enlever un bouton de la chemise (Niveau " + this.level + ") !");
+    }
 }
+

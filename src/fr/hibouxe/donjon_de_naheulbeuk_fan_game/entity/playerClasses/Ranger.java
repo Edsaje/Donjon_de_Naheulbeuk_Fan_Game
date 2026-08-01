@@ -4,8 +4,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 
 /**
- * Représente le Ranger (Le Leader) dans la Compagnie de Naheulbeuk.
- * Leader autoproclamé équilibré en attaque et en défense.
+ * ReprÃ©sente le Ranger (Le Leader) dans la Compagnie de Naheulbeuk.
+ * Leader autoproclamÃ© Ã©quilibrÃ© en attaque et en dÃ©fense.
  *
  * @author Hibouxe
  * @version 1.0
@@ -13,21 +13,21 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 public class Ranger extends Character {
 
     /**
-     * Initialise le Ranger avec ses statistiques de départ et sa ressource Énergie.
+     * Initialise le Ranger avec ses statistiques de dÃ©part et sa ressource Ã‰nergie.
      */
     public Ranger() {
         super("Le Ranger", "Ranger", 1, 10, 100, 5, 2, 10, 10, 14);
-        this.resourceName = "Énergie";
+        this.resourceName = "Ã‰nergie";
         this.maxResource = 100;
         this.currentResource = 100;
     }
 
     /**
-     * Exécute le tir à l'arc ajusté du Ranger en consommant 30 points d'Énergie.
+     * ExÃ©cute le tir Ã  l'arc ajustÃ© du Ranger en consommant 30 points d'Ã‰nergie.
      *
      * @param team    La compagnie de Naheulbeuk
-     * @param monster Le monstre ciblé
-     * @param menu    La vue principale du jeu (Injectée)
+     * @param monster Le monstre ciblÃ©
+     * @param menu    La vue principale du jeu (InjectÃ©e)
      */
     @Override
     public String useSpecialSkill(Team team, Character monster) {
@@ -36,9 +36,20 @@ public class Ranger extends Character {
             this.currentResource -= cost;
             int damage = Math.max(1, (this.getAttack() * 2) - monster.getDefense());
             monster.setHealthPoint(monster.getHealthPoint() - damage);
-            return this.name + " décoche un TIR DE PRÉCISION au sang-froid impressionnant ! Inflige " + damage + " dégâts !";
+            return this.name + " dÃ©coche un TIR DE PRÃ‰CISION au sang-froid impressionnant ! Inflige " + damage + " dÃ©gÃ¢ts !";
         } else {
-            return this.name + " n'a pas assez d'Énergie pour ajuster son tir (" + this.currentResource + "/" + cost + ") !";
+            return this.name + " n'a pas assez d'Ã‰nergie pour ajuster son tir (" + this.currentResource + "/" + cost + ") !";
         }
     }
+    @Override
+    public void levelUp() {
+        super.levelUp();
+        this.healthPoint += 4;
+        this.attack += 2;
+        this.defense += 1;
+        this.magicDefense += 1;
+        this.speed += 2;
+        System.out.println(this.name + " en fait toujours trop à propos de ses compétences (Niveau " + this.level + ") !");
+    }
 }
+
