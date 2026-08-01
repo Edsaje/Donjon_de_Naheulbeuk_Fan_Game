@@ -1,3 +1,5 @@
+package fr.hibouxe.donjon_de_naheulbeuk_fan_game;
+
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Game;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
@@ -8,9 +10,11 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
  * @author Hibouxe
  * @version 1.0
  */
-void main() {
-    Menu menu = new Menu();
-    menu.displayMessage("=== Bienvenue dans le Donjon de Naheulbeuk ===");
-    Game game = new Game(menu);
-    game.startGame();
+public class Main {
+    public static void main(String[] args) {
+        Menu menu = new Menu();
+        menu.displayMessage("=== Bienvenue dans le Donjon de Naheulbeuk ===");
+        Game game = new Game(menu);
+        game.startGame();
+    }
 }

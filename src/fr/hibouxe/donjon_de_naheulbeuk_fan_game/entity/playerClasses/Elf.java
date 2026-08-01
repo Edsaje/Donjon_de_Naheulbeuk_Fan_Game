@@ -2,7 +2,6 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * Représente l'Élfette dans la Compagnie de Naheulbeuk.
@@ -17,10 +16,10 @@ public class Elf extends Character {
      * Initialise l'Élfette avec ses statistiques de départ et sa ressource Mana.
      */
     public Elf() {
-        super("L'Elfe", "Elfe", 1, 6, 10, 6, 3, 5, 5);
+        super("L'Elfe", "Elfe", 1, 6, 100, 6, 3, 5, 5);
         this.resourceName = "Mana";
-        this.maxResource = 10;
-        this.currentResource = 10;
+        this.maxResource = 100;
+        this.currentResource = 100;
     }
 
     /**
@@ -32,20 +31,31 @@ public class Elf extends Character {
      * @param menu   La vue principale du jeu (Injectée)
      */
     @Override
-    public void useSpecialSkill(Team team, Character target, Menu menu) {
-        if (this.currentResource >= 2) { // Vérifie si possède le mana requis
-            this.currentResource -= 2; // Retire le mana nécessaire
-
-            Character allyToHeal = menu.askAllyToHeal(team);
+    public String useSpecialSkill(Team team, Character target) {
+        int cost = 15;
+        if (this.currentResource >= cost) {
+            this.currentResource -= cost;
+            
+            // Recherche de l'allié avec le moins de PV
+            Character allyToHeal = null;
+            if (team != null && team.getMembers() != null && !team.getMembers().isEmpty()) {
+                allyToHeal = team.getMembers().get(0);
+                for (Character member : team.getMembers()) {
+                    if (member.getHealthPoint() < allyToHeal.getHealthPoint()) {
+                        allyToHeal = member;
+                    }
+                }
+            }
+            
             if (allyToHeal != null) {
-                int healAmount = 8; // Quantité de soins
+                int healAmount = 15;
                 allyToHeal.setHealthPoint(allyToHeal.getHealthPoint() + healAmount);
-                menu.displayMessage(this.name + " utilise ses compétences en chirurgie et soigne " + allyToHeal.getName() + " de +" + healAmount + " PV !");
+                return this.name + " lance un sort de soin (ou de chirurgie approximative) sur " + allyToHeal.getName() + " et lui rend " + healAmount + " PV !";
             } else {
-                menu.displayMessage("Cible invalide.");
+                return this.name + " essaie de soigner mais il n'y a personne dans l'équipe...";
             }
         } else {
-            menu.displayMessage(this.name + " n'a plus de sort de combat disponible..");
+            return this.name + " n'a pas assez de Mana (" + this.currentResource + "/" + cost + ") pour soigner !";
         }
     }
 }

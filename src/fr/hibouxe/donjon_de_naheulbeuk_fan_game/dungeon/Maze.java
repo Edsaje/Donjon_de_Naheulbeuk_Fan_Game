@@ -49,7 +49,15 @@ public class Maze {
      * Utilise une pile (ArrayDeque) pour dérouler et rembobiner les couloirs du donjon.
      */
     public void generateMaze() {
-        Cell startCell = grid[0][0]; // Case de départ
+        generateMaze(0, 0);
+    }
+
+    /**
+     * Génère un labyrinthe parfait à partir d'une position de départ précise.
+     * Utile pour la descente d'escalier sans déplacer le joueur.
+     */
+    public void generateMaze(int startX, int startY) {
+        Cell startCell = grid[startX][startY]; // Case de départ
         startCell.setVisited(true); // Marquer comme visitée
         Deque<Cell> stack = new ArrayDeque<>(); // Création de la pile
         stack.push(startCell); // Pose la cellule au sommet de la pile
@@ -149,13 +157,24 @@ public class Maze {
      *
      * @param count Nombre de monstres à faire apparaître
      */
-    public void generateMonsters(int count) {
+    public void generateMonsters(int count, int startX, int startY) {
         for (int i = 0; i < count; i++) {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
 
-            if (x != 0 || y != 0) { // Pas de monstre sur la case de départ (0, 0)
+            if (x != startX || y != startY) { // Pas de monstre sur la case du joueur
                 grid[x][y].setMonster(new Goblin()); // Placement d'un Gobelin par défaut
+            }
+        }
+    }
+
+    public void generateStairs(int count) {
+        for (int i = 0; i < count; i++) {
+            int x = random.nextInt(width);
+            int y = random.nextInt(height);
+
+            if (x != 0 || y != 0) { // Pas d'escalier sur la case de départ (0, 0)
+                grid[x][y].setStairs(true); // Placement des escalier
             }
         }
     }

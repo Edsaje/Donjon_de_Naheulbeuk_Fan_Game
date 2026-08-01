@@ -2,7 +2,6 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * Représente le Barbare dans la Compagnie de Naheulbeuk.
@@ -31,14 +30,15 @@ public class Barbarian extends Character {
      * @param menu    La vue principale du jeu (Injectée)
      */
     @Override
-    public void useSpecialSkill(Team team, Character monster, Menu menu) {
-        if (this.currentResource >= 20) {
-            this.currentResource -= 20;
-            int damage = Math.max(1, (this.getAttack() * 2) - monster.getDefense());
+    public String useSpecialSkill(Team team, Character monster) {
+        int cost = 30;
+        if (this.currentResource >= cost) {
+            this.currentResource -= cost;
+            int damage = Math.max(1, (int)(this.getAttack() * 2.5) - monster.getDefense());
             monster.setHealthPoint(monster.getHealthPoint() - damage);
-            menu.displayMessage(this.name + " pousse un HURLEMENT BARBARE et frappe avec une violence inouïe ! Inflige " + damage + " dégâts !");
+            return this.name + " pousse un HURLEMENT BARBARE et frappe avec une violence inouïe ! Inflige " + damage + " dégâts !";
         } else {
-            menu.displayMessage(this.name + " n'a pas assez de Rage pour hurler (20 requis) !");
+            return this.name + " n'a pas assez de Rage (" + this.currentResource + "/" + cost + ") pour hurler !";
         }
     }
 }

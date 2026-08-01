@@ -2,7 +2,6 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * Représente le Nain dans la Compagnie de Naheulbeuk.
@@ -32,14 +31,15 @@ public class Dwarf extends Character {
      * @param menu   La vue principale du jeu (Injectée)
      */
     @Override
-    public void useSpecialSkill(Team team, Character target, Menu menu) {
-        if (this.currentResource >= 1) { // Vérifie si possède la rage requise
-            this.currentResource -= 1; // Retire la rage nécessaire
-            int damage = Math.max(1, this.getAttack() + (this.getAttack() / 2) - target.getDefense()); // Calcul des dégâts
+    public String useSpecialSkill(Team team, Character target) {
+        int cost = 20; // Équilibrage : Un coup puissant coûte 20 de Rage, et non plus 1.
+        if (this.currentResource >= cost) { 
+            this.currentResource -= cost; 
+            int damage = Math.max(1, (int)(this.getAttack() * 1.5) - target.getDefense()); 
             target.setHealthPoint(target.getHealthPoint() - damage);
-            menu.displayMessage(this.name + " plante sa hache dans la jambe du " + target.getName() + " !");
+            return this.name + " hurle de rage et plante sa hache dans le " + target.getName() + " pour " + damage + " dégâts !";
         } else {
-            menu.displayMessage(this.name + " n'a plus de compétence disponible..");
+            return this.name + " n'a pas assez de Rage (" + this.currentResource + "/" + cost + ") pour son attaque spéciale...";
         }
     }
 }

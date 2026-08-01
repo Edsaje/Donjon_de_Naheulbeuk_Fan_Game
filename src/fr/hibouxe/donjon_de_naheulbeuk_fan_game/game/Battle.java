@@ -111,7 +111,8 @@ public class Battle {
 
         if (action == 2) {
             if (attacker.getHealthPoint() > 0) {
-                attacker.useSpecialSkill(team, monster, menu);
+                String actionText = attacker.useSpecialSkill(team, monster);
+                menu.displayMessage("\n" + actionText);
             } else {
                 menu.displayMessage("\n" + attacker.getName() + " est un peu trop mort pour faire ça");
             }

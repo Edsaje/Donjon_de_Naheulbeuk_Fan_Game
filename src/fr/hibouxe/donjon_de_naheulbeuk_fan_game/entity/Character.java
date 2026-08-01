@@ -1,6 +1,5 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity;
 
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.Equipment;
 
 import java.util.List;
@@ -67,10 +66,10 @@ public class Character {
      *
      * @param team    La compagnie de Naheulbeuk
      * @param monster Le monstre affronté
-     * @param menu    La vue principale du jeu (Injectée)
+     * @return Le message décrivant l'action effectuée.
      */
-    public void useSpecialSkill(Team team, Character monster, Menu menu) {
-        menu.displayMessage(this.name + " n'a pas appris de compétence spéciale, le nul !");
+    public String useSpecialSkill(Team team, Character monster) {
+        return this.name + " n'a pas appris de compétence spéciale, le nul !";
     }
 
     /**
@@ -179,14 +178,12 @@ public class Character {
      * Tente d'équiper un objet dans l'emplacement dédié du personnage.
      *
      * @param equipment L'équipement à porter
-     * @param menu      La vue principale (Injectée)
      * @return true si l'objet a été équipé avec succès, false sinon.
      */
-    public boolean equip(Equipment equipment, Menu menu) {
+    public boolean equip(Equipment equipment) {
         if (equipment == null) return false;
 
         if (!equipment.canBeEquippedBy(this)) {
-            menu.displayMessage(this.name + " ne peut pas équiper " + equipment.getName() + " !");
             return false;
         }
 
@@ -211,7 +208,6 @@ public class Character {
                 break;
         }
 
-        menu.displayMessage(this.name + " équipe désormais " + equipment.getName() + " !");
         return true;
     }
 

@@ -19,6 +19,7 @@ public class Game {
     private Maze maze;
     private Team team;
     private boolean running;
+    private int currentFloor = 1;
     private Menu menu;
 
     /**
@@ -47,8 +48,9 @@ public class Game {
         this.maze.generateMaze();
         this.maze.generateRandomRooms(6, 2, 4);
 
-        this.maze.generateMonsters(5);
+        this.maze.generateMonsters(5, 0, 0);
         this.maze.generateItems(3);
+        this.maze.generateStairs(1);
 
         this.running = true;
         // Création de la Team
@@ -165,6 +167,26 @@ public class Game {
             } else {
                 menu.displayMessage("\nVous laissez le coffre intact.");
             }
+        }
+
+        // 3. Découverte de l'escalier
+        if (currentCell.hasStairs()) {
+            menu.displayMessage("\n🚪 Vous trouvez un escalier lugubre qui descend dans les profondeurs...");
+            currentFloor++;
+            menu.displayMessage("=== DESCENTE À L'ÉTAGE " + currentFloor + " ===");
+            
+            // 1. On regénère un donjon de taille classique
+            this.maze = new Maze(10, 10); 
+            // On génère le labyrinthe en partant de la position ACTUELLE de l'équipe pour ne pas la coincer dans un mur !
+            this.maze.generateMaze(team.getX(), team.getY());
+            this.maze.generateRandomRooms(6, 2, 4);
+            
+            // 2. On corse la difficulté !
+            this.maze.generateMonsters(5 + currentFloor, team.getX(), team.getY()); 
+            this.maze.generateItems(3);
+            this.maze.generateStairs(1); // Le nouvel escalier !
+            
+            // L'équipe reste à ses coordonnées (immersion conservée !)
         }
     }
 

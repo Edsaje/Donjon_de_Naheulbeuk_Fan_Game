@@ -98,6 +98,7 @@ public class Menu {
         for (Character c : team.getMembers()) {
             displayMessage(String.format("🔹 %-12s | Niv %d | PV: %2d | %s : %2d | Attaque: %2d | Attaque Magique: %2d | Défense: %2d | Défense Magique : %2d",
                     c.getName(), c.getLevel(), c.getHealthPoint(), c.getResourceName(), c.getResourcePoint(), c.getAttack(), c.getMagicAttack(), c.getDefense(), c.getMagicDefense()));
+            displayMessage("   └ Équipement : " + c.getEquippedSummary());
         }
         displayMessage("===========================================================================\n");
     }
@@ -135,6 +136,8 @@ public class Menu {
                     sb.append(" M "); // Le symbole des monstres
                 } else if (cell.hasItem()) {
                     sb.append(" C "); // Le symbole des coffres
+                } else if (cell.hasStairs()) {
+                    sb.append(" ≡ "); // Le symbole de l'escalier
                 } else {
                     sb.append("   "); // Case vide
                 }

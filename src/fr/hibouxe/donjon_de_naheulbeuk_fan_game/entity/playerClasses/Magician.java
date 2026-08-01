@@ -2,7 +2,6 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * Représente la Magicienne dans la Compagnie de Naheulbeuk.
@@ -17,10 +16,10 @@ public class Magician extends Character {
      * Initialise la Magicienne avec ses statistiques de départ et sa ressource Mana.
      */
     public Magician() {
-        super("La Magicienne", "Magicienne", 1, 5, 20, 2, 8, 3, 3);
+        super("La Magicienne", "Magicienne", 1, 5, 100, 2, 8, 3, 3);
         this.resourceName = "Mana";
-        this.maxResource = 20;
-        this.currentResource = 20;
+        this.maxResource = 100;
+        this.currentResource = 100;
     }
 
     /**
@@ -32,14 +31,15 @@ public class Magician extends Character {
      * @param menu   La vue principale du jeu (Injectée)
      */
     @Override
-    public void useSpecialSkill(Team team, Character target, Menu menu) {
-        if (this.currentResource >= 4) { // Vérifie si possède le mana requis
-            this.currentResource -= 4; // Retire le mana nécessaire
-            int damage = Math.max(1, this.getMagicAttack() - target.getMagicDefense()); // Calcule les dégâts magiques
+    public String useSpecialSkill(Team team, Character target) {
+        int cost = 30;
+        if (this.currentResource >= cost) {
+            this.currentResource -= cost;
+            int damage = Math.max(1, (this.getMagicAttack() * 2) - target.getMagicDefense());
             target.setHealthPoint(target.getHealthPoint() - damage);
-            menu.displayMessage(this.name + " lance une BOULE DE FEU pas trop mal réussie !");
+            return this.name + " lance une BOULE DE FEU pas trop mal réussie pour " + damage + " dégâts !";
         } else {
-            menu.displayMessage(this.name + " n'a plus de sort de combat disponible..");
+            return this.name + " manque de Mana (" + this.currentResource + "/" + cost + ")...";
         }
     }
 }

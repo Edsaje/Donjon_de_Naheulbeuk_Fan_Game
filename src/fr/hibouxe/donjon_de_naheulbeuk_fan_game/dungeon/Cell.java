@@ -22,7 +22,7 @@ public class Cell {
 
     private Character monster = null; // Pas de monstre par défaut
     private Item item = null;
-
+    private boolean stairs = false;
     /**
      * Initialise une cellule avec ses coordonnées (X, Y).
      * Par défaut, tous les murs sont fermés et la case est non visitée.
@@ -215,5 +215,13 @@ public class Cell {
      */
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    public boolean hasStairs() {
+        return stairs;
+    }
+
+    public void setStairs(boolean stairs) {
+        this.stairs = stairs;
     }
 }
