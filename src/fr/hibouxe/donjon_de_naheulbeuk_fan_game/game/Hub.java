@@ -1,0 +1,54 @@
+package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
+
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+
+/**
+ * Contrôleur gérant la phase de repos au campement.
+ * Respecte le SRP : ne fait rien d'autre que gérer le menu entre les donjons.
+ */
+public class Hub {
+    private Team team;
+    private Menu menu;
+
+    public Hub(Team team, Menu menu) {
+        this.team = team;
+        this.menu = menu;
+    }
+
+    /**
+     * Lance la boucle du Hub.
+     * @return true si le joueur veut partir à l'aventure, false s'il quitte le jeu.
+     */
+    public boolean enter() {
+        menu.displayMessage("\n=== LE CAMPEMENT (HUB) ===");
+        menu.displayMessage("La compagnie se repose autour d'un feu de camp mal allumé par l'Elfe...");
+
+        boolean inHub = true;
+        while (inHub) {
+            menu.displayMessage("\n--- QUE VOULEZ-VOUS FAIRE ? ---");
+            menu.displayMessage("1. Descendre dans le Donjon (RogueLite Mode)");
+            menu.displayMessage("2. Voir la fiche de la compagnie");
+            menu.displayMessage("3. Regarder dans le sac à dos");
+            menu.displayMessage("4. Quitter le jeu");
+
+            int choice = menu.askPlayerInt();
+            switch (choice) {
+                case 1:
+                    menu.displayMessage("Vous rangez vos affaires et vous dirigez vers l'entrée du gouffre...");
+                    return true; // On retourne true pour signaler à Game.java de lancer le donjon
+                case 2:
+                    menu.displayTeamStats(team);
+                    break;
+                case 3:
+                    menu.displayInventory(team);
+                    break;
+                case 4:
+                    menu.displayMessage("Fin de l'aventure ! Le Nain pleure car il n'a pas eu son or.");
+                    return false; // On quitte
+                default:
+                    menu.displayMessage("❌ Choix invalide.");
+            }
+        }
+        return false;
+    }
+}

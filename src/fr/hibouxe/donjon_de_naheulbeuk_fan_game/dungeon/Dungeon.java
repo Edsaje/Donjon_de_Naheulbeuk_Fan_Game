@@ -18,7 +18,7 @@ import java.util.*;
  * @author Hibouxe
  * @version 1.0
  */
-public class Maze {
+public abstract class Dungeon {
     // Attributs
     private int width;
     private int height;
@@ -32,7 +32,7 @@ public class Maze {
      * @param width  Largeur de la grille en nombre de colonnes
      * @param height Hauteur de la grille en nombre de lignes
      */
-    public Maze(int width, int height) {
+    public Dungeon(int width, int height) {
         this.width = width;
         this.height = height;
         this.grid = new Cell[width][height]; // Alloue la grille
@@ -282,4 +282,10 @@ public class Maze {
     public void setGrid(Cell[][] grid) {
         this.grid = grid;
     }
+
+    /**
+     * Méthode générant le donjon.
+     * Doit être implémentée par les classes filles.
+     */
+    public abstract void generate();
 }

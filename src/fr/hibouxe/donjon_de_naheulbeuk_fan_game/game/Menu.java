@@ -1,7 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Cell;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Maze;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
@@ -81,10 +81,16 @@ public class Menu {
         displayMessage("\n LA COMPAGNIE FOUILLE L'ENDROIT ET TROUVE UN COFFRE !");
         displayMessage("\n Il contient un(e) " + item.getName() + " - " + item.getDescription());
         displayMessage("Ca peut nous être utile ! On le récupère ?");
-        displayMessage("1. Oui, on ramasse !");
-        displayMessage("2. Non, on laisse,c'est surement un piège..");
-
-        int choice = askPlayerInt();
+        
+        int choice = 0;
+        while (choice != 1 && choice != 2) {
+            displayMessage("1. Oui, on ramasse !");
+            displayMessage("2. Non, on laisse,c'est surement un piège..");
+            choice = askPlayerInt();
+            if (choice != 1 && choice != 2) {
+                displayMessage("❌ Choix invalide.");
+            }
+        }
         return choice == 1;
     }
 
@@ -110,7 +116,7 @@ public class Menu {
      * @param maze Le labyrinthe à dessiner
      * @param team L'équipe du joueur pour repérer ses coordonnées
      */
-    public void display(Maze maze, Team team) {
+    public void display(Dungeon maze, Team team) {
         int width = maze.getWidth();
         int height = maze.getHeight();
         Cell[][] grid = maze.getGrid();
@@ -229,11 +235,19 @@ public class Menu {
      * @return L'option choisie (1 pour Physique, 2 pour Compétence)
      */
     public int askBattleAction(Character attacker) {
-        displayMessage("\n" + attacker.getName() + " réfléchit à sa prochaine action...");
-        displayMessage("1. Attaque Physique");
-        displayMessage("2. Compétence Spéciale / Magie");
-        int choice = askPlayerInt();
-        return (choice > 0) ? choice : 1;
+        int choice = 0;
+
+        while (choice != 1 && choice != 2) {
+            displayMessage("\n" + attacker.getName() + " réfléchit à sa prochaine action...");
+            displayMessage("1. Attaque Physique");
+            displayMessage("2. Compétence Spéciale / Magie");
+            choice = askPlayerInt();
+
+            if (choice != 1 && choice != 2) {
+                displayMessage("❌ Choix invalide. Veuillez entrer 1 ou 2.");
+            }
+        }
+        return choice;
     }
 
     /**
@@ -243,6 +257,19 @@ public class Menu {
      * @return Le monstre ciblé
      */
     public Character askMonsterTarget(List<Character> monsters) {
+        // Auto-ciblage si un seul monstre est en vie
+        int aliveCount = 0;
+        Character lastAlive = null;
+        for (Character m : monsters) {
+            if (m.getHealthPoint() > 0) {
+                aliveCount++;
+                lastAlive = m;
+            }
+        }
+        if (aliveCount == 1) {
+            return lastAlive;
+        }
+
         displayMessage("\nLequel voulez-vous cibler ? (Entrez le numéro du monstre)");
         for (int i = 0; i < monsters.size(); i++) {
             Character m = monsters.get(i);
@@ -250,16 +277,14 @@ public class Menu {
                 displayMessage(i + ". " + m.getName().toUpperCase() + " | PV: " + Math.max(0, m.getHealthPoint()));
             }
         }
-        int choice = askPlayerInt();
-        if (choice >= 0 && choice < monsters.size() && monsters.get(choice).getHealthPoint() > 0) {
-            return monsters.get(choice);
+        int choice = -1;
+        while (true) {
+            choice = askPlayerInt();
+            if (choice >= 0 && choice < monsters.size() && monsters.get(choice).getHealthPoint() > 0) {
+                return monsters.get(choice);
+            }
+            displayMessage("❌ Cible invalide. Veuillez entrer un numéro valide.");
         }
-        
-        // Si le joueur se trompe de cible, le premier monstre vivant prend le coup par défaut !
-        for (Character m : monsters) {
-            if (m.getHealthPoint() > 0) return m;
-        }
-        return null;
     }
 
     /**
@@ -269,9 +294,15 @@ public class Menu {
      */
     public boolean askUseItem() {
         displayMessage("\nVoulez-vous utiliser un objet du sac ?");
-        displayMessage("1. Oui, utiliser un objet");
-        displayMessage("2. Non, fermer le sac");
-        int choice = askPlayerInt();
+        int choice = 0;
+        while (choice != 1 && choice != 2) {
+            displayMessage("1. Oui, utiliser un objet");
+            displayMessage("2. Non, fermer le sac");
+            choice = askPlayerInt();
+            if (choice != 1 && choice != 2) {
+                displayMessage("❌ Choix invalide.");
+            }
+        }
         return choice == 1;
     }
 
@@ -298,11 +329,14 @@ public class Menu {
             Character c = team.getMembers().get(i);
             displayMessage(i + ". " + c.getName() + " (PV: " + c.getHealthPoint() + ")");
         }
-        int choice = askPlayerInt();
-        if (choice >= 0 && choice < team.getMembers().size()) {
-            return team.getMembers().get(choice);
+        int choice = -1;
+        while (true) {
+            choice = askPlayerInt();
+            if (choice >= 0 && choice < team.getMembers().size()) {
+                return team.getMembers().get(choice);
+            }
+            displayMessage("❌ Cible invalide. Veuillez entrer un numéro valide.");
         }
-        return null;
     }
 
     /**
@@ -317,10 +351,13 @@ public class Menu {
             Character c = team.getMembers().get(i);
             displayMessage(i + ". " + c.getName() + " | PV: " + Math.max(0, c.getHealthPoint()));
         }
-        int choice = askPlayerInt();
-        if (choice >= 0 && choice < team.getMembers().size()) {
-            return team.getMembers().get(choice);
+        int choice = -1;
+        while (true) {
+            choice = askPlayerInt();
+            if (choice >= 0 && choice < team.getMembers().size()) {
+                return team.getMembers().get(choice);
+            }
+            displayMessage("❌ Coéquipier invalide. Veuillez entrer un numéro valide.");
         }
-        return null;
     }
 }

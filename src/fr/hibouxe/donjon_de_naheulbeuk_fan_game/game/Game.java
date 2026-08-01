@@ -1,253 +1,79 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
 
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Cell;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Maze;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.NaheulbeukDungeon;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.TutorialDungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
-
-import java.util.List;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses.*;
 
 /**
- * Contrôleur principal du jeu.
- * Gère la boucle globale de jeu, l'initialisation de la carte et de l'équipe,
- * les déplacements du joueur et les collisions avec les murs et les monstres.
- *
- * @author Hibouxe
- * @version 1.0
+ * Super Contrôleur Orchestrateur.
+ * Gère la machine à états de l'application (Tutoriel -> Hub <-> Donjon)
  */
 public class Game {
-    // Attributs
-    private Maze maze;
-    private Team team;
-    private boolean running;
-    private int currentFloor = 1;
     private Menu menu;
+    private Team team;
 
-    /**
-     * Constructeur par défaut (instancie un Menu si aucun n'est fourni).
-     */
-    public Game() {
-        this.menu = new Menu();
-    }
-
-    /**
-     * Constructeur avec injection de dépendance de la Vue (Menu).
-     *
-     * @param menu L'instance unique de la vue Menu
-     */
     public Game(Menu menu) {
         this.menu = menu;
     }
 
-    /**
-     * Démarre la boucle de jeu principale.
-     * Génère le labyrinthe, les salles, les monstres et instancie la compagnie de Naheulbeuk.
-     */
     public void startGame() {
-        // Génération du Maze
-        this.maze = new Maze(10, 10);
-        this.maze.generateMaze();
-        this.maze.generateRandomRooms(6, 2, 4);
+        // Phase 1 : Tutoriel scripté (Ranger seul)
+        runTutorial();
 
-        this.maze.generateMonsters(5, 0, 0);
-        this.maze.generateItems(3);
-        this.maze.generateStairs(1);
+        // Phase 2 : Boucle principale
+        boolean playing = true;
+        while (playing) {
+            Hub hub = new Hub(team, menu);
+            boolean goDungeon = hub.enter();
 
-        this.running = true;
-        // Création de la Team
+            if (goDungeon) {
+                runNaheulbeuk();
+            } else {
+                playing = false;
+            }
+        }
+    }
+
+    private void runTutorial() {
+        menu.displayMessage("\n=== CHAPITRE 1 : LA FUITE ===");
+        menu.displayMessage("Le Ranger se réveille avec un mal de crâne effroyable...");
+        menu.displayMessage("La taverne a été attaquée. Il doit fuir par le cellier et retrouver les autres !");
+
+        // Équipe composée uniquement du Ranger
         this.team = new Team();
+        this.team.getMembers().clear(); // On vide l'équipe de départ
+        this.team.getMembers().add(new Ranger());
 
-        while (running) {
-            menu.display(maze, team);
-            playerMovement();
-        }
+        // Labyrinthe scripté 3x1
+        TutorialDungeon tutorialMaze = new TutorialDungeon();
+        tutorialMaze.generate();
+
+        // Lancement de l'exploration en mode Tutoriel
+        ExplorationController explo = new ExplorationController(tutorialMaze, team, menu, true);
+        explo.start();
+
+        menu.displayMessage("\nVous trouvez la sortie et fuyez vers la forêt !");
+        
+        // Après le tuto, les autres héros rejoignent la compagnie pour le Hub !
+        team.getMembers().add(new Dwarf());
+        team.getMembers().add(new Elf());
+        team.getMembers().add(new Barbarian());
+        team.getMembers().add(new Magician());
+        team.getMembers().add(new Ogre());
+        team.getMembers().add(new Thief());
     }
 
-    /**
-     * Gère les saisies de déplacement et les commandes du joueur dans le donjon.
-     * Déclenche un combat en cas de rencontre avec un monstre et ramasse les coffres d'objets.
-     */
-    public void playerMovement() {
-        String choice = menu.askPlayerMovement();
-        boolean moved = false;
+    private void runNaheulbeuk() {
+        menu.displayMessage("\nVous pénétrez dans les sombres couloirs du Donjon de Naheulbeuk...");
+        this.team.setX(0);
+        this.team.setY(0);
 
-        switch (choice) {
-            case "Z":
-                moved = tryMoveNorth();
-                break;
-            case "S":
-                moved = tryMoveSouth();
-                break;
-            case "Q":
-                moved = tryMoveWest();
-                break;
-            case "D":
-                moved = tryMoveEast();
-                break;
-            case "X":
-                running = false;
-                menu.displayMessage("Tchoss Nulloss");
-                break;
-            case "C":
-                menu.displayTeamStats(team);
-                break;
-            case "I":
-                handleInventoryAction();
-                break;
-            default:
-                menu.displayMessage("Commande inconnue");
-        }
+        NaheulbeukDungeon naheulbeukMaze = new NaheulbeukDungeon();
+        naheulbeukMaze.generate();
 
-        if (!moved && !choice.equals("X") && "ZSQD".contains(choice)) {
-            menu.displayMessage("\nTu vas dans un mur");
-        }
-
-        if (moved) {
-            Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-            handleCellEvents(currentCell);
-        }
-    }
-
-    /**
-     * Gère la consultation et l'utilisation des objets du sac à dos.
-     */
-    private void handleInventoryAction() {
-        menu.displayInventory(team);
-        if (!team.getInventory().isEmpty()) {
-            boolean wantToUse = menu.askUseItem();
-            if (wantToUse) {
-                int itemIndex = menu.askItemIndex();
-                if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
-                    Item selectedItem = team.getInventory().get(itemIndex);
-                    Character target = menu.askItemTarget(team);
-                    if (target != null) {
-                        boolean used = selectedItem.use(target);
-                        if (used) {
-                            team.removeItem(selectedItem);
-                            menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !");
-                        } else {
-                            menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C'est pour une autre classe...");
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Gère les événements d'une case (combat avec monstre, coffre à trésor).
-     *
-     * @param currentCell La case sur laquelle se trouve la compagnie
-     */
-    private void handleCellEvents(Cell currentCell) {
-        // 1. Rencontre avec un monstre
-        if (currentCell.hasMonster()) {
-            List<Character> monsters = currentCell.getMonsters();
-            menu.displayMessage("\nUNE HORDE DE " + monsters.size() + " MONSTRES APPARAÎT ! BASTOOON ! ");
-
-            Battle battle = new Battle(team, monsters, menu);
-            boolean victory = battle.start();
-
-            if (victory) {
-                currentCell.getMonsters().clear(); // On retire le monstre vaincu
-            } else {
-                running = false; // Fin de partie si défaite
-            }
-        }
-
-        // 2. Découverte d'un coffre d'objet
-        if (currentCell.hasItem()) {
-            Item item = currentCell.getItem();
-            boolean take = menu.askPickupItem(item);
-
-            if (take) {
-                boolean added = team.addItem(item);
-                if (added) {
-                    menu.displayMessage("\n" + item.getName() + " ramassé(e), espérons que le Nain ne vole rien !");
-                    currentCell.setItem(null); // On retire le coffre une fois ramassé
-                } else {
-                    menu.displayMessage("\nJe crois que le Nain essaye encore de porter trop d'objets !");
-                }
-            } else {
-                menu.displayMessage("\nVous laissez le coffre intact.");
-            }
-        }
-
-        // 3. Découverte de l'escalier
-        if (currentCell.hasStairs()) {
-            menu.displayMessage("\n🚪 Vous trouvez un escalier lugubre qui descend dans les profondeurs...");
-            currentFloor++;
-            menu.displayMessage("=== DESCENTE À L'ÉTAGE " + currentFloor + " ===");
-            
-            // 1. On regénère un donjon de taille classique
-            this.maze = new Maze(10, 10); 
-            // On génère le labyrinthe en partant de la position ACTUELLE de l'équipe pour ne pas la coincer dans un mur !
-            this.maze.generateMaze(team.getX(), team.getY());
-            this.maze.generateRandomRooms(6, 2, 4);
-            
-            // 2. On corse la difficulté !
-            this.maze.generateMonsters(5 + currentFloor, team.getX(), team.getY()); 
-            this.maze.generateItems(3);
-            this.maze.generateStairs(1); // Le nouvel escalier !
-            
-            // L'équipe reste à ses coordonnées (immersion conservée !)
-        }
-    }
-
-    /**
-     * Tente de déplacer l'équipe vers le Nord si aucun mur ne bloque le passage.
-     *
-     * @return true si le mouvement a réussi, false s'il y a un mur.
-     */
-    public boolean tryMoveNorth() {
-        Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        if (!currentCell.isWallNorth()) {
-            team.moveNorth();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Tente de déplacer l'équipe vers le Sud si aucun mur ne bloque le passage.
-     *
-     * @return true si le mouvement a réussi, false s'il y a un mur.
-     */
-    public boolean tryMoveSouth() {
-        Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        if (!currentCell.isWallSouth()) {
-            team.moveSouth();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Tente de déplacer l'équipe vers l'Ouest si aucun mur ne bloque le passage.
-     *
-     * @return true si le mouvement a réussi, false s'il y a un mur.
-     */
-    public boolean tryMoveWest() {
-        Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        if (!currentCell.isWallWest()) {
-            team.moveWest();
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Tente de déplacer l'équipe vers l'Est si aucun mur ne bloque le passage.
-     *
-     * @return true si le mouvement a réussi, false s'il y a un mur.
-     */
-    public boolean tryMoveEast() {
-        Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        if (!currentCell.isWallEast()) {
-            team.moveEast();
-            return true;
-        }
-        return false;
+        // Lancement de l'exploration classique (isTutorial = false)
+        ExplorationController explo = new ExplorationController(naheulbeukMaze, team, menu, false);
+        explo.start();
     }
 }
