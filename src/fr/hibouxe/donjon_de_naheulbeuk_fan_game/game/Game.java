@@ -57,6 +57,10 @@ public class Game {
                     if (saveData != null && saveData.getTeam() != null && saveData.getDungeon() != null) {
                         this.team = saveData.getTeam();
                         menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + saveData.getCurrentFloor() + " !");
+                        menu.displayMessage("[Rappel] Votre Sauvegarde Rapide a été chargée. N'oubliez pas d'en refaire une (Touche K) si vous souhaitez sauvegarder à nouveau avant de quitter le donjon !");
+
+                        // Suppression immédiate du fichier quicksave.sav après chargement (consommation de la sauvegarde temporaire)
+                        SaveManager.deleteQuickSave();
 
                         ExplorationController explo = new ExplorationController(saveData.getDungeon(), this.team, menu, false);
                         explo.start();
