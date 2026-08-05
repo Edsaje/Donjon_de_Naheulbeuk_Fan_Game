@@ -10,10 +10,11 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager;
 /**
  * Super Contrôleur Orchestrateur.
  * Gère la machine à états de l'application (Écran-titre -> Détection QuickSave -> Menu Principal -> Tutoriel / Hub <-> Donjon).
+ * Garantit le retour immédiat à l'écran-titre lors d'une QuickSave.
  * Respecte à 100% l'architecture MVC et SOLID.
  *
  * @author Hibouxe
- * @version 3.0
+ * @version 3.1
  */
 public class Game {
     private Menu menu;
@@ -46,13 +47,14 @@ public class Game {
                         ExplorationController explo = new ExplorationController(saveData.getDungeon(), this.team, menu, false);
                         explo.start();
 
-                        // Si le joueur refait une quicksave (K) ou meurt, on boucle et retourne à l'écran-titre !
+                        // Quand explo.start() se termine :
+                        // Si l'exploration a été interrompue par une nouvelle QuickSave (K), on boucle et revient à l'écran-titre !
                         resumedFromQuickSave = true;
                     }
                 }
             }
 
-            // 3. Si aucune reprise de QuickSave n'a eu lieu, afficher le MENU PRINCIPAL !
+            // 3. Si aucune reprise de QuickSave n'a eu lieu (ou si déclinée), afficher le MENU PRINCIPAL !
             if (!resumedFromQuickSave) {
                 boolean inMainMenu = true;
 
@@ -62,9 +64,16 @@ public class Game {
                     switch (choice) {
                         case 1: // Nouvelle Partie
                             runNewGame();
+                            // Si l'utilisateur a fait une QuickSave en cours de route, quitter le menu principal pour retourner à l'écran-titre !
+                            if (SaveManager.hasQuickSave()) {
+                                inMainMenu = false;
+                            }
                             break;
                         case 2: // Charger Partie
                             loadHubSaveGame();
+                            if (SaveManager.hasQuickSave()) {
+                                inMainMenu = false;
+                            }
                             break;
                         case 3: // Quitter
                             menu.displayMessage("\nMerci d'avoir joué au Donjon de Naheulbeuk ! Tchoss !");
@@ -81,8 +90,10 @@ public class Game {
         // Phase 1 : Tutoriel scripté (Ranger seul)
         runTutorial();
 
-        // Phase 2 : Boucle du Hub et du Donjon
-        runHubLoop();
+        // Ne poursuivre vers le Hub que si aucune QuickSave n'a été effectuée pendant le tutoriel
+        if (!SaveManager.hasQuickSave()) {
+            runHubLoop();
+        }
     }
 
     private void loadHubSaveGame() {
@@ -100,13 +111,13 @@ public class Game {
 
     private void runHubLoop() {
         boolean playing = true;
-        while (playing) {
+        while (playing && !SaveManager.hasQuickSave()) {
             Hub hub = new Hub(team, menu);
             boolean goDungeon = hub.enter();
 
             if (goDungeon) {
                 runNaheulbeuk();
-                // Si la quicksave a été utilisée durant le donjon, on interrompt le Hub pour revenir à l'écran titre
+                // Si la quicksave a été effectuée durant le donjon, interrompre immédiatement la boucle du Hub !
                 if (SaveManager.hasQuickSave()) {
                     playing = false;
                 }
@@ -133,6 +144,11 @@ public class Game {
         // Lancement de l'exploration en mode Tutoriel
         ExplorationController explo = new ExplorationController(tutorialMaze, team, menu, true);
         explo.start();
+
+        // Si l'exploration s'est arrêtée suite à une Sauvegarde Rapide, interrompre le tutoriel immédiatement !
+        if (SaveManager.hasQuickSave()) {
+            return;
+        }
 
         menu.displayMessage("\nVous trouvez la sortie et fuyez vers la forêt !");
 
