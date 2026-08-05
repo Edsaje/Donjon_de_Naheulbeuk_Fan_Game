@@ -67,4 +67,28 @@ public class MainMenuView {
             menu.displayMessage("[Erreur] Choix invalide. Veuillez entrer 1 ou 2.");
         }
     }
+
+    /**
+     * Affiche un message d'avertissement si le joueur refuse de reprendre sa sauvegarde rapide.
+     * Confirme l'abandon et la suppression définitive de la quicksave.
+     *
+     * @param menu La vue principale (Injectée)
+     * @return true si le joueur confirme l'abandon (suppression), false s'il annule et reprend sa partie.
+     */
+    public boolean askConfirmAbandonQuickSave(Menu menu) {
+        menu.displayMessage("\n==================================================================");
+        menu.displayMessage("[ATTENTION / WARNING]");
+        menu.displayMessage("Si vous accédez au Menu Principal sans reprendre votre Sauvegarde Rapide,");
+        menu.displayMessage("votre progression temporaire dans le Donjon sera DÉFINITIVEMENT PERDUE !");
+        menu.displayMessage("==================================================================");
+        menu.displayMessage("1. Oui, abandonner et supprimer la Sauvegarde Rapide");
+        menu.displayMessage("2. Non, reprendre la Sauvegarde Rapide");
+
+        while (true) {
+            int choice = menu.askPlayerInt();
+            if (choice == 1) return true;
+            if (choice == 2) return false;
+            menu.displayMessage("[Erreur] Choix invalide. Veuillez entrer 1 ou 2.");
+        }
+    }
 }

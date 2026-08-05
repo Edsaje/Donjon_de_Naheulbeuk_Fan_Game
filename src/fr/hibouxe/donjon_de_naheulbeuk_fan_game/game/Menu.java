@@ -148,4 +148,8 @@ public class Menu {
     public boolean askLoadQuickSavePrompt() {
         return mainMenuView.askLoadQuickSavePrompt(this);
     }
+
+    public boolean askConfirmAbandonQuickSave() {
+        return mainMenuView.askConfirmAbandonQuickSave(this);
+    }
 }

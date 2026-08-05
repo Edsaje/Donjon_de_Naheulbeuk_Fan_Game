@@ -38,17 +38,29 @@ public class Game {
             boolean resumedFromQuickSave = false;
             if (SaveManager.hasQuickSave()) {
                 boolean loadQuick = menu.askLoadQuickSavePrompt();
-                if (loadQuick) {
+                boolean shouldLoad = loadQuick;
+
+                if (!loadQuick) {
+                    // Demande de confirmation avec message d'avertissement !
+                    boolean confirmAbandon = menu.askConfirmAbandonQuickSave();
+                    if (confirmAbandon) {
+                        SaveManager.deleteQuickSave();
+                        menu.displayMessage("\n[Information] La Sauvegarde Rapide a été supprimée.");
+                        shouldLoad = false;
+                    } else {
+                        shouldLoad = true; // L'utilisateur annule et reprend sa partie !
+                    }
+                }
+
+                if (shouldLoad) {
                     SaveData saveData = SaveManager.loadQuickSave();
                     if (saveData != null && saveData.getTeam() != null && saveData.getDungeon() != null) {
                         this.team = saveData.getTeam();
                         menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + saveData.getCurrentFloor() + " !");
-                        
+
                         ExplorationController explo = new ExplorationController(saveData.getDungeon(), this.team, menu, false);
                         explo.start();
 
-                        // Quand explo.start() se termine :
-                        // Si l'exploration a été interrompue par une nouvelle QuickSave (K), on boucle et revient à l'écran-titre !
                         resumedFromQuickSave = true;
                     }
                 }
