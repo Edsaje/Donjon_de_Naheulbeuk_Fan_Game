@@ -1,6 +1,8 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.enemy.*;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.usable.potion.Potion;
@@ -237,6 +239,71 @@ public abstract class Dungeon {
                         break;
                 }
                 grid[x][y].setItem(loot);
+            }
+        }
+    }
+
+    /**
+     * Deplace tous les monstres du donjon de 1 case au tour par tour (Style Pokemon Donjon Mystere).
+     * Si un monstre repere le joueur (distance &lt;= 4), il le traque. Sinon, il se balade.
+     *
+     * @param team L'equipe du joueur
+     * @param menu La vue principale (Injectee)
+     */
+    public void moveMonsters(Team team, Menu menu) {
+        List<Character> movedMonsters = new ArrayList<>();
+        int teamX = team.getX();
+        int teamY = team.getY();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Cell currentCell = grid[x][y];
+                if (currentCell.hasMonster()) {
+                    List<Character> monstersOnCell = new ArrayList<>(currentCell.getMonsters());
+
+                    for (Character monster : monstersOnCell) {
+                        if (movedMonsters.contains(monster)) {
+                            continue; // Deja deplace pendant ce tour
+                        }
+
+                        int targetX = x;
+                        int targetY = y;
+                        int distance = Math.abs(x - teamX) + Math.abs(y - teamY);
+
+                        if (distance <= 4) {
+                            // Mode Traque : Se rapprocher du joueur
+                            if (x < teamX && !currentCell.isWallEast()) {
+                                targetX = x + 1;
+                            } else if (x > teamX && !currentCell.isWallWest()) {
+                                targetX = x - 1;
+                            } else if (y < teamY && !currentCell.isWallSouth()) {
+                                targetY = y + 1;
+                            } else if (y > teamY && !currentCell.isWallNorth()) {
+                                targetY = y - 1;
+                            }
+                        } else {
+                            // Mode Balade : Deplacement aleatoire d'une case
+                            List<int[]> possibleMoves = new ArrayList<>();
+                            if (!currentCell.isWallNorth()) possibleMoves.add(new int[]{x, y - 1});
+                            if (!currentCell.isWallSouth()) possibleMoves.add(new int[]{x, y + 1});
+                            if (!currentCell.isWallWest()) possibleMoves.add(new int[]{x - 1, y});
+                            if (!currentCell.isWallEast()) possibleMoves.add(new int[]{x + 1, y});
+
+                            if (!possibleMoves.isEmpty()) {
+                                int[] chosenMove = possibleMoves.get(random.nextInt(possibleMoves.size()));
+                                targetX = chosenMove[0];
+                                targetY = chosenMove[1];
+                            }
+                        }
+
+                        // Effectuer le deplacement s'il a bouge
+                        if (targetX != x || targetY != y) {
+                            currentCell.getMonsters().remove(monster);
+                            grid[targetX][targetY].getMonsters().add(monster);
+                            movedMonsters.add(monster);
+                        }
+                    }
+                }
             }
         }
     }

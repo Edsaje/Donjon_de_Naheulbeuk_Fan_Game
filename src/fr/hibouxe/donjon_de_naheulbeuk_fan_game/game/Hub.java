@@ -71,7 +71,7 @@ public class Hub {
                     menu.displayMessage("Fin de l'aventure ! Le Nain pleure car il n'a pas eu son or.");
                     return false; // On quitte
                 default:
-                    menu.displayMessage("❌ Choix invalide.");
+                    menu.displayMessage("[Erreur] Choix invalide.");
             }
         }
         return false;

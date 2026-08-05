@@ -51,7 +51,7 @@ public class BattleView {
             choice = menu.askPlayerInt();
 
             if (choice != 1 && choice != 2 && choice != 3) {
-                menu.displayMessage("❌ Choix invalide. Veuillez entrer 1, 2 ou 3.");
+                menu.displayMessage("[Erreur] Choix invalide. Veuillez entrer 1, 2 ou 3.");
             }
         }
         return choice;
@@ -63,7 +63,7 @@ public class BattleView {
             menu.displayMessage("  Aucune compétence apprise !");
             return null;
         }
-        menu.displayMessage("\n--- Compétences de " + attacker.getName() + " (0. ↩️ Retour) ---");
+        menu.displayMessage("\n--- Compétences de " + attacker.getName() + " (0. Retour) ---");
         for (int i = 0; i < skills.size(); i++) {
             Skill s = skills.get(i);
             menu.displayMessage((i + 1) + ". " + s.getName() + " (Coût : " + s.getCost() + " " + attacker.getResourceName() + ") - " + s.getDescription());
@@ -74,7 +74,7 @@ public class BattleView {
             if (choice > 0 && choice <= skills.size()) {
                 return skills.get(choice - 1);
             }
-            menu.displayMessage("❌ Choix invalide.");
+            menu.displayMessage("[Erreur] Choix invalide.");
         }
     }
 
@@ -91,7 +91,7 @@ public class BattleView {
             return lastAlive;
         }
 
-        menu.displayMessage("\nLequel voulez-vous cibler ? (0. ↩️ Retour)");
+        menu.displayMessage("\nLequel voulez-vous cibler ? (0. Retour)");
         for (int i = 0; i < monsters.size(); i++) {
             Character m = monsters.get(i);
             if (m.getHealthPoint() > 0) {
@@ -104,12 +104,12 @@ public class BattleView {
             if (choice > 0 && choice <= monsters.size() && monsters.get(choice - 1).getHealthPoint() > 0) {
                 return monsters.get(choice - 1);
             }
-            menu.displayMessage("❌ Cible invalide. Veuillez entrer un numéro valide (ou 0 pour annuler).");
+            menu.displayMessage("[Erreur] Cible invalide. Veuillez entrer un numéro valide (ou 0 pour annuler).");
         }
     }
 
     public Character askAllyToHeal(Team team, Menu menu) {
-        menu.displayMessage("\nChoisissez le coéquipier à soigner (0. ↩️ Retour) :");
+        menu.displayMessage("\nChoisissez le coéquipier à soigner (0. Retour) :");
         for (int i = 0; i < team.getMembers().size(); i++) {
             Character c = team.getMembers().get(i);
             menu.displayMessage((i + 1) + ". " + c.getName() + " | PV: " + Math.max(0, c.getHealthPoint()));
@@ -120,7 +120,7 @@ public class BattleView {
             if (choice > 0 && choice <= team.getMembers().size()) {
                 return team.getMembers().get(choice - 1);
             }
-            menu.displayMessage("❌ Coéquipier invalide (ou 0 pour annuler).");
+            menu.displayMessage("[Erreur] Coéquipier invalide (ou 0 pour annuler).");
         }
     }
 }

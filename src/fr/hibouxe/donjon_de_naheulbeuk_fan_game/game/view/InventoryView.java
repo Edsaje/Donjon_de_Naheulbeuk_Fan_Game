@@ -38,7 +38,7 @@ public class InventoryView {
         while (choice < 1 || choice > 3) {
             choice = menu.askPlayerInt();
             if (choice < 1 || choice > 3) {
-                menu.displayMessage("❌ Choix invalide. Entrez 1, 2 ou 3.");
+                menu.displayMessage("[Erreur] Choix invalide. Entrez 1, 2 ou 3.");
             }
         }
         return choice;
@@ -46,13 +46,13 @@ public class InventoryView {
 
     public EquipmentSlot askSlotToUnequip(Menu menu) {
         menu.displayMessage("\n--- QUEL EMPLACEMENT VOULEZ-VOUS DÉSÉQUIPER ? ---");
-        menu.displayMessage("1. 🗡️ Arme (Main Droite)");
-        menu.displayMessage("2. 🛡️ Main Gauche (Bouclier / Grimoire)");
-        menu.displayMessage("3. 🪖 Tête (Casque)");
-        menu.displayMessage("4. 🥋 Torse (Armure / Pagne / Robe)");
-        menu.displayMessage("5. 👖 Jambes");
-        menu.displayMessage("6. 💍 Bijou");
-        menu.displayMessage("0. ↩️ Annuler");
+        menu.displayMessage("1. Arme (Main Droite)");
+        menu.displayMessage("2. Main Gauche (Bouclier / Grimoire)");
+        menu.displayMessage("3. Tête (Casque)");
+        menu.displayMessage("4. Torse (Armure / Pagne / Robe)");
+        menu.displayMessage("5. Jambes");
+        menu.displayMessage("6. Bijou");
+        menu.displayMessage("0. Annuler");
 
         while (true) {
             int choice = menu.askPlayerInt();
@@ -65,7 +65,7 @@ public class InventoryView {
                 case 5: return EquipmentSlot.LEGS;
                 case 6: return EquipmentSlot.JEWELRY;
                 default:
-                    menu.displayMessage("❌ Choix invalide (ou 0 pour annuler).");
+                    menu.displayMessage("[Erreur] Choix invalide (ou 0 pour annuler).");
             }
         }
     }
@@ -78,7 +78,7 @@ public class InventoryView {
             menu.displayMessage("2. Non, fermer le sac");
             choice = menu.askPlayerInt();
             if (choice != 1 && choice != 2) {
-                menu.displayMessage("❌ Choix invalide.");
+                menu.displayMessage("[Erreur] Choix invalide.");
             }
         }
         return choice == 1;
@@ -91,7 +91,7 @@ public class InventoryView {
     }
 
     public Character askItemTarget(Team team, Menu menu) {
-        menu.displayMessage("\nSur quel aventurier voulez-vous agir ? (0. ↩️ Retour)");
+        menu.displayMessage("\nSur quel aventurier voulez-vous agir ? (0. Retour)");
         for (int i = 0; i < team.getMembers().size(); i++) {
             Character c = team.getMembers().get(i);
             menu.displayMessage((i + 1) + ". " + c.getName() + " (PV: " + c.getHealthPoint() + ")");
@@ -103,7 +103,7 @@ public class InventoryView {
             if (choice > 0 && choice <= team.getMembers().size()) {
                 return team.getMembers().get(choice - 1);
             }
-            menu.displayMessage("❌ Cible invalide (ou 0 pour annuler).");
+            menu.displayMessage("[Erreur] Cible invalide (ou 0 pour annuler).");
         }
     }
 }

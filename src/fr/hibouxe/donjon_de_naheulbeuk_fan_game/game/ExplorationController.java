@@ -87,6 +87,7 @@ public class ExplorationController {
         }
 
         if (moved) {
+            maze.moveMonsters(team, menu);
             Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
             handleCellEvents(currentCell);
         }
@@ -185,7 +186,7 @@ public class ExplorationController {
             if (isTutorial) {
                 running = false; // Fin du tutoriel, on sort de la boucle
             } else {
-                menu.displayMessage("\n🚪 Vous trouvez un escalier lugubre qui descend dans les profondeurs...");
+                menu.displayMessage("\nVous trouvez un escalier lugubre qui descend dans les profondeurs...");
                 currentFloor++;
                 menu.displayMessage("=== DESCENTE À L'ÉTAGE " + currentFloor + " ===");
                 
