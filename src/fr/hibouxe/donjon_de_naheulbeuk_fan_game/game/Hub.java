@@ -29,7 +29,8 @@ public class Hub {
             menu.displayMessage("1. Descendre dans le Donjon (RogueLite Mode)");
             menu.displayMessage("2. Voir la fiche de la compagnie");
             menu.displayMessage("3. Regarder dans le sac à dos");
-            menu.displayMessage("4. Quitter le jeu");
+            menu.displayMessage("4. Sauvegarder la partie (Feu de camp)");
+            menu.displayMessage("5. Quitter le jeu");
 
             int choice = menu.askPlayerInt();
             switch (choice) {
@@ -68,6 +69,14 @@ public class Hub {
                     }
                     break;
                 case 4:
+                    boolean saved = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.saveHubSave(team, 1);
+                    if (saved) {
+                        menu.displayMessage("\n[Sauvegarde] Progression de la Compagnie enregistrée avec succès au campement (savegame.sav) !");
+                    } else {
+                        menu.displayMessage("\n[Erreur] Échec de la sauvegarde.");
+                    }
+                    break;
+                case 5:
                     menu.displayMessage("Fin de l'aventure ! Le Nain pleure car il n'a pas eu son or.");
                     return false; // On quitte
                 default:

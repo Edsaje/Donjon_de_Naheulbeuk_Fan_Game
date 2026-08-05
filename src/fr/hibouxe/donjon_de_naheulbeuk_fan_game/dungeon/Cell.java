@@ -6,6 +6,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.Serializable;
+
 /**
  * Représente une case individuelle dans la grille 2D du donjon.
  * Une cellule possède 4 murs (Nord, Sud, Est, Ouest), un statut de visite,
@@ -14,7 +16,8 @@ import java.util.List;
  * @author Hibouxe
  * @version 1.0
  */
-public class Cell {
+public class Cell implements Serializable {
+    private static final long serialVersionUID = 1L;
     // Attributs
     private int x, y;
     private boolean visited = false;

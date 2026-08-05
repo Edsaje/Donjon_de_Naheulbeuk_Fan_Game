@@ -1,10 +1,13 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity;
 
+import java.io.Serializable;
+
 /**
  * Représente une compétence spéciale ou magique utilisable par un personnage.
  * Peut être une attaque (ciblant un monstre) ou un soin (ciblant un allié).
  */
-public class Skill {
+public class Skill implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private int cost;
     private String description;

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 
+import java.io.Serializable;
+
 /**
  * Classe parente représentant une entité vivante du jeu (Héros, Monstre ou Boss).
  * Gère les caractéristiques fondamentales (points de vie, attaque, défense, ressources).
@@ -15,7 +17,8 @@ import java.util.ArrayList;
  * @author Hibouxe
  * @version 1.0
  */
-public class Character {
+public class Character implements Serializable {
+    private static final long serialVersionUID = 1L;
     // Attributs
     protected String name;
     protected String type; // Classe du personnage

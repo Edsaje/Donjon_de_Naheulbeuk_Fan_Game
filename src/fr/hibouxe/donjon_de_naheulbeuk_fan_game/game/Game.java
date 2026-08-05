@@ -18,10 +18,47 @@ public class Game {
     }
 
     public void startGame() {
-        // Phase 1 : Tutoriel scripté (Ranger seul)
-        runTutorial();
+        // 1. Vérification Sauvegarde Rapide (QuickSave)
+        if (fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.hasQuickSave()) {
+            menu.displayMessage("\n=== SAUVEGARDE RAPIDE DÉTECTÉE ===");
+            menu.displayMessage("Une exploration en cours dans le Donjon a été trouvée !");
+            menu.displayMessage("1. Reprendre l'exploration là où vous vous étiez arrêté");
+            menu.displayMessage("2. Nouvelle Partie / Repartir du Campement");
+            int choice = menu.askPlayerInt();
+            if (choice == 1) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveData saveData = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.loadQuickSave();
+                if (saveData != null && saveData.getTeam() != null && saveData.getDungeon() != null) {
+                    this.team = saveData.getTeam();
+                    menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + saveData.getCurrentFloor() + " !");
+                    ExplorationController explo = new ExplorationController(saveData.getDungeon(), this.team, menu, false);
+                    explo.start();
+                    // Une fois l'exploration terminée ou en défaite, supprimer la quicksave
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.deleteQuickSave();
+                }
+            }
+        }
 
-        // Phase 2 : Boucle principale
+        // 2. Vérification Sauvegarde du Hub
+        if (this.team == null && fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.hasHubSave()) {
+            menu.displayMessage("\n=== SAUVEGARDE DU CAMPEMENT DÉTECTÉE ===");
+            menu.displayMessage("1. Charger la Compagnie du Campement");
+            menu.displayMessage("2. Recommencer depuis le Tutoriel");
+            int choice = menu.askPlayerInt();
+            if (choice == 1) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveData saveData = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.loadHubSave();
+                if (saveData != null && saveData.getTeam() != null) {
+                    this.team = saveData.getTeam();
+                    menu.displayMessage("\n[Chargement] Vous retrouvez votre Compagnie au Campement !");
+                }
+            }
+        }
+
+        // Phase 1 : Tutoriel scripté si aucune équipe n'a été chargée
+        if (this.team == null) {
+            runTutorial();
+        }
+
+        // Phase 2 : Boucle principale du Hub
         boolean playing = true;
         while (playing) {
             Hub hub = new Hub(team, menu);

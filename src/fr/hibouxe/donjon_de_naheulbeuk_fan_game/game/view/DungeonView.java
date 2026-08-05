@@ -21,7 +21,7 @@ public class DungeonView {
      * @return La commande nettoyée en majuscules (ex: "Z", "Q", "S", "D").
      */
     public String askPlayerMovement(Menu menu) {
-        menu.displayMessage("\nDéplacement (Z: Nord, S: Sud, Q: Ouest, D: Est | C: Fiche de la compagnie, I: Inventaire | X: Quitter) :");
+        menu.displayMessage("\nDéplacement (Z: Nord, S: Sud, Q: Ouest, D: Est | C: Compagnie, I: Sac, K: QuickSave | X: Quitter) :");
         return menu.askPlayerString().trim().toUpperCase();
     }
 

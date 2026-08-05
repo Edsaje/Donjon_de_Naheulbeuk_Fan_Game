@@ -6,6 +6,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.Serializable;
+
 /**
  * Gère la Compagnie de Naheulbeuk (l'équipe des héros).
  * Maintient la liste des aventuriers ainsi que la position globale de la compagnie (X, Y) dans le donjon.
@@ -13,7 +15,8 @@ import java.util.List;
  * @author Hibouxe
  * @version 1.0
  */
-public class Team {
+public class Team implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int x = 0; // Position X du joueur (départ en 0)
     private int y = 0; // Position Y du joueur (départ en 0)
     private List<Character> members = new ArrayList<>();

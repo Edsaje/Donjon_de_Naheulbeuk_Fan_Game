@@ -2,13 +2,16 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.item;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 
+import java.io.Serializable;
+
 /**
  * Classe parente représentant tout objet du jeu (Potion, Équipement, Trésor).
  *
  * @author Hibouxe
  * @version 1.0
  */
-public class Item {
+public class Item implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String name;
     protected String description;
 

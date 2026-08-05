@@ -3,6 +3,8 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
+import java.io.Serializable;
+
 /**
  * Modèle du Donjon (Carte du Labyrinthe).
  * Stocke la matrice 2D des cellules et délègue la génération à {@link DungeonGenerator}
@@ -11,13 +13,15 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
  * @author Hibouxe
  * @version 2.0
  */
-public abstract class Dungeon {
+public abstract class Dungeon implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int width;
     private int height;
     private Cell[][] grid;
 
-    private DungeonGenerator generator = new DungeonGenerator();
-    private MonsterAI monsterAI = new MonsterAI();
+    private transient DungeonGenerator generator = new DungeonGenerator();
+    private transient MonsterAI monsterAI = new MonsterAI();
 
     /**
      * Construit une grille de labyrinthe aux dimensions spécifiées.
@@ -38,11 +42,21 @@ public abstract class Dungeon {
         }
     }
 
+    private DungeonGenerator getGenerator() {
+        if (generator == null) generator = new DungeonGenerator();
+        return generator;
+    }
+
+    private MonsterAI getMonsterAI() {
+        if (monsterAI == null) monsterAI = new MonsterAI();
+        return monsterAI;
+    }
+
     /**
      * Génère un labyrinthe parfait à partir de la case (0, 0).
      */
     public void generateMaze() {
-        generator.generateMaze(this, 0, 0);
+        getGenerator().generateMaze(this, 0, 0);
     }
 
     /**
@@ -52,7 +66,7 @@ public abstract class Dungeon {
      * @param startY Coordonnée Y de départ
      */
     public void generateMaze(int startX, int startY) {
-        generator.generateMaze(this, startX, startY);
+        getGenerator().generateMaze(this, startX, startY);
     }
 
     /**
@@ -64,7 +78,7 @@ public abstract class Dungeon {
      * @param roomHeight Hauteur de la salle
      */
     public void createRoom(int startX, int startY, int roomWidth, int roomHeight) {
-        generator.createRoom(this, startX, startY, roomWidth, roomHeight);
+        getGenerator().createRoom(this, startX, startY, roomWidth, roomHeight);
     }
 
     /**
@@ -75,7 +89,7 @@ public abstract class Dungeon {
      * @param maxSize       Taille maximale d'une salle
      */
     public void generateRandomRooms(int numberOfRooms, int minSize, int maxSize) {
-        generator.generateRandomRooms(this, numberOfRooms, minSize, maxSize);
+        getGenerator().generateRandomRooms(this, numberOfRooms, minSize, maxSize);
     }
 
     /**
@@ -86,7 +100,7 @@ public abstract class Dungeon {
      * @param startY Coordonnée Y à épargner (joueur)
      */
     public void generateMonsters(int count, int startX, int startY) {
-        generator.generateMonsters(this, count, startX, startY);
+        getGenerator().generateMonsters(this, count, startX, startY);
     }
 
     /**
@@ -95,7 +109,7 @@ public abstract class Dungeon {
      * @param count Nombre de coffres à générer
      */
     public void generateItems(int count) {
-        generator.generateItems(this, count);
+        getGenerator().generateItems(this, count);
     }
 
     /**
@@ -104,7 +118,7 @@ public abstract class Dungeon {
      * @param count Nombre d'escaliers à placer
      */
     public void generateStairs(int count) {
-        generator.generateStairs(this, count);
+        getGenerator().generateStairs(this, count);
     }
 
     /**
@@ -114,7 +128,7 @@ public abstract class Dungeon {
      * @param menu La vue principale (Injectée)
      */
     public void moveMonsters(Team team, Menu menu) {
-        monsterAI.moveMonsters(this, team, menu);
+        getMonsterAI().moveMonsters(this, team, menu);
     }
 
     /**
