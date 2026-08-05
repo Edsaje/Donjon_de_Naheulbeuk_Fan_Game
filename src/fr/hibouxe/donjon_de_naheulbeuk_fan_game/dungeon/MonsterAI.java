@@ -15,8 +15,8 @@ import java.util.Random;
 
 /**
  * Contrôleur d'Intelligence Artificielle et de Pathfinding (BFS, Line of Sight & Archétypes Tactiques).
- * Responsable du déplacement synchrone et intelligent des monstres selon leur personnalité (Poltron, Guerrier, Embusqué).
- * Respecte à 100% le principe MVC et SOLID (SRP et OCP).
+ * Responsable du déplacement synchrone et intelligent des meutes de monstres (déplacement en escouade).
+ * Respecte à 100% le principe MVC et SOLID.
  *
  * @author Hibouxe
  * @version 2.0
@@ -25,8 +25,9 @@ public class MonsterAI {
     private Random random = new Random();
 
     /**
-     * Déplace tous les monstres du donjon de 1 case au tour par tour (Style Pokémon Donjon Mystère).
-     * Évalue le comportement par archétype (Guerrier, Poltron, Embusqué).
+     * Déplace tous les groupes de monstres du donjon de 1 case au tour par tour (Style Pokémon Donjon Mystère).
+     * Les monstres d'une même case forment une escouade et se déplacent ENSEMBLE en un seul bloc.
+     * Évalue le comportement par archétype (Guerrier, Poltron, Embusqué) grâce au chef de meute.
      * Deux groupes de monstres ne peuvent jamais se superposer.
      *
      * @param dungeon Le donjon contenant la grille
@@ -44,24 +45,33 @@ public class MonsterAI {
                 Cell currentCell = grid[x][y];
 
                 if (currentCell.hasMonster()) {
-                    List<Character> monstersOnCell = new ArrayList<>(currentCell.getMonsters());
-                    int groupSize = monstersOnCell.size();
+                    List<Character> squad = currentCell.getMonsters();
+                    if (squad.isEmpty()) continue;
 
-                    for (Character monster : monstersOnCell) {
-                        if (movedMonsters.contains(monster)) {
-                            continue; // Déjà déplacé pendant ce tour
+                    // Vérifier si le groupe a déjà été déplacé ce tour-ci
+                    boolean alreadyMoved = false;
+                    for (Character m : squad) {
+                        if (movedMonsters.contains(m)) {
+                            alreadyMoved = true;
+                            break;
                         }
+                    }
+                    if (alreadyMoved) continue;
 
-                        int[] targetStep = determineTargetStep(dungeon, monster, groupSize, x, y, team);
-                        int targetX = targetStep[0];
-                        int targetY = targetStep[1];
+                    // Le premier monstre du groupe (Chef) prend la décision pour toute l'escouade !
+                    Character leader = squad.get(0);
+                    int groupSize = squad.size();
 
-                        // Effectuer le déplacement si la case de destination est libre et différente
-                        if (targetX != x || targetY != y) {
-                            currentCell.getMonsters().remove(monster);
-                            grid[targetX][targetY].getMonsters().add(monster);
-                            movedMonsters.add(monster);
-                        }
+                    int[] targetStep = determineTargetStep(dungeon, leader, groupSize, x, y, team);
+                    int targetX = targetStep[0];
+                    int targetY = targetStep[1];
+
+                    // Déplacement de l'ENSEMBLE du groupe en bloc !
+                    if (targetX != x || targetY != y) {
+                        List<Character> movingGroup = new ArrayList<>(squad);
+                        currentCell.getMonsters().clear();
+                        grid[targetX][targetY].getMonsters().addAll(movingGroup);
+                        movedMonsters.addAll(movingGroup);
                     }
                 }
             }
@@ -69,13 +79,13 @@ public class MonsterAI {
     }
 
     /**
-     * Détermine la case cible du monstre en fonction de son archétype tactique.
+     * Détermine la case cible de l'escouade en fonction de l'archétype du chef de meute.
      *
      * @param dungeon   Le donjon
-     * @param monster   Le monstre qui réfléchit
+     * @param monster   Le chef de meute qui réfléchit
      * @param groupSize La taille du groupe sur cette case
-     * @param x         X actuel du monstre
-     * @param y         Y actuel du monstre
+     * @param x         X actuel du groupe
+     * @param y         Y actuel du groupe
      * @param team      L'équipe de la compagnie
      * @return Les coordonnées [targetX, targetY] de la case voulue.
      */
@@ -97,7 +107,7 @@ public class MonsterAI {
             if (distance <= 2 && hasSight) {
                 return getNextStepBFS(dungeon, x, y, teamX, teamY);
             } else {
-                return new int[]{x, y}; // Rest en embuscade
+                return new int[]{x, y}; // Reste en embuscade
             }
         }
 
