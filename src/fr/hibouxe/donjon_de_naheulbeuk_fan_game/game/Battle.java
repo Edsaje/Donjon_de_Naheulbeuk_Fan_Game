@@ -183,7 +183,7 @@ public class Battle {
                 actionConfirmed = true;
 
             } else if (action == 2) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill chosenSkill = menu.askSkill(attacker);
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill chosenSkill = menu.askSkill(attacker, monsters);
                 if (chosenSkill == null) continue;
 
                 Character target = null;

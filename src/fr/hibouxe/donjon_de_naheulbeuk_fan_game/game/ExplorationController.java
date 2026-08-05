@@ -189,19 +189,42 @@ public class ExplorationController {
                 menu.displayMessage("\nVous trouvez un escalier lugubre qui descend dans les profondeurs...");
                 currentFloor++;
                 menu.displayMessage("=== DESCENTE À L'ÉTAGE " + currentFloor + " ===");
-                
-                // 1. On regénère un donjon de taille classique
-                this.maze = new NaheulbeukDungeon(); 
-                // On génère le labyrinthe en partant de la position ACTUELLE de l'équipe pour ne pas la coincer dans un mur !
+
+                this.maze = new NaheulbeukDungeon();
                 this.maze.generateMaze(team.getX(), team.getY());
                 this.maze.generateRandomRooms(6, 2, 4);
-                
-                // 2. On corse la difficulté !
-                this.maze.generateMonsters(5 + currentFloor, team.getX(), team.getY()); 
-                this.maze.generateItems(3);
-                this.maze.generateStairs(1); // Le nouvel escalier !
-                
-                // L'équipe reste à ses coordonnées (immersion conservée !)
+
+                if (currentFloor == 4) {
+                    menu.displayMessage("\nRanger : On est presque devant le bureau de Zangdar ! Préparez vos armes !");
+                    this.maze.generateMonsters(8, team.getX(), team.getY());
+                    this.maze.generateItems(3);
+                    this.maze.generateStairs(1);
+                } else if (currentFloor == 5) {
+                    menu.displayMessage("\n=== ÉTAGE 5 : L'ANTICHAMBRE DU BUREAU DE ZANGDAR ===");
+                    menu.displayMessage("Magicienne : Attention ! C'est un Golem de Fer ! C'est une machine à baffes insensible aux armes simples !");
+                    menu.displayMessage("Nain : YAAAAAAAAAH ! (Il charge la hache en avant, frappe l'acier et se tord les poignets !)");
+                    menu.displayMessage("Zangdar (depuis son balcon) : Insolents ! Misérables cloportes ! Vous n'emporterez jamais la statuette de Gladeulfeurh ! Golem de fer, réduis-les en bouillie !");
+
+                    // Spawner le Boss Golem de Fer sur la case actuelle !
+                    List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character> bossList = new java.util.ArrayList<>();
+                    bossList.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.boss.Golem());
+                    currentCell.setMonsters(bossList);
+
+                    Battle bossBattle = new Battle(team, bossList, menu);
+                    boolean victory = bossBattle.start();
+
+                    if (victory) {
+                        menu.displayMessage("\nZangdar claque la porte de son bureau et hurle en s'enfuyant : 'Maudits aventuriers d'opérette ! Vous ne payez rien pour attendre, je reviendrai vous anéantir !'");
+                        currentCell.getMonsters().clear();
+                        running = false; // Fin de l'expédition donjon !
+                    } else {
+                        running = false;
+                    }
+                } else {
+                    this.maze.generateMonsters(5 + currentFloor, team.getX(), team.getY());
+                    this.maze.generateItems(3);
+                    this.maze.generateStairs(1);
+                }
             }
         }
     }

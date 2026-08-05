@@ -148,4 +148,25 @@ public class Team {
     public void setMaxCapacity(int maxCapacity) {
         this.maxCapacity = maxCapacity;
     }
+
+    /**
+     * Sélectionne aléatoirement un membre vivant de la Compagnie en excluant le personnage spécifié.
+     * Utile pour les attaques à rebond ou les tirs alliés.
+     *
+     * @param excludedMember Le personnage à exclure de la sélection
+     * @return Un membre de l'équipe au hasard (ou null si aucun autre membre n'est vivant).
+     */
+    public Character getRandomMemberExcept(Character excludedMember) {
+        List<Character> candidates = new ArrayList<>();
+        for (Character c : members) {
+            if (c != excludedMember && c.getHealthPoint() > 0) {
+                candidates.add(c);
+            }
+        }
+        if (candidates.isEmpty()) {
+            return null;
+        }
+        java.util.Random random = new java.util.Random();
+        return candidates.get(random.nextInt(candidates.size()));
+    }
 }

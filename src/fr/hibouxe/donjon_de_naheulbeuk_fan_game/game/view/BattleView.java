@@ -3,12 +3,16 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.boss.Golem;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 import java.util.List;
 
 /**
- * Sous-vue responsable de l'affichage des combats au tour par tour.
+ * Sous-vue responsable de l'affichage des combats au tour par tour et des compétences contextuelles.
+ *
+ * @author Hibouxe
+ * @version 2.0
  */
 public class BattleView {
 
@@ -58,15 +62,25 @@ public class BattleView {
     }
 
     public Skill askSkill(Character attacker, Menu menu) {
+        return askSkill(attacker, null, menu);
+    }
+
+    public Skill askSkill(Character attacker, List<Character> monsters, Menu menu) {
         List<Skill> skills = attacker.getSkills();
         if (skills.isEmpty()) {
             menu.displayMessage("  Aucune compétence apprise !");
             return null;
         }
         menu.displayMessage("\n--- Compétences de " + attacker.getName() + " (0. Retour) ---");
+        boolean isGolemBossPresent = isGolemPresent(monsters);
+
         for (int i = 0; i < skills.size(); i++) {
             Skill s = skills.get(i);
-            menu.displayMessage((i + 1) + ". " + s.getName() + " (Coût : " + s.getCost() + " " + attacker.getResourceName() + ") - " + s.getDescription());
+            String desc = s.getDescription();
+            if (s.getName().equals("Tir Précis (ou presque)") && isGolemBossPresent) {
+                desc = "Vise la fente d'assemblage du Golem de Fer pour briser sa carapace d'acier ! Risque de planter la flèche dans le derrière du Nain !";
+            }
+            menu.displayMessage((i + 1) + ". " + s.getName() + " (Coût : " + s.getCost() + " " + attacker.getResourceName() + ") - " + desc);
         }
         while (true) {
             int choice = menu.askPlayerInt();
@@ -76,6 +90,16 @@ public class BattleView {
             }
             menu.displayMessage("[Erreur] Choix invalide.");
         }
+    }
+
+    private boolean isGolemPresent(List<Character> monsters) {
+        if (monsters == null) return false;
+        for (Character m : monsters) {
+            if (m instanceof Golem && m.getHealthPoint() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Character askMonsterTarget(List<Character> monsters, Menu menu) {

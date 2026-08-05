@@ -109,6 +109,10 @@ public class Menu {
         return battleView.askSkill(attacker, this);
     }
 
+    public Skill askSkill(Character attacker, List<Character> monsters) {
+        return battleView.askSkill(attacker, monsters, this);
+    }
+
     public Character askMonsterTarget(List<Character> monsters) {
         return battleView.askMonsterTarget(monsters, this);
     }
