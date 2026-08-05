@@ -41,6 +41,31 @@ public class Hub {
                     break;
                 case 3:
                     menu.displayInventory(team);
+                    int invChoice = menu.askInventoryMenuChoice();
+                    if (invChoice == 1 && !team.getInventory().isEmpty()) {
+                        int itemIndex = menu.askItemIndex();
+                        if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
+                            fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item selectedItem = team.getInventory().get(itemIndex);
+                            fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character target = menu.askItemTarget(team);
+                            if (target != null) {
+                                boolean used = selectedItem.use(target);
+                                if (used) {
+                                    team.removeItem(selectedItem);
+                                    menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !");
+                                } else {
+                                    menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C'est réservé à une autre classe...");
+                                }
+                            }
+                        }
+                    } else if (invChoice == 2) {
+                        fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character unequipTarget = menu.askItemTarget(team);
+                        if (unequipTarget != null) {
+                            fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.EquipmentSlot slot = menu.askSlotToUnequip();
+                            if (slot != null) {
+                                unequipTarget.unequip(slot, team, menu);
+                            }
+                        }
+                    }
                     break;
                 case 4:
                     menu.displayMessage("Fin de l'aventure ! Le Nain pleure car il n'a pas eu son or.");

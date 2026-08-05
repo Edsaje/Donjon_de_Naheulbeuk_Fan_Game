@@ -3,6 +3,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 public class Magician extends Character {
     public Magician() {
@@ -30,14 +31,14 @@ public class Magician extends Character {
     }
     
     @Override
-    public void levelUp() {
-        super.levelUp();
+    public void levelUp(Menu menu) {
+        super.levelUp(menu);
         this.healthPoint += 2;
         this.magicAttack += 4;
         this.defense += 1;
         this.magicDefense += 3;
         this.speed += 1;
         this.maxResource += 10;
-        System.out.println(this.name + " apprend de nouveaux mots compliqués pour sa magie (Niveau " + this.level + ") !");
+        menu.displayMessage(this.name + " apprend de nouveaux mots compliqués pour sa magie (Niveau " + this.level + ") !");
     }
 }

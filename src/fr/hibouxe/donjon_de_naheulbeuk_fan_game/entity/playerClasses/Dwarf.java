@@ -3,6 +3,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 public class Dwarf extends Character {
     public Dwarf() {
@@ -30,13 +31,13 @@ public class Dwarf extends Character {
     }
     
     @Override
-    public void levelUp() {
-        super.levelUp();
+    public void levelUp(Menu menu) {
+        super.levelUp(menu);
         this.healthPoint += 6;
         this.attack += 2;
         this.defense += 3;
         this.magicDefense += 1;
         this.speed += 1;
-        System.out.println(this.name + " chantonne : Je suis niveau " + this.level + " Tralalalala (Niveau " + this.level + ") !");
+        menu.displayMessage(this.name + " chantonne : Je suis niveau " + this.level + " Tralalalala (Niveau " + this.level + ") !");
     }
 }

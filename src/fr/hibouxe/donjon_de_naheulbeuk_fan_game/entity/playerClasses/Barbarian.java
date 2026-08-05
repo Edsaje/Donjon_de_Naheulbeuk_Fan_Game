@@ -3,6 +3,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * ReprÃ©sente le Barbare dans la Compagnie de Naheulbeuk.
@@ -27,9 +28,9 @@ public class Barbarian extends Character {
     /**
      * ExÃ©cute l'attaque dÃ©vastatrice du Barbare en consommant 20 points de Rage.
      *
+     * @param skill   La compétence utilisée
      * @param team    La compagnie de Naheulbeuk
      * @param monster Le monstre ciblé
-     * @param menu    La vue principale du jeu (Injectée)
      */
     @Override
     public String useSpecialSkill(Skill skill, Team team, Character monster) {
@@ -47,13 +48,13 @@ public class Barbarian extends Character {
         return super.useSpecialSkill(skill, team, monster);
     }
     @Override
-    public void levelUp() {
-        super.levelUp();
+    public void levelUp(Menu menu) {
+        super.levelUp(menu);
         this.healthPoint += 5;
         this.attack += 4;
         this.defense += 1;
         this.speed += 1;
-        System.out.println(this.name + " sent encore plus fort des pieds ! (Niveau " + this.level + ") !");
+        menu.displayMessage(this.name + " sent encore plus fort des pieds ! (Niveau " + this.level + ") !");
     }
 }
 

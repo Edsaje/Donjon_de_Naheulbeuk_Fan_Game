@@ -97,24 +97,43 @@ public class ExplorationController {
      */
     private void handleInventoryAction() {
         menu.displayInventory(team);
-        if (!team.getInventory().isEmpty()) {
-            boolean wantToUse = menu.askUseItem();
-            if (wantToUse) {
-                int itemIndex = menu.askItemIndex();
-                if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
-                    Item selectedItem = team.getInventory().get(itemIndex);
-                    Character target = menu.askItemTarget(team);
-                    if (target != null) {
-                        boolean used = selectedItem.use(target);
-                        if (used) {
-                            team.removeItem(selectedItem);
-                            menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !");
-                        } else {
-                            menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C'est pour une autre classe...");
+        int choice = menu.askInventoryMenuChoice();
+
+        switch (choice) {
+            case 1:
+                if (!team.getInventory().isEmpty()) {
+                    int itemIndex = menu.askItemIndex();
+                    if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
+                        Item selectedItem = team.getInventory().get(itemIndex);
+                        Character target = menu.askItemTarget(team);
+                        if (target != null) {
+                            boolean used = selectedItem.use(target);
+                            if (used) {
+                                team.removeItem(selectedItem);
+                                menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !");
+                            } else {
+                                menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C'est réservé à une autre classe...");
+                            }
                         }
                     }
+                } else {
+                    menu.displayMessage("Le sac à dos est vide ! Impossible d'utiliser un objet.");
                 }
-            }
+                break;
+
+            case 2:
+                Character unequipTarget = menu.askItemTarget(team);
+                if (unequipTarget != null) {
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.EquipmentSlot slot = menu.askSlotToUnequip();
+                    if (slot != null) {
+                        unequipTarget.unequip(slot, team, menu);
+                    }
+                }
+                break;
+
+            case 3:
+                menu.displayMessage("Fermeture du sac à dos.");
+                break;
         }
     }
 

@@ -1,6 +1,8 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity;
 
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.Equipment;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.EquipmentSlot;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -89,14 +91,14 @@ public class Character {
         this.currentResource = Math.min(this.maxResource, this.currentResource + amount);
     }
 
-    public void gainXp(int amount) {
+    public void gainXp(int amount, Menu menu) {
         this.xp += amount;
         while (this.xp >= this.xpToNextLevel) {
-            levelUp();
+            levelUp(menu);
         }
     }
 
-    public void levelUp() {
+    public void levelUp(Menu menu) {
         this.level++;
         this.xp -= this.xpToNextLevel; // On retire l'XP consommée
         this.xpToNextLevel = (int) (100 * Math.pow(this.level, 1.5)); // Le prochain niveau sera plus long à atteindre
@@ -253,6 +255,60 @@ public class Character {
             return "Aucun équipement. EXHIBITIONNISTE !";
         }
         return String.join(", ", items);
+    }
+
+    /**
+     * Retire un équipement porté par le personnage et le remet dans le sac à dos de la compagnie.
+     *
+     * @param slot L'emplacement à déséquiper
+     * @param team L'équipe de la compagnie
+     * @param menu La vue principale (Injectée)
+     * @return true si l'équipement a été retiré et remis dans le sac, false sinon.
+     */
+    public boolean unequip(EquipmentSlot slot, Team team, Menu menu){
+        Equipment tmp = null;
+
+        switch (slot){
+
+            case HEAD:
+                tmp = this.headSlot;
+                this.headSlot = null;
+                break;
+            case CHEST:
+                tmp = this.chestSlot;
+                this.chestSlot = null;
+                break;
+            case LEGS:
+                tmp = this.legsSlot;
+                this.legsSlot = null;
+                break;
+            case JEWELRY:
+                tmp = this.jewelrySlot;
+                this.jewelrySlot = null;
+                break;
+            case WEAPON:
+                tmp = this.weaponSlot;
+                this.weaponSlot = null;
+                break;
+            case LEFT_HAND:
+                tmp = this.leftHandSlot;
+                this.leftHandSlot = null;
+                break;
+        }
+
+        if (tmp == null){
+            menu.displayMessage("Aucun équipement d'équipé à cet endroit !");
+            return false;
+        } else {
+            if (team.addItem(tmp)){
+                menu.displayMessage(getName() + " retire " + tmp.getName() + "et le remet dans le sac Saldur de la compagnie !");
+                return true;
+            } else {
+                equip(tmp);
+                menu.displayMessage("Le sac est plein ! Impossible de déséquiper " + tmp.getName());
+                return false;
+            }
+        }
     }
 
 

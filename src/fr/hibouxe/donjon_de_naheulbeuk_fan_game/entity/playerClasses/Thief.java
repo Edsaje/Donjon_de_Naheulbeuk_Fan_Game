@@ -3,6 +3,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 public class Thief extends Character {
     public Thief() {
@@ -30,13 +31,13 @@ public class Thief extends Character {
     }
     
     @Override
-    public void levelUp() {
-        super.levelUp();
+    public void levelUp(Menu menu) {
+        super.levelUp(menu);
         this.healthPoint += 3;
         this.attack += 3;
         this.defense += 1;
         this.magicDefense += 1;
         this.speed += 3;
-        System.out.println(this.name + " arrive encore mieux à se dissimuler et fuir le combat ! (Niveau " + this.level + ") !");
+        menu.displayMessage(this.name + " arrive encore mieux à se dissimuler et fuir le combat ! (Niveau " + this.level + ") !");
     }
 }

@@ -3,6 +3,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 public class Ogre extends Character {
     public Ogre() {
@@ -30,11 +31,11 @@ public class Ogre extends Character {
     }
     
     @Override
-    public void levelUp() {
-        super.levelUp();
+    public void levelUp(Menu menu) {
+        super.levelUp(menu);
         this.healthPoint += 8;
         this.attack += 3;
         this.defense += 2;
-        System.out.println(this.name + " Akala, zog zog, glozou bok ! (Niveau " + this.level + ") !");
+        menu.displayMessage(this.name + " Akala, zog zog, glozou bok ! (Niveau " + this.level + ") !");
     }
 }

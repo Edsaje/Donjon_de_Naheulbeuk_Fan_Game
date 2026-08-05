@@ -1,9 +1,9 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
-
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
 /**
  * ReprÃ©sente l'Ã‰lfette dans la Compagnie de Naheulbeuk.
@@ -29,9 +29,9 @@ public class Elf extends Character {
      * ExÃ©cute la compÃ©tence spÃ©ciale de soin magique sur un coÃ©quipier de la compagnie.
      * Consomme 2 points de Mana.
      *
-     * @param team   La compagnie contenant la cible Ã  soigner
-     * @param target Le monstre affrontÃ© (non utilisÃ© pour le soin)
-     * @param menu   La vue principale du jeu (InjectÃ©e)
+     * @param skill  La compétence utilisée
+     * @param team   La compagnie contenant la cible à soigner
+     * @param target Le monstre affronté (non utilisé pour le soin)
      */
     @Override
     public String useSpecialSkill(fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill skill, Team team, Character target) {
@@ -54,15 +54,15 @@ public class Elf extends Character {
         return super.useSpecialSkill(skill, team, target);
     }
     @Override
-    public void levelUp() {
-        super.levelUp();
+    public void levelUp(Menu menu) {
+        super.levelUp(menu);
         this.healthPoint += 2;
         this.attack += 1;
         this.magicAttack += 3;
         this.defense += 1;
         this.magicDefense += 2;
         this.speed += 3;
-        System.out.println(this.name + " gagne encore en charisme, il va encore falloir enlever un bouton de la chemise (Niveau " + this.level + ") !");
+        menu.displayMessage(this.name + " gagne encore en charisme, il va encore falloir enlever un bouton de la chemise (Niveau " + this.level + ") !");
     }
 }
 

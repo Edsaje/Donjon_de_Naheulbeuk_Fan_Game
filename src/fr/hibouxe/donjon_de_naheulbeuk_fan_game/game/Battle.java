@@ -91,7 +91,7 @@ public class Battle {
 
                     for (Character c : team.getMembers()) { //on donne l'xp aux vivants
                         if (c.getHealthPoint() > 0) {
-                            c.gainXp(xpPerHero);
+                            c.gainXp(xpPerHero, menu);
                         }
                     }
 
