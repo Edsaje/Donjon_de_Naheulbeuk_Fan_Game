@@ -87,9 +87,16 @@ public class ExplorationController {
         }
 
         if (moved) {
-            maze.moveMonsters(team, menu);
             Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
+            // 1. Vérification immédiate : Si le joueur a marché sur un monstre, combat immédiat !
             handleCellEvents(currentCell);
+
+            // 2. Si le joueur n'a pas déclenché de combat et explore toujours, les monstres se déplacent
+            if (running && !currentCell.hasMonster()) {
+                maze.moveMonsters(team, menu);
+                // 3. Vérification Embuscade : Un monstre est-il arrivé sur la case du joueur ?
+                handleCellEvents(currentCell);
+            }
         }
     }
 
