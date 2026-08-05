@@ -81,7 +81,8 @@ public class ExplorationController {
             case "K":
                 boolean quickSaved = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.saveQuickSave(team, maze, currentFloor);
                 if (quickSaved) {
-                    menu.displayMessage("\n[Sauvegarde Rapide] Donjon et position enregistrés avec succès (quicksave.sav) !");
+                    menu.displayMessage("\n[Sauvegarde Rapide] Donjon et position enregistrés. Retour à l'écran initial...");
+                    running = false;
                 } else {
                     menu.displayMessage("\n[Erreur] Échec de la Sauvegarde Rapide.");
                 }

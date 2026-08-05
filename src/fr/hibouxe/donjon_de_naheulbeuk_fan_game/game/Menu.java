@@ -7,6 +7,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.BattleView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.DungeonView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.InventoryView;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.MainMenuView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.EquipmentSlot;
 
@@ -15,7 +16,7 @@ import java.util.Scanner;
 
 /**
  * Façade d'Affichage et d'Entrée/Sortie (Vue) pour l'interface console.
- * Centralise les appels vers les sous-vues spécialisées (DungeonView, InventoryView, BattleView).
+ * Centralise les appels vers les sous-vues spécialisées (DungeonView, InventoryView, BattleView, MainMenuView).
  *
  * @author Hibouxe
  * @version 2.0
@@ -27,6 +28,7 @@ public class Menu {
     private DungeonView dungeonView = new DungeonView();
     private InventoryView inventoryView = new InventoryView();
     private BattleView battleView = new BattleView();
+    private MainMenuView mainMenuView = new MainMenuView();
 
     /**
      * Affiche un message personnalisé dans la console.
@@ -126,10 +128,24 @@ public class Menu {
     public void displayTeamStats(Team team) {
         displayMessage("\n=================== Fiche de la compagnie de Naheulbeuk ===================");
         for (Character c : team.getMembers()) {
-            displayMessage(String.format("🔹 %-12s | Niv %d | PV: %2d | %s : %2d | Attaque: %2d | Magie: %2d | Défense: %2d | Def.Mag: %2d | Vitesse: %2d",
+            displayMessage(String.format(" - %-12s | Niv %d | PV: %2d | %s : %2d | Attaque: %2d | Magie: %2d | Défense: %2d | Def.Mag: %2d | Vitesse: %2d",
                     c.getName(), c.getLevel(), c.getHealthPoint(), c.getResourceName(), c.getResourcePoint(), c.getAttack(), c.getMagicAttack(), c.getDefense(), c.getMagicDefense(), c.getSpeed()));
             displayMessage("   └ Équipement : " + c.getEquippedSummary());
         }
         displayMessage("===========================================================================\n");
+    }
+
+    // --- DÉLÉGATION MAIN MENU VIEW ---
+
+    public void displayTitleScreen() {
+        mainMenuView.displayTitleScreen(this);
+    }
+
+    public int askMainMenuChoice() {
+        return mainMenuView.askMainMenuChoice(this);
+    }
+
+    public boolean askLoadQuickSavePrompt() {
+        return mainMenuView.askLoadQuickSavePrompt(this);
     }
 }

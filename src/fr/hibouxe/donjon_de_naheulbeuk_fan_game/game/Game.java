@@ -4,10 +4,16 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.NaheulbeukDungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.TutorialDungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses.*;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveData;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager;
 
 /**
  * Super Contrôleur Orchestrateur.
- * Gère la machine à états de l'application (Tutoriel -> Hub <-> Donjon)
+ * Gère la machine à états de l'application (Écran-titre -> Détection QuickSave -> Menu Principal -> Tutoriel / Hub <-> Donjon).
+ * Respecte à 100% l'architecture MVC et SOLID.
+ *
+ * @author Hibouxe
+ * @version 3.0
  */
 public class Game {
     private Menu menu;
@@ -17,48 +23,82 @@ public class Game {
         this.menu = menu;
     }
 
+    /**
+     * Lance le cycle de vie principal du jeu.
+     */
     public void startGame() {
-        // 1. Vérification Sauvegarde Rapide (QuickSave)
-        if (fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.hasQuickSave()) {
-            menu.displayMessage("\n=== SAUVEGARDE RAPIDE DÉTECTÉE ===");
-            menu.displayMessage("Une exploration en cours dans le Donjon a été trouvée !");
-            menu.displayMessage("1. Reprendre l'exploration là où vous vous étiez arrêté");
-            menu.displayMessage("2. Nouvelle Partie / Repartir du Campement");
-            int choice = menu.askPlayerInt();
-            if (choice == 1) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveData saveData = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.loadQuickSave();
-                if (saveData != null && saveData.getTeam() != null && saveData.getDungeon() != null) {
-                    this.team = saveData.getTeam();
-                    menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + saveData.getCurrentFloor() + " !");
-                    ExplorationController explo = new ExplorationController(saveData.getDungeon(), this.team, menu, false);
-                    explo.start();
-                    // Une fois l'exploration terminée ou en défaite, supprimer la quicksave
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.deleteQuickSave();
+        boolean applicationRunning = true;
+
+        while (applicationRunning) {
+            // 1. Écran initial : "Donjon De Naheulbeuk Fan Game" - Demande d'appuyer sur Entrée
+            menu.displayTitleScreen();
+
+            // 2. Détection immédiate de la Sauvegarde Rapide après l'appui sur Entrée !
+            boolean resumedFromQuickSave = false;
+            if (SaveManager.hasQuickSave()) {
+                boolean loadQuick = menu.askLoadQuickSavePrompt();
+                if (loadQuick) {
+                    SaveData saveData = SaveManager.loadQuickSave();
+                    if (saveData != null && saveData.getTeam() != null && saveData.getDungeon() != null) {
+                        this.team = saveData.getTeam();
+                        menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + saveData.getCurrentFloor() + " !");
+                        
+                        ExplorationController explo = new ExplorationController(saveData.getDungeon(), this.team, menu, false);
+                        explo.start();
+
+                        // Si le joueur refait une quicksave (K) ou meurt, on boucle et retourne à l'écran-titre !
+                        resumedFromQuickSave = true;
+                    }
+                }
+            }
+
+            // 3. Si aucune reprise de QuickSave n'a eu lieu, afficher le MENU PRINCIPAL !
+            if (!resumedFromQuickSave) {
+                boolean inMainMenu = true;
+
+                while (inMainMenu && applicationRunning) {
+                    int choice = menu.askMainMenuChoice();
+
+                    switch (choice) {
+                        case 1: // Nouvelle Partie
+                            runNewGame();
+                            break;
+                        case 2: // Charger Partie
+                            loadHubSaveGame();
+                            break;
+                        case 3: // Quitter
+                            menu.displayMessage("\nMerci d'avoir joué au Donjon de Naheulbeuk ! Tchoss !");
+                            inMainMenu = false;
+                            applicationRunning = false;
+                            break;
+                    }
                 }
             }
         }
+    }
 
-        // 2. Vérification Sauvegarde du Hub
-        if (this.team == null && fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.hasHubSave()) {
-            menu.displayMessage("\n=== SAUVEGARDE DU CAMPEMENT DÉTECTÉE ===");
-            menu.displayMessage("1. Charger la Compagnie du Campement");
-            menu.displayMessage("2. Recommencer depuis le Tutoriel");
-            int choice = menu.askPlayerInt();
-            if (choice == 1) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveData saveData = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.loadHubSave();
-                if (saveData != null && saveData.getTeam() != null) {
-                    this.team = saveData.getTeam();
-                    menu.displayMessage("\n[Chargement] Vous retrouvez votre Compagnie au Campement !");
-                }
+    private void runNewGame() {
+        // Phase 1 : Tutoriel scripté (Ranger seul)
+        runTutorial();
+
+        // Phase 2 : Boucle du Hub et du Donjon
+        runHubLoop();
+    }
+
+    private void loadHubSaveGame() {
+        if (SaveManager.hasHubSave()) {
+            SaveData saveData = SaveManager.loadHubSave();
+            if (saveData != null && saveData.getTeam() != null) {
+                this.team = saveData.getTeam();
+                menu.displayMessage("\n[Chargement] Vous retrouvez votre Compagnie au Campement !");
+                runHubLoop();
+                return;
             }
         }
+        menu.displayMessage("\n[Information] Aucune sauvegarde de campement (savegame.sav) trouvée.");
+    }
 
-        // Phase 1 : Tutoriel scripté si aucune équipe n'a été chargée
-        if (this.team == null) {
-            runTutorial();
-        }
-
-        // Phase 2 : Boucle principale du Hub
+    private void runHubLoop() {
         boolean playing = true;
         while (playing) {
             Hub hub = new Hub(team, menu);
@@ -66,6 +106,10 @@ public class Game {
 
             if (goDungeon) {
                 runNaheulbeuk();
+                // Si la quicksave a été utilisée durant le donjon, on interrompt le Hub pour revenir à l'écran titre
+                if (SaveManager.hasQuickSave()) {
+                    playing = false;
+                }
             } else {
                 playing = false;
             }
@@ -79,7 +123,7 @@ public class Game {
 
         // Équipe composée uniquement du Ranger
         this.team = new Team();
-        this.team.getMembers().clear(); // On vide l'équipe de départ
+        this.team.getMembers().clear();
         this.team.getMembers().add(new Ranger());
 
         // Labyrinthe scripté 3x1
@@ -91,7 +135,7 @@ public class Game {
         explo.start();
 
         menu.displayMessage("\nVous trouvez la sortie et fuyez vers la forêt !");
-        
+
         // Après le tuto, les autres héros rejoignent la compagnie pour le Hub !
         team.getMembers().add(new Dwarf());
         team.getMembers().add(new Elf());
