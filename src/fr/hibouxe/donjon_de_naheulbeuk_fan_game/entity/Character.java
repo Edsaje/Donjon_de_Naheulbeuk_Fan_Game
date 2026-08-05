@@ -105,10 +105,16 @@ public class Character {
         // (Les augmentations de stats se feront dans les sous-classes)
     }
 
+    /**
+     * @return Vitesse d'initiative en combat
+     */
     public int getSpeed() {
         return speed;
     }
 
+    /**
+     * @param speed Nouvelle vitesse d'initiative
+     */
     public void setSpeed(int speed) {
         this.speed = speed;
     }
@@ -409,26 +415,44 @@ public class Character {
         this.maxResource = maxResource;
     }
 
+    /**
+     * @return Quantite actuelle de ressource (Mana/Rage/Energie)
+     */
     public int getCurrentResource() {
         return currentResource;
     }
 
+    /**
+     * @param currentResource Nouvelle quantite de ressource
+     */
     public void setCurrentResource(int currentResource) {
         this.currentResource = currentResource;
     }
 
+    /**
+     * @return Points d'experience accumules
+     */
     public int getXp() {
         return xp;
     }
 
+    /**
+     * @param xp Nouveaux points d'experience
+     */
     public void setXp(int xp) {
         this.xp = xp;
     }
 
+    /**
+     * @return Points d'experience requis pour le prochain niveau
+     */
     public int getXpToNextLevel() {
         return xpToNextLevel;
     }
 
+    /**
+     * @param xpToNextLevel Seuil d'experience requis
+     */
     public void setXpToNextLevel(int xpToNextLevel) {
         this.xpToNextLevel = xpToNextLevel;
     }

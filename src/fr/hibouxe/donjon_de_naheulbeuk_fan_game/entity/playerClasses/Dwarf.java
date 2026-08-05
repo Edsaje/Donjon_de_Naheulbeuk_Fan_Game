@@ -5,7 +5,17 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
 
+/**
+ * Modèle de classe du héros Nain.
+ *
+ * @author Hibouxe
+ * @version 1.0
+ */
 public class Dwarf extends Character {
+
+    /**
+     * Instancie le héros Nain avec ses statistiques de base et sa ressource Rage.
+     */
     public Dwarf() {
         super("Le Nain", "Nain", 1, 12, 0, 7, 0, 6, 6, 5);
         this.resourceName = "Rage";
