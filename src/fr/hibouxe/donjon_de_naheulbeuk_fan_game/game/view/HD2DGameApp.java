@@ -93,7 +93,9 @@ public class HD2DGameApp extends ApplicationAdapter {
             float targetWorldX = playerX * tileSize;
             float targetWorldZ = playerY * tileSize;
 
+            // Restauration fluide de la position et hauteur de caméra d'exploration (Y = 14.0m)
             camera.position.x += (targetWorldX - camera.position.x) * 0.1f;
+            camera.position.y += (14.0f - camera.position.y) * 0.1f;
             camera.position.z += ((targetWorldZ + 12f) - camera.position.z) * 0.1f;
             camera.lookAt(camera.position.x, 0.0f, camera.position.z - 12f);
             camera.update();
