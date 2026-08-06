@@ -36,6 +36,7 @@ public class HD2DGameApp extends ApplicationAdapter {
 
     private DungeonSceneRenderer dungeonRenderer;
     private BattleArenaRenderer battleRenderer;
+    private HUDRenderer hudRenderer;
 
     private NaheulbeukDungeon dungeon;
     private int playerX;
@@ -59,6 +60,7 @@ public class HD2DGameApp extends ApplicationAdapter {
 
         dungeonRenderer = new DungeonSceneRenderer();
         battleRenderer = new BattleArenaRenderer();
+        hudRenderer = new HUDRenderer();
 
         loadFloor();
     }
@@ -104,9 +106,16 @@ public class HD2DGameApp extends ApplicationAdapter {
         } else {
             battleRenderer.render(modelBatch, decalBatch, environment, camera);
         }
+
+        // Rendu 2D de l'Interface HUD & Minimap en superposition
+        hudRenderer.renderHUD(dungeon, playerX, playerY, currentFloor, currentState);
     }
 
     private void handleInput() {
+        if (hudRenderer != null && hudRenderer.isMenuOpen()) {
+            return; // En pause tant que le Menu Dragon Quest est ouvert
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
             currentState = (currentState == GameState.EXPLORATION) ? GameState.BATTLE : GameState.EXPLORATION;
             System.out.println("=== BASCULE EN MODE : " + currentState + " ===");
@@ -162,5 +171,6 @@ public class HD2DGameApp extends ApplicationAdapter {
         if (decalBatch != null) decalBatch.dispose();
         if (dungeonRenderer != null) dungeonRenderer.dispose();
         if (battleRenderer != null) battleRenderer.dispose();
+        if (hudRenderer != null) hudRenderer.dispose();
     }
 }

@@ -34,10 +34,10 @@ public class BattleArenaRenderer implements Disposable {
     private Texture monsterTexture;
 
     public BattleArenaRenderer() {
-        heroTexture = createColoredTexture(Color.GOLD);
-        mageTexture = createColoredTexture(Color.PURPLE);
-        rangerTexture = createColoredTexture(Color.GREEN);
-        monsterTexture = createColoredTexture(Color.FIREBRICK);
+        heroTexture = SpriteFactory.createHeroSprite("Barbarian");
+        mageTexture = SpriteFactory.createHeroSprite("Magician");
+        rangerTexture = SpriteFactory.createHeroSprite("Ranger");
+        monsterTexture = SpriteFactory.createMonsterSprite("Orc");
 
         setupDefaultBattleArena();
     }

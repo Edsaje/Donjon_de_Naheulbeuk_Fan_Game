@@ -39,10 +39,10 @@ public class DungeonSceneRenderer implements Disposable {
     private float tileSize = 2.0f;
 
     public DungeonSceneRenderer() {
-        heroTexture = createColoredTexture(Color.GOLD);
-        monsterTexture = createColoredTexture(Color.FIREBRICK);
-        chestTexture = createColoredTexture(Color.CYAN);
-        stairsTexture = createColoredTexture(Color.WHITE);
+        heroTexture = SpriteFactory.createHeroSprite("Ranger");
+        monsterTexture = SpriteFactory.createMonsterSprite("Orc");
+        chestTexture = SpriteFactory.createChestSprite();
+        stairsTexture = SpriteFactory.createStairsSprite();
 
         ModelBuilder modelBuilder = new ModelBuilder();
         floorModel = modelBuilder.createBox(2.0f, 0.1f, 2.0f,
