@@ -20,6 +20,8 @@ import java.util.*;
 public class DungeonGenerator {
     private Random random = new Random();
 
+    private List<int[]> currentRoomCells = new ArrayList<>();
+
     /**
      * Génère un donjon procédural unique et aléatoire style Pokémon Donjon Mystère.
      * Nombre de salles aléatoire (entre 5 et 8 par étage), tailles et emplacements variables,
@@ -31,6 +33,7 @@ public class DungeonGenerator {
         int width = dungeon.getWidth();
         int height = dungeon.getHeight();
         Cell[][] grid = dungeon.getGrid();
+        currentRoomCells.clear();
 
         // 1. Réinitialiser la grille : Tous les blocs sont de la roche/mur massif (isWall = true)
         for (int x = 0; x < width; x++) {
@@ -85,12 +88,13 @@ public class DungeonGenerator {
                     startX = Math.max(secMinX, startX);
                     startY = Math.max(secMinY, startY);
 
-                    // Creuser les cases de sol
+                    // Creuser les cases de sol de la salle et les enregistrer dans currentRoomCells
                     for (int x = startX; x < startX + rW; x++) {
                         for (int y = startY; y < startY + rH; y++) {
                             if (x > 0 && x < width - 1 && y > 0 && y < height - 1) {
                                 grid[x][y].setWall(false);
                                 grid[x][y].setVisited(true);
+                                currentRoomCells.add(new int[]{x, y});
                             }
                         }
                     }
@@ -151,7 +155,7 @@ public class DungeonGenerator {
     }
 
     /**
-     * Place aléatoirement un nombre d'ennemis sur les cases du labyrinthe.
+     * Place aléatoirement un nombre d'ennemis sur les cases de sol du labyrinthe.
      *
      * @param dungeon Donjon
      * @param count   Nombre de monstres
@@ -163,11 +167,14 @@ public class DungeonGenerator {
         int height = dungeon.getHeight();
         Cell[][] grid = dungeon.getGrid();
 
-        for (int i = 0; i < count; i++) {
+        int placed = 0;
+        int attempts = 0;
+        while (placed < count && attempts < 1000) {
+            attempts++;
             int x = random.nextInt(width);
             int y = random.nextInt(height);
 
-            if ((x != startX || y != startY) && grid[x][y].isWalkable()) {
+            if ((x != startX || y != startY) && grid[x][y].isWalkable() && !grid[x][y].hasMonster()) {
                 List<Character> enemyGroup = new ArrayList<>();
                 int groupSize = random.nextInt(3) + 1;
 
@@ -176,12 +183,13 @@ public class DungeonGenerator {
                 }
 
                 grid[x][y].setMonsters(enemyGroup);
+                placed++;
             }
         }
     }
 
     /**
-     * Place des coffres au trésor dans le donjon.
+     * Place des coffres au trésor garantis sur les cases de sol du donjon.
      *
      * @param dungeon Donjon
      * @param count   Nombre de coffres
@@ -191,11 +199,14 @@ public class DungeonGenerator {
         int height = dungeon.getHeight();
         Cell[][] grid = dungeon.getGrid();
 
-        for (int i = 0; i < count; i++) {
+        int placed = 0;
+        int attempts = 0;
+        while (placed < count && attempts < 1000) {
+            attempts++;
             int x = random.nextInt(width);
             int y = random.nextInt(height);
 
-            if ((x != 0 || y != 0) && grid[x][y].isWalkable()) {
+            if ((x != 0 || y != 0) && grid[x][y].isWalkable() && !grid[x][y].hasMonster() && !grid[x][y].hasItem()) {
                 int roll = random.nextInt(4);
                 Item loot = switch (roll) {
                     case 1 -> new DurandilAxe();
@@ -204,12 +215,13 @@ public class DungeonGenerator {
                     default -> new Potion("Potion de soin", "une potion de vie simple. Rend +10 PV. Usage Unique.", 10);
                 };
                 grid[x][y].setItem(loot);
+                placed++;
             }
         }
     }
 
     /**
-     * Place les escaliers vers l'étage suivant.
+     * Place les escaliers garantis vers l'étage suivant exclusivement à l'intérieur d'une salle.
      *
      * @param dungeon Donjon
      * @param count   Nombre d'escaliers
@@ -219,12 +231,31 @@ public class DungeonGenerator {
         int height = dungeon.getHeight();
         Cell[][] grid = dungeon.getGrid();
 
-        for (int i = 0; i < count; i++) {
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
+        int placed = 0;
+        int attempts = 0;
 
-            if ((x != 0 || y != 0) && grid[x][y].isWalkable()) {
-                grid[x][y].setStairs(true);
+        if (!currentRoomCells.isEmpty()) {
+            while (placed < count && attempts < 1000) {
+                attempts++;
+                int[] pos = currentRoomCells.get(random.nextInt(currentRoomCells.size()));
+                int x = pos[0];
+                int y = pos[1];
+
+                if ((x != 0 || y != 0) && grid[x][y].isWalkable() && !grid[x][y].hasMonster() && !grid[x][y].hasItem() && !grid[x][y].hasStairs()) {
+                    grid[x][y].setStairs(true);
+                    placed++;
+                }
+            }
+        } else {
+            while (placed < count && attempts < 1000) {
+                attempts++;
+                int x = random.nextInt(width);
+                int y = random.nextInt(height);
+
+                if ((x != 0 || y != 0) && grid[x][y].isWalkable() && !grid[x][y].hasMonster() && !grid[x][y].hasItem() && !grid[x][y].hasStairs()) {
+                    grid[x][y].setStairs(true);
+                    placed++;
+                }
             }
         }
     }
