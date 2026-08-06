@@ -28,7 +28,7 @@ public class HD2DGameApp extends ApplicationAdapter {
     private Environment environment;
 
     private Model floorModel;
-    private Model wallModel;
+    private Model wallBlockModel;
     private Array<ModelInstance> instances = new Array<>();
 
     private NaheulbeukDungeon dungeon;
@@ -37,16 +37,16 @@ public class HD2DGameApp extends ApplicationAdapter {
     public void create() {
         // 1. Initialisation de la Caméra 3D HD-2D (Inclinaison plongée -45°)
         camera = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.position.set(10f, 16f, 20f);
-        camera.lookAt(10f, 0f, 10f);
+        camera.position.set(21f, 30f, 48f);
+        camera.lookAt(21f, 0f, 21f);
         camera.near = 0.1f;
-        camera.far = 300f;
+        camera.far = 500f;
         camera.update();
 
         // 2. Éclairage Dynamique HD-2D (Lumière d'ambiance + Torche directionnelle)
         environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.4f, 1f));
-        environment.add(new DirectionalLight().set(0.8f, 0.7f, 0.5f, -1f, -0.8f, -0.5f));
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.35f, 0.35f, 0.45f, 1f));
+        environment.add(new DirectionalLight().set(0.85f, 0.75f, 0.6f, -1f, -0.8f, -0.5f));
 
         modelBatch = new ModelBatch();
 
@@ -54,14 +54,14 @@ public class HD2DGameApp extends ApplicationAdapter {
         dungeon = new NaheulbeukDungeon();
         dungeon.generate();
 
-        // 4. Création des Matériaux 3D (Sol de pierre gris, Murs marron donjon)
+        // 4. Création des Matériaux 3D (Sol de pierre gris, Blocs massifs Style Pokémon Donjon Mystère)
         ModelBuilder modelBuilder = new ModelBuilder();
 
-        floorModel = modelBuilder.createBox(2.0f, 0.2f, 2.0f,
+        floorModel = modelBuilder.createBox(2.0f, 0.1f, 2.0f,
                 new Material(ColorAttribute.createDiffuse(new Color(0.35f, 0.35f, 0.4f, 1f))),
                 Usage.Position | Usage.Normal);
 
-        wallModel = modelBuilder.createBox(2.0f, 2.5f, 2.0f,
+        wallBlockModel = modelBuilder.createBox(2.0f, 2.5f, 2.0f,
                 new Material(ColorAttribute.createDiffuse(new Color(0.5f, 0.35f, 0.25f, 1f))),
                 Usage.Position | Usage.Normal);
 
@@ -76,17 +76,19 @@ public class HD2DGameApp extends ApplicationAdapter {
         for (int x = 0; x < dungeon.getWidth(); x++) {
             for (int y = 0; y < dungeon.getHeight(); y++) {
                 Cell cell = grid[x][y];
+                float posX = x * tileSize;
+                float posZ = y * tileSize;
 
-                // Dalle de Sol 3D (Y = 0)
-                ModelInstance floor = new ModelInstance(floorModel);
-                floor.transform.setToTranslation(x * tileSize, 0f, y * tileSize);
-                instances.add(floor);
-
-                // Murs 3D
-                if (cell.isWallNorth() || cell.isWallSouth() || cell.isWallWest() || cell.isWallEast()) {
-                    ModelInstance wall = new ModelInstance(wallModel);
-                    wall.transform.setToTranslation(x * tileSize, 1.25f, y * tileSize);
-                    instances.add(wall);
+                if (cell.isWalkable()) {
+                    // Dalle de Sol 3D Navigable (Y = 0)
+                    ModelInstance floor = new ModelInstance(floorModel);
+                    floor.transform.setToTranslation(posX, 0f, posZ);
+                    instances.add(floor);
+                } else {
+                    // Bloc de Mur / Roche Massif 3D (Style Pokémon Donjon Mystère)
+                    ModelInstance wallBlock = new ModelInstance(wallBlockModel);
+                    wallBlock.transform.setToTranslation(posX, 1.25f, posZ);
+                    instances.add(wallBlock);
                 }
             }
         }
@@ -110,6 +112,6 @@ public class HD2DGameApp extends ApplicationAdapter {
     public void dispose() {
         if (modelBatch != null) modelBatch.dispose();
         if (floorModel != null) floorModel.dispose();
-        if (wallModel != null) wallModel.dispose();
+        if (wallBlockModel != null) wallBlockModel.dispose();
     }
 }

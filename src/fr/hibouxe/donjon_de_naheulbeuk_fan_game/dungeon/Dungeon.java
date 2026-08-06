@@ -53,10 +53,21 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
+     * Génère un labyrinthe style Pokémon Donjon Mystère avec 3x3 Secteurs de Salles et Couloirs.
+     */
+    public void generatePMDDungeon() {
+        getGenerator().generatePMDDungeon(this);
+    }
+
+    public void generatePMDDungeon(int numberOfRooms, int minSize, int maxSize) {
+        getGenerator().generatePMDDungeon(this);
+    }
+
+    /**
      * Génère un labyrinthe parfait à partir de la case (0, 0).
      */
     public void generateMaze() {
-        getGenerator().generateMaze(this, 0, 0);
+        getGenerator().generatePMDDungeon(this);
     }
 
     /**
@@ -66,7 +77,7 @@ public abstract class Dungeon implements Serializable {
      * @param startY Coordonnée Y de départ
      */
     public void generateMaze(int startX, int startY) {
-        getGenerator().generateMaze(this, startX, startY);
+        getGenerator().generatePMDDungeon(this);
     }
 
     /**
@@ -78,7 +89,7 @@ public abstract class Dungeon implements Serializable {
      * @param roomHeight Hauteur de la salle
      */
     public void createRoom(int startX, int startY, int roomWidth, int roomHeight) {
-        getGenerator().createRoom(this, startX, startY, roomWidth, roomHeight);
+        getGenerator().generatePMDDungeon(this);
     }
 
     /**
@@ -89,7 +100,7 @@ public abstract class Dungeon implements Serializable {
      * @param maxSize       Taille maximale d'une salle
      */
     public void generateRandomRooms(int numberOfRooms, int minSize, int maxSize) {
-        getGenerator().generateRandomRooms(this, numberOfRooms, minSize, maxSize);
+        getGenerator().generatePMDDungeon(this);
     }
 
     /**
@@ -183,6 +194,22 @@ public abstract class Dungeon implements Serializable {
      */
     public void setGrid(Cell[][] grid) {
         this.grid = grid;
+    }
+
+    /**
+     * Recherche et renvoie les coordonnées (X, Y) de la première case de sol navigable.
+     *
+     * @return Tableau [X, Y] de la case navigable
+     */
+    public int[] getFirstWalkablePosition() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (grid[x][y].isWalkable()) {
+                    return new int[]{x, y};
+                }
+            }
+        }
+        return new int[]{1, 1};
     }
 
     /**

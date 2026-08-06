@@ -72,7 +72,9 @@ public class DungeonView {
             sb.append("|");
             for (int x = 0; x < width; x++) {
                 Cell cell = grid[x][y];
-                if (x == team.getX() && y == team.getY()) {
+                if (cell.isWall()) {
+                    sb.append("###");
+                } else if (x == team.getX() && y == team.getY()) {
                     sb.append(" @ ");
                 } else if (cell.hasMonster()) {
                     sb.append(" M ");
@@ -81,7 +83,7 @@ public class DungeonView {
                 } else if (cell.hasStairs()) {
                     sb.append(" ≡ ");
                 } else {
-                    sb.append("   ");
+                    sb.append(" . ");
                 }
                 if (cell.isWallEast()) {
                     sb.append("|");

@@ -217,8 +217,10 @@ public class ExplorationController {
                 menu.displayMessage("=== DESCENTE À L'ÉTAGE " + currentFloor + " ===");
 
                 this.maze = new NaheulbeukDungeon();
-                this.maze.generateMaze(team.getX(), team.getY());
-                this.maze.generateRandomRooms(6, 2, 4);
+                this.maze.generate();
+                int[] startPos = this.maze.getFirstWalkablePosition();
+                team.setX(startPos[0]);
+                team.setY(startPos[1]);
 
                 if (currentFloor == 4) {
                     menu.displayMessage("\nRanger : On est presque devant le bureau de Zangdar ! Préparez vos armes !");
@@ -261,8 +263,8 @@ public class ExplorationController {
      * @return true si le mouvement a réussi, false s'il y a un mur.
      */
     public boolean tryMoveNorth() {
-        Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        if (!currentCell.isWallNorth()) {
+        int targetY = team.getY() - 1;
+        if (targetY >= 0 && maze.getGrid()[team.getX()][targetY].isWalkable()) {
             team.moveNorth();
             return true;
         }
@@ -275,8 +277,8 @@ public class ExplorationController {
      * @return true si le mouvement a réussi, false s'il y a un mur.
      */
     public boolean tryMoveSouth() {
-        Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        if (!currentCell.isWallSouth()) {
+        int targetY = team.getY() + 1;
+        if (targetY < maze.getHeight() && maze.getGrid()[team.getX()][targetY].isWalkable()) {
             team.moveSouth();
             return true;
         }
@@ -289,8 +291,8 @@ public class ExplorationController {
      * @return true si le mouvement a réussi, false s'il y a un mur.
      */
     public boolean tryMoveWest() {
-        Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        if (!currentCell.isWallWest()) {
+        int targetX = team.getX() - 1;
+        if (targetX >= 0 && maze.getGrid()[targetX][team.getY()].isWalkable()) {
             team.moveWest();
             return true;
         }
@@ -303,8 +305,8 @@ public class ExplorationController {
      * @return true si le mouvement a réussi, false s'il y a un mur.
      */
     public boolean tryMoveEast() {
-        Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        if (!currentCell.isWallEast()) {
+        int targetX = team.getX() + 1;
+        if (targetX < maze.getWidth() && maze.getGrid()[targetX][team.getY()].isWalkable()) {
             team.moveEast();
             return true;
         }

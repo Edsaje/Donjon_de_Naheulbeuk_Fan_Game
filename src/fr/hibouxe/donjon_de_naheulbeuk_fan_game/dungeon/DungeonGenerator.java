@@ -21,80 +21,132 @@ public class DungeonGenerator {
     private Random random = new Random();
 
     /**
-     * Génère un labyrinthe parfait à partir d'une position de départ à l'aide de l'algorithme DFS (Backtracking).
+     * Génère un donjon procédural unique et aléatoire style Pokémon Donjon Mystère.
+     * Nombre de salles aléatoire (entre 5 et 8 par étage), tailles et emplacements variables,
+     * et réseau de couloirs généré dynamiquement.
      *
-     * @param dungeon Donjon à générer
-     * @param startX  Coordonnée X de départ
-     * @param startY  Coordonnée Y de départ
+     * @param dungeon Le donjon à générer
      */
-    public void generateMaze(Dungeon dungeon, int startX, int startY) {
-        Cell[][] grid = dungeon.getGrid();
-        Cell startCell = grid[startX][startY];
-        startCell.setVisited(true);
-        Deque<Cell> stack = new ArrayDeque<>();
-        stack.push(startCell);
-
-        while (!stack.isEmpty()) {
-            Cell current = stack.peek();
-            List<Cell> neighbors = getUnvisitedNeighbors(dungeon, current);
-
-            if (!neighbors.isEmpty()) {
-                Cell chosen = neighbors.get(random.nextInt(neighbors.size()));
-                current.removeWallBetween(chosen);
-                chosen.setVisited(true);
-                stack.push(chosen);
-            } else {
-                stack.pop();
-            }
-        }
-    }
-
-    /**
-     * Creuse une salle rectangulaire dans le labyrinthe.
-     *
-     * @param dungeon    Donjon
-     * @param startX     X du coin haut-gauche
-     * @param startY     Y du coin haut-gauche
-     * @param roomWidth  Largeur de la salle
-     * @param roomHeight Hauteur de la salle
-     */
-    public void createRoom(Dungeon dungeon, int startX, int startY, int roomWidth, int roomHeight) {
+    public void generatePMDDungeon(Dungeon dungeon) {
         int width = dungeon.getWidth();
         int height = dungeon.getHeight();
         Cell[][] grid = dungeon.getGrid();
 
-        for (int x = startX; x < startX + roomWidth; x++) {
-            for (int y = startY; y < startY + roomHeight; y++) {
-                if (x + 1 < startX + roomWidth && x + 1 < width) {
-                    grid[x][y].removeWallBetween(grid[x + 1][y]);
+        // 1. Réinitialiser la grille : Tous les blocs sont de la roche/mur massif (isWall = true)
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                grid[x][y].setWall(true);
+            }
+        }
+
+        int sectorCols = 3;
+        int sectorRows = 3;
+        int sectorW = width / sectorCols;
+        int sectorH = height / sectorRows;
+
+        boolean[] activeSectors = new boolean[9];
+        // Le secteur de départ (0,0) et le secteur d'arrivée (2,2) sont toujours actifs
+        activeSectors[0] = true;
+        activeSectors[8] = true;
+
+        // Tirer au sort entre 5 et 8 salles actives
+        int targetRooms = random.nextInt(4) + 5; // 5, 6, 7 ou 8 salles
+        int currentActive = 2;
+
+        while (currentActive < targetRooms) {
+            int candidate = random.nextInt(9);
+            if (!activeSectors[candidate]) {
+                activeSectors[candidate] = true;
+                currentActive++;
+            }
+        }
+
+        int[][] roomCenters = new int[9][2];
+
+        // 2. Creuser les salles dans les secteurs actifs avec tailles/positions aléatoires
+        for (int sy = 0; sy < sectorRows; sy++) {
+            for (int sx = 0; sx < sectorCols; sx++) {
+                int idx = sy * sectorCols + sx;
+                int secMinX = sx * sectorW + 1;
+                int secMinY = sy * sectorH + 1;
+
+                if (activeSectors[idx]) {
+                    int maxRW = Math.max(3, sectorW - 2);
+                    int maxRH = Math.max(3, sectorH - 2);
+
+                    int rW = random.nextInt(Math.max(1, maxRW - 3 + 1)) + 3; // 3 à 5
+                    int rH = random.nextInt(Math.max(1, maxRH - 3 + 1)) + 3; // 3 à 5
+
+                    int startX = secMinX + random.nextInt(Math.max(1, sectorW - rW - 1));
+                    int startY = secMinY + random.nextInt(Math.max(1, sectorH - rH - 1));
+
+                    startX = Math.min(startX, (sx + 1) * sectorW - rW - 1);
+                    startY = Math.min(startY, (sy + 1) * sectorH - rH - 1);
+                    startX = Math.max(secMinX, startX);
+                    startY = Math.max(secMinY, startY);
+
+                    // Creuser les cases de sol
+                    for (int x = startX; x < startX + rW; x++) {
+                        for (int y = startY; y < startY + rH; y++) {
+                            if (x > 0 && x < width - 1 && y > 0 && y < height - 1) {
+                                grid[x][y].setWall(false);
+                                grid[x][y].setVisited(true);
+                            }
+                        }
+                    }
+
+                    int cx = startX + rW / 2;
+                    int cy = startY + rH / 2;
+                    roomCenters[idx] = new int[]{cx, cy};
+                } else {
+                    // Secteur inactif : point de passage au centre du secteur pour les couloirs
+                    roomCenters[idx] = new int[]{secMinX + sectorW / 2, secMinY + sectorH / 2};
                 }
-                if (y + 1 < startY + roomHeight && y + 1 < height) {
-                    grid[x][y].removeWallBetween(grid[x][y + 1]);
+            }
+        }
+
+        // 3. Reliage procédural des secteurs par des couloirs de 1 case de large
+        for (int sy = 0; sy < 3; sy++) {
+            for (int sx = 0; sx < 3; sx++) {
+                int idx = sy * 3 + sx;
+
+                // Relier avec le voisin de droite si au moins un des deux est actif
+                if (sx < 2) {
+                    int rightIdx = sy * 3 + (sx + 1);
+                    if (activeSectors[idx] || activeSectors[rightIdx] || random.nextBoolean()) {
+                        carveCorridor(grid, roomCenters[idx], roomCenters[rightIdx]);
+                    }
+                }
+
+                // Relier avec le voisin du bas si au moins un des deux est actif
+                if (sy < 2) {
+                    int downIdx = (sy + 1) * 3 + sx;
+                    if (activeSectors[idx] || activeSectors[downIdx] || random.nextBoolean()) {
+                        carveCorridor(grid, roomCenters[idx], roomCenters[downIdx]);
+                    }
                 }
             }
         }
     }
 
-    /**
-     * Génère un nombre défini de salles aléatoires dans le donjon.
-     *
-     * @param dungeon       Donjon
-     * @param numberOfRooms Nombre de salles
-     * @param minSize       Taille minimale
-     * @param maxSize       Taille maximale
-     */
-    public void generateRandomRooms(Dungeon dungeon, int numberOfRooms, int minSize, int maxSize) {
-        int width = dungeon.getWidth();
-        int height = dungeon.getHeight();
+    private void carveCorridor(Cell[][] grid, int[] c1, int[] c2) {
+        int x1 = c1[0], y1 = c1[1];
+        int x2 = c2[0], y2 = c2[1];
 
-        for (int i = 0; i < numberOfRooms; i++) {
-            int roomWidth = random.nextInt(maxSize - minSize + 1) + minSize;
-            int roomHeight = random.nextInt(maxSize - minSize + 1) + minSize;
+        // Mouvement horizontal
+        int startX = Math.min(x1, x2);
+        int endX = Math.max(x1, x2);
+        for (int x = startX; x <= endX; x++) {
+            grid[x][y1].setWall(false);
+            grid[x][y1].setVisited(true);
+        }
 
-            int startX = random.nextInt(width - roomWidth);
-            int startY = random.nextInt(height - roomHeight);
-
-            createRoom(dungeon, startX, startY, roomWidth, roomHeight);
+        // Mouvement vertical
+        int startY = Math.min(y1, y2);
+        int endY = Math.max(y1, y2);
+        for (int y = startY; y <= endY; y++) {
+            grid[x2][y].setWall(false);
+            grid[x2][y].setVisited(true);
         }
     }
 
@@ -115,7 +167,7 @@ public class DungeonGenerator {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
 
-            if (x != startX || y != startY) {
+            if ((x != startX || y != startY) && grid[x][y].isWalkable()) {
                 List<Character> enemyGroup = new ArrayList<>();
                 int groupSize = random.nextInt(3) + 1;
 
@@ -143,7 +195,7 @@ public class DungeonGenerator {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
 
-            if (x != 0 || y != 0) {
+            if ((x != 0 || y != 0) && grid[x][y].isWalkable()) {
                 int roll = random.nextInt(4);
                 Item loot = switch (roll) {
                     case 1 -> new DurandilAxe();
@@ -171,7 +223,7 @@ public class DungeonGenerator {
             int x = random.nextInt(width);
             int y = random.nextInt(height);
 
-            if (x != 0 || y != 0) {
+            if ((x != 0 || y != 0) && grid[x][y].isWalkable()) {
                 grid[x][y].setStairs(true);
             }
         }

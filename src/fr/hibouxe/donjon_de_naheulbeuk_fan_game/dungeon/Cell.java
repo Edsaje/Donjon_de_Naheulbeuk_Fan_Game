@@ -21,6 +21,7 @@ public class Cell implements Serializable {
     // Attributs
     private int x, y;
     private boolean visited = false;
+    private boolean wall = true; // Par défaut : Bloc de mur massif infranchissable
     private boolean wallNorth = true;
     private boolean wallSouth = true;
     private boolean wallWest = true;
@@ -229,5 +230,17 @@ public class Cell implements Serializable {
 
     public void setStairs(boolean stairs) {
         this.stairs = stairs;
+    }
+
+    public boolean isWall() {
+        return wall;
+    }
+
+    public void setWall(boolean wall) {
+        this.wall = wall;
+    }
+
+    public boolean isWalkable() {
+        return !wall;
     }
 }
