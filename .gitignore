@@ -28,6 +28,7 @@ Thumbs.db
 
 ### Packages ###
 *.jar
+!lib/*.jar
 *.war
 *.ear
 
