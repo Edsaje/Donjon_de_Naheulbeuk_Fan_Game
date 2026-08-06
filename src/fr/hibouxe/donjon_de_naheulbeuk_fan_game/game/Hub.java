@@ -1,6 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.game;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView;
 
 /**
  * Contrôleur gérant la phase de repos au campement.
@@ -8,14 +9,14 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
  */
 public class Hub {
     private Team team;
-    private Menu menu;
+    private IGameView menu;
     private int activeSlot = 1;
 
-    public Hub(Team team, Menu menu) {
+    public Hub(Team team, IGameView menu) {
         this(team, menu, 1);
     }
 
-    public Hub(Team team, Menu menu, int activeSlot) {
+    public Hub(Team team, IGameView menu, int activeSlot) {
         this.team = team;
         this.menu = menu;
         this.activeSlot = activeSlot;

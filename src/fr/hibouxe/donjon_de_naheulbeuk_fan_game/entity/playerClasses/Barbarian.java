@@ -48,7 +48,7 @@ public class Barbarian extends Character {
         return super.useSpecialSkill(skill, team, monster);
     }
     @Override
-    public void levelUp(Menu menu) {
+    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView menu) {
         super.levelUp(menu);
         this.healthPoint += 5;
         this.attack += 4;

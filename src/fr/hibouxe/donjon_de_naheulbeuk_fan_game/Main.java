@@ -2,6 +2,8 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Game;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.GraphicHD2DView;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView;
 
 /**
  * Point d'entrée principal de l'application Donjon de Naheulbeuk Fan Game.
@@ -12,9 +14,11 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.Menu;
  */
 public class Main {
     public static void main(String[] args) {
-        Menu menu = new Menu();
-        menu.displayMessage("=== Bienvenue dans le Donjon de Naheulbeuk ===");
-        Game game = new Game(menu);
+        //IGameView view = new Menu(); // Mode Console
+        IGameView view = new GraphicHD2DView(); //HD-2D
+
+        view.displayMessage("=== Bienvenue dans le Donjon de Naheulbeuk ===");
+        Game game = new Game(view);
         game.startGame();
     }
 }

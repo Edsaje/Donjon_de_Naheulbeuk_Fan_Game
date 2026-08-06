@@ -31,7 +31,7 @@ public class Ogre extends Character {
     }
     
     @Override
-    public void levelUp(Menu menu) {
+    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView menu) {
         super.levelUp(menu);
         this.healthPoint += 8;
         this.attack += 3;

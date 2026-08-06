@@ -94,14 +94,14 @@ public class Character implements Serializable {
         this.currentResource = Math.min(this.maxResource, this.currentResource + amount);
     }
 
-    public void gainXp(int amount, Menu menu) {
+    public void gainXp(int amount, fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView menu) {
         this.xp += amount;
         while (this.xp >= this.xpToNextLevel) {
             levelUp(menu);
         }
     }
 
-    public void levelUp(Menu menu) {
+    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView menu) {
         this.level++;
         this.xp -= this.xpToNextLevel; // On retire l'XP consommée
         this.xpToNextLevel = (int) (100 * Math.pow(this.level, 1.5)); // Le prochain niveau sera plus long à atteindre
@@ -274,7 +274,7 @@ public class Character implements Serializable {
      * @param menu La vue principale (Injectée)
      * @return true si l'équipement a été retiré et remis dans le sac, false sinon.
      */
-    public boolean unequip(EquipmentSlot slot, Team team, Menu menu){
+    public boolean unequip(EquipmentSlot slot, Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView menu){
         Equipment tmp = null;
 
         switch (slot){

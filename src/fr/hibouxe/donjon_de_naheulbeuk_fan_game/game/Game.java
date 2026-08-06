@@ -6,6 +6,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.playerClasses.*;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveData;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView;
 
 /**
  * Super Contrôleur Orchestrateur.
@@ -16,11 +17,11 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager;
  * @version 4.0
  */
 public class Game {
-    private Menu menu;
+    private IGameView menu;
     private Team team;
     private int currentSlot = 1; // Slot actif par défaut (1, 2 ou 3)
 
-    public Game(Menu menu) {
+    public Game(IGameView menu) {
         this.menu = menu;
     }
 

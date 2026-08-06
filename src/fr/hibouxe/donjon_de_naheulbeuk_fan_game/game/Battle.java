@@ -20,16 +20,16 @@ public class Battle {
     private Team team;
     private List<Character> monsters;
     private Random random = new Random();
-    private Menu menu;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView menu;
 
     /**
-     * Initialise un nouvel affrontement entre l'équipe du joueur et des monstres (avec injection de la vue Menu).
+     * Initialise un nouvel affrontement entre l'équipe du joueur et des monstres (avec injection de la vue IGameView).
      *
      * @param team     La compagnie des héros
      * @param monsters Le groupe de monstres affronté
      * @param menu     La vue principale du jeu (Injectée)
      */
-    public Battle(Team team, List<Character> monsters, Menu menu) {
+    public Battle(Team team, List<Character> monsters, fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView menu) {
         this.team = team;
         this.monsters = monsters;
         this.menu = menu;

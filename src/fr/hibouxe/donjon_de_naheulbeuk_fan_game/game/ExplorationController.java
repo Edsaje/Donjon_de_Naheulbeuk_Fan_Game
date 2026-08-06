@@ -5,6 +5,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.Dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.dungeon.NaheulbeukDungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 
 import java.util.List;
@@ -23,21 +24,21 @@ public class ExplorationController {
     private Team team;
     private boolean running;
     private int currentFloor = 1;
-    private Menu menu;
+    private IGameView menu;
     private boolean isTutorial;
     private int activeSlot = 1;
 
     /**
      * Constructeur injectant toutes les dépendances.
      */
-    public ExplorationController(Dungeon maze, Team team, Menu menu, boolean isTutorial) {
+    public ExplorationController(Dungeon maze, Team team, IGameView menu, boolean isTutorial) {
         this(maze, team, menu, isTutorial, 1);
     }
 
     /**
      * Constructeur injectant le slot actif pour la sauvegarde rapide liée.
      */
-    public ExplorationController(Dungeon maze, Team team, Menu menu, boolean isTutorial, int activeSlot) {
+    public ExplorationController(Dungeon maze, Team team, IGameView menu, boolean isTutorial, int activeSlot) {
         this.maze = maze;
         this.team = team;
         this.menu = menu;

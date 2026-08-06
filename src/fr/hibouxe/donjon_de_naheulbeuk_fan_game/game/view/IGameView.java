@@ -26,6 +26,7 @@ public interface IGameView {
     void displayTitleScreen();
     int askMainMenuChoice();
     boolean askLoadQuickSavePrompt();
+    boolean askLoadQuickSavePrompt(int slot, String summary);
     boolean askConfirmAbandonQuickSave();
 
     // Gestion des Emplacements / Slots

@@ -127,7 +127,7 @@ public abstract class Dungeon implements Serializable {
      * @param team L'équipe de la compagnie
      * @param menu La vue principale (Injectée)
      */
-    public void moveMonsters(Team team, Menu menu) {
+    public void moveMonsters(Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView menu) {
         getMonsterAI().moveMonsters(this, team, menu);
     }
 

@@ -54,6 +54,11 @@ public class GraphicHD2DView implements IGameView {
     }
 
     @Override
+    public boolean askLoadQuickSavePrompt(int slot, String summary) {
+        return true;
+    }
+
+    @Override
     public boolean askConfirmAbandonQuickSave() {
         return false;
     }

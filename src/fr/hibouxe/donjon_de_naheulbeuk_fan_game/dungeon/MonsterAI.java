@@ -34,7 +34,7 @@ public class MonsterAI {
      * @param team    L'équipe de la compagnie
      * @param menu    La vue principale (Injectée)
      */
-    public void moveMonsters(Dungeon dungeon, Team team, Menu menu) {
+    public void moveMonsters(Dungeon dungeon, Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView menu) {
         List<Character> movedMonsters = new ArrayList<>();
         int width = dungeon.getWidth();
         int height = dungeon.getHeight();
