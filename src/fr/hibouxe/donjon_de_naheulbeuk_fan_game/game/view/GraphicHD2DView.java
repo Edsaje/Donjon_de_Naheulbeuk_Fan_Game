@@ -134,9 +134,9 @@ public class GraphicHD2DView implements IGameView {
 
         // 3. Rendu d'information du Moteur Graphique HD-2D
         System.out.println("\n[Moteur HD-2D] --- RENDU IMAGE 3D ---");
-        System.out.println("🎥 Caméra 3D : Position(" + camera.getCameraX() + ", " + camera.getCameraY() + ", " + camera.getCameraZ() + ") | Pitch(" + camera.getPitch() + "°)");
-        System.out.println("🎯 Cible Caméra : (" + camera.getTargetX() + ", 0.0, " + camera.getTargetZ() + ")");
-        System.out.println("🕺 Sprites 2D Billboards affichés debout face caméra : " + activeSprites.size() + " entités");
+        System.out.println("Caméra 3D : Position(" + camera.getCameraX() + ", " + camera.getCameraY() + ", " + camera.getCameraZ() + ") | Pitch(" + camera.getPitch() + "°)");
+        System.out.println("Cible Caméra : (" + camera.getTargetX() + ", 0.0, " + camera.getTargetZ() + ")");
+        System.out.println("Sprites 2D Billboards affichés debout face caméra : " + activeSprites.size() + " entités");
     }
 
     @Override

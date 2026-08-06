@@ -14,8 +14,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView;
  */
 public class Main {
     public static void main(String[] args) {
-        IGameView view = new Menu(); // Mode Console
-        //IGameView view = new GraphicHD2DView(); //HD-2D
+        //IGameView view = new Menu(); // Mode Console
+        IGameView view = new GraphicHD2DView(); //HD-2D
 
         view.displayMessage("=== Bienvenue dans le Donjon de Naheulbeuk ===");
         Game game = new Game(view);
