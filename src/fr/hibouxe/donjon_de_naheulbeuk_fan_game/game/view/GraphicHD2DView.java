@@ -7,6 +7,9 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.equipment.EquipmentSlot;
 
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,11 +18,25 @@ import java.util.List;
  * Implémente {@link IGameView} pour remplacer la console ASCII par un rendu 3D + Sprites 2D.
  *
  * @author Hibouxe
- * @version 1.0
+ * @version 2.0
  */
 public class GraphicHD2DView implements IGameView {
     private HD2DCamera camera = new HD2DCamera();
     private List<BillboardSprite> activeSprites = new ArrayList<>();
+    private HD2DGameApp gameApp;
+
+    public GraphicHD2DView() {
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setTitle("Donjon de Naheulbeuk - Fan Game (Rendu 3D HD-2D)");
+        config.setWindowedMode(1280, 720);
+        config.setBackBufferConfig(8, 8, 8, 8, 16, 0, 4);
+        config.setForegroundFPS(60);
+
+        gameApp = new HD2DGameApp();
+        new Thread(() -> {
+            new Lwjgl3Application(gameApp, config);
+        }).start();
+    }
 
     @Override
     public void displayMessage(String message) {
