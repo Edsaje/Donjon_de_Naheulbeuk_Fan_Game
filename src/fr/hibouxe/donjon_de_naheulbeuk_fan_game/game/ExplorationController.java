@@ -25,15 +25,24 @@ public class ExplorationController {
     private int currentFloor = 1;
     private Menu menu;
     private boolean isTutorial;
+    private int activeSlot = 1;
 
     /**
      * Constructeur injectant toutes les dépendances.
      */
     public ExplorationController(Dungeon maze, Team team, Menu menu, boolean isTutorial) {
+        this(maze, team, menu, isTutorial, 1);
+    }
+
+    /**
+     * Constructeur injectant le slot actif pour la sauvegarde rapide liée.
+     */
+    public ExplorationController(Dungeon maze, Team team, Menu menu, boolean isTutorial, int activeSlot) {
         this.maze = maze;
         this.team = team;
         this.menu = menu;
         this.isTutorial = isTutorial;
+        this.activeSlot = activeSlot;
     }
 
     /**
@@ -79,9 +88,9 @@ public class ExplorationController {
                 handleInventoryAction();
                 break;
             case "K":
-                boolean quickSaved = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.saveQuickSave(team, maze, currentFloor);
+                boolean quickSaved = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.saveQuickSave(activeSlot, team, maze, currentFloor);
                 if (quickSaved) {
-                    menu.displayMessage("\n[Sauvegarde Rapide] Donjon et position enregistrés. Retour à l'écran initial...");
+                    menu.displayMessage("\n[Sauvegarde Rapide] Donjon et position enregistrés dans le Slot " + activeSlot + ". Retour à l'écran initial...");
                     running = false;
                 } else {
                     menu.displayMessage("\n[Erreur] Échec de la Sauvegarde Rapide.");

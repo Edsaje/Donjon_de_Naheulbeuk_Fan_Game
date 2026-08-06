@@ -6,6 +6,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.BattleView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.DungeonView;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.IGameView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.InventoryView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.game.view.MainMenuView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.item.Item;
@@ -15,13 +16,14 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Façade d'Affichage et d'Entrée/Sortie (Vue) pour l'interface console.
+ * Façade d'Affichage et d'Entrée/Sortie (Vue Console).
+ * Implémente l'interface {@link IGameView} (Architecture Plug-and-Play 2.5D).
  * Centralise les appels vers les sous-vues spécialisées (DungeonView, InventoryView, BattleView, MainMenuView).
  *
  * @author Hibouxe
- * @version 2.0
+ * @version 3.0
  */
-public class Menu {
+public class Menu implements IGameView {
     private Scanner keyboard = new Scanner(System.in);
 
     // Sous-vues spécialisées (Délégation Façade)
@@ -30,79 +32,133 @@ public class Menu {
     private BattleView battleView = new BattleView();
     private MainMenuView mainMenuView = new MainMenuView();
 
-    /**
-     * Affiche un message personnalisé dans la console.
-     */
+    @Override
     public void displayMessage(String message) {
         System.out.println(message);
     }
 
-    /**
-     * Saisit un entier auprès du joueur avec gestion des erreurs de type.
-     */
+    @Override
     public int askPlayerInt() {
-        System.out.print("> ");
-        try {
-            return Integer.parseInt(keyboard.nextLine().trim());
-        } catch (Exception e) {
-            return -1;
+        while (true) {
+            try {
+                System.out.print("> ");
+                String input = keyboard.nextLine().trim();
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("[Erreur] Veuillez saisir un nombre entier valide.");
+            }
         }
     }
 
-    /**
-     * Saisit une chaîne de caractères auprès du joueur.
-     */
+    @Override
     public String askPlayerString() {
         System.out.print("> ");
         return keyboard.nextLine();
     }
 
+    // --- DÉLÉGATION MAIN MENU VIEW & MULTI-SLOTS ---
+
+    @Override
+    public void displayTitleScreen() {
+        mainMenuView.displayTitleScreen(this);
+    }
+
+    @Override
+    public int askMainMenuChoice() {
+        return mainMenuView.askMainMenuChoice(this);
+    }
+
+    @Override
+    public boolean askLoadQuickSavePrompt() {
+        return mainMenuView.askLoadQuickSavePrompt(this, 1, "");
+    }
+
+    public boolean askLoadQuickSavePrompt(int slot, String summary) {
+        return mainMenuView.askLoadQuickSavePrompt(this, slot, summary);
+    }
+
+    @Override
+    public boolean askConfirmAbandonQuickSave() {
+        return mainMenuView.askConfirmAbandonQuickSave(this);
+    }
+
+    @Override
+    public int askSlotChoice(String actionTitle, String[] slotSummaries) {
+        return mainMenuView.askSlotChoice(this, actionTitle, slotSummaries);
+    }
+
+    @Override
+    public int askSlotManagementAction() {
+        return mainMenuView.askSlotManagementAction(this);
+    }
+
+    @Override
+    public int askTargetCopySlot(int sourceSlot, String[] slotSummaries) {
+        return mainMenuView.askTargetCopySlot(this, sourceSlot, slotSummaries);
+    }
+
     // --- DÉLÉGATION DUNGEON VIEW ---
 
-    public String askPlayerMovement() {
-        return dungeonView.askPlayerMovement(this);
-    }
-
-    public boolean askPickupItem(Item item) {
-        return dungeonView.askPickupItem(item, this);
-    }
-
+    @Override
     public void display(Dungeon maze, Team team) {
         dungeonView.display(maze, team, this);
     }
 
+    @Override
+    public void displayDungeon(Dungeon maze, Team team) {
+        dungeonView.display(maze, team, this);
+    }
+
+    @Override
+    public String askPlayerMovement() {
+        return dungeonView.askPlayerMovement(this);
+    }
+
+    @Override
+    public boolean askPickupItem(Item item) {
+        return dungeonView.askPickupItem(item, this);
+    }
+
     // --- DÉLÉGATION INVENTORY VIEW ---
 
+    @Override
     public void displayInventory(Team team) {
         inventoryView.displayInventory(team, this);
     }
 
+    @Override
     public int askInventoryMenuChoice() {
         return inventoryView.askInventoryMenuChoice(this);
     }
 
+    @Override
     public EquipmentSlot askSlotToUnequip() {
         return inventoryView.askSlotToUnequip(this);
     }
 
+    @Override
     public boolean askUseItem() {
         return inventoryView.askUseItem(this);
     }
 
+    @Override
     public int askItemIndex() {
         return inventoryView.askItemIndex(this);
     }
 
+    @Override
     public Character askItemTarget(Team team) {
         return inventoryView.askItemTarget(team, this);
     }
 
     // --- DÉLÉGATION BATTLE VIEW ---
 
+    @Override
     public void displayBattleStatus(List<Character> monsters, Team team) {
         battleView.displayBattleStatus(monsters, team, this);
     }
 
+    @Override
     public int askBattleAction(Character attacker) {
         return battleView.askBattleAction(attacker, this);
     }
@@ -111,20 +167,24 @@ public class Menu {
         return battleView.askSkill(attacker, this);
     }
 
+    @Override
     public Skill askSkill(Character attacker, List<Character> monsters) {
         return battleView.askSkill(attacker, monsters, this);
     }
 
+    @Override
     public Character askMonsterTarget(List<Character> monsters) {
         return battleView.askMonsterTarget(monsters, this);
     }
 
+    @Override
     public Character askAllyToHeal(Team team) {
         return battleView.askAllyToHeal(team, this);
     }
 
     // --- STATISTIQUES COMPAGNIE ---
 
+    @Override
     public void displayTeamStats(Team team) {
         displayMessage("\n=================== Fiche de la compagnie de Naheulbeuk ===================");
         for (Character c : team.getMembers()) {
@@ -133,23 +193,5 @@ public class Menu {
             displayMessage("   └ Équipement : " + c.getEquippedSummary());
         }
         displayMessage("===========================================================================\n");
-    }
-
-    // --- DÉLÉGATION MAIN MENU VIEW ---
-
-    public void displayTitleScreen() {
-        mainMenuView.displayTitleScreen(this);
-    }
-
-    public int askMainMenuChoice() {
-        return mainMenuView.askMainMenuChoice(this);
-    }
-
-    public boolean askLoadQuickSavePrompt() {
-        return mainMenuView.askLoadQuickSavePrompt(this);
-    }
-
-    public boolean askConfirmAbandonQuickSave() {
-        return mainMenuView.askConfirmAbandonQuickSave(this);
     }
 }

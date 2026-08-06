@@ -9,10 +9,16 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.entity.Team;
 public class Hub {
     private Team team;
     private Menu menu;
+    private int activeSlot = 1;
 
     public Hub(Team team, Menu menu) {
+        this(team, menu, 1);
+    }
+
+    public Hub(Team team, Menu menu, int activeSlot) {
         this.team = team;
         this.menu = menu;
+        this.activeSlot = activeSlot;
     }
 
     /**
@@ -54,7 +60,7 @@ public class Hub {
                                     team.removeItem(selectedItem);
                                     menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !");
                                 } else {
-                                    menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C'est réservé à une autre classe...");
+                                    menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C me réservé à une autre classe...");
                                 }
                             }
                         }
@@ -69,9 +75,9 @@ public class Hub {
                     }
                     break;
                 case 4:
-                    boolean saved = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.saveHubSave(team, 1);
+                    boolean saved = fr.hibouxe.donjon_de_naheulbeuk_fan_game.save.SaveManager.saveHubSave(activeSlot, team, 1);
                     if (saved) {
-                        menu.displayMessage("\n[Sauvegarde] Progression de la Compagnie enregistrée avec succès au campement (savegame.sav) !");
+                        menu.displayMessage("\n[Sauvegarde] Progression de la Compagnie enregistrée avec succès dans le Slot " + activeSlot + " !");
                     } else {
                         menu.displayMessage("\n[Erreur] Échec de la sauvegarde.");
                     }
