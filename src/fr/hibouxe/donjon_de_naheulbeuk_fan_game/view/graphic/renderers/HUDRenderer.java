@@ -192,6 +192,20 @@ public class HUDRenderer implements Disposable {
             startY -= 25;
         }
 
+        // --- STATISTIQUES DE L'ÉQUIPE (Droite de la boîte) ---
+        if (team != null) {
+            font.setColor(Color.LIGHT_GRAY);
+            int teamY = 270;
+            for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character hero : team.getMembers()) {
+                String line = String.format("%-15s : PV: %d/%d | %s: %d/%d",
+                        hero.getName(),
+                        hero.getHealthPoint(), hero.getMaxHealthPoint(), 
+                        hero.getResourceName(), hero.getCurrentResource(), hero.getMaxResource());
+                font.draw(uiBatch, line, 650, teamY);
+                teamY -= 25;
+            }
+        }
+
         uiBatch.end();
     }
 
@@ -243,8 +257,8 @@ public class HUDRenderer implements Disposable {
             for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character hero : team.getMembers()) {
                 String line = String.format("%-15s : Nv %d | PV: %d/%d  | %s: %d/%d",
                         hero.getName(), hero.getLevel(),
-                        hero.getHealthPoint(), hero.getHealthPoint(), // TODO: add max HP in character
-                        "Ressource", hero.getCurrentResource(), hero.getMaxResource());
+                        hero.getHealthPoint(), hero.getMaxHealthPoint(),
+                        hero.getResourceName(), hero.getCurrentResource(), hero.getMaxResource());
                 font.draw(uiBatch, line, 540, startY);
                 startY -= 50;
             }

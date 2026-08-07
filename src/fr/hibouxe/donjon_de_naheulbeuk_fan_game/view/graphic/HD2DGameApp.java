@@ -178,6 +178,14 @@ public class HD2DGameApp extends ApplicationAdapter {
             parentView.pushInput("8");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
             parentView.pushInput("9");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            parentView.pushInput("K");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+            parentView.pushInput("C");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+            parentView.pushInput("I");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            parentView.pushInput("X");
         }
     }
 

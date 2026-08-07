@@ -23,6 +23,7 @@ public class Character implements Serializable {
     protected String name;
     protected String type; // Classe du personnage
     protected int level;
+    protected int maxHealthPoint;
     protected int healthPoint;
     protected int resourcePoint;
     protected int attack;
@@ -52,7 +53,7 @@ public class Character implements Serializable {
      * @param name          Nom du personnage (ex: "Le Nain")
      * @param type          Type ou classe (ex: "Dwarf")
      * @param level         Niveau de départ
-     * @param healthPoint   Points de vie initiaux
+     * @param maxHealthPoint   Points de vie initiaux
      * @param resourcePoint Points de ressource (Mana / Énergie / Rage)
      * @param attack        Puissance d'attaque physique
      * @param magicAttack   Puissance d'attaque magique
@@ -63,6 +64,7 @@ public class Character implements Serializable {
         this.name = name;
         this.type = type;
         this.level = level;
+        this.maxHealthPoint = healthPoint;
         this.healthPoint = healthPoint;
         this.resourcePoint = resourcePoint;
         this.attack = attack;
@@ -364,10 +366,20 @@ public class Character implements Serializable {
     }
 
     /**
+     * @return Points de vie max
+     */
+    public int getMaxHealthPoint() {
+        return maxHealthPoint > 0 ? maxHealthPoint : healthPoint;
+    }
+
+    /**
      * @param healthPoint Nouveaux points de vie
      */
     public void setHealthPoint(int healthPoint) {
         this.healthPoint = healthPoint;
+        if (this.maxHealthPoint > 0 && this.healthPoint > this.maxHealthPoint) {
+            this.healthPoint = this.maxHealthPoint;
+        }
     }
 
     /**
