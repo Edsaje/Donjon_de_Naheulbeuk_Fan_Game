@@ -56,7 +56,7 @@ public class ExplorationController {
     public void start() {
         this.running = true;
         while (running) {
-            menu.display(maze, team);
+            menu.display(maze, team, currentFloor);
             playerMovement();
         }
     }
@@ -86,6 +86,13 @@ public class ExplorationController {
                 team.setFacingDirection(3); // Est
                 moved = tryMoveEast();
                 break;
+            case "1": team.setActiveLeaderIndex(0); break;
+            case "2": team.setActiveLeaderIndex(1); break;
+            case "3": team.setActiveLeaderIndex(2); break;
+            case "4": team.setActiveLeaderIndex(3); break;
+            case "5": team.setActiveLeaderIndex(4); break;
+            case "6": team.setActiveLeaderIndex(5); break;
+            case "7": team.setActiveLeaderIndex(6); break;
             case "X":
                 running = false;
                 menu.displayMessage("Tchoss Nulloss");
@@ -116,13 +123,14 @@ public class ExplorationController {
         if (moved) {
             Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
             // 1. Vérification immédiate : Si le joueur a marché sur un monstre, combat immédiat !
-            handleCellEvents(currentCell);
+            boolean tookStairs = handleCellEvents(currentCell);
 
             // 2. Si le joueur n'a pas déclenché de combat et explore toujours, les monstres se déplacent
-            if (running && !currentCell.hasMonster()) {
+            if (running && !currentCell.hasMonster() && !tookStairs) {
                 maze.moveMonsters(team, menu);
                 // 3. Vérification Embuscade : Un monstre est-il arrivé sur la case du joueur ?
-                handleCellEvents(currentCell);
+                Cell newCell = maze.getGrid()[team.getX()][team.getY()];
+                handleCellEvents(newCell);
             }
         }
     }
@@ -176,8 +184,9 @@ public class ExplorationController {
      * Gère les événements d'une case (combat avec monstre, coffre à trésor).
      *
      * @param currentCell La case sur laquelle se trouve la compagnie
+     * @return true si l'équipe a pris un escalier, false sinon
      */
-    private void handleCellEvents(Cell currentCell) {
+    private boolean handleCellEvents(Cell currentCell) {
         // 1. Rencontre avec un monstre
         if (currentCell.hasMonster()) {
             List<Character> monsters = currentCell.getMonsters();
@@ -262,7 +271,9 @@ public class ExplorationController {
                     this.maze.generateStairs(1);
                 }
             }
+            return true;
         }
+        return false;
     }
 
     /**

@@ -82,6 +82,7 @@ public class HD2DGameApp extends ApplicationAdapter {
 
     private boolean sceneNeedsBuild = false;
     private boolean cameraNeedsSnap = true;
+    private int currentLeaderIndex = -1;
     private java.util.List<String> currentMessages = new java.util.ArrayList<>();
     public String currentMenuTitle = null;
     public String[] currentMenuOptions = null;
@@ -101,17 +102,31 @@ public class HD2DGameApp extends ApplicationAdapter {
         this.currentMessages = messages;
     }
 
-    public void setContext(Dungeon maze, Team team) {
+    private int currentFloor = 1;
+
+    public void setContext(Dungeon maze, Team team, int currentFloor) {
         if (this.maze != maze) {
             this.cameraNeedsSnap = true;
         }
         this.sceneNeedsBuild = true; // Toujours reconstruire la scène pour mettre à jour les entités (morts, coffres)
         this.maze = maze;
         this.team = team;
+        this.currentFloor = currentFloor;
     }
 
     @Override
     public void render() {
+        if (team != null && dungeonRenderer != null) {
+            if (team.getActiveLeaderIndex() != currentLeaderIndex) {
+                currentLeaderIndex = team.getActiveLeaderIndex();
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character leader = team.getActiveLeader();
+                if (leader != null) {
+                    dungeonRenderer.setLeaderClass(leader.getClass().getSimpleName());
+                    sceneNeedsBuild = true; // Reconstruire la scène pour appliquer le sprite
+                }
+            }
+        }
+
         if (sceneNeedsBuild && dungeonRenderer != null && maze != null && team != null) {
             if (cameraNeedsSnap) {
                 float startWorldX = team.getX() * tileSize;
@@ -148,7 +163,7 @@ public class HD2DGameApp extends ApplicationAdapter {
         }
 
         // Rendu 2D de l'Interface HUD & Minimap en superposition
-        hudRenderer.renderHUD(maze, (team != null ? team.getX() : 0), (team != null ? team.getY() : 0), 1, currentState, this.team, currentMessages, currentMenuTitle, currentMenuOptions, this);
+        hudRenderer.renderHUD(maze, (team != null ? team.getX() : 0), (team != null ? team.getY() : 0), currentFloor, currentState, this.team, currentMessages, currentMenuTitle, currentMenuOptions, this);
     }
 
     private void handleInput() {

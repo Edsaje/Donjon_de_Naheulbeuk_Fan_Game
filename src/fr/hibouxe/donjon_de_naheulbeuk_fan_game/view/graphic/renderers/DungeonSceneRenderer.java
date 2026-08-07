@@ -71,6 +71,19 @@ public class DungeonSceneRenderer implements Disposable {
                 Usage.Position | Usage.Normal);
     }
 
+    public void setLeaderClass(String className) {
+        if (heroTexture != null) {
+            heroTexture.dispose();
+        }
+        heroTexture = SpriteFactory.createHeroSprite(className);
+        if (heroTexture.getWidth() >= 256) {
+            heroFrames = TextureRegion.split(heroTexture, 64, 64);
+        } else {
+            heroFrames = new TextureRegion[1][1];
+            heroFrames[0][0] = new TextureRegion(heroTexture);
+        }
+    }
+
     public void buildScene(Dungeon dungeon, int playerX, int playerY) {
         instances.clear();
         entityBillboards.clear();

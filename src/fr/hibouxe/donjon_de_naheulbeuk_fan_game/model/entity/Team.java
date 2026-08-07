@@ -20,6 +20,7 @@ public class Team implements Serializable {
     private int x = 0; // Position X du joueur (départ en 0)
     private int y = 0; // Position Y du joueur (départ en 0)
     private int facingDirection = 0; // 0=Sud, 1=Nord, 2=Ouest, 3=Est
+    private int activeLeaderIndex = 0; // 0=Ranger, 1=Nain, etc.
     private List<Character> members = new ArrayList<>();
     private List<Item> inventory = new ArrayList<>();
     private int maxCapacity = 10;
@@ -123,6 +124,21 @@ public class Team implements Serializable {
 
     public void setFacingDirection(int facingDirection) {
         this.facingDirection = facingDirection;
+    }
+
+    public int getActiveLeaderIndex() {
+        return activeLeaderIndex;
+    }
+
+    public void setActiveLeaderIndex(int index) {
+        if (index >= 0 && index < members.size()) {
+            this.activeLeaderIndex = index;
+        }
+    }
+
+    public Character getActiveLeader() {
+        if (members.isEmpty()) return null;
+        return members.get(activeLeaderIndex);
     }
 
     /**

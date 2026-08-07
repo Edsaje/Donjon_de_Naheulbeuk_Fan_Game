@@ -105,12 +105,12 @@ public class ConsoleMenu implements IGameView {
     // --- DÉLÉGATION DUNGEON VIEW ---
 
     @Override
-    public void display(Dungeon maze, Team team) {
+    public void display(Dungeon maze, Team team, int currentFloor) {
         ConsoleDungeonView.display(maze, team, this);
     }
 
     @Override
-    public void displayDungeon(Dungeon maze, Team team) {
+    public void displayDungeon(Dungeon maze, Team team, int currentFloor) {
         ConsoleDungeonView.display(maze, team, this);
     }
 

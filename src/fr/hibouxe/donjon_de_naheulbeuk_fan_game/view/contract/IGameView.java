@@ -36,8 +36,8 @@ public interface IGameView {
     int askTargetCopySlot(int sourceSlot, String[] slotSummaries);
 
     // Vue Donjon et Déplacement
-    void display(Dungeon maze, Team team);
-    void displayDungeon(Dungeon maze, Team team);
+    void display(Dungeon maze, Team team, int currentFloor);
+    void displayDungeon(Dungeon maze, Team team, int currentFloor);
     String askPlayerMovement();
     boolean askPickupItem(Item item);
 

@@ -197,15 +197,15 @@ public class GraphicHD2DView implements IGameView {
     // --- RENDU HD-2D DU DONJON ET DÉPLACEMENT ---
 
     @Override
-    public void display(Dungeon maze, Team team) {
-        displayDungeon(maze, team);
+    public void display(Dungeon maze, Team team, int currentFloor) {
+        displayDungeon(maze, team, currentFloor);
     }
 
     @Override
-    public void displayDungeon(Dungeon maze, Team team) {
+    public void displayDungeon(Dungeon maze, Team team, int currentFloor) {
         if (gameApp != null) {
             gameApp.setState(HD2DGameApp.GameState.EXPLORATION);
-            gameApp.setContext(maze, team);
+            gameApp.setContext(maze, team, currentFloor);
         }
         
         // 1. Mise à jour de la Caméra 3D inclinée à -45° sur la position de la Compagnie

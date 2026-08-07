@@ -22,6 +22,7 @@ public class SpriteFactory {
      */
     public static Texture createHeroSprite(String className) {
         String name = className.toLowerCase();
+        
         Color fallbackColor = Color.GOLD;
 
         if (name.contains("magician") || name.contains("magicienne")) fallbackColor = Color.PURPLE;
