@@ -9,8 +9,6 @@ public class NaheulbeukDungeon extends Dungeon {
     @Override
     public void generate() {
         generatePMDDungeon();
-        generateMonsters(6, 0, 0);
-        generateItems(4);
-        generateStairs(1);
+        // Monsters, items and stairs are injected by ExplorationController depending on the floor
     }
 }

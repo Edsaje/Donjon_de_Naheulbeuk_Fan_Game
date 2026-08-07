@@ -270,6 +270,11 @@ public class Game {
         this.team.setX(startPos[0]);
         this.team.setY(startPos[1]);
 
+        // Populer l'étage 1
+        naheulbeukMaze.generateMonsters(5 + 1, team.getX(), team.getY());
+        naheulbeukMaze.generateItems(3);
+        naheulbeukMaze.generateStairs(1);
+
         ExplorationController explo = new ExplorationController(naheulbeukMaze, team, menu, false, currentSlot);
         explo.start();
     }
