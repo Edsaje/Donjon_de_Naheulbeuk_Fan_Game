@@ -81,6 +81,7 @@ public class HD2DGameApp extends ApplicationAdapter {
     }
 
     private boolean sceneNeedsBuild = false;
+    private boolean cameraNeedsSnap = true;
     private java.util.List<String> currentMessages = new java.util.ArrayList<>();
     public String currentMenuTitle = null;
     public String[] currentMenuOptions = null;
@@ -101,6 +102,9 @@ public class HD2DGameApp extends ApplicationAdapter {
     }
 
     public void setContext(Dungeon maze, Team team) {
+        if (this.maze != maze) {
+            this.cameraNeedsSnap = true;
+        }
         this.sceneNeedsBuild = true; // Toujours reconstruire la scène pour mettre à jour les entités (morts, coffres)
         this.maze = maze;
         this.team = team;
@@ -109,11 +113,14 @@ public class HD2DGameApp extends ApplicationAdapter {
     @Override
     public void render() {
         if (sceneNeedsBuild && dungeonRenderer != null && maze != null && team != null) {
-            float startWorldX = team.getX() * tileSize;
-            float startWorldZ = team.getY() * tileSize;
-            camera.position.set(startWorldX, 14f, startWorldZ + 12f);
-            camera.lookAt(startWorldX, 0f, startWorldZ);
-            camera.update();
+            if (cameraNeedsSnap) {
+                float startWorldX = team.getX() * tileSize;
+                float startWorldZ = team.getY() * tileSize;
+                camera.position.set(startWorldX, 14f, startWorldZ + 12f);
+                camera.lookAt(startWorldX, 0f, startWorldZ);
+                camera.update();
+                cameraNeedsSnap = false;
+            }
             dungeonRenderer.buildScene(maze, team.getX(), team.getY());
             sceneNeedsBuild = false;
         }
@@ -135,7 +142,7 @@ public class HD2DGameApp extends ApplicationAdapter {
             camera.lookAt(camera.position.x, 0.0f, camera.position.z - 12f);
             camera.update();
 
-            dungeonRenderer.render(modelBatch, decalBatch, environment, camera, team.getX(), team.getY());
+            dungeonRenderer.render(modelBatch, decalBatch, environment, camera, team.getX(), team.getY(), team.getFacingDirection());
         } else {
             battleRenderer.render(modelBatch, decalBatch, environment, camera);
         }

@@ -35,6 +35,12 @@ public class DungeonSceneRenderer implements Disposable {
     private Decal heroSprite;
 
     private Texture heroTexture;
+    private TextureRegion[][] heroFrames;
+    private int currentDirection = 0; // 0=Bas, 1=Haut, 2=Gauche, 3=Droite
+    private float stateTime = 0f;
+    private int lastPlayerX = -1;
+    private int lastPlayerY = -1;
+
     private Texture monsterTexture;
     private Texture chestTexture;
     private Texture stairsTexture;
@@ -43,6 +49,14 @@ public class DungeonSceneRenderer implements Disposable {
 
     public DungeonSceneRenderer() {
         heroTexture = SpriteFactory.createHeroSprite("Ranger");
+        // Découpage automatique si l'image fait 256x256 (64x64 par frame)
+        if (heroTexture.getWidth() >= 256) {
+            heroFrames = TextureRegion.split(heroTexture, 64, 64);
+        } else {
+            heroFrames = new TextureRegion[1][1];
+            heroFrames[0][0] = new TextureRegion(heroTexture);
+        }
+        
         monsterTexture = SpriteFactory.createMonsterSprite("Orc");
         chestTexture = SpriteFactory.createChestSprite();
         stairsTexture = SpriteFactory.createStairsSprite();
@@ -98,14 +112,52 @@ public class DungeonSceneRenderer implements Disposable {
                 }
             }
         }
+        float currentX = playerX * tileSize;
+        float currentZ = playerY * tileSize;
+        if (heroSprite != null) {
+            currentX = heroSprite.getX();
+            currentZ = heroSprite.getZ();
+        }
 
-        heroSprite = Decal.newDecal(1.4f, 2.0f, new TextureRegion(heroTexture), true);
-        heroSprite.setPosition(playerX * tileSize, 1.0f, playerY * tileSize);
+        TextureRegion initialFrame = heroFrames.length > 0 && heroFrames[0].length > 0 ? heroFrames[0][0] : new TextureRegion(heroTexture);
+        heroSprite = Decal.newDecal(1.4f, 2.0f, initialFrame, true);
+        heroSprite.setPosition(currentX, 1.0f, currentZ);
         entityBillboards.add(heroSprite);
     }
 
-    public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, int playerX, int playerY) {
-        heroSprite.setPosition(playerX * tileSize, 1.0f, playerY * tileSize);
+    public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, int playerX, int playerY, int playerDirection) {
+        this.currentDirection = playerDirection;
+        // Animation et déplacement fluide du sprite
+        float targetSpriteX = playerX * tileSize;
+        float targetSpriteZ = playerY * tileSize;
+
+        float currentSpriteX = heroSprite.getX();
+        float currentSpriteZ = heroSprite.getZ();
+
+        float diffX = targetSpriteX - currentSpriteX;
+        float diffZ = targetSpriteZ - currentSpriteZ;
+
+        if (Math.abs(diffX) > 0.05f || Math.abs(diffZ) > 0.05f) {
+            currentSpriteX += diffX * 0.15f;
+            currentSpriteZ += diffZ * 0.15f;
+        } else {
+            currentSpriteX = targetSpriteX;
+            currentSpriteZ = targetSpriteZ;
+        }
+
+        // Le temps avance en permanence pour que le personnage "marche sur place"
+        stateTime += com.badlogic.gdx.Gdx.graphics.getDeltaTime();
+
+        // Mise à jour de l'animation en boucle perpétuelle
+        // Boucle : 0 (Repos), 1 (Pied gauche), 2 (Repos), 3 (Pied droit)
+        // Vitesse réduite (4 au lieu de 6)
+        int frameIndex = (int)(stateTime * 4) % 4;
+
+        if (heroFrames.length > currentDirection && heroFrames[currentDirection].length > frameIndex) {
+            heroSprite.setTextureRegion(heroFrames[currentDirection][frameIndex]);
+        }
+
+        heroSprite.setPosition(currentSpriteX, 1.0f, currentSpriteZ);
 
         modelBatch.begin(camera);
         modelBatch.render(instances, environment);

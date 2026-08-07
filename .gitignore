@@ -32,6 +32,12 @@ Thumbs.db
 *.war
 *.ear
 
+### Scripts ###
+*.py
+*.ps1
+*.bat
+PatchQueue.java
+
 ### Variables d'environnement / Configuration locale ###
 *.env
 application-local.properties

@@ -19,6 +19,7 @@ public class Team implements Serializable {
     private static final long serialVersionUID = 1L;
     private int x = 0; // Position X du joueur (départ en 0)
     private int y = 0; // Position Y du joueur (départ en 0)
+    private int facingDirection = 0; // 0=Sud, 1=Nord, 2=Ouest, 3=Est
     private List<Character> members = new ArrayList<>();
     private List<Item> inventory = new ArrayList<>();
     private int maxCapacity = 10;
@@ -114,6 +115,14 @@ public class Team implements Serializable {
      */
     public void setY(int y) {
         this.y = y;
+    }
+
+    public int getFacingDirection() {
+        return facingDirection;
+    }
+
+    public void setFacingDirection(int facingDirection) {
+        this.facingDirection = facingDirection;
     }
 
     /**

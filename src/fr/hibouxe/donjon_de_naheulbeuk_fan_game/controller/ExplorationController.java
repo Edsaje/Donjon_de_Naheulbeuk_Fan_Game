@@ -71,15 +71,19 @@ public class ExplorationController {
 
         switch (choice) {
             case "Z":
+                team.setFacingDirection(1); // Nord
                 moved = tryMoveNorth();
                 break;
             case "S":
+                team.setFacingDirection(0); // Sud
                 moved = tryMoveSouth();
                 break;
             case "Q":
+                team.setFacingDirection(2); // Ouest
                 moved = tryMoveWest();
                 break;
             case "D":
+                team.setFacingDirection(3); // Est
                 moved = tryMoveEast();
                 break;
             case "X":

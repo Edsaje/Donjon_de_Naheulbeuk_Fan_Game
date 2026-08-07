@@ -62,11 +62,28 @@ public class SpriteFactory {
     }
 
     private static Texture loadOrFallback(String filename, Color fallbackColor) {
+        String[] possiblePaths = {
+            "sprites/",
+            "src/assets/sprites/",
+            "assets/sprites/"
+        };
+        
         try {
-            if (Gdx.files != null && Gdx.files.internal("sprites/" + filename + ".png").exists()) {
-                return new Texture(Gdx.files.internal("sprites/" + filename + ".png"));
+            if (Gdx.files != null) {
+                for (String path : possiblePaths) {
+                    System.out.println("[HD-2D] Looking for: " + path + filename + "_walk.png");
+                    if (Gdx.files.internal(path + filename + "_walk.png").exists()) {
+                        System.out.println("[HD-2D] Found: " + path + filename + "_walk.png");
+                        return new Texture(Gdx.files.internal(path + filename + "_walk.png"));
+                    }
+                    if (Gdx.files.internal(path + filename + ".png").exists()) {
+                        return new Texture(Gdx.files.internal(path + filename + ".png"));
+                    }
+                }
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            System.out.println("[HD-2D] Error loading sprite: " + e.getMessage());
+        }
 
         Pixmap pixmap = new Pixmap(64, 64, Pixmap.Format.RGBA8888);
         pixmap.setColor(fallbackColor);
