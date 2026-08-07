@@ -56,6 +56,7 @@ public class ExplorationController {
     public void start() {
         this.running = true;
         while (running) {
+            maze.updateFogOfWar(team.getX(), team.getY(), 3); // Vision radius: 3 cases
             menu.display(maze, team, currentFloor);
             playerMovement();
         }

@@ -142,6 +142,25 @@ public abstract class Dungeon implements Serializable {
         getMonsterAI().moveMonsters(this, team, menu);
     }
 
+    private transient FogOfWarManager fogManager = new FogOfWarManager();
+
+    private FogOfWarManager getFogManager() {
+        if (fogManager == null) fogManager = new FogOfWarManager();
+        return fogManager;
+    }
+
+    /**
+     * Révèle les cases autour du joueur (Brouillard de Guerre).
+     * Délégué au FogOfWarManager (SRP).
+     *
+     * @param playerX Coordonnée X du joueur
+     * @param playerY Coordonnée Y du joueur
+     * @param radius Rayon de vision (ex: 2 ou 3 cases)
+     */
+    public void updateFogOfWar(int playerX, int playerY, int radius) {
+        getFogManager().updateVisibility(grid, width, height, playerX, playerY, radius);
+    }
+
     /**
      * Obtenir la largeur du donjon.
      *

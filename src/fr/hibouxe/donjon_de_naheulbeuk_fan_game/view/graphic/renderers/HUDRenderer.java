@@ -289,19 +289,21 @@ public class HUDRenderer implements Disposable {
                 int drawX = originX + x * miniCellSize;
                 int drawY = originY + (dungeon.getHeight() - 1 - y) * miniCellSize;
 
-                if (cell.isWalkable()) {
-                    shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.35f, 0.8f));
-                    shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
+                if (cell.isDiscovered()) {
+                    if (cell.isWalkable()) {
+                        shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.35f, 0.8f));
+                        shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
 
-                    if (cell.hasMonster()) {
-                        shapeRenderer.setColor(Color.RED);
-                        shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
-                    } else if (cell.hasItem()) {
-                        shapeRenderer.setColor(Color.CYAN);
-                        shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
-                    } else if (cell.hasStairs()) {
-                        shapeRenderer.setColor(Color.WHITE);
-                        shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
+                        if (cell.hasMonster()) {
+                            shapeRenderer.setColor(Color.RED);
+                            shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
+                        } else if (cell.hasItem()) {
+                            shapeRenderer.setColor(Color.CYAN);
+                            shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
+                        } else if (cell.hasStairs()) {
+                            shapeRenderer.setColor(Color.WHITE);
+                            shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
+                        }
                     }
                 }
             }

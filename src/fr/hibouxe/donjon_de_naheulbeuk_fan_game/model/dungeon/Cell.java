@@ -20,7 +20,9 @@ public class Cell implements Serializable {
     private static final long serialVersionUID = 1L;
     // Attributs
     private int x, y;
-    private boolean visited = false;
+    private boolean visited = false; // Used by maze generator
+    private boolean discovered = false; // Used for Fog of War
+    private int roomId = 0; // 0 = corridor, >0 = room
     private boolean wall = true; // Par défaut : Bloc de mur massif infranchissable
     private boolean wallNorth = true;
     private boolean wallSouth = true;
@@ -242,5 +244,21 @@ public class Cell implements Serializable {
 
     public boolean isWalkable() {
         return !wall;
+    }
+
+    public boolean isDiscovered() {
+        return discovered;
+    }
+
+    public void setDiscovered(boolean discovered) {
+        this.discovered = discovered;
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 }

@@ -89,11 +89,13 @@ public class DungeonGenerator {
                     startY = Math.max(secMinY, startY);
 
                     // Creuser les cases de sol de la salle et les enregistrer dans currentRoomCells
+                    int roomId = idx + 1; // Un identifiant unique pour cette salle (1 à 9)
                     for (int x = startX; x < startX + rW; x++) {
                         for (int y = startY; y < startY + rH; y++) {
                             if (x > 0 && x < width - 1 && y > 0 && y < height - 1) {
                                 grid[x][y].setWall(false);
                                 grid[x][y].setVisited(true);
+                                grid[x][y].setRoomId(roomId);
                                 currentRoomCells.add(new int[]{x, y});
                             }
                         }
