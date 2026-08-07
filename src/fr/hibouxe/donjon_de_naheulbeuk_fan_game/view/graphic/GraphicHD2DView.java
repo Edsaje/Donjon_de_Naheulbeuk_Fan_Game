@@ -147,6 +147,7 @@ public class GraphicHD2DView implements IGameView {
 
     @Override
     public int askSlotChoice(String actionTitle, String[] slotSummaries) {
+        inputQueue.clear();
         if (gameApp != null) {
             gameApp.setState(HD2DGameApp.GameState.HUB);
             
@@ -323,12 +324,14 @@ public class GraphicHD2DView implements IGameView {
     public void displayBattleStatus(List<Character> monsters, Team team) {
         if (gameApp != null) {
             gameApp.setState(HD2DGameApp.GameState.BATTLE);
+            gameApp.setupBattle(team, monsters);
         }
         System.out.println("[Rendu HD-2D] Combat 3D déclenché avec animations de compétences !");
     }
 
     @Override
     public int askBattleAction(Character attacker) {
+        inputQueue.clear();
         if (gameApp != null) {
             String[] options = {"Attaquer", "Compétence", "Inventaire", "Fuir"};
             gameApp.setMenuRequest("ACTIONS: " + attacker.getName(), options);
@@ -345,6 +348,7 @@ public class GraphicHD2DView implements IGameView {
 
     @Override
     public Skill askSkill(Character attacker, List<Character> monsters) {
+        inputQueue.clear();
         List<Skill> skills = attacker.getSkills();
         String[] options = new String[skills.size() + 1];
         for (int i = 0; i < skills.size(); i++) {
@@ -368,6 +372,7 @@ public class GraphicHD2DView implements IGameView {
 
     @Override
     public Character askMonsterTarget(List<Character> monsters) {
+        inputQueue.clear();
         List<Character> aliveMonsters = new ArrayList<>();
         for (Character m : monsters) {
             if (m.getHealthPoint() > 0) {
@@ -397,6 +402,7 @@ public class GraphicHD2DView implements IGameView {
 
     @Override
     public Character askAllyToHeal(Team team) {
+        inputQueue.clear();
         String[] options = new String[team.getMembers().size() + 1];
         for (int i = 0; i < team.getMembers().size(); i++) {
             options[i] = team.getMembers().get(i).getName() + " (" + team.getMembers().get(i).getHealthPoint() + " PV)";

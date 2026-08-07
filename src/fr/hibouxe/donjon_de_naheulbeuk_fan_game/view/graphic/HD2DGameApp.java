@@ -85,6 +85,12 @@ public class HD2DGameApp extends ApplicationAdapter {
     public String currentMenuTitle = null;
     public String[] currentMenuOptions = null;
 
+    public void setupBattle(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) {
+        if (battleRenderer != null) {
+            battleRenderer.setupTeamBattleArena(team);
+        }
+    }
+
     public void setMenuRequest(String title, String[] options) {
         this.currentMenuTitle = title;
         this.currentMenuOptions = options;

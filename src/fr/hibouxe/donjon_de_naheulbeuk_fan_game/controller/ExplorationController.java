@@ -46,6 +46,10 @@ public class ExplorationController {
         this.activeSlot = activeSlot;
     }
 
+    public void setCurrentFloor(int floor) {
+        this.currentFloor = floor;
+    }
+
     /**
      * Démarre la boucle d'exploration.
      */

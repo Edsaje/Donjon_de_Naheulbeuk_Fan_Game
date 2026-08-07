@@ -67,6 +67,7 @@ public class Game {
                         SaveManager.deleteQuickSave(currentSlot);
 
                         ExplorationController explo = new ExplorationController(saveData.getDungeon(), this.team, menu, false, currentSlot);
+                        explo.setCurrentFloor(saveData.getCurrentFloor());
                         explo.start();
 
                         resumedFromQuickSave = true;
@@ -149,6 +150,7 @@ public class Game {
                 menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + data.getCurrentFloor() + " (Slot " + slot + ") !");
                 SaveManager.deleteQuickSave(slot);
                 ExplorationController explo = new ExplorationController(data.getDungeon(), this.team, menu, false, slot);
+                explo.setCurrentFloor(data.getCurrentFloor());
                 explo.start();
                 return;
             }
