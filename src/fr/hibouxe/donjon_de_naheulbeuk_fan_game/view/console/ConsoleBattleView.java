@@ -132,19 +132,4 @@ public class ConsoleBattleView {
         }
     }
 
-    public Character askAllyToHeal(Team team, ConsoleMenu menu) {
-        menu.displayMessage("\nChoisissez le coéquipier à soigner (0. Retour) :");
-        for (int i = 0; i < team.getMembers().size(); i++) {
-            Character c = team.getMembers().get(i);
-            menu.displayMessage((i + 1) + ". " + c.getName() + " | PV: " + Math.max(0, c.getHealthPoint()));
-        }
-        while (true) {
-            int choice = menu.askPlayerInt();
-            if (choice == 0) return null;
-            if (choice > 0 && choice <= team.getMembers().size()) {
-                return team.getMembers().get(choice - 1);
-            }
-            menu.displayMessage("[Erreur] Coéquipier invalide (ou 0 pour annuler).");
-        }
     }
-}

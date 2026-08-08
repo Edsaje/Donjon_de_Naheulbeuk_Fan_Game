@@ -33,8 +33,18 @@ public class ConsoleMenu implements IGameView {
     private ConsoleMainMenuView ConsoleMainMenuView = new ConsoleMainMenuView();
 
     @Override
+    public void clearMessages() {}
+
+    @Override
     public void displayMessage(String message) {
         System.out.println(message);
+    }
+
+    @Override
+    public void displayDialogue(String message) {
+        System.out.println(message);
+        System.out.print("[Appuyez sur ENTRÉE pour continuer...]");
+        keyboard.nextLine();
     }
 
     @Override
@@ -110,6 +120,14 @@ public class ConsoleMenu implements IGameView {
     }
 
     @Override
+    public void displayTransitionScreen(int floorNumber) {
+        System.out.println("\n\n\n=== [ ÉTAGE " + floorNumber + " ] ===\n\n\n");
+        try {
+            Thread.sleep(1000);
+        } catch(InterruptedException e) {}
+    }
+
+    @Override
     public void displayDungeon(Dungeon maze, Team team, int currentFloor) {
         ConsoleDungeonView.display(maze, team, this);
     }
@@ -180,11 +198,6 @@ public class ConsoleMenu implements IGameView {
     @Override
     public Character askMonsterTarget(List<Character> monsters) {
         return ConsoleBattleView.askMonsterTarget(monsters, this);
-    }
-
-    @Override
-    public Character askAllyToHeal(Team team) {
-        return ConsoleBattleView.askAllyToHeal(team, this);
     }
 
     // --- STATISTIQUES COMPAGNIE ---

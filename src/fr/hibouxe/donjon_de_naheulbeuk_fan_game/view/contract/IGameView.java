@@ -19,6 +19,8 @@ import java.util.List;
  */
 public interface IGameView {
     void displayMessage(String message);
+    void clearMessages();
+    void displayDialogue(String message);
     int askPlayerInt();
     String askPlayerString();
 
@@ -36,6 +38,7 @@ public interface IGameView {
     int askTargetCopySlot(int sourceSlot, String[] slotSummaries);
 
     // Vue Donjon et Déplacement
+    void displayTransitionScreen(int floorNumber);
     void display(Dungeon maze, Team team, int currentFloor);
     void displayDungeon(Dungeon maze, Team team, int currentFloor);
     String askPlayerMovement();
@@ -54,7 +57,6 @@ public interface IGameView {
     int askBattleAction(Character attacker);
     Skill askSkill(Character attacker, List<Character> monsters);
     Character askMonsterTarget(List<Character> monsters);
-    Character askAllyToHeal(Team team);
 
     // Fiche de la Compagnie
     void displayTeamStats(Team team);

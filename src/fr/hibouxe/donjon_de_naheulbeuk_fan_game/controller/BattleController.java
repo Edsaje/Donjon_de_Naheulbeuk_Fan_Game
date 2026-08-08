@@ -188,7 +188,7 @@ public class BattleController {
 
                 Character target = null;
                 if (chosenSkill.isHealing()) {
-                    target = menu.askAllyToHeal(team);
+                    target = menu.askItemTarget(team);
                 } else {
                     target = menu.askMonsterTarget(monsters);
                 }

@@ -46,8 +46,15 @@ public class GraphicHD2DView implements IGameView {
     private List<String> messageHistory = new ArrayList<>();
 
     @Override
+    public void clearMessages() {
+        messageHistory.clear();
+        if (gameApp != null) {
+            gameApp.setMessages(new ArrayList<>(messageHistory));
+        }
+    }
+
+    @Override
     public void displayMessage(String message) {
-        System.out.println("[HD-2D UI] " + message);
         String[] lines = message.split("\n");
         for (String line : lines) {
             if (!line.trim().isEmpty()) {
@@ -59,6 +66,26 @@ public class GraphicHD2DView implements IGameView {
         }
         if (gameApp != null) {
             gameApp.setMessages(new ArrayList<>(messageHistory));
+        }
+    }
+
+    @Override
+    public void displayDialogue(String message) {
+        displayMessage(message);
+        // Force the app to pause and wait for the player to press a key
+        inputQueue.clear();
+        if (gameApp != null) {
+            // Un "MenuRequest" vide mais avec 1 option invisible pour forcer la pause
+            gameApp.setMenuRequest(null, new String[]{"[Continuer]"});
+        }
+        try {
+            inputQueue.take();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            if (gameApp != null) {
+                gameApp.setMenuRequest(null, null);
+            }
         }
     }
 
@@ -91,7 +118,7 @@ public class GraphicHD2DView implements IGameView {
 
     @Override
     public void displayTitleScreen() {
-        System.out.println("[Rendu HD-2D] Écran-Titre 3D avec caméra panoramique et particules !");
+        // Le rendu de l'écran titre est géré par LibGDX, pas besoin de console
     }
 
     @Override
@@ -197,6 +224,14 @@ public class GraphicHD2DView implements IGameView {
     // --- RENDU HD-2D DU DONJON ET DÉPLACEMENT ---
 
     @Override
+    public void displayTransitionScreen(int floorNumber) {
+        if (gameApp != null) {
+            gameApp.setState(HD2DGameApp.GameState.TRANSITION);
+            gameApp.setTransitionFloor(floorNumber);
+        }
+    }
+
+    @Override
     public void display(Dungeon maze, Team team, int currentFloor) {
         displayDungeon(maze, team, currentFloor);
     }
@@ -233,12 +268,6 @@ public class GraphicHD2DView implements IGameView {
                 }
             }
         }
-
-        // 3. Rendu d'information du Moteur Graphique HD-2D
-        System.out.println("\n[Moteur HD-2D] --- RENDU IMAGE 3D ---");
-        System.out.println("Caméra 3D : Position(" + camera.getCameraX() + ", " + camera.getCameraY() + ", " + camera.getCameraZ() + ") | Pitch(" + camera.getPitch() + "°)");
-        System.out.println("Cible Caméra : (" + camera.getTargetX() + ", 0.0, " + camera.getTargetZ() + ")");
-        System.out.println("Sprites 2D Billboards affichés debout face caméra : " + activeSprites.size() + " entités");
     }
 
     @Override
@@ -263,10 +292,7 @@ public class GraphicHD2DView implements IGameView {
     @Override
     public void displayInventory(Team team) {
         this.lastTeamForInventory = team;
-        System.out.println("\n=== SAC À DOS DE LA COMPAGNIE ===");
-        if (team.getInventory().isEmpty()) {
-            System.out.println("Le sac est complètement vide !");
-        }
+        // L'inventaire est géré et affiché visuellement via le HUDRenderer (LibGDX)
     }
 
     @Override
@@ -317,7 +343,25 @@ public class GraphicHD2DView implements IGameView {
 
     @Override
     public Character askItemTarget(Team team) {
-        return askAllyToHeal(team);
+        inputQueue.clear();
+        String[] options = new String[team.getMembers().size() + 1];
+        for (int i = 0; i < team.getMembers().size(); i++) {
+            options[i] = team.getMembers().get(i).getName() + " (" + team.getMembers().get(i).getHealthPoint() + " PV)";
+        }
+        options[team.getMembers().size()] = "Annuler";
+
+        if (gameApp != null) {
+            gameApp.setMenuRequest("CIBLE ALLIÉE", options);
+        }
+
+        try {
+            int choice = Integer.parseInt(inputQueue.take());
+            if (gameApp != null) gameApp.setMenuRequest(null, null);
+            if (choice > 0 && choice <= team.getMembers().size()) return team.getMembers().get(choice - 1);
+        } catch (Exception e) {
+            if (gameApp != null) gameApp.setMenuRequest(null, null);
+        }
+        return null;
     }
 
     @Override
@@ -326,7 +370,6 @@ public class GraphicHD2DView implements IGameView {
             gameApp.setState(HD2DGameApp.GameState.BATTLE);
             gameApp.setupBattle(team, monsters);
         }
-        System.out.println("[Rendu HD-2D] Combat 3D déclenché avec animations de compétences !");
     }
 
     @Override
@@ -394,29 +437,6 @@ public class GraphicHD2DView implements IGameView {
             int choice = Integer.parseInt(inputQueue.take());
             if (gameApp != null) gameApp.setMenuRequest(null, null);
             if (choice > 0 && choice <= aliveMonsters.size()) return aliveMonsters.get(choice - 1);
-        } catch (Exception e) {
-            if (gameApp != null) gameApp.setMenuRequest(null, null);
-        }
-        return null;
-    }
-
-    @Override
-    public Character askAllyToHeal(Team team) {
-        inputQueue.clear();
-        String[] options = new String[team.getMembers().size() + 1];
-        for (int i = 0; i < team.getMembers().size(); i++) {
-            options[i] = team.getMembers().get(i).getName() + " (" + team.getMembers().get(i).getHealthPoint() + " PV)";
-        }
-        options[team.getMembers().size()] = "Annuler";
-
-        if (gameApp != null) {
-            gameApp.setMenuRequest("CIBLE ALLIÉE", options);
-        }
-
-        try {
-            int choice = Integer.parseInt(inputQueue.take());
-            if (gameApp != null) gameApp.setMenuRequest(null, null);
-            if (choice > 0 && choice <= team.getMembers().size()) return team.getMembers().get(choice - 1);
         } catch (Exception e) {
             if (gameApp != null) gameApp.setMenuRequest(null, null);
         }

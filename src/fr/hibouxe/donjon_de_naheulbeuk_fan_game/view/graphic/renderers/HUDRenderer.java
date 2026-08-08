@@ -42,6 +42,21 @@ public class HUDRenderer implements Disposable {
         return isMenuOpen;
     }
 
+    public void renderTransitionScreen(int floor) {
+        Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
+        Gdx.gl.glBlendFunc(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
+
+        uiBatch.begin();
+        font.getData().setScale(2.5f);
+        font.setColor(Color.WHITE);
+        String text = "ÉTAGE " + floor;
+        float x = (Gdx.graphics.getWidth() / 2f) - (text.length() * 15f);
+        float y = (Gdx.graphics.getHeight() / 2f);
+        font.draw(uiBatch, text, x, y);
+        font.getData().setScale(1.2f);
+        uiBatch.end();
+    }
+
     /**
      * Effectue le rendu 2D du HUD et du ConsoleMenu Dragon Quest en superposition.
      *
@@ -51,7 +66,7 @@ public class HUDRenderer implements Disposable {
      * @param currentFloor Étage actuel
      * */
     public void renderHUD(Dungeon dungeon, int playerX, int playerY, int currentFloor, HD2DGameApp.GameState state, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, String menuTitle, String[] menuOptions, HD2DGameApp gameApp) {
-        handleMenuInput(state);
+        handleMenuInput(state, gameApp);
         if (menuTitle != null && menuOptions != null) {
             handleContextualMenuInput(menuOptions, gameApp);
         }
@@ -67,6 +82,9 @@ public class HUDRenderer implements Disposable {
             renderDragonQuestWindow(dungeon, playerX, playerY, team);
         } else {
             renderExplorationHUD(dungeon, playerX, playerY, currentFloor, state);
+            if (messages != null && !messages.isEmpty()) {
+                renderMinimalistWindow(team, messages);
+            }
         }
     }
 
@@ -136,7 +154,7 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
-    private void handleMenuInput(HD2DGameApp.GameState state) {
+    private void handleMenuInput(HD2DGameApp.GameState state, HD2DGameApp gameApp) {
         if (state == HD2DGameApp.GameState.BATTLE || state == HD2DGameApp.GameState.HUB) return; // Désactivé en combat et HubController
 
         // Touche 'M' ou 'ECHAP' pour ouvrir/fermer le ConsoleMenu
@@ -151,7 +169,16 @@ public class HUDRenderer implements Disposable {
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN) || Gdx.input.isKeyJustPressed(Input.Keys.S)) {
                 selectedOption = (selectedOption + 1) % menuOptions.length;
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                if (selectedOption == 5) {
+                if (selectedOption == 0 && gameApp.parentView != null) {
+                    gameApp.parentView.pushInput("C");
+                    isMenuOpen = false;
+                } else if (selectedOption == 1 && gameApp.parentView != null) {
+                    gameApp.parentView.pushInput("I");
+                    isMenuOpen = false;
+                } else if (selectedOption == 4 && gameApp.parentView != null) {
+                    gameApp.parentView.pushInput("K");
+                    isMenuOpen = false;
+                } else if (selectedOption == 5) {
                     isMenuOpen = false; // Option 6 : Fermer
                 }
             }
@@ -175,37 +202,46 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
+    
     private void renderMinimalistWindow(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages) {
+        if (messages == null || messages.isEmpty()) return;
+
+        // Extraire le dernier message
+        String currentMessage = messages.get(messages.size() - 1);
+        String speakerName = null;
+        String dialogueText = currentMessage;
+
+        if (currentMessage.contains(" : ")) {
+            String[] parts = currentMessage.split(" : ", 2);
+            speakerName = parts[0];
+            dialogueText = parts[1];
+        } else if (currentMessage.startsWith("[") && currentMessage.contains("] ")) {
+            int closeBracket = currentMessage.indexOf("] ");
+            speakerName = currentMessage.substring(1, closeBracket);
+            dialogueText = currentMessage.substring(closeBracket + 2);
+        }
+
+        int boxX = 100;
+        int boxY = 20;
+        int boxWidth = 1080;
+        int boxHeight = 180;
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.1f, 0.85f));
-        shapeRenderer.rect(100, 50, 1080, 250);
+        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.rect(boxX, boxY, boxWidth, boxHeight);
+
+        if (speakerName != null) {
+            shapeRenderer.setColor(new Color(0.2f, 0.2f, 0.2f, 1f));
+            shapeRenderer.rect(boxX + 20, boxY + boxHeight - 10, 200, 40);
+        }
         shapeRenderer.end();
 
         uiBatch.begin();
         font.setColor(Color.WHITE);
-        int startY = 270;
-        int maxLines = 8;
-        int startIdx = Math.max(0, messages.size() - maxLines);
-
-        for (int i = startIdx; i < messages.size(); i++) {
-            font.draw(uiBatch, messages.get(i), 120, startY);
-            startY -= 25;
+        if (speakerName != null) {
+            font.draw(uiBatch, speakerName, boxX + 30, boxY + boxHeight + 15);
         }
-
-        // --- STATISTIQUES DE L'ÉQUIPE (Droite de la boîte) ---
-        if (team != null) {
-            font.setColor(Color.LIGHT_GRAY);
-            int teamY = 270;
-            for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character hero : team.getMembers()) {
-                String line = String.format("%-15s : PV: %d/%d | %s: %d/%d",
-                        hero.getName(),
-                        hero.getHealthPoint(), hero.getMaxHealthPoint(), 
-                        hero.getResourceName(), hero.getCurrentResource(), hero.getMaxResource());
-                font.draw(uiBatch, line, 650, teamY);
-                teamY -= 25;
-            }
-        }
-
+        font.draw(uiBatch, dialogueText, boxX + 30, boxY + boxHeight - 30);
         uiBatch.end();
     }
 

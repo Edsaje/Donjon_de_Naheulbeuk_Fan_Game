@@ -84,9 +84,13 @@ public class DungeonSceneRenderer implements Disposable {
         }
     }
 
-    public void buildScene(Dungeon dungeon, int playerX, int playerY) {
+    public void buildScene(Dungeon dungeon, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, int playerX, int playerY, int currentFloor) {
         instances.clear();
         entityBillboards.clear();
+        
+        if (heroSprite != null) {
+            heroSprite.setPosition(playerX * tileSize, 1.0f, playerY * tileSize);
+        }
 
         Cell[][] grid = dungeon.getGrid();
 
@@ -115,8 +119,28 @@ public class DungeonSceneRenderer implements Disposable {
 
                     if (cell.hasStairs()) {
                         Decal stairsSprite = Decal.newDecal(1.6f, 1.6f, new TextureRegion(stairsTexture), true);
-                        stairsSprite.setPosition(posX, 0.8f, posZ);
+                        stairsSprite.setPosition(posX, 1.0f, posZ);
                         entityBillboards.add(stairsSprite);
+                    }
+                    
+                    // SCRIPT ELFE (Tutoriel - Étage 2)
+                    if (currentFloor == 2 && x == 1 && y == 2) {
+                        boolean elfSaved = false;
+                        for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character c : team.getMembers()) {
+                            if (c.getClass().getSimpleName().equals("Elf")) {
+                                elfSaved = true;
+                                break;
+                            }
+                        }
+                        if (!elfSaved) {
+                            Texture elfTex = SpriteFactory.createHeroSprite("Elf");
+                            if (elfTex != null) {
+                                TextureRegion[][] elfFrames = TextureRegion.split(elfTex, 64, 64);
+                                Decal elfSprite = Decal.newDecal(1.8f, 1.8f, elfFrames[0][0], true);
+                                elfSprite.setPosition(posX, 1.0f, posZ);
+                                entityBillboards.add(elfSprite);
+                            }
+                        }
                     }
                 } else {
                     ModelInstance wallBlock = new ModelInstance(wallBlockModel);

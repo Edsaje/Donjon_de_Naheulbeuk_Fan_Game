@@ -377,6 +377,9 @@ public class Character implements Serializable {
      */
     public void setHealthPoint(int healthPoint) {
         this.healthPoint = healthPoint;
+        if (this.healthPoint < 0) {
+            this.healthPoint = 0;
+        }
         if (this.maxHealthPoint > 0 && this.healthPoint > this.maxHealthPoint) {
             this.healthPoint = this.maxHealthPoint;
         }

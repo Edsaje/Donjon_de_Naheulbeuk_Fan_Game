@@ -230,19 +230,12 @@ public class Game {
     }
 
     private void runTutorial() {
-        menu.displayMessage("\n=== CHAPITRE 1 : LA FUITE ===");
-        menu.displayMessage("Le Ranger se réveille avec un mal de crâne effroyable...");
-        menu.displayMessage("La taverne a été attaquée. Il doit fuir par le cellier et retrouver les autres !");
-
         this.team = new Team();
         this.team.getMembers().clear();
         this.team.getMembers().add(new Ranger());
 
         TutorialDungeon tutorialMaze = new TutorialDungeon();
-        tutorialMaze.generate();
-        int[] startPos = tutorialMaze.getFirstWalkablePosition();
-        this.team.setX(startPos[0]);
-        this.team.setY(startPos[1]);
+        tutorialMaze.prepareFloor(1, team);
 
         ExplorationController explo = new ExplorationController(tutorialMaze, team, menu, true, currentSlot);
         explo.start();
@@ -251,29 +244,14 @@ public class Game {
             return;
         }
 
-        menu.displayMessage("\nVous trouvez la sortie et fuyez vers la forêt !");
-
-        team.getMembers().add(new Dwarf());
-        team.getMembers().add(new Elf());
-        team.getMembers().add(new Barbarian());
-        team.getMembers().add(new Magician());
-        team.getMembers().add(new Ogre());
-        team.getMembers().add(new Thief());
+        menu.displayMessage("\nLa compagnie, enfin réunie au complet, trouve la sortie et fuit vers la forêt !");
     }
 
     private void runNaheulbeuk() {
         menu.displayMessage("\nVous pénétrez dans les sombres couloirs du Donjon de Naheulbeuk...");
 
         NaheulbeukDungeon naheulbeukMaze = new NaheulbeukDungeon();
-        naheulbeukMaze.generate();
-        int[] startPos = naheulbeukMaze.getFirstWalkablePosition();
-        this.team.setX(startPos[0]);
-        this.team.setY(startPos[1]);
-
-        // Populer l'étage 1
-        naheulbeukMaze.generateMonsters(5 + 1, team.getX(), team.getY());
-        naheulbeukMaze.generateItems(3);
-        naheulbeukMaze.generateStairs(1);
+        naheulbeukMaze.prepareFloor(1, team);
 
         ExplorationController explo = new ExplorationController(naheulbeukMaze, team, menu, false, currentSlot);
         explo.start();

@@ -3,6 +3,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.NaheulbeukDungeon;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.TutorialDungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView;
@@ -27,6 +28,8 @@ public class ExplorationController {
     private IGameView menu;
     private boolean isTutorial;
     private int activeSlot = 1;
+    private boolean elfJoined = false;
+    private boolean elfHealed = false;
 
     /**
      * Constructeur injectant toutes les dépendances.
@@ -50,14 +53,29 @@ public class ExplorationController {
         this.currentFloor = floor;
     }
 
+    private boolean floorIntroPlayed = false;
+
     /**
      * Démarre la boucle d'exploration.
      */
     public void start() {
         this.running = true;
+        this.floorIntroPlayed = false; // Reset pour le début du donjon
         while (running) {
             maze.updateFogOfWar(team.getX(), team.getY(), 3); // Vision radius: 3 cases
             menu.display(maze, team, currentFloor);
+            
+            if (!floorIntroPlayed) {
+                java.util.List<String> dialogues = maze.getIntroDialogues(currentFloor);
+                if (dialogues != null) {
+                    for (String d : dialogues) {
+                        menu.displayDialogue(d);
+                    }
+                    menu.clearMessages();
+                }
+                floorIntroPlayed = true;
+            }
+            
             playerMovement();
         }
     }
@@ -70,7 +88,22 @@ public class ExplorationController {
         String choice = menu.askPlayerMovement();
         boolean moved = false;
 
+        // --- SCRIPT ELFE ---
+        if (isTutorial && currentFloor == 2 && elfJoined && !elfHealed) {
+            if ("ZSQD".contains(choice) || choice.equals("ENTER")) {
+                if (choice.equals("ENTER")) {
+                    handleInteraction();
+                } else {
+                    menu.displayMessage("\nL'Elfe est trop blessée pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
+                }
+                return;
+            }
+        }
+
         switch (choice) {
+            case "ENTER":
+                handleInteraction();
+                break;
             case "Z":
                 team.setFacingDirection(1); // Nord
                 moved = tryMoveNorth();
@@ -118,7 +151,7 @@ public class ExplorationController {
         }
 
         if (!moved && !choice.equals("X") && "ZSQD".contains(choice)) {
-            menu.displayMessage("\nTu vas dans un mur");
+            
         }
 
         if (moved) {
@@ -154,7 +187,7 @@ public class ExplorationController {
                             boolean used = selectedItem.use(target);
                             if (used) {
                                 team.removeItem(selectedItem);
-                                menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !");
+                                menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !"); if (isTutorial && currentFloor == 2 && elfJoined && !elfHealed && target.getClass().getSimpleName().equals("Elf")) { elfHealed = true; menu.displayDialogue("Elfe : *tousse* Berk ! Ça a un goût de jus de chaussette ! Mais je me sens mieux."); menu.displayMessage("\n[L'Elfe est soignée, le passage est libre !]"); }
                             } else {
                                 menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C'est réservé à une autre classe...");
                             }
@@ -202,6 +235,10 @@ public class ExplorationController {
 
             if (victory) {
                 currentCell.getMonsters().clear(); // On retire le monstre vaincu
+                if (maze.isExpeditionComplete(currentFloor)) {
+                    menu.displayMessage("\nZangdar claque la porte de son bureau et hurle en s'enfuyant : 'Maudits aventuriers d'opérette ! Vous ne payez rien pour attendre, je reviendrai vous anéantir !'");
+                    running = false; // Fin de l'expédition donjon !
+                }
             } else {
                 running = false; // Fin de partie si défaite
             }
@@ -228,49 +265,23 @@ public class ExplorationController {
         // 3. Découverte de l'escalier
         if (currentCell.hasStairs()) {
             if (isTutorial) {
-                running = false; // Fin du tutoriel, on sort de la boucle
+                if (currentFloor < 5) {
+                    menu.displayMessage("\nVous prenez l'escalier pour fuir plus loin dans le cellier...");
+                    currentFloor++;
+                    menu.displayTransitionScreen(currentFloor);
+                    this.maze = new TutorialDungeon();
+                    this.maze.prepareFloor(currentFloor, team);
+                    this.floorIntroPlayed = false;
+                } else {
+                    running = false; // Fin des 5 étages du tutoriel
+                }
             } else {
                 menu.displayMessage("\nVous trouvez un escalier lugubre qui descend dans les profondeurs...");
                 currentFloor++;
-                menu.displayMessage("=== DESCENTE À L'ÉTAGE " + currentFloor + " ===");
-
+                menu.displayTransitionScreen(currentFloor);
                 this.maze = new NaheulbeukDungeon();
-                this.maze.generate();
-                int[] startPos = this.maze.getFirstWalkablePosition();
-                team.setX(startPos[0]);
-                team.setY(startPos[1]);
-
-                if (currentFloor == 4) {
-                    menu.displayMessage("\nRanger : On est presque devant le bureau de Zangdar ! Préparez vos armes !");
-                    this.maze.generateMonsters(8, team.getX(), team.getY());
-                    this.maze.generateItems(3);
-                    this.maze.generateStairs(1);
-                } else if (currentFloor == 5) {
-                    menu.displayMessage("\n=== ÉTAGE 5 : L'ANTICHAMBRE DU BUREAU DE ZANGDAR ===");
-                    menu.displayMessage("Magicienne : Attention ! C'est un Golem de Fer ! C'est une machine à baffes insensible aux armes simples !");
-                    menu.displayMessage("Nain : YAAAAAAAAAH ! (Il charge la hache en avant, frappe l'acier et se tord les poignets !)");
-                    menu.displayMessage("Zangdar (depuis son balcon) : Insolents ! Misérables cloportes ! Vous n'emporterez jamais la statuette de Gladeulfeurh ! Golem de fer, réduis-les en bouillie !");
-
-                    // Spawner le Boss Golem de Fer sur la case actuelle !
-                    List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> bossList = new java.util.ArrayList<>();
-                    bossList.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem());
-                    currentCell.setMonsters(bossList);
-
-                    BattleController bossBattle = new BattleController(team, bossList, menu);
-                    boolean victory = bossBattle.start();
-
-                    if (victory) {
-                        menu.displayMessage("\nZangdar claque la porte de son bureau et hurle en s'enfuyant : 'Maudits aventuriers d'opérette ! Vous ne payez rien pour attendre, je reviendrai vous anéantir !'");
-                        currentCell.getMonsters().clear();
-                        running = false; // Fin de l'expédition donjon !
-                    } else {
-                        running = false;
-                    }
-                } else {
-                    this.maze.generateMonsters(5 + currentFloor, team.getX(), team.getY());
-                    this.maze.generateItems(3);
-                    this.maze.generateStairs(1);
-                }
+                this.maze.prepareFloor(currentFloor, team);
+                this.floorIntroPlayed = false;
             }
             return true;
         }
@@ -284,6 +295,13 @@ public class ExplorationController {
      */
     public boolean tryMoveNorth() {
         int targetY = team.getY() - 1;
+        
+        // --- SCRIPT ELFE (Tutoriel - Étage 2) ---
+        if (isTutorial && currentFloor == 2 && team.getX() == 0 && targetY == 2 && !elfJoined) {
+            menu.displayMessage("\nL'Elfe inconsciente bloque le passage. Appuyez sur ESPACE pour interagir avec elle.");
+            return false;
+        }
+
         if (targetY >= 0 && maze.getGrid()[team.getX()][targetY].isWalkable()) {
             team.moveNorth();
             return true;
@@ -331,5 +349,40 @@ public class ExplorationController {
             return true;
         }
         return false;
+    }
+
+    private void handleInteraction() {
+        if (isTutorial && currentFloor == 2 && !elfHealed) {
+            int targetX = team.getX();
+            int targetY = team.getY();
+            
+            if (team.getFacingDirection() == 1) targetY -= 1; // Nord
+            else if (team.getFacingDirection() == 0) targetY += 1; // Sud
+            else if (team.getFacingDirection() == 2) targetX -= 1; // Ouest
+            else if (team.getFacingDirection() == 3) targetX += 1; // Est
+            
+            if (targetX == 0 && targetY == 2) {
+                interactWithElf();
+            } else if (elfJoined && !elfHealed) {
+                menu.displayMessage("\nL'Elfe est trop blessée pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
+            }
+        }
+    }
+    
+    private void interactWithElf() {
+        if (!elfJoined) {
+            menu.displayDialogue("Ranger : Hé l'Elfe, lève-toi, on doit sortir d'ici.");
+            menu.displayDialogue("Elfe : *gémissement* J'ai trop mal à la tête... je peux à peine marcher.");
+            menu.displayDialogue("Ranger : Bon, rejoins le groupe, mais il va falloir te rafistoler avant qu'on bouge d'ici.");
+            
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Elf elfe = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Elf();
+            elfe.setHealthPoint(1);
+            team.getMembers().add(elfe);
+            elfJoined = true;
+            menu.displayMessage("\n[L'Elfe a rejoint le groupe, mais elle est gravement blessée !]");
+        } else if (!elfHealed) {
+            menu.displayDialogue("Ranger : Tu vas pas avancer dans cet état. Je dois te donner une Potion de Soin.");
+            menu.displayMessage("\nAppuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
+        }
     }
 }

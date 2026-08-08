@@ -232,7 +232,26 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Méthode générant le donjon. Doit être implémentée par les sous-classes.
+     * Prépare le donjon pour un étage spécifique.
+     * C'est ici que chaque sous-classe gère sa taille, son layout et son peuplement selon l'étage.
+     *
+     * @param floorNumber Numéro de l'étage actuel
+     * @param team La compagnie du joueur
+     * @param menu La vue pour afficher les messages scénarisés
+     * @return true si l'expédition est terminée (ex: victoire finale sur un boss), false sinon
      */
-    public abstract void generate();
+    public abstract boolean prepareFloor(int floorNumber, Team team);
+
+    /**
+     * Joue les dialogues d'introduction de l'étage après l'affichage du rendu.
+     */
+    public abstract java.util.List<String> getIntroDialogues(int floorNumber);
+
+    /**
+     * Vérifie si les conditions de complétion de l'expédition sont remplies (ex: Boss vaincu).
+     *
+     * @param floorNumber Numéro de l'étage actuel
+     * @return true si l'expédition doit prendre fin avec succès
+     */
+    public abstract boolean isExpeditionComplete(int floorNumber);
 }

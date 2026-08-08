@@ -34,10 +34,18 @@ public class HD2DGameApp extends ApplicationAdapter {
     public enum GameState {
         EXPLORATION,
         BATTLE,
-        HUB
+        HUB,
+        TRANSITION
     }
 
     private GameState currentState = GameState.EXPLORATION;
+    private GameState pendingState = null;
+    private long transitionStartTime = 0;
+    private int transitionFloor = 1;
+
+    public void setTransitionFloor(int floor) {
+        this.transitionFloor = floor;
+    }
 
     private PerspectiveCamera camera;
     private ModelBatch modelBatch;
@@ -59,7 +67,14 @@ public class HD2DGameApp extends ApplicationAdapter {
     }
     
     public void setState(GameState state) {
-        this.currentState = state;
+        if (state == GameState.TRANSITION) {
+            this.currentState = state;
+            this.transitionStartTime = System.currentTimeMillis();
+        } else if (this.currentState == GameState.TRANSITION) {
+            this.pendingState = state;
+        } else {
+            this.currentState = state;
+        }
     }
 
     @Override
@@ -136,11 +151,26 @@ public class HD2DGameApp extends ApplicationAdapter {
                 camera.update();
                 cameraNeedsSnap = false;
             }
-            dungeonRenderer.buildScene(maze, team.getX(), team.getY());
+            dungeonRenderer.buildScene(maze, team, team.getX(), team.getY(), currentFloor);
             sceneNeedsBuild = false;
         }
 
         handleInput();
+
+        if (currentState == GameState.TRANSITION) {
+            if (System.currentTimeMillis() - transitionStartTime > 1500) {
+                currentState = pendingState != null ? pendingState : GameState.EXPLORATION;
+                pendingState = null;
+            } else {
+                Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                Gdx.gl.glClearColor(0, 0, 0, 1f);
+                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+                if (hudRenderer != null) {
+                    hudRenderer.renderTransitionScreen(transitionFloor);
+                }
+                return;
+            }
+        }
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.08f, 1f);
@@ -167,11 +197,21 @@ public class HD2DGameApp extends ApplicationAdapter {
     }
 
     private void handleInput() {
+        if (currentState == GameState.TRANSITION) {
+            return; // Bloque toute input pendant la transition
+        }
         if (hudRenderer != null && hudRenderer.isMenuOpen()) {
             return; // En pause tant que le ConsoleMenu Dragon Quest est ouvert
         }
         if (currentMenuTitle != null) {
             return; // En attente du choix dans le ConsoleMenu contextuel (géré par HUDRenderer)
+        }
+        if (currentMenuOptions != null && currentMenuOptions.length > 0 && "[Continuer]".equals(currentMenuOptions[0])) {
+            // Dialogue actif : on bloque les déplacements
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                parentView.pushInput("ENTER");
+            }
+            return;
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.B)) {
@@ -206,14 +246,8 @@ public class HD2DGameApp extends ApplicationAdapter {
             parentView.pushInput("8");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_9) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_9)) {
             parentView.pushInput("9");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            parentView.pushInput("K");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            parentView.pushInput("C");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            parentView.pushInput("I");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
-            parentView.pushInput("X");
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            parentView.pushInput("ENTER");
         }
     }
 
