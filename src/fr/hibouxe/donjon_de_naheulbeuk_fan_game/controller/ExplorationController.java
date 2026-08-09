@@ -94,7 +94,8 @@ public class ExplorationController {
                 if (choice.equals("ENTER")) {
                     handleInteraction();
                 } else {
-                    menu.displayMessage("\nL'Elfe est trop blessée pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
+                    menu.displayDialogue("\nL'Elfe est trop blessée pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
+                menu.clearMessages();
                 }
                 return;
             }
@@ -183,11 +184,21 @@ public class ExplorationController {
                     if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
                         Item selectedItem = team.getInventory().get(itemIndex);
                         Character target = menu.askItemTarget(team);
-                        if (target != null) {
+                          if (target != null) {
+                              if (selectedItem instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion && target.getHealthPoint() >= target.getMaxHealthPoint()) {
+                                  menu.displayDialogue("\n" + target.getName() + " a déjà tous ses PV !");
+                                  menu.clearMessages();
+                                  break;
+                              }
                             boolean used = selectedItem.use(target);
                             if (used) {
                                 team.removeItem(selectedItem);
-                                menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !"); if (isTutorial && currentFloor == 2 && elfJoined && !elfHealed && target.getClass().getSimpleName().equals("Elf")) { elfHealed = true; menu.displayDialogue("Elfe : *tousse* Berk ! Ça a un goût de jus de chaussette ! Mais je me sens mieux."); menu.displayMessage("\n[L'Elfe est soignée, le passage est libre !]"); }
+                                menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !"); 
+                                if (isTutorial && currentFloor == 2 && elfJoined && !elfHealed && target.getClass().getSimpleName().equals("Elf")) { 
+                                    elfHealed = true; 
+                                    menu.displayDialogue("Elfe : *tousse* Berk ! Ça a un goût de jus de chaussette ! Mais je me sens mieux."); 
+                                    menu.clearMessages();
+                                }
                             } else {
                                 menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C'est réservé à une autre classe...");
                             }
@@ -297,8 +308,9 @@ public class ExplorationController {
         int targetY = team.getY() - 1;
         
         // --- SCRIPT ELFE (Tutoriel - Étage 2) ---
-        if (isTutorial && currentFloor == 2 && team.getX() == 0 && targetY == 2 && !elfJoined) {
-            menu.displayMessage("\nL'Elfe inconsciente bloque le passage. Appuyez sur ESPACE pour interagir avec elle.");
+        if (isTutorial && currentFloor == 2 && team.getX() == 1 && targetY == 2 && !elfJoined) {
+            menu.displayDialogue("\nL'Elfe inconsciente bloque le passage. Appuyez sur ESPACE pour interagir avec elle.");
+                menu.clearMessages();
             return false;
         }
 
@@ -361,10 +373,11 @@ public class ExplorationController {
             else if (team.getFacingDirection() == 2) targetX -= 1; // Ouest
             else if (team.getFacingDirection() == 3) targetX += 1; // Est
             
-            if (targetX == 0 && targetY == 2) {
+            if (targetX == 1 && targetY == 2) {
                 interactWithElf();
             } else if (elfJoined && !elfHealed) {
-                menu.displayMessage("\nL'Elfe est trop blessée pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
+                menu.displayDialogue("\nL'Elfe est trop blessée pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
+                menu.clearMessages();
             }
         }
     }
@@ -379,7 +392,8 @@ public class ExplorationController {
             elfe.setHealthPoint(1);
             team.getMembers().add(elfe);
             elfJoined = true;
-            menu.displayMessage("\n[L'Elfe a rejoint le groupe, mais elle est gravement blessée !]");
+            menu.displayDialogue("\n[L'Elfe a rejoint le groupe, mais elle est gravement blessée !]");
+            menu.clearMessages();
         } else if (!elfHealed) {
             menu.displayDialogue("Ranger : Tu vas pas avancer dans cet état. Je dois te donner une Potion de Soin.");
             menu.displayMessage("\nAppuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
