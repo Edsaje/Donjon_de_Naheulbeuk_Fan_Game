@@ -40,6 +40,8 @@ public class DungeonSceneRenderer implements Disposable {
     private float stateTime = 0f;
     private int lastPlayerX = -1;
     private int lastPlayerY = -1;
+    private boolean isAnimating = false;
+    public boolean isAnimating() { return isAnimating; }
 
     private Texture monsterTexture;
     private Texture chestTexture;
@@ -88,9 +90,7 @@ public class DungeonSceneRenderer implements Disposable {
         instances.clear();
         entityBillboards.clear();
         
-        if (heroSprite != null) {
-            heroSprite.setPosition(playerX * tileSize, 1.0f, playerY * tileSize);
-        }
+        // (Ligne de téléportation supprimée ici pour permettre la fluidité)
 
         Cell[][] grid = dungeon.getGrid();
 
@@ -174,21 +174,25 @@ public class DungeonSceneRenderer implements Disposable {
         float diffX = targetSpriteX - currentSpriteX;
         float diffZ = targetSpriteZ - currentSpriteZ;
 
-        if (Math.abs(diffX) > 0.05f || Math.abs(diffZ) > 0.05f) {
-            currentSpriteX += diffX * 0.15f;
-            currentSpriteZ += diffZ * 0.15f;
+        float moveSpeed = 12.0f * com.badlogic.gdx.Gdx.graphics.getDeltaTime();
+        
+        if (Math.abs(diffX) > moveSpeed || Math.abs(diffZ) > moveSpeed) {
+            if (Math.abs(diffX) > 0) currentSpriteX += Math.signum(diffX) * moveSpeed;
+            if (Math.abs(diffZ) > 0) currentSpriteZ += Math.signum(diffZ) * moveSpeed;
+            this.isAnimating = true;
         } else {
             currentSpriteX = targetSpriteX;
             currentSpriteZ = targetSpriteZ;
+            this.isAnimating = false;
         }
 
-        // Le temps avance en permanence pour que le personnage "marche sur place"
-        stateTime += com.badlogic.gdx.Gdx.graphics.getDeltaTime();
+        if (this.isAnimating) {
+            stateTime += com.badlogic.gdx.Gdx.graphics.getDeltaTime();
+        } else {
+            stateTime = 0f;
+        }
 
-        // Mise à jour de l'animation en boucle perpétuelle
-        // Boucle : 0 (Repos), 1 (Pied gauche), 2 (Repos), 3 (Pied droit)
-        // Vitesse réduite (4 au lieu de 6)
-        int frameIndex = (int)(stateTime * 4) % 4;
+        int frameIndex = (int)(stateTime * 6) % 4;
 
         if (heroFrames.length > currentDirection && heroFrames[currentDirection].length > frameIndex) {
             heroSprite.setTextureRegion(heroFrames[currentDirection][frameIndex]);

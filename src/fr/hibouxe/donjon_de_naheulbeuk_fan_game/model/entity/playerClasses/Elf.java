@@ -96,14 +96,14 @@ public class Elf extends Character {
     }
 
     @Override
-    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
-        super.levelUp(menu);
+    public void levelUp() {
+        super.levelUp();
         this.healthPoint += 2;
         this.attack += 1;
         this.magicAttack += 3;
         this.defense += 1;
         this.magicDefense += 2;
         this.speed += 3;
-        menu.displayMessage(this.name + " gagne encore en charisme, il va encore falloir enlever un bouton de la chemise (Niveau " + this.level + ") !");
+        // menu.displayMessage(this.name + " gagne encore en charisme, il va encore falloir enlever un bouton de la chemise (Niveau " + this.level + ") !");
     }
 }

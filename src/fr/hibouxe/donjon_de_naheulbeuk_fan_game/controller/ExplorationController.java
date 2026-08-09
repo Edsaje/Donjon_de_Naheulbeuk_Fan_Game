@@ -6,7 +6,10 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.NaheulbeukDungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.TutorialDungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.ISaveManager;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IMenuView;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IExplorationView;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.ICombatView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item;
 
 import java.util.List;
@@ -25,28 +28,35 @@ public class ExplorationController {
     private Team team;
     private boolean running;
     private int currentFloor = 1;
-    private IGameView menu;
+    private IExplorationView view;
+    private IMenuView menu;
+    private ICombatView combatView;
     private boolean isTutorial;
     private int activeSlot = 1;
     private boolean elfJoined = false;
     private boolean elfHealed = false;
 
+    private ISaveManager saveManager;
+
     /**
      * Constructeur injectant toutes les dépendances.
      */
-    public ExplorationController(Dungeon maze, Team team, IGameView menu, boolean isTutorial) {
-        this(maze, team, menu, isTutorial, 1);
+    public ExplorationController(Dungeon maze, Team team, IExplorationView view, IMenuView menu, ICombatView combatView, boolean isTutorial, ISaveManager saveManager) {
+        this(maze, team, view, menu, combatView, isTutorial, 1, saveManager);
     }
 
     /**
      * Constructeur injectant le slot actif pour la sauvegarde rapide liée.
      */
-    public ExplorationController(Dungeon maze, Team team, IGameView menu, boolean isTutorial, int activeSlot) {
+    public ExplorationController(Dungeon maze, Team team, IExplorationView view, IMenuView menu, ICombatView combatView, boolean isTutorial, int activeSlot, ISaveManager saveManager) {
         this.maze = maze;
         this.team = team;
+        this.view = view;
         this.menu = menu;
+        this.combatView = combatView;
         this.isTutorial = isTutorial;
         this.activeSlot = activeSlot;
+        this.saveManager = saveManager;
     }
 
     public void setCurrentFloor(int floor) {
@@ -63,7 +73,7 @@ public class ExplorationController {
         this.floorIntroPlayed = false; // Reset pour le début du donjon
         while (running) {
             maze.updateFogOfWar(team.getX(), team.getY(), 3); // Vision radius: 3 cases
-            menu.display(maze, team, currentFloor);
+            view.display(maze, team, currentFloor);
             
             if (!floorIntroPlayed) {
                 java.util.List<String> dialogues = maze.getIntroDialogues(currentFloor);
@@ -85,88 +95,95 @@ public class ExplorationController {
      * Déclenche un combat en cas de rencontre avec un monstre et ramasse les coffres d'objets.
      */
     public void playerMovement() {
-        String choice = menu.askPlayerMovement();
-        boolean moved = false;
+        String choice = view.askPlayerMovement();
 
-        // --- SCRIPT ELFE ---
+        if (checkTutorialScripts(choice)) {
+            return;
+        }
+
+        boolean moved = handleMovementAction(choice);
+
+        if (moved) {
+            handlePostMovement();
+        }
+    }
+
+    private boolean checkTutorialScripts(String choice) {
         if (isTutorial && currentFloor == 2 && elfJoined && !elfHealed) {
             if ("ZSQD".contains(choice) || choice.equals("ENTER")) {
                 if (choice.equals("ENTER")) {
                     handleInteraction();
                 } else {
                     menu.displayDialogue("\nL'Elfe est trop blessée pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
-                menu.clearMessages();
+                    menu.clearMessages();
                 }
-                return;
+                return true;
             }
         }
+        return false;
+    }
 
+    private boolean handleMovementAction(String choice) {
         switch (choice) {
             case "ENTER":
                 handleInteraction();
-                break;
+                return false;
             case "Z":
                 team.setFacingDirection(1); // Nord
-                moved = tryMoveNorth();
-                break;
+                return tryMoveNorth();
             case "S":
                 team.setFacingDirection(0); // Sud
-                moved = tryMoveSouth();
-                break;
+                return tryMoveSouth();
             case "Q":
                 team.setFacingDirection(2); // Ouest
-                moved = tryMoveWest();
-                break;
+                return tryMoveWest();
             case "D":
                 team.setFacingDirection(3); // Est
-                moved = tryMoveEast();
-                break;
-            case "1": team.setActiveLeaderIndex(0); break;
-            case "2": team.setActiveLeaderIndex(1); break;
-            case "3": team.setActiveLeaderIndex(2); break;
-            case "4": team.setActiveLeaderIndex(3); break;
-            case "5": team.setActiveLeaderIndex(4); break;
-            case "6": team.setActiveLeaderIndex(5); break;
-            case "7": team.setActiveLeaderIndex(6); break;
+                return tryMoveEast();
+            case "1": team.setActiveLeaderIndex(0); return false;
+            case "2": team.setActiveLeaderIndex(1); return false;
+            case "3": team.setActiveLeaderIndex(2); return false;
+            case "4": team.setActiveLeaderIndex(3); return false;
+            case "5": team.setActiveLeaderIndex(4); return false;
+            case "6": team.setActiveLeaderIndex(5); return false;
+            case "7": team.setActiveLeaderIndex(6); return false;
             case "X":
                 running = false;
                 menu.displayMessage("Tchoss Nulloss");
-                break;
+                return false;
             case "C":
                 menu.displayTeamStats(team);
-                break;
+                return false;
             case "I":
                 handleInventoryAction();
-                break;
+                return false;
             case "K":
-                boolean quickSaved = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.SaveManager.saveQuickSave(activeSlot, team, maze, currentFloor);
-                if (quickSaved) {
-                    menu.displayMessage("\n[Sauvegarde Rapide] Donjon et position enregistrés dans le Slot " + activeSlot + ". Retour à l'écran initial...");
-                    running = false;
-                } else {
-                    menu.displayMessage("\n[Erreur] Échec de la Sauvegarde Rapide.");
-                }
-                break;
+                handleSaveAction();
+                return false;
             default:
                 menu.displayMessage("Commande inconnue");
+                return false;
         }
+    }
 
-        if (!moved && !choice.equals("X") && "ZSQD".contains(choice)) {
-            
+    private void handleSaveAction() {
+        boolean quickSaved = saveManager.saveQuickSave(activeSlot, team, maze, currentFloor);
+        if (quickSaved) {
+            view.displaySaveSuccess(activeSlot);
+            running = false;
+        } else {
+            view.displaySaveError();
         }
+    }
 
-        if (moved) {
-            Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-            // 1. Vérification immédiate : Si le joueur a marché sur un monstre, combat immédiat !
-            boolean tookStairs = handleCellEvents(currentCell);
+    private void handlePostMovement() {
+        Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
+        boolean tookStairs = handleCellEvents(currentCell);
 
-            // 2. Si le joueur n'a pas déclenché de combat et explore toujours, les monstres se déplacent
-            if (running && !currentCell.hasMonster() && !tookStairs) {
-                maze.moveMonsters(team, menu);
-                // 3. Vérification Embuscade : Un monstre est-il arrivé sur la case du joueur ?
-                Cell newCell = maze.getGrid()[team.getX()][team.getY()];
-                handleCellEvents(newCell);
-            }
+        if (running && !currentCell.hasMonster() && !tookStairs) {
+            maze.moveMonsters(team);
+            Cell newCell = maze.getGrid()[team.getX()][team.getY()];
+            handleCellEvents(newCell);
         }
     }
 
@@ -214,7 +231,12 @@ public class ExplorationController {
                 if (unequipTarget != null) {
                     fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot slot = menu.askSlotToUnequip();
                     if (slot != null) {
-                        unequipTarget.unequip(slot, team, menu);
+                        boolean success = unequipTarget.unequip(slot, team);
+                        if (success) {
+                            menu.displayMessage("\n" + unequipTarget.getName() + " retire son équipement et le met dans le sac !");
+                        } else {
+                            menu.displayMessage("\nAucun équipement, ou le sac est plein !");
+                        }
                     }
                 }
                 break;
@@ -241,7 +263,7 @@ public class ExplorationController {
                 menu.displayMessage("\nUNE HORDE DE " + monsters.size() + " MONSTRES APPARAÎT ! BASTOOON !");
             }
 
-            BattleController battleController = new BattleController(team, monsters, menu);
+            BattleController battleController = new BattleController(team, monsters, combatView);
             boolean victory = battleController.start();
 
             if (victory) {
@@ -258,7 +280,7 @@ public class ExplorationController {
         // 2. Découverte d'un coffre d'objet
         if (currentCell.hasItem()) {
             Item item = currentCell.getItem();
-            boolean take = menu.askPickupItem(item);
+            boolean take = view.askPickupItem(item);
 
             if (take) {
                 boolean added = team.addItem(item);
@@ -279,7 +301,7 @@ public class ExplorationController {
                 if (currentFloor < 5) {
                     menu.displayMessage("\nVous prenez l'escalier pour fuir plus loin dans le cellier...");
                     currentFloor++;
-                    menu.displayTransitionScreen(currentFloor);
+                    view.displayTransitionScreen(currentFloor);
                     this.maze = new TutorialDungeon();
                     this.maze.prepareFloor(currentFloor, team);
                     this.floorIntroPlayed = false;
@@ -289,7 +311,7 @@ public class ExplorationController {
             } else {
                 menu.displayMessage("\nVous trouvez un escalier lugubre qui descend dans les profondeurs...");
                 currentFloor++;
-                menu.displayTransitionScreen(currentFloor);
+                view.displayTransitionScreen(currentFloor);
                 this.maze = new NaheulbeukDungeon();
                 this.maze.prepareFloor(currentFloor, team);
                 this.floorIntroPlayed = false;

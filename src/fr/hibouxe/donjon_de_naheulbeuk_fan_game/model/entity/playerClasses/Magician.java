@@ -31,14 +31,14 @@ public class Magician extends Character {
     }
     
     @Override
-    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
-        super.levelUp(menu);
+    public void levelUp() {
+        super.levelUp();
         this.healthPoint += 2;
         this.magicAttack += 4;
         this.defense += 1;
         this.magicDefense += 3;
         this.speed += 1;
         this.maxResource += 10;
-        menu.displayMessage(this.name + " apprend de nouveaux mots compliqués pour sa magie (Niveau " + this.level + ") !");
+        // menu.displayMessage(this.name + " apprend de nouveaux mots compliqués pour sa magie (Niveau " + this.level + ") !");
     }
 }

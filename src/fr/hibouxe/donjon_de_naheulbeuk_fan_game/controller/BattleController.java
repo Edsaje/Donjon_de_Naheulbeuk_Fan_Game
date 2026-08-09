@@ -20,7 +20,7 @@ public class BattleController {
     private Team team;
     private List<Character> monsters;
     private Random random = new Random();
-    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.ICombatView menu;
 
     /**
      * Initialise un nouvel affrontement entre l'équipe du joueur et des monstres (avec injection de la vue IGameView).
@@ -29,7 +29,7 @@ public class BattleController {
      * @param monsters Le groupe de monstres affronté
      * @param ConsoleMenu     La vue principale du jeu (Injectée)
      */
-    public BattleController(Team team, List<Character> monsters, fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
+    public BattleController(Team team, List<Character> monsters, fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.ICombatView menu) {
         this.team = team;
         this.monsters = monsters;
         this.menu = menu;
@@ -73,7 +73,7 @@ public class BattleController {
             playRound();
 
             if (!areMonstersAlive()) { // Vérification si les monstres sont vaincus
-                menu.displayMessage("\n C'est trop facile..");
+                menu.displayVictory();
 
                 int totalXp = 0;
                 for (Character m : monsters) { //on récupère l'xp des monstres
@@ -91,7 +91,10 @@ public class BattleController {
 
                     for (Character c : team.getMembers()) { //on donne l'xp aux vivants
                         if (c.getHealthPoint() > 0) {
-                            c.gainXp(xpPerHero, menu);
+                            boolean leveledUp = c.gainXp(xpPerHero);
+                            if (leveledUp) {
+                                menu.displayMessage(c.getName() + " passe au niveau " + c.getLevel() + " !");
+                            }
                         }
                     }
 
@@ -106,7 +109,7 @@ public class BattleController {
             }
 
             if (!isTeamAlive()) { // Vérification si l'équipe est vaincue
-                menu.displayMessage("\n Plutôt paradis des Nains ou des Aventuriers ?");
+                menu.displayDefeat();
                 return false; // Game Over
             }
         }
@@ -156,11 +159,20 @@ public class BattleController {
     }
 
     private void heroTurn(Character attacker) {
-        menu.displayMessage("\n⚡ C'est au tour de " + attacker.getName() + " !");
+        menu.displayTurn(attacker.getName());
         boolean actionConfirmed = false;
 
         while (!actionConfirmed) {
             int action = menu.askBattleAction(attacker);
+            
+            boolean isTutorialBoss = false;
+            for (Character m : monsters) {
+                if (m.isBoss()) isTutorialBoss = true;
+            }
+            if (isTutorialBoss && action != 4) {
+                menu.displayMessage("L'Orque est beaucoup trop puissant ! Vous devez FUIR !");
+                continue;
+            }
 
             if (action == 1) {
                 Character target = menu.askMonsterTarget(monsters);
@@ -236,7 +248,7 @@ public class BattleController {
                 }
             } else if (action == 4) {
                 menu.displayMessage("\n" + attacker.getName() + " tente de fuir lâchement !");
-                int fleeChance = random.nextInt(100);
+                int fleeChance = isTutorialBoss ? 100 : random.nextInt(100);
                 if (fleeChance > 50) {
                     menu.displayMessage("Fuite réussie ! Mais vous perdez un peu de dignité.");
                     monsters.clear(); // End the BattleController

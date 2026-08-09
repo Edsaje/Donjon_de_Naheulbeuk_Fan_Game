@@ -4,6 +4,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Goblin;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Orc;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Thief;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +22,8 @@ public class TutorialDungeon extends Dungeon {
                 return prepareFloor1(team);
             case 2:
                 return prepareFloor2(team);
+            case 3:
+                return prepareFloor3(team);
             default:
                 return false;
         }
@@ -106,6 +110,60 @@ public class TutorialDungeon extends Dungeon {
         return false;
     }
 
+    private boolean prepareFloor3(Team team) {
+        this.setWidth(7);
+        this.setHeight(7);
+        this.setGrid(new Cell[7][7]);
+
+        for (int x = 0; x < 7; x++) {
+            for (int y = 0; y < 7; y++) {
+                this.getGrid()[x][y] = new Cell(x, y);
+                // this.getGrid()[x][y].setRoomId(3); 
+            }
+        }
+        
+        // Creuser un petit labyrinthe
+        // Ligne de départ
+        for (int x = 1; x < 6; x++) {
+            this.getGrid()[x][1].setWall(false);
+            if (x < 5) this.getGrid()[x][1].removeWallBetween(this.getGrid()[x+1][1]);
+        }
+        // Couloir central
+        for (int y = 1; y < 6; y++) {
+            this.getGrid()[3][y].setWall(false);
+            if (y < 5) this.getGrid()[3][y].removeWallBetween(this.getGrid()[3][y+1]);
+        }
+        // Ligne de fin
+        for (int x = 1; x < 6; x++) {
+            this.getGrid()[x][5].setWall(false);
+            if (x < 5) this.getGrid()[x][5].removeWallBetween(this.getGrid()[x+1][5]);
+        }
+
+        // Joueur commence au début (en bas à gauche)
+        team.setX(1);
+        team.setY(1);
+        
+        // Le Voleur rejoint le groupe
+        boolean hasThief = false;
+        for (Character c : team.getMembers()) {
+            if (c instanceof Thief) hasThief = true;
+        }
+        if (!hasThief) {
+            team.getMembers().add(new Thief());
+        }
+
+        // Escalier à la fin (en haut à droite)
+        this.getGrid()[5][5].setStairs(true);
+
+        // L'Orque de patrouille devant l'escalier
+        List<Character> patrol = new ArrayList<>();
+        Character orc = new Character("Patrouille Orque", "Boss", 99, 9999, 0, 999, 0, 999, 999, -1);
+        patrol.add(orc);
+        this.getGrid()[4][5].setMonsters(patrol);
+        
+        return false;
+    }
+
     @Override
     public java.util.List<String> getIntroDialogues(int floorNumber) {
         java.util.List<String> dialogues = new java.util.ArrayList<>();
@@ -121,6 +179,16 @@ public class TutorialDungeon extends Dungeon {
                 dialogues.add("\n=== CHAPITRE 2 : L'ELFE ET L'INVENTAIRE ===");
                 dialogues.add("Ranger : C'est l'Elfe de notre groupe ! Elle est par terre...");
                 dialogues.add("Ranger : Elle a dû se prendre un tonneau sur la tête.");
+                break;
+            case 3:
+                dialogues.add("\n=== CHAPITRE 3 : OMBRES ET FURTIVITÉ ===");
+                dialogues.add("Voleur : Chuuut ! Restez dans l'ombre ! On ne voit rien avec ce brouillard...");
+                dialogues.add("Voleur : Il y a une patrouille d'Orques Géants juste devant. Ils sont trop nombreux !");
+                dialogues.add("Ranger : Comment on passe alors ?");
+                dialogues.add("Voleur : On rase les murs, on regarde la Minimap, et si on se fait repérer... on court plus vite qu'eux !");
+                dialogues.add("[UI Tuto] : Avancez pour dissiper le brouillard de guerre.");
+                dialogues.add("[UI Tuto] : La Minimap en haut à droite affiche les ennemis en rouge. Évitez-les !");
+                dialogues.add("[UI Tuto] : Si un combat inévitable se déclenche, utilisez la commande [Fuir] !");
                 break;
         }
         return dialogues;

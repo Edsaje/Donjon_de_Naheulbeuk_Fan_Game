@@ -1,7 +1,8 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.ISaveManager;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IMenuView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.*;
 
 /**
@@ -10,17 +11,19 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.*;
  */
 public class HubController {
     private Team team;
-    private IGameView menu;
+    private IMenuView menu;
     private int activeSlot = 1;
+    private ISaveManager saveManager;
 
-    public HubController(Team team, IGameView menu) {
-        this(team, menu, 1);
+    public HubController(Team team, IMenuView menu, ISaveManager saveManager) {
+        this(team, menu, 1, saveManager);
     }
 
-    public HubController(Team team, IGameView menu, int activeSlot) {
+    public HubController(Team team, IMenuView menu, int activeSlot, ISaveManager saveManager) {
         this.team = team;
         this.menu = menu;
         this.activeSlot = activeSlot;
+        this.saveManager = saveManager;
     }
 
     /**
@@ -71,13 +74,18 @@ public class HubController {
                         if (unequipTarget != null) {
                             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot slot = menu.askSlotToUnequip();
                             if (slot != null) {
-                                unequipTarget.unequip(slot, team, menu);
+                                boolean success = unequipTarget.unequip(slot, team);
+                                if (success) {
+                                    menu.displayMessage("\n" + unequipTarget.getName() + " retire son équipement et le met dans le sac !");
+                                } else {
+                                    menu.displayMessage("\nAucun équipement, ou le sac est plein !");
+                                }
                             }
                         }
                     }
                     break;
                 case 4:
-                    boolean saved = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.SaveManager.saveHubSave(activeSlot, team, 1);
+                    boolean saved = saveManager.saveHubSave(activeSlot, team, 1);
                     if (saved) {
                         menu.displayMessage("\n[Sauvegarde] Progression de la Compagnie enregistrée avec succès dans le Slot " + activeSlot + " !");
                     } else {

@@ -31,13 +31,13 @@ public class Thief extends Character {
     }
     
     @Override
-    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
-        super.levelUp(menu);
+    public void levelUp() {
+        super.levelUp();
         this.healthPoint += 3;
         this.attack += 3;
         this.defense += 1;
         this.magicDefense += 1;
         this.speed += 3;
-        menu.displayMessage(this.name + " arrive encore mieux à se dissimuler et fuir le combat ! (Niveau " + this.level + ") !");
+        // menu.displayMessage(this.name + " arrive encore mieux à se dissimuler et fuir le combat ! (Niveau " + this.level + ") !");
     }
 }

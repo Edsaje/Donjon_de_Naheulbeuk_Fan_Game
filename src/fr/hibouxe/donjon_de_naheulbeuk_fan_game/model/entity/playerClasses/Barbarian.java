@@ -48,13 +48,13 @@ public class Barbarian extends Character {
         return super.useSpecialSkill(skill, team, monster);
     }
     @Override
-    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
-        super.levelUp(menu);
+    public void levelUp() {
+        super.levelUp();
         this.healthPoint += 5;
         this.attack += 4;
         this.defense += 1;
         this.speed += 1;
-        menu.displayMessage(this.name + " sent encore plus fort des pieds ! (Niveau " + this.level + ") !");
+        // menu.displayMessage(this.name + " sent encore plus fort des pieds ! (Niveau " + this.level + ") !");
     }
 }
 

@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Façade d'Affichage et d'Entrée/Sortie (Vue Console).
- * Implémente l'interface {@link IGameView} (Architecture Plug-and-Play 2.5D).
- * Centralise les appels vers les sous-vues spécialisées (ConsoleDungeonView, ConsoleInventoryView, ConsoleBattleView, ConsoleMainMenuView).
+ * FaÃ§ade d'Affichage et d'EntrÃ©e/Sortie (Vue Console).
+ * ImplÃ©mente l'interface {@link IGameView} (Architecture Plug-and-Play 2.5D).
+ * Centralise les appels vers les sous-vues spÃ©cialisÃ©es (ConsoleDungeonView, ConsoleInventoryView, ConsoleBattleView, ConsoleMainMenuView).
  *
  * @author Hibouxe
  * @version 3.0
@@ -26,7 +26,7 @@ import java.util.Scanner;
 public class ConsoleMenu implements IGameView {
     private Scanner keyboard = new Scanner(System.in);
 
-    // Sous-vues spécialisées (Délégation Façade)
+    // Sous-vues spÃ©cialisÃ©es (DÃ©lÃ©gation FaÃ§ade)
     private ConsoleDungeonView ConsoleDungeonView = new ConsoleDungeonView();
     private ConsoleInventoryView ConsoleInventoryView = new ConsoleInventoryView();
     private ConsoleBattleView ConsoleBattleView = new ConsoleBattleView();
@@ -43,7 +43,7 @@ public class ConsoleMenu implements IGameView {
     @Override
     public void displayDialogue(String message) {
         System.out.println(message);
-        System.out.print("[Appuyez sur ENTRÉE pour continuer...]");
+        System.out.print("[Appuyez sur ENTRÃ‰E pour continuer...]");
         keyboard.nextLine();
     }
 
@@ -66,7 +66,7 @@ public class ConsoleMenu implements IGameView {
         return keyboard.nextLine();
     }
 
-    // --- DÉLÉGATION MAIN ConsoleMenu VIEW & MULTI-SLOTS ---
+    // --- DÃ‰LÃ‰GATION MAIN ConsoleMenu VIEW & MULTI-SLOTS ---
 
     @Override
     public void displayTitleScreen() {
@@ -112,7 +112,7 @@ public class ConsoleMenu implements IGameView {
         return ConsoleMainMenuView.askTargetCopySlot(this, sourceSlot, slotSummaries);
     }
 
-    // --- DÉLÉGATION DUNGEON VIEW ---
+    // --- DÃ‰LÃ‰GATION DUNGEON VIEW ---
 
     @Override
     public void display(Dungeon maze, Team team, int currentFloor) {
@@ -121,7 +121,7 @@ public class ConsoleMenu implements IGameView {
 
     @Override
     public void displayTransitionScreen(int floorNumber) {
-        System.out.println("\n\n\n=== [ ÉTAGE " + floorNumber + " ] ===\n\n\n");
+        System.out.println("\n\n\n=== [ Ã‰TAGE " + floorNumber + " ] ===\n\n\n");
         try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {}
@@ -142,7 +142,7 @@ public class ConsoleMenu implements IGameView {
         return ConsoleDungeonView.askPickupItem(item, this);
     }
 
-    // --- DÉLÉGATION INVENTORY VIEW ---
+    // --- DÃ‰LÃ‰GATION INVENTORY VIEW ---
 
     @Override
     public void displayInventory(Team team) {
@@ -174,7 +174,7 @@ public class ConsoleMenu implements IGameView {
         return ConsoleInventoryView.askItemTarget(team, this);
     }
 
-    // --- DÉLÉGATION BattleController VIEW ---
+    // --- DÃ‰LÃ‰GATION BattleController VIEW ---
 
     @Override
     public void displayBattleStatus(List<Character> monsters, Team team) {
@@ -194,22 +194,37 @@ public class ConsoleMenu implements IGameView {
     public Skill askSkill(Character attacker, List<Character> monsters) {
         return ConsoleBattleView.askSkill(attacker, monsters, this);
     }
-
     @Override
     public Character askMonsterTarget(List<Character> monsters) {
         return ConsoleBattleView.askMonsterTarget(monsters, this);
     }
-
-    // --- STATISTIQUES COMPAGNIE ---
-
+    
     @Override
     public void displayTeamStats(Team team) {
-        displayMessage("\n=================== Fiche de la compagnie de Naheulbeuk ===================");
-        for (Character c : team.getMembers()) {
-            displayMessage(String.format(" - %-12s | Niv %d | PV: %2d | %s : %2d | Attaque: %2d | Magie: %2d | Défense: %2d | Def.Mag: %2d | Vitesse: %2d",
-                    c.getName(), c.getLevel(), c.getHealthPoint(), c.getResourceName(), c.getResourcePoint(), c.getAttack(), c.getMagicAttack(), c.getDefense(), c.getMagicDefense(), c.getSpeed()));
-            displayMessage("   └ Équipement : " + c.getEquippedSummary());
-        }
-        displayMessage("===========================================================================\n");
+    }
+
+    @Override
+    public void displayTurn(String characterName) {
+        displayMessage("\n⚡ C'est au tour de " + characterName + " !");
+    }
+
+    @Override
+    public void displayVictory() {
+        displayMessage("\n C'est trop facile..");
+    }
+
+    @Override
+    public void displayDefeat() {
+        displayMessage("\n Plutôt paradis des Nains ou des Aventuriers ?");
+    }
+
+    @Override
+    public void displaySaveSuccess(int slot) {
+        displayMessage("\n[Sauvegarde Rapide] Donjon et position enregistrés dans le Slot " + slot + ". Retour à l'écran initial...");
+    }
+
+    @Override
+    public void displaySaveError() {
+        displayMessage("\n[Erreur] Échec de la Sauvegarde Rapide.");
     }
 }

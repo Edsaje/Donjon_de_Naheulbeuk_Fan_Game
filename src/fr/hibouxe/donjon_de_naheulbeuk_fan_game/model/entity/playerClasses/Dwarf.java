@@ -41,13 +41,13 @@ public class Dwarf extends Character {
     }
     
     @Override
-    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
-        super.levelUp(menu);
+    public void levelUp() {
+        super.levelUp();
         this.healthPoint += 6;
         this.attack += 2;
         this.defense += 3;
         this.magicDefense += 1;
         this.speed += 1;
-        menu.displayMessage(this.name + " chantonne : Je suis niveau " + this.level + " Tralalalala (Niveau " + this.level + ") !");
+        // menu.displayMessage(this.name + " chantonne : Je suis niveau " + this.level + " Tralalalala (Niveau " + this.level + ") !");
     }
 }

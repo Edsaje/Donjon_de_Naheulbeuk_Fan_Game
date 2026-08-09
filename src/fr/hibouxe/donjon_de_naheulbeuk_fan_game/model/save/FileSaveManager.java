@@ -18,26 +18,26 @@ import java.io.ObjectOutputStream;
  * @author Hibouxe
  * @version 2.0
  */
-public class SaveManager {
+public class FileSaveManager implements ISaveManager {
 
     /**
      * Obtenir le nom du fichier de Sauvegarde Rapide pour un slot donné.
      */
-    public static String getQuickSaveFilename(int slot) {
+    public String getQuickSaveFilename(int slot) {
         return "quicksave_slot" + slot + ".sav";
     }
 
     /**
      * Obtenir le nom du fichier de Sauvegarde Permanente pour un slot donné.
      */
-    public static String getHubSaveFilename(int slot) {
+    public String getHubSaveFilename(int slot) {
         return "savegame_slot" + slot + ".sav";
     }
 
     /**
      * Effectue une Sauvegarde Rapide liée au slot actif.
      */
-    public static boolean saveQuickSave(int slot, Team team, Dungeon dungeon, int currentFloor) {
+    public boolean saveQuickSave(int slot, Team team, Dungeon dungeon, int currentFloor) {
         SaveData data = new SaveData(team, dungeon, currentFloor, true);
         return saveToFile(data, getQuickSaveFilename(slot));
     }
@@ -45,7 +45,7 @@ public class SaveManager {
     /**
      * Effectue une Sauvegarde Permanente au Campement liée au slot actif.
      */
-    public static boolean saveHubSave(int slot, Team team, int currentFloor) {
+    public boolean saveHubSave(int slot, Team team, int currentFloor) {
         SaveData data = new SaveData(team, null, currentFloor, false);
         return saveToFile(data, getHubSaveFilename(slot));
     }
@@ -53,21 +53,21 @@ public class SaveManager {
     /**
      * Charge la Sauvegarde Rapide du slot spécifié.
      */
-    public static SaveData loadQuickSave(int slot) {
+    public SaveData loadQuickSave(int slot) {
         return loadFromFile(getQuickSaveFilename(slot));
     }
 
     /**
      * Charge la Sauvegarde du Campement du slot spécifié.
      */
-    public static SaveData loadHubSave(int slot) {
+    public SaveData loadHubSave(int slot) {
         return loadFromFile(getHubSaveFilename(slot));
     }
 
     /**
      * Vérifie si une Sauvegarde Rapide existe pour ce slot.
      */
-    public static boolean hasQuickSave(int slot) {
+    public boolean hasQuickSave(int slot) {
         File f = new File(getQuickSaveFilename(slot));
         return f.exists() && f.length() > 0;
     }
@@ -75,7 +75,7 @@ public class SaveManager {
     /**
      * Vérifie si une Sauvegarde Permanente de campement existe pour ce slot.
      */
-    public static boolean hasHubSave(int slot) {
+    public boolean hasHubSave(int slot) {
         File f = new File(getHubSaveFilename(slot));
         return f.exists() && f.length() > 0;
     }
@@ -83,14 +83,14 @@ public class SaveManager {
     /**
      * Vérifie si le slot contient au moins une sauvegarde (quicksave ou hubsave).
      */
-    public static boolean hasAnySave(int slot) {
+    public boolean hasAnySave(int slot) {
         return hasQuickSave(slot) || hasHubSave(slot);
     }
 
     /**
      * Supprime la Sauvegarde Rapide d'un slot spécifique.
      */
-    public static boolean deleteQuickSave(int slot) {
+    public boolean deleteQuickSave(int slot) {
         File f = new File(getQuickSaveFilename(slot));
         if (f.exists()) {
             return f.delete();
@@ -101,7 +101,7 @@ public class SaveManager {
     /**
      * Supprime définitivement toutes les données (quicksave et hubsave) d'un slot.
      */
-    public static boolean deleteSlot(int slot) {
+    public boolean deleteSlot(int slot) {
         boolean delQuick = deleteQuickSave(slot);
         File hubFile = new File(getHubSaveFilename(slot));
         boolean delHub = false;
@@ -114,7 +114,7 @@ public class SaveManager {
     /**
      * Duplique un emplacement de profil (Slot source vers Slot cible).
      */
-    public static boolean copySlot(int sourceSlot, int targetSlot) {
+    public boolean copySlot(int sourceSlot, int targetSlot) {
         if (sourceSlot == targetSlot) return false;
 
         deleteSlot(targetSlot);
@@ -145,7 +145,7 @@ public class SaveManager {
      * @param slot Le numéro du slot (1, 2 ou 3)
      * @return Résumé formraté (ex: "[Slot 1] Compagnie Niv.3 | Étage 4 (En Donjon)")
      */
-    public static String getSlotSummary(int slot) {
+    public String getSlotSummary(int slot) {
         if (hasQuickSave(slot)) {
             SaveData data = loadQuickSave(slot);
             if (data != null && data.getTeam() != null) {
@@ -165,7 +165,7 @@ public class SaveManager {
         return "[Slot " + slot + "] Emplacement Vide";
     }
 
-    private static int getTeamMaxLevel(Team team) {
+    private int getTeamMaxLevel(Team team) {
         int maxLvl = 1;
         if (team.getMembers() != null) {
             for (Character c : team.getMembers()) {
@@ -177,7 +177,7 @@ public class SaveManager {
         return maxLvl;
     }
 
-    private static boolean saveToFile(SaveData data, String filename) {
+    private boolean saveToFile(SaveData data, String filename) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(data);
             return true;
@@ -186,7 +186,7 @@ public class SaveManager {
         }
     }
 
-    private static SaveData loadFromFile(String filename) {
+    private SaveData loadFromFile(String filename) {
         File f = new File(filename);
         if (!f.exists()) return null;
 

@@ -1,13 +1,11 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity;
-
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.ConsoleMenu;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot;
-
 import java.util.List;
 import java.util.ArrayList;
 
-
+import java.util.Map;
+import java.util.EnumMap;
 import java.io.Serializable;
 
 /**
@@ -38,12 +36,7 @@ public class Character implements Serializable {
     protected int xp = 0;
     protected int xpToNextLevel = 100; //palier initial
 
-    protected Equipment headSlot = null;
-    protected Equipment chestSlot = null;
-    protected Equipment legsSlot = null;
-    protected Equipment jewelrySlot = null;
-    protected Equipment weaponSlot = null;
-    protected Equipment leftHandSlot = null;
+    protected Map<EquipmentSlot, Equipment> equipmentSlots = new EnumMap<>(EquipmentSlot.class);
 
     protected List<Skill> skills = new ArrayList<>();
 
@@ -96,18 +89,25 @@ public class Character implements Serializable {
         this.currentResource = Math.min(this.maxResource, this.currentResource + amount);
     }
 
-    public void gainXp(int amount, fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
+    public boolean gainXp(int amount) {
         this.xp += amount;
+        boolean leveledUp = false;
         while (this.xp >= this.xpToNextLevel) {
-            levelUp(menu);
+            levelUp();
+            leveledUp = true;
         }
+        return leveledUp;
     }
 
-    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
+    public void levelUp() {
         this.level++;
         this.xp -= this.xpToNextLevel; // On retire l'XP consommée
         this.xpToNextLevel = (int) (100 * Math.pow(this.level, 1.5)); // Le prochain niveau sera plus long à atteindre
         // (Les augmentations de stats se feront dans les sous-classes)
+    }
+
+    public boolean isBoss() {
+        return false;
     }
 
     /**
@@ -143,12 +143,9 @@ public class Character implements Serializable {
      */
     public int getMagicDefense() {
         int bonus = 0;
-        if (headSlot != null) bonus += headSlot.getMagicDefenseBonus();
-        if (chestSlot != null) bonus += chestSlot.getMagicDefenseBonus();
-        if (legsSlot != null) bonus += legsSlot.getMagicDefenseBonus();
-        if (jewelrySlot != null) bonus += jewelrySlot.getMagicDefenseBonus();
-        if (weaponSlot != null) bonus += weaponSlot.getMagicDefenseBonus();
-        if (leftHandSlot != null) bonus += leftHandSlot.getMagicDefenseBonus();
+        for (Equipment eq : equipmentSlots.values()) {
+            if (eq != null) bonus += eq.getMagicDefenseBonus();
+        }
         return magicDefense + bonus;
     }
 
@@ -164,12 +161,9 @@ public class Character implements Serializable {
      */
     public int getMagicAttack() {
         int bonus = 0;
-        if (headSlot != null) bonus += headSlot.getMagicAttackBonus();
-        if (chestSlot != null) bonus += chestSlot.getMagicAttackBonus();
-        if (legsSlot != null) bonus += legsSlot.getMagicAttackBonus();
-        if (jewelrySlot != null) bonus += jewelrySlot.getMagicAttackBonus();
-        if (weaponSlot != null) bonus += weaponSlot.getMagicAttackBonus();
-        if (leftHandSlot != null) bonus += leftHandSlot.getMagicAttackBonus();
+        for (Equipment eq : equipmentSlots.values()) {
+            if (eq != null) bonus += eq.getMagicAttackBonus();
+        }
         return magicAttack + bonus;
     }
 
@@ -185,12 +179,9 @@ public class Character implements Serializable {
      */
     public int getDefense() {
         int bonus = 0;
-        if (headSlot != null) bonus += headSlot.getDefenseBonus();
-        if (chestSlot != null) bonus += chestSlot.getDefenseBonus();
-        if (legsSlot != null) bonus += legsSlot.getDefenseBonus();
-        if (jewelrySlot != null) bonus += jewelrySlot.getDefenseBonus();
-        if (weaponSlot != null) bonus += weaponSlot.getDefenseBonus();
-        if (leftHandSlot != null) bonus += leftHandSlot.getDefenseBonus();
+        for (Equipment eq : equipmentSlots.values()) {
+            if (eq != null) bonus += eq.getDefenseBonus();
+        }
         return defense + bonus;
     }
 
@@ -206,12 +197,9 @@ public class Character implements Serializable {
      */
     public int getAttack() {
         int bonus = 0;
-        if (headSlot != null) bonus += headSlot.getAttackBonus();
-        if (chestSlot != null) bonus += chestSlot.getAttackBonus();
-        if (legsSlot != null) bonus += legsSlot.getAttackBonus();
-        if (jewelrySlot != null) bonus += jewelrySlot.getAttackBonus();
-        if (weaponSlot != null) bonus += weaponSlot.getAttackBonus();
-        if (leftHandSlot != null) bonus += leftHandSlot.getAttackBonus();
+        for (Equipment eq : equipmentSlots.values()) {
+            if (eq != null) bonus += eq.getAttackBonus();
+        }
         return attack + bonus;
     }
 
@@ -228,44 +216,13 @@ public class Character implements Serializable {
             return false;
         }
 
-        switch (equipment.getSlot()) {
-            case HEAD:
-                this.headSlot = equipment;
-                break;
-            case CHEST:
-                this.chestSlot = equipment;
-                break;
-            case LEGS:
-                this.legsSlot = equipment;
-                break;
-            case JEWELRY:
-                this.jewelrySlot = equipment;
-                break;
-            case WEAPON:
-                this.weaponSlot = equipment;
-                break;
-            case LEFT_HAND:
-                this.leftHandSlot = equipment;
-                break;
-        }
+        equipmentSlots.put(equipment.getSlot(), equipment);
 
         return true;
     }
 
-    public String getEquippedSummary(){
-        List<String> items = new ArrayList<>();
-
-        if (weaponSlot != null) items.add("Arme: " + weaponSlot.getName());
-        if (leftHandSlot != null) items.add("Main gauche: " + leftHandSlot.getName());
-        if (headSlot != null) items.add("Tête: " + headSlot.getName());
-        if (chestSlot != null) items.add("Torse: " + chestSlot.getName());
-        if (legsSlot != null) items.add("Jambes: " + legsSlot.getName());
-        if (jewelrySlot != null) items.add("Bijou: " + jewelrySlot.getName());
-
-        if (items.isEmpty()){
-            return "Aucun équipement. EXHIBITIONNISTE !";
-        }
-        return String.join(", ", items);
+    public Map<EquipmentSlot, Equipment> getEquipments(){
+        return equipmentSlots;
     }
 
     /**
@@ -276,47 +233,16 @@ public class Character implements Serializable {
      * @param ConsoleMenu La vue principale (Injectée)
      * @return true si l'équipement a été retiré et remis dans le sac, false sinon.
      */
-    public boolean unequip(EquipmentSlot slot, Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu){
-        Equipment tmp = null;
+    public boolean unequip(EquipmentSlot slot, Team team) {
+        Equipment tmp = equipmentSlots.get(slot);
 
-        switch (slot){
-
-            case HEAD:
-                tmp = this.headSlot;
-                this.headSlot = null;
-                break;
-            case CHEST:
-                tmp = this.chestSlot;
-                this.chestSlot = null;
-                break;
-            case LEGS:
-                tmp = this.legsSlot;
-                this.legsSlot = null;
-                break;
-            case JEWELRY:
-                tmp = this.jewelrySlot;
-                this.jewelrySlot = null;
-                break;
-            case WEAPON:
-                tmp = this.weaponSlot;
-                this.weaponSlot = null;
-                break;
-            case LEFT_HAND:
-                tmp = this.leftHandSlot;
-                this.leftHandSlot = null;
-                break;
-        }
-
-        if (tmp == null){
-            menu.displayMessage("Aucun équipement d'équipé à cet endroit !");
+        if (tmp == null) {
             return false;
         } else {
-            if (team.addItem(tmp)){
-                menu.displayMessage(getName() + " retire " + tmp.getName() + "et le remet dans le sac Saldur de la compagnie !");
+            if (team.addItem(tmp)) {
+                equipmentSlots.remove(slot);
                 return true;
             } else {
-                equip(tmp);
-                menu.displayMessage("Le sac est plein ! Impossible de déséquiper " + tmp.getName());
                 return false;
             }
         }

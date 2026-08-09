@@ -181,6 +181,7 @@ public class HD2DGameApp extends ApplicationAdapter {
             float targetWorldZ = team.getY() * tileSize;
 
             // Restauration fluide de la position et hauteur de caméra d'exploration (Y = 14.0m)
+            float camSpeed = 12.0f * Gdx.graphics.getDeltaTime();
             camera.position.x += (targetWorldX - camera.position.x) * 0.1f;
             camera.position.y += (14.0f - camera.position.y) * 0.1f;
             camera.position.z += ((targetWorldZ + 12f) - camera.position.z) * 0.1f;
@@ -199,6 +200,9 @@ public class HD2DGameApp extends ApplicationAdapter {
     private void handleInput() {
         if (currentState == GameState.TRANSITION) {
             return; // Bloque toute input pendant la transition
+        }
+        if (dungeonRenderer != null && dungeonRenderer.isAnimating()) {
+            return; // Bloque toute input pendant le déplacement fluide
         }
         if (hudRenderer != null && hudRenderer.isMenuOpen()) {
             return; // En pause tant que le ConsoleMenu Dragon Quest est ouvert

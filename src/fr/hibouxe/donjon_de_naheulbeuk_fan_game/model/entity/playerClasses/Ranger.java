@@ -48,14 +48,14 @@ public class Ranger extends Character {
         return super.useSpecialSkill(skill, team, monster);
     }
     @Override
-    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
-        super.levelUp(menu);
+    public void levelUp() {
+        super.levelUp();
         this.healthPoint += 4;
         this.attack += 2;
         this.defense += 1;
         this.magicDefense += 1;
         this.speed += 2;
-        menu.displayMessage(this.name + " en fait toujours trop à propos de ses compétences (Niveau " + this.level + ") !");
+        // menu.displayMessage(this.name + " en fait toujours trop à propos de ses compétences (Niveau " + this.level + ") !");
     }
 }
 

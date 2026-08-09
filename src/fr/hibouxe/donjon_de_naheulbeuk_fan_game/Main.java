@@ -19,7 +19,8 @@ public class Main {
         IGameView view = new GraphicHD2DView(); //HD-2D
 
         view.displayMessage("=== Bienvenue dans le Donjon de Naheulbeuk ===");
-        Game game = new Game(view);
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.ISaveManager saveManager = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.FileSaveManager();
+        Game game = new Game(view, saveManager);
         game.startGame();
     }
 }

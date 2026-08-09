@@ -5,7 +5,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.TutorialDungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.*;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.SaveData;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.SaveManager;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.ISaveManager;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.*;
 
@@ -21,9 +21,11 @@ public class Game {
     private IGameView menu;
     private Team team;
     private int currentSlot = 1; // Slot actif par défaut (1, 2 ou 3)
+    private ISaveManager saveManager;
 
-    public Game(IGameView menu) {
+    public Game(IGameView menu, ISaveManager saveManager) {
         this.menu = menu;
+        this.saveManager = saveManager;
     }
 
     /**
@@ -41,13 +43,13 @@ public class Game {
             boolean resumedFromQuickSave = false;
 
             if (quickSlot != -1) {
-                boolean loadQuick = menu.askLoadQuickSavePrompt(quickSlot, SaveManager.getSlotSummary(quickSlot));
+                boolean loadQuick = menu.askLoadQuickSavePrompt(quickSlot, saveManager.getSlotSummary(quickSlot));
                 boolean shouldLoad = loadQuick;
 
                 if (!loadQuick) {
                     boolean confirmAbandon = menu.askConfirmAbandonQuickSave();
                     if (confirmAbandon) {
-                        SaveManager.deleteQuickSave(quickSlot);
+                        saveManager.deleteQuickSave(quickSlot);
                         menu.displayMessage("\n[Information] La Sauvegarde Rapide du Slot " + quickSlot + " a été supprimée.");
                         shouldLoad = false;
                     } else {
@@ -57,16 +59,16 @@ public class Game {
 
                 if (shouldLoad) {
                     this.currentSlot = quickSlot;
-                    SaveData saveData = SaveManager.loadQuickSave(currentSlot);
+                    SaveData saveData = saveManager.loadQuickSave(currentSlot);
                     if (saveData != null && saveData.getTeam() != null && saveData.getDungeon() != null) {
                         this.team = saveData.getTeam();
                         menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + saveData.getCurrentFloor() + " (Slot " + currentSlot + ") !");
                         menu.displayMessage("[Rappel] N'oubliez pas d'effectuer une nouvelle Sauvegarde Rapide (Touche K) avant de quitter !");
 
                         // Suppression de la quicksave chargée (consommation unique)
-                        SaveManager.deleteQuickSave(currentSlot);
+                        saveManager.deleteQuickSave(currentSlot);
 
-                        ExplorationController explo = new ExplorationController(saveData.getDungeon(), this.team, menu, false, currentSlot);
+                        ExplorationController explo = new ExplorationController(saveData.getDungeon(), this.team, menu, menu, menu, false, currentSlot, saveManager);
                         explo.setCurrentFloor(saveData.getCurrentFloor());
                         explo.start();
 
@@ -85,13 +87,13 @@ public class Game {
                     switch (choice) {
                         case 1: // Nouvelle Partie
                             handleNewGameChoice();
-                            if (SaveManager.hasQuickSave(currentSlot)) {
+                            if (saveManager.hasQuickSave(currentSlot)) {
                                 inMainMenu = false;
                             }
                             break;
                         case 2: // Charger Partie
                             handleLoadGameChoice();
-                            if (SaveManager.hasQuickSave(currentSlot)) {
+                            if (saveManager.hasQuickSave(currentSlot)) {
                                 inMainMenu = false;
                             }
                             break;
@@ -118,13 +120,13 @@ public class Game {
         int slot = menu.askSlotChoice("NOUVELLE PARTIE - CHOISIR UN EMPLACEMENT", summaries);
         if (slot == 0) return;
 
-        if (SaveManager.hasAnySave(slot)) {
+        if (saveManager.hasAnySave(slot)) {
             menu.displayMessage("\n[Avertissement] L'emplacement " + slot + " contient déjà des données !");
             menu.displayMessage("1. Écraser et recommencer une Nouvelle Partie");
             menu.displayMessage("2. Annuler");
             int confirm = menu.askPlayerInt();
             if (confirm != 1) return;
-            SaveManager.deleteSlot(slot);
+            saveManager.deleteSlot(slot);
         }
 
         this.currentSlot = slot;
@@ -136,28 +138,28 @@ public class Game {
         int slot = menu.askSlotChoice("CHARGER UNE PARTIE - SÉLECTIONNER UN EMPLACEMENT", summaries);
         if (slot == 0) return;
 
-        if (!SaveManager.hasAnySave(slot)) {
+        if (!saveManager.hasAnySave(slot)) {
             menu.displayMessage("\n[Information] L'emplacement " + slot + " est vide.");
             return;
         }
 
         this.currentSlot = slot;
 
-        if (SaveManager.hasQuickSave(slot)) {
-            SaveData data = SaveManager.loadQuickSave(slot);
+        if (saveManager.hasQuickSave(slot)) {
+            SaveData data = saveManager.loadQuickSave(slot);
             if (data != null && data.getTeam() != null && data.getDungeon() != null) {
                 this.team = data.getTeam();
                 menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + data.getCurrentFloor() + " (Slot " + slot + ") !");
-                SaveManager.deleteQuickSave(slot);
-                ExplorationController explo = new ExplorationController(data.getDungeon(), this.team, menu, false, slot);
+                saveManager.deleteQuickSave(slot);
+                ExplorationController explo = new ExplorationController(data.getDungeon(), this.team, menu, menu, menu, false, slot, saveManager);
                 explo.setCurrentFloor(data.getCurrentFloor());
                 explo.start();
                 return;
             }
         }
 
-        if (SaveManager.hasHubSave(slot)) {
-            SaveData data = SaveManager.loadHubSave(slot);
+        if (saveManager.hasHubSave(slot)) {
+            SaveData data = saveManager.loadHubSave(slot);
             if (data != null && data.getTeam() != null) {
                 this.team = data.getTeam();
                 menu.displayMessage("\n[Chargement] Vous retrouvez votre Compagnie au Campement (Slot " + slot + ") !");
@@ -174,10 +176,10 @@ public class Game {
 
             if (action == 1) { // Copier
                 int src = menu.askSlotChoice("SÉLECTIONNER LE SLOT À COPIER", summaries);
-                if (src != 0 && SaveManager.hasAnySave(src)) {
+                if (src != 0 && saveManager.hasAnySave(src)) {
                     int dst = menu.askTargetCopySlot(src, summaries);
                     if (dst != 0) {
-                        boolean copied = SaveManager.copySlot(src, dst);
+                        boolean copied = saveManager.copySlot(src, dst);
                         if (copied) {
                             menu.displayMessage("\n[Succès] L'emplacement " + src + " a été copié vers l'emplacement " + dst + " !");
                         } else {
@@ -189,11 +191,11 @@ public class Game {
                 }
             } else if (action == 2) { // Supprimer
                 int delSlot = menu.askSlotChoice("SÉLECTIONNER LE SLOT À SUPPRIMER", summaries);
-                if (delSlot != 0 && SaveManager.hasAnySave(delSlot)) {
+                if (delSlot != 0 && saveManager.hasAnySave(delSlot)) {
                     menu.displayMessage("\n[Confirmation] Supprimer définitivement l'emplacement " + delSlot + " ? (1. Oui / 2. Annuler)");
                     int confirm = menu.askPlayerInt();
                     if (confirm == 1) {
-                        SaveManager.deleteSlot(delSlot);
+                        saveManager.deleteSlot(delSlot);
                         menu.displayMessage("\n[Succès] L'emplacement " + delSlot + " a été supprimé.");
                     }
                 } else if (delSlot != 0) {
@@ -207,20 +209,20 @@ public class Game {
 
     private void runNewGame() {
         runTutorial();
-        if (!SaveManager.hasQuickSave(currentSlot)) {
+        if (!saveManager.hasQuickSave(currentSlot)) {
             runHubLoop();
         }
     }
 
     private void runHubLoop() {
         boolean playing = true;
-        while (playing && !SaveManager.hasQuickSave(currentSlot)) {
-            HubController hubController = new HubController(team, menu, currentSlot);
+        while (playing && !saveManager.hasQuickSave(currentSlot)) {
+            HubController hubController = new HubController(team, menu, currentSlot, saveManager);
             boolean goDungeon = hubController.enter();
 
             if (goDungeon) {
                 runNaheulbeuk();
-                if (SaveManager.hasQuickSave(currentSlot)) {
+                if (saveManager.hasQuickSave(currentSlot)) {
                     playing = false;
                 }
             } else {
@@ -237,10 +239,10 @@ public class Game {
         TutorialDungeon tutorialMaze = new TutorialDungeon();
         tutorialMaze.prepareFloor(1, team);
 
-        ExplorationController explo = new ExplorationController(tutorialMaze, team, menu, true, currentSlot);
+        ExplorationController explo = new ExplorationController(tutorialMaze, team, menu, menu, menu, true, currentSlot, saveManager);
         explo.start();
 
-        if (SaveManager.hasQuickSave(currentSlot)) {
+        if (saveManager.hasQuickSave(currentSlot)) {
             return;
         }
 
@@ -253,13 +255,13 @@ public class Game {
         NaheulbeukDungeon naheulbeukMaze = new NaheulbeukDungeon();
         naheulbeukMaze.prepareFloor(1, team);
 
-        ExplorationController explo = new ExplorationController(naheulbeukMaze, team, menu, false, currentSlot);
+        ExplorationController explo = new ExplorationController(naheulbeukMaze, team, menu, menu, menu, false, currentSlot, saveManager);
         explo.start();
     }
 
     private int getFirstQuickSaveSlot() {
         for (int slot = 1; slot <= 3; slot++) {
-            if (SaveManager.hasQuickSave(slot)) {
+            if (saveManager.hasQuickSave(slot)) {
                 return slot;
             }
         }
@@ -269,8 +271,9 @@ public class Game {
     private String[] getSlotSummaries() {
         String[] summaries = new String[3];
         for (int i = 0; i < 3; i++) {
-            summaries[i] = SaveManager.getSlotSummary(i + 1);
+            summaries[i] = saveManager.getSlotSummary(i + 1);
         }
         return summaries;
     }
 }
+

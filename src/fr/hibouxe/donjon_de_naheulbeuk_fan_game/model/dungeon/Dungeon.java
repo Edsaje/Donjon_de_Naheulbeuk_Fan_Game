@@ -138,8 +138,8 @@ public abstract class Dungeon implements Serializable {
      * @param team L'équipe de la compagnie
      * @param ConsoleMenu La vue principale (Injectée)
      */
-    public void moveMonsters(Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
-        getMonsterAI().moveMonsters(this, team, menu);
+    public void moveMonsters(Team team) {
+        getMonsterAI().moveMonsters(this, team);
     }
 
     private transient FogOfWarManager fogManager = new FogOfWarManager();

@@ -31,11 +31,11 @@ public class Ogre extends Character {
     }
     
     @Override
-    public void levelUp(fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView menu) {
-        super.levelUp(menu);
+    public void levelUp() {
+        super.levelUp();
         this.healthPoint += 8;
         this.attack += 3;
         this.defense += 2;
-        menu.displayMessage(this.name + " Akala, zog zog, glozou bok ! (Niveau " + this.level + ") !");
+        // menu.displayMessage(this.name + " Akala, zog zog, glozou bok ! (Niveau " + this.level + ") !");
     }
 }

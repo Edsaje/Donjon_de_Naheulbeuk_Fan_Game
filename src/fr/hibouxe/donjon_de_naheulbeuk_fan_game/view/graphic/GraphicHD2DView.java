@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * Moteur d'Affichage Graphique 2.5D (HD-2D).
- * Implémente {@link IGameView} pour remplacer la console ASCII par un rendu 3D + Sprites 2D.
+ * ImplÃ©mente {@link IGameView} pour remplacer la console ASCII par un rendu 3D + Sprites 2D.
  *
  * @author Hibouxe
  * @version 2.0
@@ -114,18 +114,18 @@ public class GraphicHD2DView implements IGameView {
         return "";
     }
 
-    // --- ÉCRAN TITRE ET ConsoleMenu PRINCIPAL GRAPHISÉS ---
+    // --- Ã‰CRAN TITRE ET ConsoleMenu PRINCIPAL GRAPHISÃ‰S ---
 
     @Override
     public void displayTitleScreen() {
-        // Le rendu de l'écran titre est géré par LibGDX, pas besoin de console
+        // Le rendu de l'Ã©cran titre est gÃ©rÃ© par LibGDX, pas besoin de console
     }
 
     @Override
     public int askMainMenuChoice() {
         if (gameApp != null) {
             gameApp.setState(HD2DGameApp.GameState.HUB); // Reusing HubController state for generic menus
-            gameApp.setMenuRequest("ConsoleMenu PRINCIPAL", new String[]{"Nouvelle Partie", "Charger Partie", "Gérer Sauvegardes", "Quitter"});
+            gameApp.setMenuRequest("ConsoleMenu PRINCIPAL", new String[]{"Nouvelle Partie", "Charger Partie", "GÃ©rer Sauvegardes", "Quitter"});
         }
         
         try {
@@ -221,7 +221,7 @@ public class GraphicHD2DView implements IGameView {
         return askSlotChoice("COPIER VERS...", slotSummaries);
     }
 
-    // --- RENDU HD-2D DU DONJON ET DÉPLACEMENT ---
+    // --- RENDU HD-2D DU DONJON ET DÃ‰PLACEMENT ---
 
     @Override
     public void displayTransitionScreen(int floorNumber) {
@@ -243,10 +243,10 @@ public class GraphicHD2DView implements IGameView {
             gameApp.setContext(maze, team, currentFloor);
         }
         
-        // 1. Mise à jour de la Caméra 3D inclinée à -45° sur la position de la Compagnie
+        // 1. Mise Ã  jour de la CamÃ©ra 3D inclinÃ©e Ã  -45Â° sur la position de la Compagnie
         camera.updateTarget(team);
 
-        // 2. Vider et régénérer la liste des Sprites 2D Billboards présents sur la carte
+        // 2. Vider et rÃ©gÃ©nÃ©rer la liste des Sprites 2D Billboards prÃ©sents sur la carte
         activeSprites.clear();
 
         // Sprite 2D de la Compagnie
@@ -285,21 +285,21 @@ public class GraphicHD2DView implements IGameView {
         return true;
     }
 
-    // --- INVENTAIRE ET COMBAT GRAPHISÉS ---
+    // --- INVENTAIRE ET COMBAT GRAPHISÃ‰S ---
 
     private Team lastTeamForInventory = null;
 
     @Override
     public void displayInventory(Team team) {
         this.lastTeamForInventory = team;
-        // L'inventaire est géré et affiché visuellement via le HUDRenderer (LibGDX)
+        // L'inventaire est gÃ©rÃ© et affichÃ© visuellement via le HUDRenderer (LibGDX)
     }
 
     @Override
     public int askInventoryMenuChoice() {
         if (gameApp != null) {
-            String[] options = {"Utiliser/Équiper", "Déséquiper", "Fermer"};
-            gameApp.setMenuRequest("SAC À DOS", options);
+            String[] options = {"Utiliser/Ã‰quiper", "DÃ©sÃ©quiper", "Fermer"};
+            gameApp.setMenuRequest("SAC Ã€ DOS", options);
         }
         try {
             int choice = Integer.parseInt(inputQueue.take());
@@ -351,7 +351,7 @@ public class GraphicHD2DView implements IGameView {
         options[team.getMembers().size()] = "Annuler";
 
         if (gameApp != null) {
-            gameApp.setMenuRequest("CIBLE ALLIÉE", options);
+            gameApp.setMenuRequest("CIBLE ALLIÃ‰E", options);
         }
 
         try {
@@ -376,7 +376,7 @@ public class GraphicHD2DView implements IGameView {
     public int askBattleAction(Character attacker) {
         inputQueue.clear();
         if (gameApp != null) {
-            String[] options = {"Attaquer", "Compétence", "Inventaire", "Fuir"};
+            String[] options = {"Attaquer", "CompÃ©tence", "Inventaire", "Fuir"};
             gameApp.setMenuRequest("ACTIONS: " + attacker.getName(), options);
         }
         try {
@@ -400,7 +400,7 @@ public class GraphicHD2DView implements IGameView {
         options[skills.size()] = "Annuler";
         
         if (gameApp != null) {
-            gameApp.setMenuRequest("COMPÉTENCES", options);
+            gameApp.setMenuRequest("COMPÃ‰TENCES", options);
         }
         
         try {
@@ -412,7 +412,6 @@ public class GraphicHD2DView implements IGameView {
         }
         return null;
     }
-
     @Override
     public Character askMonsterTarget(List<Character> monsters) {
         inputQueue.clear();
@@ -445,5 +444,30 @@ public class GraphicHD2DView implements IGameView {
 
     @Override
     public void displayTeamStats(Team team) {
+    }
+
+    @Override
+    public void displayTurn(String characterName) {
+        displayMessage("\n⚡ C'est au tour de " + characterName + " !");
+    }
+
+    @Override
+    public void displayVictory() {
+        displayMessage("\n C'est trop facile..");
+    }
+
+    @Override
+    public void displayDefeat() {
+        displayMessage("\n Plutôt paradis des Nains ou des Aventuriers ?");
+    }
+
+    @Override
+    public void displaySaveSuccess(int slot) {
+        displayMessage("\n[Sauvegarde Rapide] Donjon et position enregistrés dans le Slot " + slot + ". Retour à l'écran initial...");
+    }
+
+    @Override
+    public void displaySaveError() {
+        displayMessage("\n[Erreur] Échec de la Sauvegarde Rapide.");
     }
 }
