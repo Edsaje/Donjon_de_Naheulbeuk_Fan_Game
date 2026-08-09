@@ -75,9 +75,6 @@ public class HUDRenderer implements Disposable {
 
         if (state == HD2DGameApp.GameState.BATTLE || state == HD2DGameApp.GameState.HUB) {
             renderMinimalistWindow(team, messages);
-            if (menuTitle != null && menuOptions != null) {
-                renderContextualMenu(menuTitle, menuOptions);
-            }
         } else if (isMenuOpen) {
             renderDragonQuestWindow(dungeon, playerX, playerY, team);
         } else {
@@ -85,6 +82,11 @@ public class HUDRenderer implements Disposable {
             if (messages != null && !messages.isEmpty()) {
                 renderMinimalistWindow(team, messages);
             }
+        }
+
+        // Toujours dessiner le menu contextuel s'il existe et n'est pas un menu de pause (dialogue)
+        if (menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0])) {
+            renderContextualMenu(menuTitle, menuOptions);
         }
     }
 
