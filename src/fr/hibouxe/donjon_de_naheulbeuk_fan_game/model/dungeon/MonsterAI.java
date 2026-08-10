@@ -32,7 +32,6 @@ public class MonsterAI {
      *
      * @param dungeon Le donjon contenant la grille
      * @param team    L'équipe de la compagnie
-     * @param ConsoleMenu    La vue principale (Injectée)
      */
     public void moveMonsters(Dungeon dungeon, Team team) {
         List<Character> movedMonsters = new ArrayList<>();

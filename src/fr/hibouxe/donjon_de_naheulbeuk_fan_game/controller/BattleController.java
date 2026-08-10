@@ -27,7 +27,7 @@ public class BattleController {
      *
      * @param team     La compagnie des héros
      * @param monsters Le groupe de monstres affronté
-     * @param ConsoleMenu     La vue principale du jeu (Injectée)
+     * @param menu     La vue de combat injectée (ICombatView)
      */
     public BattleController(Team team, List<Character> monsters, fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.ICombatView menu) {
         this.team = team;

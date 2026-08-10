@@ -169,23 +169,21 @@ public class TutorialDungeon extends Dungeon {
         java.util.List<String> dialogues = new java.util.ArrayList<>();
         switch (floorNumber) {
             case 1:
-                dialogues.add("\n=== CHAPITRE 1 : LA FUITE ===");
-                dialogues.add("Ranger : Aïe... un mal de crâne effroyable...");
-                dialogues.add("Ranger : La taverne a été attaquée. Je dois fuir par le cellier et retrouver les autres !");
-                dialogues.add("[UI Tuto] : Utilisez Z, Q, S, D (ou les flèches) pour vous déplacer dans le couloir.");
-                dialogues.add("[UI Tuto] : Atteignez l'escalier au bout du chemin pour avancer.");
+                dialogues.add("\n=== CHAPITRE 0 : Fuite de la taverne ===");
+                dialogues.add("Ranger : Aïe... J'ai un mal de crâne effroyable...");
+                dialogues.add("Ranger : Où est-ce que je suis ? J'étais tellement occupé à courir que je me suis perdu ! Je dois retrouver les autres !");
+                dialogues.add("Utilisez Z, Q, S, D (ou les flèches) pour vous déplacer dans le couloir.");
+                dialogues.add("Atteignez l'escalier au bout du chemin pour avancer.");
                 break;
             case 2:
-                dialogues.add("\n=== CHAPITRE 2 : L'ELFE ET L'INVENTAIRE ===");
-                dialogues.add("Ranger : C'est l'Elfe de notre groupe ! Elle est par terre...");
-                dialogues.add("Ranger : Elle a dû se prendre un tonneau sur la tête.");
+                dialogues.add("Ranger : Hey mais c'est l'Elfe ! Elle est par terre...");
+                dialogues.add("Ranger : Je ferai mieux d'aller voir !");
                 break;
             case 3:
-                dialogues.add("\n=== CHAPITRE 3 : OMBRES ET FURTIVITÉ ===");
                 dialogues.add("Voleur : Chuuut ! Restez dans l'ombre ! On ne voit rien avec ce brouillard...");
                 dialogues.add("Voleur : Il y a une patrouille d'Orques Géants juste devant. Ils sont trop nombreux !");
                 dialogues.add("Ranger : Comment on passe alors ?");
-                dialogues.add("Voleur : On rase les murs, on regarde la Minimap, et si on se fait repérer... on court plus vite qu'eux !");
+                dialogues.add("Voleur : On va utiliser la Ruse !");
                 dialogues.add("[UI Tuto] : Avancez pour dissiper le brouillard de guerre.");
                 dialogues.add("[UI Tuto] : La Minimap en haut à droite affiche les ennemis en rouge. Évitez-les !");
                 dialogues.add("[UI Tuto] : Si un combat inévitable se déclenche, utilisez la commande [Fuir] !");
