@@ -395,11 +395,8 @@ public class ExplorationController {
             else if (team.getFacingDirection() == 2) targetX -= 1; // Ouest
             else if (team.getFacingDirection() == 3) targetX += 1; // Est
             
-            if (targetX == 1 && targetY == 2) {
+            if (targetX == 1 && targetY == 2 && !elfJoined) {
                 interactWithElf();
-            } else if (elfJoined && !elfHealed) {
-                menu.displayDialogue("\nL'Elfe est trop blessée pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
-                menu.clearMessages();
             }
         }
     }
@@ -416,9 +413,6 @@ public class ExplorationController {
             elfJoined = true;
             menu.displayDialogue("\n[L'Elfe a rejoint le groupe, mais elle est gravement blessée !]");
             menu.clearMessages();
-        } else if (!elfHealed) {
-            menu.displayDialogue("Ranger : Tu vas pas avancer dans cet état. Je dois te donner une Potion de Soin.");
-            menu.displayMessage("\nAppuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
         }
     }
 }
