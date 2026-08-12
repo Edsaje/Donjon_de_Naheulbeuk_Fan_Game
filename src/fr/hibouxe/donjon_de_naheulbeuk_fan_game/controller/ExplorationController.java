@@ -329,7 +329,7 @@ public class ExplorationController {
     public boolean tryMoveNorth() {
         int targetY = team.getY() - 1;
         
-        // --- SCRIPT ELFE (Tutoriel - Étage 2) ---
+        // --- SCRIPT ELFE (Tutoriel - étage 2) ---
         if (isTutorial && currentFloor == 2 && team.getX() == 1 && targetY == 2 && !elfJoined) {
             menu.displayDialogue("\nL'Elfe inconsciente bloque le passage. Appuyez sur ESPACE pour interagir avec elle.");
                 menu.clearMessages();

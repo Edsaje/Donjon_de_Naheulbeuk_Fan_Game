@@ -5,7 +5,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import java.io.Serializable;
 
 /**
- * Classe parente représentant tout objet du jeu (Potion, Équipement, Trésor).
+ * Classe parente représentant tout objet du jeu (Potion, équipement, Trésor).
  *
  * @author Hibouxe
  * @version 1.0

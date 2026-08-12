@@ -67,7 +67,7 @@ public class BattleArenaRenderer implements Disposable {
     /**
      * Disposition tactique personnalisée selon les membres vivants de l'équipe du joueur.
      *
-     * @param team Équipe de héros du joueur
+     * @param team équipe de héros du joueur
      */
     public void setupTeamBattleArena(Team team) {
         if (team == null || team.getMembers() == null || team.getMembers().isEmpty()) {
@@ -132,7 +132,7 @@ public class BattleArenaRenderer implements Disposable {
     }
 
     public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera) {
-        // Caméra de combat panoramique à -25° cadrant toute la formation tactique
+        // Caméra de combat panoramique à -25à cadrant toute la formation tactique
         camera.position.set(0.0f, 7.5f, 12.5f);
         camera.lookAt(0.0f, 0.5f, -4.0f);
         camera.update();

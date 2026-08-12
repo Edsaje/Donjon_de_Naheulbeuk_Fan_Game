@@ -15,7 +15,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 
 /**
  * Composant de rendu 2D spécialisé pour l'Interface Utilisateur (HUD) et le ConsoleMenu Interactif Dragon Quest (SRP).
- * Ouvre une fenêtre bleue à bordure dorée (Sac, Sorts, Équipement, Carte, Sauvegarde) à la pression de 'M' ou 'ECHAP'.
+ * Ouvre une fenêtre bleue à bordure dorée (Sac, Sorts, équipement, Carte, Sauvegarde) à la pression de 'M' ou 'ECHAP'.
  *
  * @author Hibouxe
  * @version 2.0
@@ -28,7 +28,7 @@ public class HUDRenderer implements Disposable {
     private boolean isMenuOpen = false;
     private int selectedOption = 0;
     private String[] menuOptions = {
-            "Status", "Sac", "Équipement", "Magie", "Sauvegarder", "Fermer"
+            "Status", "Sac", "équipement", "Magie", "Sauvegarder", "Fermer"
     };
 
     public HUDRenderer() {
@@ -63,7 +63,7 @@ public class HUDRenderer implements Disposable {
      * @param dungeon Donjon actuel
      * @param playerX Position X du joueur
      * @param playerY Position Y du joueur
-     * @param currentFloor Étage actuel
+     * @param currentFloor étage actuel
      * */
     public void renderHUD(Dungeon dungeon, int playerX, int playerY, int currentFloor, HD2DGameApp.GameState state, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, String menuTitle, String[] menuOptions, HD2DGameApp gameApp) {
         handleMenuInput(state, gameApp);

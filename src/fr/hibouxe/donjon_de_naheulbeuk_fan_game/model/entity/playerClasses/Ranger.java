@@ -7,7 +7,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.ConsoleMenu;
 
 /**
  * ReprÃ©sente le Ranger (Le Leader) dans la Compagnie de Naheulbeuk.
- * Leader autoproclamÃ© Ã©quilibrÃ© en attaque et en dÃ©fense.
+ * Leader autoproclamÃà Ã©quilibrÃà en attaque et en dÃ©fense.
  *
  * @author Hibouxe
  * @version 1.0

@@ -81,7 +81,7 @@ public class ConsoleDungeonView {
                 } else if (cell.hasItem()) {
                     sb.append(" C ");
                 } else if (cell.hasStairs()) {
-                    sb.append(" ≡ ");
+                    sb.append(" à ");
                 } else {
                     sb.append(" . ");
                 }

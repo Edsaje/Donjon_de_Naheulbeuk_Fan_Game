@@ -30,7 +30,7 @@ public class ConsoleInventoryView {
 
     public int askInventoryMenuChoice(ConsoleMenu menu) {
         menu.displayMessage("\n--- GESTION DU SAC À DOS ---");
-        menu.displayMessage("1. Utiliser / Équiper un objet du sac");
+        menu.displayMessage("1. Utiliser / équiper un objet du sac");
         menu.displayMessage("2. Retirer un équipement d'un héros");
         menu.displayMessage("3. Fermer le sac");
 

@@ -24,7 +24,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers.*;
 
 /**
  * Moteur principal LibGDX (ApplicationAdapter).
- * S'occupe du rendu 3D, de la boucle de jeu et de la gestion de la fenǦtre.
+ * S'occupe du rendu 3D, de la boucle de jeu et de la gestion de la fenêtre.
  *
  * @author Hibouxe
  * @version 2.0

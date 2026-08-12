@@ -121,7 +121,7 @@ public class ConsoleMenu implements IGameView {
 
     @Override
     public void displayTransitionScreen(int floorNumber) {
-        System.out.println("\n\n\n=== [ Ã‰TAGE " + floorNumber + " ] ===\n\n\n");
+        System.out.println("\n\n\n=== [ ÉTAGE " + floorNumber + " ] ===\n\n\n");
         try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {}

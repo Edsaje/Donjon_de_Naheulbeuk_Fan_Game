@@ -143,14 +143,14 @@ public class FileSaveManager implements ISaveManager {
      * Génère un résumé lisible du contenu d'un emplacement de profil.
      *
      * @param slot Le numéro du slot (1, 2 ou 3)
-     * @return Résumé formraté (ex: "[Slot 1] Compagnie Niv.3 | Étage 4 (En Donjon)")
+     * @return Résumé formraté (ex: "[Slot 1] Compagnie Niv.3 | étage 4 (En Donjon)")
      */
     public String getSlotSummary(int slot) {
         if (hasQuickSave(slot)) {
             SaveData data = loadQuickSave(slot);
             if (data != null && data.getTeam() != null) {
                 int level = getTeamMaxLevel(data.getTeam());
-                return "[Slot " + slot + "] Compagnie Niv." + level + " | Étage " + data.getCurrentFloor() + " (Sauvegarde Rapide en Donjon)";
+                return "[Slot " + slot + "] Compagnie Niv." + level + " | étage " + data.getCurrentFloor() + " (Sauvegarde Rapide en Donjon)";
             }
         }
 

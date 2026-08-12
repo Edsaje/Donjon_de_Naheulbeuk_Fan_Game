@@ -7,7 +7,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.ConsoleMenu;
 
 /**
  * ReprÃ©sente le Barbare dans la Compagnie de Naheulbeuk.
- * Combattant de mÃ¢tinage lourd rÃ©putÃ© pour sa puissance d'attaque brute.
+ * Combattant de mÃ¢tinage lourd rÃ©putÃà pour sa puissance d'attaque brute.
  *
  * @author Hibouxe
  * @version 1.0
@@ -15,7 +15,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.ConsoleMenu;
 public class Barbarian extends Character {
 
     /**
-     * Initialise le Barbare avec ses statistiques de dÃ©part.
+     * Initialise le Barbare avec ses statistiques de départ.
      */
     public Barbarian() {
         super("Le Barbare", "Barbare", 1, 12, 0, 10, 0, 3, 3, 11);

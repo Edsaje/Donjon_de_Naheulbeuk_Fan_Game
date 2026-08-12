@@ -123,7 +123,7 @@ public class DungeonSceneRenderer implements Disposable {
                         entityBillboards.add(stairsSprite);
                     }
                     
-                    // SCRIPT ELFE (Tutoriel - Étage 2)
+                    // SCRIPT ELFE (Tutoriel - étage 2)
                     if (currentFloor == 2 && x == 1 && y == 2) {
                         boolean elfSaved = false;
                         for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character c : team.getMembers()) {

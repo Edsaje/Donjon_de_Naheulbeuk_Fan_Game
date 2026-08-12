@@ -21,7 +21,7 @@ public class NaheulbeukDungeon extends Dungeon {
             dialogues.add("Nain : YAAAAAAAAAH ! (Il charge la hache en avant, frappe l'acier et se tord les poignets !)");
             dialogues.add("Zangdar (depuis son balcon) : Insolents ! Misérables cloportes ! Vous n'emporterez jamais la statuette de Gladeulfeurh ! Golem de fer, réduis-les en bouillie !");
         } else {
-            dialogues.add("=== DESCENTE À L'ÉTAGE " + floorNumber + " ===");
+            dialogues.add("=== DESCENTE à L'ÉTAGE " + floorNumber + " ===");
             dialogues.add("Narrateur : La compagnie avance prudemment dans les ténèbres...");
         }
         return dialogues;
@@ -73,7 +73,7 @@ public class NaheulbeukDungeon extends Dungeon {
             this.getGrid()[bossPos[0]][bossPos[1]].setMonsters(bossList);
             // Pas d'escalier, car c'est la fin !
         } else {
-            // Étages standards
+            // étages standards
             generateMonsters(5 + floorNumber, team.getX(), team.getY());
             generateItems(3);
             generateStairs(1);

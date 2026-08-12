@@ -11,7 +11,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.*;
 
 /**
  * Super Contrôleur Orchestrateur.
- * Gère la machine à états de l'application (Écran-titre -> QuickSave -> ConsoleMenu Principal -> Multi-Slots -> Tutoriel / HubController <-> Donjon).
+ * Gère la machine à états de l'application (écran-titre -> QuickSave -> ConsoleMenu Principal -> Multi-Slots -> Tutoriel / HubController <-> Donjon).
  * Garantit l'indépendance totale du modèle (Agnostique) et le support du système Multi-Slots (1, 2, 3).
  *
  * @author Hibouxe
@@ -35,7 +35,7 @@ public class Game {
         boolean applicationRunning = true;
 
         while (applicationRunning) {
-            // 1. Écran initial : "Donjon De Naheulbeuk Fan Game" - Demande d'appuyer sur Entrée
+            // 1. écran initial : "Donjon De Naheulbeuk Fan Game" - Demande d'appuyer sur Entrée
             menu.displayTitleScreen();
 
             // 2. Détection immédiate d'une Sauvegarde Rapide sur l'un des slots (1, 2 ou 3)
@@ -62,7 +62,7 @@ public class Game {
                     SaveData saveData = saveManager.loadQuickSave(currentSlot);
                     if (saveData != null && saveData.getTeam() != null && saveData.getDungeon() != null) {
                         this.team = saveData.getTeam();
-                        menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + saveData.getCurrentFloor() + " (Slot " + currentSlot + ") !");
+                        menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'étage " + saveData.getCurrentFloor() + " (Slot " + currentSlot + ") !");
                         menu.displayMessage("[Rappel] N'oubliez pas d'effectuer une nouvelle Sauvegarde Rapide (Touche K) avant de quitter !");
 
                         // Suppression de la quicksave chargée (consommation unique)
@@ -149,7 +149,7 @@ public class Game {
             SaveData data = saveManager.loadQuickSave(slot);
             if (data != null && data.getTeam() != null && data.getDungeon() != null) {
                 this.team = data.getTeam();
-                menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'Étage " + data.getCurrentFloor() + " (Slot " + slot + ") !");
+                menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'étage " + data.getCurrentFloor() + " (Slot " + slot + ") !");
                 saveManager.deleteQuickSave(slot);
                 ExplorationController explo = new ExplorationController(data.getDungeon(), this.team, menu, menu, menu, false, slot, saveManager);
                 explo.setCurrentFloor(data.getCurrentFloor());
@@ -175,7 +175,7 @@ public class Game {
             String[] summaries = getSlotSummaries();
 
             if (action == 1) { // Copier
-                int src = menu.askSlotChoice("SÉLECTIONNER LE SLOT À COPIER", summaries);
+                int src = menu.askSlotChoice("SÉLECTIONNER LE SLOT à COPIER", summaries);
                 if (src != 0 && saveManager.hasAnySave(src)) {
                     int dst = menu.askTargetCopySlot(src, summaries);
                     if (dst != 0) {
@@ -190,7 +190,7 @@ public class Game {
                     menu.displayMessage("\n[Erreur] Cet emplacement est vide.");
                 }
             } else if (action == 2) { // Supprimer
-                int delSlot = menu.askSlotChoice("SÉLECTIONNER LE SLOT À SUPPRIMER", summaries);
+                int delSlot = menu.askSlotChoice("SÉLECTIONNER LE SLOT à SUPPRIMER", summaries);
                 if (delSlot != 0 && saveManager.hasAnySave(delSlot)) {
                     menu.displayMessage("\n[Confirmation] Supprimer définitivement l'emplacement " + delSlot + " ? (1. Oui / 2. Annuler)");
                     int confirm = menu.askPlayerInt();

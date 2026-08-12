@@ -184,7 +184,7 @@ public class BattleController {
                 menu.displayMessage("\n" + attacker.getName() + " tape de toutes ses forces et inflige " + damage + " dégât(s) au " + target.getName() + " !");
                 
                 if (target.getHealthPoint() <= 0) {
-                    menu.displayMessage("☠️ Le " + target.getName() + " s'effondre sans vie !");
+                    menu.displayMessage("à Le " + target.getName() + " s'effondre sans vie !");
                 } else {
                     menu.displayMessage("Il reste " + target.getHealthPoint() + " PV au " + target.getName() + " !");
                 }
@@ -212,7 +212,7 @@ public class BattleController {
                 String actionText = attacker.useSpecialSkill(chosenSkill, team, target);
                 menu.displayMessage("\n" + actionText);
                 if (target.getHealthPoint() <= 0) {
-                    menu.displayMessage("☠️ Le " + target.getName() + " s'effondre sans vie !");
+                    menu.displayMessage("à Le " + target.getName() + " s'effondre sans vie !");
                 }
                 
                 // Si la compétence n'a pas été lancée (ex: pas assez de mana), on ne valide pas le tour
@@ -276,10 +276,10 @@ public class BattleController {
             Character target = aliveHeroes.get(random.nextInt(aliveHeroes.size())); // Cible au hasard pour ce monstre
             int damage = Math.max(1, m.getAttack() - target.getDefense()); // Calcul des dégâts
             target.setHealthPoint(target.getHealthPoint() - damage); // On retire les PV
-            menu.displayMessage("\n⚔️ Le " + m.getName() + " attaque " + target.getName() + " et inflige " + damage + " dégâts !");
+            menu.displayMessage("\n⚔à Le " + m.getName() + " attaque " + target.getName() + " et inflige " + damage + " dégâts !");
             
             if (target.getHealthPoint() <= 0) {
-                menu.displayMessage("☠️ " + target.getName() + " est K.O. !");
+                menu.displayMessage("à " + target.getName() + " est K.O. !");
             }
 
             if ("Rage".equals(target.getResourceName())) {

@@ -118,14 +118,14 @@ public class GraphicHD2DView implements IGameView {
 
     @Override
     public void displayTitleScreen() {
-        // Le rendu de l'Ã©cran titre est gÃ©rÃ© par LibGDX, pas besoin de console
+        // Le rendu de l'écran titre est gÃ©rÃà par LibGDX, pas besoin de console
     }
 
     @Override
     public int askMainMenuChoice() {
         if (gameApp != null) {
             gameApp.setState(HD2DGameApp.GameState.HUB); // Reusing HubController state for generic menus
-            gameApp.setMenuRequest("ConsoleMenu PRINCIPAL", new String[]{"Nouvelle Partie", "Charger Partie", "GÃ©rer Sauvegardes", "Quitter"});
+            gameApp.setMenuRequest("ConsoleMenu PRINCIPAL", new String[]{"Nouvelle Partie", "Charger Partie", "Gérer Sauvegardes", "Quitter"});
         }
         
         try {
@@ -243,7 +243,7 @@ public class GraphicHD2DView implements IGameView {
             gameApp.setContext(maze, team, currentFloor);
         }
         
-        // 1. Mise Ã  jour de la CamÃ©ra 3D inclinÃ©e Ã  -45Â° sur la position de la Compagnie
+        // 1. Mise à jour de la CamÃ©ra 3D inclinÃ©e à -45à sur la position de la Compagnie
         camera.updateTarget(team);
 
         // 2. Vider et rÃ©gÃ©nÃ©rer la liste des Sprites 2D Billboards prÃ©sents sur la carte
@@ -292,14 +292,14 @@ public class GraphicHD2DView implements IGameView {
     @Override
     public void displayInventory(Team team) {
         this.lastTeamForInventory = team;
-        // L'inventaire est gÃ©rÃ© et affichÃ© visuellement via le HUDRenderer (LibGDX)
+        // L'inventaire est gÃ©rÃà et affichÃà visuellement via le HUDRenderer (LibGDX)
     }
 
     @Override
     public int askInventoryMenuChoice() {
         if (gameApp != null) {
-            String[] options = {"Utiliser/Ã‰quiper", "DÃ©sÃ©quiper", "Fermer"};
-            gameApp.setMenuRequest("SAC Ã€ DOS", options);
+            String[] options = {"Utiliser/équiper", "Déséquiper", "Fermer"};
+            gameApp.setMenuRequest("SAC À DOS", options);
         }
         try {
             int choice = Integer.parseInt(inputQueue.take());
