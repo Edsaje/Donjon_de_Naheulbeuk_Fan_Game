@@ -107,7 +107,7 @@ public class Character implements Serializable {
     }
 
     public boolean isBoss() {
-        return false;
+        return "Boss".equalsIgnoreCase(this.type);
     }
 
     /**

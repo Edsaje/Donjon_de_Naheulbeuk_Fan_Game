@@ -87,7 +87,9 @@ public class BattleController {
 
                 if (aliveCount > 0) {
                     int xpPerHero = totalXp / aliveCount;
-                    menu.displayMessage("Chaque héro en vie reçoit " + xpPerHero + " points d'expérience !");
+                    if (xpPerHero > 0) {
+                        menu.displayMessage("Chaque héro en vie reçoit " + xpPerHero + " points d'expérience !");
+                    }
 
                     for (Character c : team.getMembers()) { //on donne l'xp aux vivants
                         if (c.getHealthPoint() > 0) {

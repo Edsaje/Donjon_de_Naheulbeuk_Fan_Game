@@ -66,7 +66,7 @@ public class HUDRenderer implements Disposable {
      * @param currentFloor étage actuel
      * */
     public void renderHUD(Dungeon dungeon, int playerX, int playerY, int currentFloor, HD2DGameApp.GameState state, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, String menuTitle, String[] menuOptions, HD2DGameApp gameApp) {
-        handleMenuInput(state, gameApp);
+        handleMenuInput(state, gameApp, messages, menuTitle);
         if (menuTitle != null && menuOptions != null) {
             handleContextualMenuInput(menuOptions, gameApp);
         }
@@ -156,8 +156,10 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
-    private void handleMenuInput(HD2DGameApp.GameState state, HD2DGameApp gameApp) {
+    private void handleMenuInput(HD2DGameApp.GameState state, HD2DGameApp gameApp, java.util.List<String> messages, String menuTitle) {
         if (state == HD2DGameApp.GameState.BATTLE || state == HD2DGameApp.GameState.HUB) return; // Désactivé en combat et HubController
+        if (messages != null && !messages.isEmpty()) return; // Désactivé pendant un dialogue
+        if (menuTitle != null) return; // Désactivé pendant un sous-menu contextuel
 
         // Touche 'M' ou 'ECHAP' pour ouvrir/fermer le ConsoleMenu
         if (Gdx.input.isKeyJustPressed(Input.Keys.M) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
