@@ -23,7 +23,6 @@ public class Character implements Serializable {
     protected int level;
     protected int maxHealthPoint;
     protected int healthPoint;
-    protected int resourcePoint;
     protected int attack;
     protected int magicAttack;
     protected int defense;
@@ -59,7 +58,8 @@ public class Character implements Serializable {
         this.level = level;
         this.maxHealthPoint = healthPoint;
         this.healthPoint = healthPoint;
-        this.resourcePoint = resourcePoint;
+        this.maxResource = resourcePoint;
+        this.currentResource = resourcePoint;
         this.attack = attack;
         this.magicAttack = magicAttack;
         this.defense = defense;
@@ -260,28 +260,28 @@ public class Character implements Serializable {
      * @return Points de ressource (Générique)
      */
     public int getResourcePoint() {
-        return resourcePoint;
+        return currentResource;
     }
 
     /**
      * @param resourcePoint Nouveau nombre de ressource
      */
     public void setResourcePoint(int resourcePoint) {
-        this.resourcePoint = resourcePoint;
+        this.currentResource = resourcePoint;
     }
 
     /**
      * @return Points de mana (Alias pour compatibilité)
      */
     public int getManaPoint() {
-        return resourcePoint;
+        return currentResource;
     }
 
     /**
      * @param resourcePoint Nouveaux points de mana / ressource
      */
     public void setManaPoint(int resourcePoint) {
-        this.resourcePoint = resourcePoint;
+        this.currentResource = resourcePoint;
     }
 
     /**
@@ -417,7 +417,7 @@ public class Character implements Serializable {
                 ", type='" + type + '\'' +
                 ", level=" + level +
                 ", healthPoint=" + healthPoint +
-                ", manaPoint=" + resourcePoint +
+                ", manaPoint=" + currentResource +
                 ", attack=" + attack +
                 ", magicAttack=" + magicAttack +
                 ", defense=" + defense +

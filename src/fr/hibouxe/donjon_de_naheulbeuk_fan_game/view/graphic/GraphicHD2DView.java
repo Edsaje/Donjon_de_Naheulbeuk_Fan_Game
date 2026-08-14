@@ -443,10 +443,6 @@ public class GraphicHD2DView implements IGameView {
     }
 
     @Override
-    public void displayTeamStats(Team team) {
-    }
-
-    @Override
     public void displayTurn(String characterName) {
         displayMessage("\n⚡ C'est au tour de " + characterName + " !");
     }

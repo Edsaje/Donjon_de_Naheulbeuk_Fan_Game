@@ -152,7 +152,9 @@ public class ExplorationController {
                 menu.displayMessage("Tchoss Nulloss");
                 return false;
             case "C":
-                menu.displayTeamStats(team);
+                // TODO: Implémenter le menu Statistiques complet
+                menu.displayDialogue("\n[Le menu Statistiques détaillé sera disponible dans une prochaine version !]");
+                menu.clearMessages();
                 return false;
             case "I":
                 handleInventoryAction();
