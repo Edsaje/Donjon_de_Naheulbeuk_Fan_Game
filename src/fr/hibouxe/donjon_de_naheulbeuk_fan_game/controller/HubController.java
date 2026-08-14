@@ -3,7 +3,6 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.ISaveManager;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IMenuView;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.*;
 
 /**
  * Contrôleur gérant la phase de repos au campement.
@@ -49,7 +48,9 @@ public class HubController {
                     menu.displayMessage("Vous rangez vos affaires et vous dirigez vers l'entrée du gouffre...");
                     return true; // On retourne true pour signaler à Game.java de lancer le donjon
                 case 2:
-                    menu.displayTeamStats(team);
+                    // TODO: Implémenter le menu Statistiques complet
+                    menu.displayDialogue("\n[Le menu Statistiques détaillé sera disponible dans une prochaine version !]");
+                    menu.clearMessages();
                     break;
                 case 3:
                     menu.displayInventory(team);

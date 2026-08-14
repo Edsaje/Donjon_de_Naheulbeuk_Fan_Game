@@ -5,7 +5,6 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Goblin;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Skeleton;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Undead;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.ConsoleMenu;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

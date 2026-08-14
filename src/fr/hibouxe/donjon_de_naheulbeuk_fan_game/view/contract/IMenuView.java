@@ -19,7 +19,6 @@ public interface IMenuView {
     boolean askUseItem();
     int askItemIndex();
     Character askItemTarget(Team team);
-    void displayTeamStats(Team team);
     void displayMessage(String message);
     void clearMessages();
     void displayDialogue(String message);

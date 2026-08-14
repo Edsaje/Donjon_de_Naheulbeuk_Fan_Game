@@ -7,7 +7,6 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.*;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.SaveData;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.ISaveManager;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.*;
 
 /**
  * Super Contrôleur Orchestrateur.

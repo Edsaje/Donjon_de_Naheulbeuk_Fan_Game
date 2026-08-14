@@ -3,7 +3,6 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.ConsoleMenu;
 
 public class Thief extends Character {
     public Thief() {

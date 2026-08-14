@@ -1,7 +1,6 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.console.ConsoleMenu;
 
 import java.io.Serializable;
 
