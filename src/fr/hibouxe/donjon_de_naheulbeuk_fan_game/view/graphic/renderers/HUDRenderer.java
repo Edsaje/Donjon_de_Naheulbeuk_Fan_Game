@@ -74,7 +74,7 @@ public class HUDRenderer implements Disposable {
         Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
 
         if (state == HD2DGameApp.GameState.BATTLE || state == HD2DGameApp.GameState.HUB) {
-            renderMinimalistWindow(team, messages);
+            renderMinimalistWindow(team, messages, state);
             if (state == HD2DGameApp.GameState.BATTLE && team != null) {
                 renderBattleStatus(team);
             }
@@ -83,7 +83,7 @@ public class HUDRenderer implements Disposable {
         } else {
             renderExplorationHUD(dungeon, playerX, playerY, currentFloor, state);
             if (messages != null && !messages.isEmpty()) {
-                renderMinimalistWindow(team, messages);
+                renderMinimalistWindow(team, messages, state);
             }
         }
 
@@ -210,11 +210,10 @@ public class HUDRenderer implements Disposable {
     }
 
     private void renderBattleStatus(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team) {
-        int windowWidth = 220;
-        int windowHeight = 40 + (team.getMembers().size() * 65);
-        int padding = 20;
-        int startX = 20;
-        int startY = Gdx.graphics.getHeight() - windowHeight - 20;
+        int windowWidth = 1080;
+        int windowHeight = 110;
+        int startX = 100;
+        int startY = 20;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.3f, 0.85f));
@@ -225,29 +224,37 @@ public class HUDRenderer implements Disposable {
         shapeRenderer.rectLine(startX, startY + windowHeight, startX + windowWidth, startY + windowHeight, 2);
         shapeRenderer.rectLine(startX, startY, startX, startY + windowHeight, 2);
         shapeRenderer.rectLine(startX + windowWidth, startY, startX + windowWidth, startY + windowHeight, 2);
+
+        int memberCount = team.getMembers().size();
+        int sectionWidth = windowWidth / Math.max(1, memberCount);
+        
+        shapeRenderer.setColor(Color.LIGHT_GRAY);
+        for (int i = 0; i < memberCount - 1; i++) {
+            shapeRenderer.rectLine(startX + (i + 1) * sectionWidth, startY + 10, startX + (i + 1) * sectionWidth, startY + windowHeight - 10, 2);
+        }
         shapeRenderer.end();
 
         uiBatch.begin();
-        font.setColor(Color.GOLD);
-        font.draw(uiBatch, "COMPAGNIE", startX + 20, startY + windowHeight - 15);
-        font.setColor(Color.WHITE);
+        for (int i = 0; i < memberCount; i++) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character member = team.getMembers().get(i);
+            int currentX = startX + (i * sectionWidth) + 20;
+            int currentY = startY + windowHeight - 20;
 
-        int currentY = startY + windowHeight - 50;
-        for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character member : team.getMembers()) {
             if (member.getHealthPoint() <= 0) font.setColor(Color.RED);
-            else font.setColor(Color.WHITE);
+            else font.setColor(Color.GOLD);
             
-            font.draw(uiBatch, member.getName(), startX + 10, currentY);
-            currentY -= 20;
-            font.draw(uiBatch, "PV: " + member.getHealthPoint() + "/" + member.getMaxHealthPoint(), startX + 20, currentY);
-            currentY -= 20;
-            font.draw(uiBatch, member.getResourceName().substring(0, 1) + "P: " + member.getCurrentResource() + "/" + member.getMaxResource(), startX + 20, currentY);
-            currentY -= 25; // Espace entre persos
+            font.draw(uiBatch, member.getName() + " (Nv " + member.getLevel() + ")", currentX, currentY);
+            currentY -= 25;
+            
+            font.setColor(Color.WHITE);
+            font.draw(uiBatch, "PV :  " + member.getHealthPoint() + " / " + member.getMaxHealthPoint(), currentX, currentY);
+            currentY -= 25;
+            font.draw(uiBatch, member.getResourceName().substring(0, 1) + "P :  " + member.getCurrentResource() + " / " + member.getMaxResource(), currentX, currentY);
         }
         uiBatch.end();
     }
 
-    private void renderMinimalistWindow(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages) {
+    private void renderMinimalistWindow(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, HD2DGameApp.GameState state) {
         if (messages == null || messages.isEmpty()) return;
 
         // Extraire le dernier message
@@ -266,7 +273,7 @@ public class HUDRenderer implements Disposable {
         }
 
         int boxX = 100;
-        int boxY = 20;
+        int boxY = (state == HD2DGameApp.GameState.BATTLE) ? 140 : 20;
         int boxWidth = 1080;
         int boxHeight = 180;
 
