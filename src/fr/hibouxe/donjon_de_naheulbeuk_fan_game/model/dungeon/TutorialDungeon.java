@@ -26,6 +26,8 @@ public class TutorialDungeon extends Dungeon {
                 return prepareFloor3(team);
             case 4:
                 return prepareFloor4(team);
+            case 5:
+                return prepareFloor5(team);
             default:
                 return false;
         }
@@ -204,6 +206,53 @@ public class TutorialDungeon extends Dungeon {
         return false;
     }
 
+    private boolean prepareFloor5(Team team) {
+        // Couloir de la sortie
+        this.setWidth(5);
+        this.setHeight(5);
+        this.setGrid(new Cell[5][5]);
+
+        for (int x = 0; x < 5; x++) {
+            for (int y = 0; y < 5; y++) {
+                this.getGrid()[x][y] = new Cell(x, y);
+                this.getGrid()[x][y].setRoomId(5);
+            }
+        }
+        
+        // Murs sauf pour le couloir central (x = 2)
+        for (int x = 0; x < 5; x++) {
+            for (int y = 0; y < 5; y++) {
+                if (x != 2) this.getGrid()[x][y].setWall(true);
+            }
+        }
+        
+        // Joueur en bas
+        team.setX(2);
+        team.setY(0);
+
+        // Le Nain et le Barbare rejoignent le groupe
+        boolean hasDwarf = false;
+        boolean hasBarbarian = false;
+        for (Character c : team.getMembers()) {
+            if (c.getClass().getSimpleName().equals("Dwarf")) hasDwarf = true;
+            if (c.getClass().getSimpleName().equals("Barbarian")) hasBarbarian = true;
+        }
+        if (!hasDwarf) team.getMembers().add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Dwarf());
+        if (!hasBarbarian) team.getMembers().add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Barbarian());
+
+        // Gardes devant l'escalier
+        List<Character> guards = new ArrayList<>();
+        guards.add(new Character("Chef Orque", "Boss", 3, 100, 0, 15, 0, 5, 5, 2));
+        guards.add(new Character("Gobelin", "Monster", 2, 30, 0, 8, 0, 2, 2, 4));
+        guards.add(new Character("Gobelin", "Monster", 2, 30, 0, 8, 0, 2, 2, 4));
+        this.getGrid()[2][3].setMonsters(guards);
+
+        // Escalier de sortie (Liberté !)
+        this.getGrid()[2][4].setStairs(true);
+
+        return false;
+    }
+
     @Override
     public java.util.List<String> getIntroDialogues(int floorNumber) {
         java.util.List<String> dialogues = new java.util.ArrayList<>();
@@ -237,6 +286,13 @@ public class TutorialDungeon extends Dungeon {
                 dialogues.add("Ranger : Misère...");
                 dialogues.add("[UI Tuto] : Regardez le panneau sur la droite de l'écran pour suivre l'état de la compagnie.");
                 dialogues.add("[UI Tuto] : Vous pouvez y voir les Points de Vie (PV) et le Mana (PM) de chaque héros en temps réel.");
+                break;
+            case 5:
+                dialogues.add("[Bruits métalliques et cris de guerre depuis la salle suivante...]");
+                dialogues.add("Nain : Prends ça dans les rotules, face de pet !");
+                dialogues.add("Barbare : CROM ! Taper la porte ! Taper les gardes !");
+                dialogues.add("Ranger : Ils ont trouvé la sortie ! Mais ils sont encerclés, il faut qu'on les aide !");
+                dialogues.add("[UI Tuto] : Utilisez les compétences spécifiques de chaque héros pour prendre l'avantage en combat.");
                 break;
         }
         return dialogues;
