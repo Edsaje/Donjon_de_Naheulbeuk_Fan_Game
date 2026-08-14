@@ -24,6 +24,8 @@ public class TutorialDungeon extends Dungeon {
                 return prepareFloor2(team);
             case 3:
                 return prepareFloor3(team);
+            case 4:
+                return prepareFloor4(team);
             default:
                 return false;
         }
@@ -164,6 +166,43 @@ public class TutorialDungeon extends Dungeon {
         return false;
     }
 
+    private boolean prepareFloor4(Team team) {
+        // Couloir simple pour le tuto
+        this.setWidth(5);
+        this.setHeight(5);
+        this.setGrid(new Cell[5][5]);
+
+        for (int x = 0; x < 5; x++) {
+            for (int y = 0; y < 5; y++) {
+                this.getGrid()[x][y] = new Cell(x, y);
+                this.getGrid()[x][y].setRoomId(4);
+            }
+        }
+        
+        this.getGrid()[1][2].setWall(false);
+        this.getGrid()[2][2].setWall(false);
+        this.getGrid()[3][2].setWall(false);
+        this.getGrid()[3][2].setStairs(true);
+
+        team.setX(1);
+        team.setY(2);
+        
+        boolean hasOgre = false;
+        boolean hasMage = false;
+        for (Character c : team.getMembers()) {
+            if (c.getClass().getSimpleName().equals("Ogre")) hasOgre = true;
+            if (c.getClass().getSimpleName().equals("Magician")) hasMage = true;
+        }
+        if (!hasOgre) team.getMembers().add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Ogre());
+        if (!hasMage) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Magician mage = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Magician();
+            mage.setManaPoint(0);
+            team.getMembers().add(mage);
+        }
+
+        return false;
+    }
+
     @Override
     public java.util.List<String> getIntroDialogues(int floorNumber) {
         java.util.List<String> dialogues = new java.util.ArrayList<>();
@@ -187,6 +226,16 @@ public class TutorialDungeon extends Dungeon {
                 dialogues.add("[UI Tuto] : Avancez pour dissiper le brouillard de guerre.");
                 dialogues.add("[UI Tuto] : La Minimap en haut à droite affiche les ennemis en rouge. Évitez-les !");
                 dialogues.add("[UI Tuto] : Si un combat inévitable se déclenche, utilisez la commande [Fuir] !");
+                break;
+            case 4:
+                dialogues.add("Ogre : Chprouk ! Grrrumph !");
+                dialogues.add("Magicienne : Non, tu ne peux pas le manger ! Écoutez-moi, bande de rustres...");
+                dialogues.add("Magicienne : Mes réserves d'énergie astrale sont complètement épuisées et ma robe est pleine de poussière. Il nous faut faire une pause !");
+                dialogues.add("Ranger : Il faut qu'on fasse le point sur notre situation stratégique, on ne sait pas ce qui nous attend au bout de ce couloir.");
+                dialogues.add("Elfe : C'est quoi la stratélique ?");
+                dialogues.add("Ranger : Misère...");
+                dialogues.add("[UI Tuto] : Appuyez sur [ECHAP] ou [M] pour ouvrir le Menu Principal.");
+                dialogues.add("[UI Tuto] : Allez dans [STATISTIQUES] pour vérifier l'état de la compagnie (PV / Mana).");
                 break;
         }
         return dialogues;
