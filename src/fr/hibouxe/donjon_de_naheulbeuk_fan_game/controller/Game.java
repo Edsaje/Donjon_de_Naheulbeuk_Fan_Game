@@ -151,7 +151,8 @@ public class Game {
                 this.team = data.getTeam();
                 menu.displayMessage("\n[Chargement] Reprise de l'exploration à l'étage " + data.getCurrentFloor() + " (Slot " + slot + ") !");
                 saveManager.deleteQuickSave(slot);
-                ExplorationController explo = new ExplorationController(data.getDungeon(), this.team, menu, menu, menu, false, slot, saveManager);
+                boolean isTutorial = (data.getDungeon() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.TutorialDungeon);
+                ExplorationController explo = new ExplorationController(data.getDungeon(), this.team, menu, menu, menu, isTutorial, slot, saveManager);
                 explo.setCurrentFloor(data.getCurrentFloor());
                 explo.start();
                 return;

@@ -214,15 +214,19 @@ public class ExplorationController {
                                 if (isTutorial && currentFloor == 2 && elfJoined && !elfHealed && target.getClass().getSimpleName().equals("Elf")) { 
                                     elfHealed = true; 
                                     menu.displayDialogue("Elfe : *tousse* Berk ! Ça a un goût de jus de chaussette ! Mais je me sens mieux."); 
-                                    menu.clearMessages();
+                                } else {
+                                    menu.displayDialogue("\nAppuyez sur Entrée pour continuer.");
                                 }
+                                menu.clearMessages();
                             } else {
-                                menu.displayMessage("\n" + target.getName() + " ne peut pas utiliser ça ! C'est réservé à une autre classe...");
+                                menu.displayDialogue("\n" + target.getName() + " ne peut pas utiliser ça ! C'est réservé à une autre classe...");
+                                menu.clearMessages();
                             }
                         }
                     }
                 } else {
-                    menu.displayMessage("Le sac à dos est vide ! Impossible d'utiliser un objet.");
+                    menu.displayDialogue("Le sac à dos est vide ! Impossible d'utiliser un objet.");
+                    menu.clearMessages();
                 }
                 break;
 
@@ -233,16 +237,18 @@ public class ExplorationController {
                     if (slot != null) {
                         boolean success = unequipTarget.unequip(slot, team);
                         if (success) {
-                            menu.displayMessage("\n" + unequipTarget.getName() + " retire son équipement et le met dans le sac !");
+                            menu.displayDialogue("\n" + unequipTarget.getName() + " retire son équipement et le met dans le sac !");
                         } else {
-                            menu.displayMessage("\nAucun équipement, ou le sac est plein !");
+                            menu.displayDialogue("\nAucun équipement, ou le sac est plein !");
                         }
+                        menu.clearMessages();
                     }
                 }
                 break;
 
             case 3:
                 menu.displayMessage("Fermeture du sac à dos.");
+                menu.clearMessages();
                 break;
         }
     }
