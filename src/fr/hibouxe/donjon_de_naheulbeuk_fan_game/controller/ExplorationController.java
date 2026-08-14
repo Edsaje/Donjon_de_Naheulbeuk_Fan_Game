@@ -281,6 +281,13 @@ public class ExplorationController {
 
             if (victory) {
                 currentCell.getMonsters().clear(); // On retire le monstre vaincu
+                
+                if (isTutorial && currentFloor == 5) {
+                    menu.displayDialogue("Nain : Je suis niveau 2 ! Tralalala !");
+                    menu.displayDialogue("Ranger : Oui nous aussi, on n'en fait pas tout un fromage.");
+                    menu.clearMessages();
+                }
+
                 if (maze.isExpeditionComplete(currentFloor)) {
                     menu.displayMessage("\nZangdar claque la porte de son bureau et hurle en s'enfuyant : 'Maudits aventuriers d'opérette ! Vous ne payez rien pour attendre, je reviendrai vous anéantir !'");
                     running = false; // Fin de l'expédition donjon !

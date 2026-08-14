@@ -241,7 +241,9 @@ public class TutorialDungeon extends Dungeon {
 
         // Gardes devant l'escalier
         List<Character> guards = new ArrayList<>();
-        guards.add(new Character("Chef Orque", "Boss", 1, 45, 0, 6, 0, 2, 2, 2));
+        Character boss = new Character("Chef Orque", "Boss", 1, 45, 0, 6, 0, 2, 2, 2);
+        boss.setXp(800);
+        guards.add(boss);
         guards.add(new Character("Gobelin", "Monster", 1, 15, 0, 3, 0, 0, 0, 4));
         guards.add(new Character("Gobelin", "Monster", 1, 15, 0, 3, 0, 0, 0, 4));
         this.getGrid()[2][3].setMonsters(guards);
