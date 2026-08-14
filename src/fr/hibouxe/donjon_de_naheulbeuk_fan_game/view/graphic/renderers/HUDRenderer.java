@@ -120,19 +120,19 @@ public class HUDRenderer implements Disposable {
     }
 
     private void renderContextualMenu(String title, String[] options) {
-        int menuWidth = 400;
+        int menuWidth = 350;
         int menuHeight = 60 + options.length * 40;
-        int x = 800; // Bottom right area
+        int x = 30; // Aligné à gauche
         int y = 50;
         
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
-        // Fenêtre Noire
+        // Fenêtre Noire semi-transparente
         shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.1f, 0.95f));
         shapeRenderer.rect(x, y, menuWidth, menuHeight);
         
-        // Bordure blanche fine
-        shapeRenderer.setColor(Color.LIGHT_GRAY);
+        // Bordure blanche/grise sobre
+        shapeRenderer.setColor(new Color(0.8f, 0.8f, 0.8f, 1f));
         shapeRenderer.rectLine(x, y, x + menuWidth, y, 2);
         shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 2);
         shapeRenderer.rectLine(x, y, x, y + menuHeight, 2);
@@ -140,19 +140,21 @@ public class HUDRenderer implements Disposable {
 
         // Curseur
         if (contextMenuSelection < options.length) {
+            // Affichage de haut en bas
             int cursorY = y + menuHeight - 80 - contextMenuSelection * 40;
-            shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.3f, 0.8f));
+            shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.3f, 0.8f)); // Curseur gris foncé
             shapeRenderer.rect(x + 10, cursorY - 5, menuWidth - 20, 30);
         }
         
         shapeRenderer.end();
 
         uiBatch.begin();
-        font.setColor(Color.GOLD);
+        font.setColor(Color.WHITE); // Titre blanc
         font.draw(uiBatch, title, x + 25, y + menuHeight - 20);
 
         font.setColor(Color.WHITE);
         for (int i = 0; i < options.length; i++) {
+            // Affichage de haut en bas
             String prefix = (i == contextMenuSelection) ? "> " : "  ";
             font.draw(uiBatch, prefix + options[i], x + 35, y + menuHeight - 60 - i * 40);
         }
@@ -210,48 +212,72 @@ public class HUDRenderer implements Disposable {
     }
 
     private void renderBattleStatus(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team) {
-        int windowWidth = 1080;
-        int windowHeight = 110;
-        int startX = 100;
-        int startY = 20;
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.3f, 0.85f));
-        shapeRenderer.rect(startX, startY, windowWidth, windowHeight);
-
-        shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.rectLine(startX, startY, startX + windowWidth, startY, 2);
-        shapeRenderer.rectLine(startX, startY + windowHeight, startX + windowWidth, startY + windowHeight, 2);
-        shapeRenderer.rectLine(startX, startY, startX, startY + windowHeight, 2);
-        shapeRenderer.rectLine(startX + windowWidth, startY, startX + windowWidth, startY + windowHeight, 2);
+        int padding = 15;
+        int barWidth = 120;
+        int barHeight = 8;
+        int startX = Gdx.graphics.getWidth() - 250; // Aligné à droite
+        int startY = 300; // Position de départ Y
 
         int memberCount = team.getMembers().size();
-        int sectionWidth = windowWidth / Math.max(1, memberCount);
         
-        shapeRenderer.setColor(Color.LIGHT_GRAY);
-        for (int i = 0; i < memberCount - 1; i++) {
-            shapeRenderer.rectLine(startX + (i + 1) * sectionWidth, startY + 10, startX + (i + 1) * sectionWidth, startY + windowHeight - 10, 2);
-        }
-        shapeRenderer.end();
+        // Optionnel : un fond très léger semi-transparent derrière tous les statuts pour la lisibilité
+        // shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        // shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.4f));
+        // shapeRenderer.rect(startX - 20, startY - (memberCount * 80) + 40, 260, memberCount * 80);
+        // shapeRenderer.end();
 
-        uiBatch.begin();
+        int currentY = startY;
+
         for (int i = 0; i < memberCount; i++) {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character member = team.getMembers().get(i);
-            int currentX = startX + (i * sectionWidth) + 20;
-            int currentY = startY + windowHeight - 20;
+            
+            // 1. Rendu des barres de vie et magie avec le ShapeRenderer
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            
+            // Fond sombre pour la barre PV
+            shapeRenderer.setColor(Color.DARK_GRAY);
+            shapeRenderer.rect(startX + 30, currentY - 25, barWidth, barHeight);
+            
+            // Barre PV (Vert clair)
+            float hpPercent = Math.max(0, (float) member.getHealthPoint() / member.getMaxHealthPoint());
+            shapeRenderer.setColor(new Color(0.2f, 0.8f, 0.2f, 1f));
+            shapeRenderer.rect(startX + 30, currentY - 25, barWidth * hpPercent, barHeight);
+            
+            // Fond sombre pour la barre PM/Ressource
+            shapeRenderer.setColor(Color.DARK_GRAY);
+            shapeRenderer.rect(startX + 30, currentY - 45, barWidth, barHeight);
+            
+            // Barre PM/Ressource (Bleu cyan)
+            float mpPercent = Math.max(0, (float) member.getCurrentResource() / member.getMaxResource());
+            shapeRenderer.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
+            shapeRenderer.rect(startX + 30, currentY - 45, barWidth * mpPercent, barHeight);
+            
+            shapeRenderer.end();
 
+            // 2. Rendu des Textes avec le SpriteBatch
+            uiBatch.begin();
+            
+            // Nom du personnage (Blanc ou rouge si mort)
             if (member.getHealthPoint() <= 0) font.setColor(Color.RED);
-            else font.setColor(Color.GOLD);
+            else font.setColor(Color.WHITE);
+            font.draw(uiBatch, member.getName(), startX + 110 - (member.getName().length() * 4), currentY); // Centré approximativement
             
-            font.draw(uiBatch, member.getName() + " (Nv " + member.getLevel() + ")", currentX, currentY);
-            currentY -= 25;
+            // Textes "PV" et "PM" (Vert et Bleu)
+            font.setColor(new Color(0.2f, 0.8f, 0.2f, 1f));
+            font.draw(uiBatch, "PV", startX, currentY - 18);
             
+            font.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
+            font.draw(uiBatch, member.getResourceName().substring(0, 1) + "M", startX, currentY - 38);
+            
+            // Valeurs numériques sur le côté droit des barres
             font.setColor(Color.WHITE);
-            font.draw(uiBatch, "PV :  " + member.getHealthPoint() + " / " + member.getMaxHealthPoint(), currentX, currentY);
-            currentY -= 25;
-            font.draw(uiBatch, member.getResourceName().substring(0, 1) + "P :  " + member.getCurrentResource() + " / " + member.getMaxResource(), currentX, currentY);
+            font.draw(uiBatch, String.valueOf(member.getHealthPoint()), startX + 30 + barWidth + 10, currentY - 18);
+            font.draw(uiBatch, String.valueOf(member.getCurrentResource()), startX + 30 + barWidth + 10, currentY - 38);
+            
+            uiBatch.end();
+            
+            currentY -= 80; // Espace entre chaque personnage
         }
-        uiBatch.end();
     }
 
     private void renderMinimalistWindow(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, HD2DGameApp.GameState state) {
@@ -272,8 +298,35 @@ public class HUDRenderer implements Disposable {
             dialogueText = currentMessage.substring(closeBracket + 2);
         }
 
+        if (state == HD2DGameApp.GameState.BATTLE) {
+            // Affichage ultra épuré type "Texte flottant" (sans fond) pour les combats
+            int screenWidth = Gdx.graphics.getWidth();
+            int screenHeight = Gdx.graphics.getHeight();
+            
+            // Placé très bas sur l'écran (environ 15% du bas)
+            int textY = screenHeight / 6; 
+            
+            // Approximation simple du centrage pour le texte
+            int textX = (screenWidth / 2) - (dialogueText.length() * 4); 
+
+            uiBatch.begin();
+            // Effet d'ombre/contour noir pour la lisibilité
+            font.setColor(Color.BLACK);
+            font.draw(uiBatch, dialogueText, textX + 2, textY - 2);
+            font.draw(uiBatch, dialogueText, textX - 2, textY + 2);
+            font.draw(uiBatch, dialogueText, textX + 2, textY + 2);
+            font.draw(uiBatch, dialogueText, textX - 2, textY - 2);
+            
+            // Texte principal blanc
+            font.setColor(Color.WHITE);
+            font.draw(uiBatch, dialogueText, textX, textY);
+            uiBatch.end();
+            return;
+        }
+
+        // Affichage classique (Boîte de dialogue) pour l'exploration
         int boxX = 100;
-        int boxY = (state == HD2DGameApp.GameState.BATTLE) ? 140 : 20;
+        int boxY = 20;
         int boxWidth = 1080;
         int boxHeight = 180;
 

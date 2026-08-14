@@ -444,7 +444,7 @@ public class GraphicHD2DView implements IGameView {
 
     @Override
     public void displayTurn(String characterName) {
-        displayMessage("\n⚡ C'est au tour de " + characterName + " !");
+        // Dans DQ3 HD-2D, on n'affiche pas de gros message, le menu Actions avec le titre suffit.
     }
 
     @Override
