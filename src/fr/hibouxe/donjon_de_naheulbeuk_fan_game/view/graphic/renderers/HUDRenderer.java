@@ -89,7 +89,12 @@ public class HUDRenderer implements Disposable {
 
         // Toujours dessiner le menu contextuel s'il existe et n'est pas un menu de pause (dialogue)
         if (menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0])) {
-            renderContextualMenu(menuTitle, menuOptions, state);
+            if ("STATISTIQUES".equals(menuTitle) && team != null) {
+                renderContextualMenu(menuTitle, menuOptions, state);
+                renderStatusScreen(team, contextMenuSelection);
+            } else {
+                renderContextualMenu(menuTitle, menuOptions, state);
+            }
         }
     }
 
@@ -255,6 +260,87 @@ public class HUDRenderer implements Disposable {
         }
     }
 
+    private void renderStatusScreen(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, int selection) {
+        if (selection < 0 || selection >= team.getMembers().size()) return; // Si on est sur "Retour", on n'affiche rien
+        
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character hero = team.getMembers().get(selection);
+        
+        int statusWidth = 600;
+        int statusHeight = 450;
+        // Placé à côté du menu de gauche (x = 50 + menuWidth (environ 300) + 20)
+        int x = 370;
+        int y = Gdx.graphics.getHeight() - statusHeight - 50;
+        
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        
+        // Fenêtre Noire (95% opacité)
+        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.rect(x, y, statusWidth, statusHeight);
+        
+        // Bordure blanche épaisse (3px)
+        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.rectLine(x, y, x + statusWidth, y, 3);
+        shapeRenderer.rectLine(x, y + statusHeight, x + statusWidth, y + statusHeight, 3);
+        shapeRenderer.rectLine(x, y, x, y + statusHeight, 3);
+        shapeRenderer.rectLine(x + statusWidth, y, x + statusWidth, y + statusHeight, 3);
+        
+        shapeRenderer.end();
+        
+        uiBatch.begin();
+        
+        // Titre
+        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+        font.draw(uiBatch, "Fiche de " + hero.getName() + " (" + hero.getType() + ") - Niveau " + hero.getLevel(), x + 25, y + statusHeight - 15);
+        
+        font.setColor(Color.WHITE);
+        int currentY = y + statusHeight - 60;
+        
+        // Section Santé & Prog
+        font.draw(uiBatch, "Santé : " + hero.getHealthPoint() + " / " + hero.getMaxHealthPoint(), x + 30, currentY);
+        font.draw(uiBatch, hero.getResourceName() + " : " + hero.getCurrentResource() + " / " + hero.getMaxResource(), x + 300, currentY);
+        currentY -= 35;
+        font.draw(uiBatch, "Expérience : " + hero.getXp() + " / " + hero.getXpToNextLevel(), x + 30, currentY);
+        currentY -= 50;
+        
+        // Attributs
+        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+        font.draw(uiBatch, "Attributs de combat", x + 25, currentY);
+        font.setColor(Color.WHITE);
+        currentY -= 35;
+        font.draw(uiBatch, "Attaque : " + hero.getAttack(), x + 30, currentY);
+        font.draw(uiBatch, "Défense : " + hero.getDefense(), x + 300, currentY);
+        currentY -= 35;
+        font.draw(uiBatch, "Attaque Mag. : " + hero.getMagicAttack(), x + 30, currentY);
+        font.draw(uiBatch, "Défense Mag. : " + hero.getMagicDefense(), x + 300, currentY);
+        currentY -= 35;
+        font.draw(uiBatch, "Vitesse : " + hero.getSpeed(), x + 30, currentY);
+        currentY -= 50;
+        
+        // Équipements
+        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+        font.draw(uiBatch, "Équipement actuel", x + 25, currentY);
+        font.setColor(Color.WHITE);
+        currentY -= 35;
+        
+        java.util.Map<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment> equips = hero.getEquipments();
+        int col = 0;
+        int rowCount = 0;
+        for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot slot : fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot.values()) {
+            String equipName = equips.containsKey(slot) ? equips.get(slot).getName() : "Aucun";
+            int drawX = x + 30 + (col * 270);
+            font.draw(uiBatch, slot.name() + " : " + equipName, drawX, currentY);
+            
+            col++;
+            if (col > 1) {
+                col = 0;
+                currentY -= 30;
+                rowCount++;
+            }
+        }
+        
+        uiBatch.end();
+    }
+
     private void renderExplorationHUD(Dungeon dungeon, int playerX, int playerY, int currentFloor, HD2DGameApp.GameState state) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -364,8 +450,8 @@ public class HUDRenderer implements Disposable {
             int screenWidth = Gdx.graphics.getWidth();
             int screenHeight = Gdx.graphics.getHeight();
             
-            // Placé très bas sur l'écran (environ 15% du bas)
-            int textY = screenHeight / 6; 
+            // Placé très bas sur l'écran
+            int textY = screenHeight / 12; 
             
             // Approximation simple du centrage pour le texte
             int textX = (screenWidth / 2) - (dialogueText.length() * 4); 

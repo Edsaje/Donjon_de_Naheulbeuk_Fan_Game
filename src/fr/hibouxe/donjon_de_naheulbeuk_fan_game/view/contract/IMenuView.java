@@ -15,6 +15,7 @@ public interface IMenuView {
     int askTargetCopySlot(int sourceSlot, String[] slotSummaries);
     void displayInventory(Team team);
     int askInventoryMenuChoice();
+    void displayStatusScreen(Team team);
     EquipmentSlot askSlotToUnequip();
     boolean askUseItem();
     int askItemIndex();

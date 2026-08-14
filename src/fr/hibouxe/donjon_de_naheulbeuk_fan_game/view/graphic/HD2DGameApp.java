@@ -113,6 +113,8 @@ public class HD2DGameApp extends ApplicationAdapter {
         this.currentMenuOptions = options;
     }
 
+
+
     public void setMessages(java.util.List<String> messages) {
         this.currentMessages = messages;
     }

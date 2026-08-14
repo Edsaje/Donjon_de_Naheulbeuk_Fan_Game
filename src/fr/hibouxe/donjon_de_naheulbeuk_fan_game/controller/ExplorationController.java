@@ -152,9 +152,7 @@ public class ExplorationController {
                 menu.displayMessage("Tchoss Nulloss");
                 return false;
             case "C":
-                // TODO: Implémenter le menu Statistiques complet
-                menu.displayDialogue("\n[Le menu Statistiques détaillé sera disponible dans une prochaine version !]");
-                menu.clearMessages();
+                menu.displayStatusScreen(team);
                 return false;
             case "I":
                 handleInventoryAction();
@@ -220,7 +218,8 @@ public class ExplorationController {
                                 menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !"); 
                                 if (isTutorial && currentFloor == 2 && elfJoined && !elfHealed && target.getClass().getSimpleName().equals("Elf")) { 
                                     elfHealed = true; 
-                                    menu.displayDialogue("Elfe : *tousse* Berk ! Ça a un goût de jus de chaussette ! Mais je me sens mieux."); 
+                                    String healLine = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager.getString("TUTO_FLOOR_2_ELF_HEALED_1");
+                                    menu.displayDialogue(healLine); 
                                 } else {
                                     menu.displayDialogue("\nAppuyez sur Entrée pour continuer.");
                                 }
@@ -278,18 +277,23 @@ public class ExplorationController {
 
             BattleController battleController = new BattleController(team, monsters, combatView);
             boolean victory = battleController.start();
+            
+            // Revenir à la vue d'exploration pour que les messages suivants s'affichent correctement sur la carte
+            view.displayDungeon(maze, team, currentFloor);
 
             if (victory) {
                 currentCell.getMonsters().clear(); // On retire le monstre vaincu
                 
                 if (isTutorial && currentFloor == 5) {
-                    menu.displayDialogue("Nain : Je suis niveau 2 ! Tralalala !");
-                    menu.displayDialogue("Ranger : Oui nous aussi, on n'en fait pas tout un fromage.");
+                    String dwarfLine = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager.getString("TUTO_FLOOR_5_POST_NAIN_1");
+                    String rangerLine = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager.getString("TUTO_FLOOR_5_POST_RANGER_1");
+                    
+                    menu.displayDialogue(dwarfLine);
+                    menu.displayDialogue(rangerLine);
                     menu.clearMessages();
                 }
 
                 if (maze.isExpeditionComplete(currentFloor)) {
-                    menu.displayMessage("\nZangdar claque la porte de son bureau et hurle en s'enfuyant : 'Maudits aventuriers d'opérette ! Vous ne payez rien pour attendre, je reviendrai vous anéantir !'");
                     running = false; // Fin de l'expédition donjon !
                 }
             } else {

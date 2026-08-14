@@ -76,7 +76,7 @@ public class GraphicHD2DView implements IGameView {
         inputQueue.clear();
         if (gameApp != null) {
             // Un "MenuRequest" vide mais avec 1 option invisible pour forcer la pause
-            gameApp.setMenuRequest("", new String[]{"[Continuer]"});
+            gameApp.setMenuRequest(null, new String[]{"[Continuer]"});
         }
         try {
             inputQueue.take();
@@ -293,21 +293,60 @@ public class GraphicHD2DView implements IGameView {
     public void displayInventory(Team team) {
         this.lastTeamForInventory = team;
         // L'inventaire est gÃ©rÃà et affichÃà visuellement via le HUDRenderer (LibGDX)
+        // L'inventaire est géré et affiché visuellement via le HUDRenderer (LibGDX)
     }
 
     @Override
     public int askInventoryMenuChoice() {
         if (gameApp != null) {
-            String[] options = {"Utiliser/équiper", "Déséquiper", "Fermer"};
+            String[] options = {"Utiliser/Équiper", "Déséquiper", "Fermer"};
             gameApp.setMenuRequest("SAC À DOS", options);
         }
         try {
-            int choice = Integer.parseInt(inputQueue.take());
-            if (gameApp != null) gameApp.setMenuRequest(null, null);
-            return choice;
-        } catch (Exception e) {
-            if (gameApp != null) gameApp.setMenuRequest(null, null);
-            return 3;
+            return Integer.parseInt(inputQueue.take());
+        } catch (InterruptedException | NumberFormatException e) {
+            return 3; // Fermer
+        } finally {
+            if (gameApp != null) {
+                gameApp.setMenuRequest(null, null);
+            }
+        }
+    }
+
+    @Override
+    public void displayStatusScreen(Team team) {
+        if (gameApp != null) {
+            java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> members = team.getMembers();
+            String[] options = new String[members.size() + 1];
+            for (int i = 0; i < members.size(); i++) {
+                options[i] = members.get(i).getName();
+            }
+            options[members.size()] = "Retour";
+            gameApp.setMenuRequest("STATISTIQUES", options);
+        }
+        
+        boolean inStatus = true;
+        while (inStatus) {
+            try {
+                String input = inputQueue.take();
+                if (input != null && !input.isEmpty()) {
+                    // Try parsing the input. If it matches the "Retour" option index, exit the loop.
+                    try {
+                        int choice = Integer.parseInt(input);
+                        if (gameApp != null && choice == team.getMembers().size() + 1) {
+                            inStatus = false;
+                        }
+                    } catch (NumberFormatException nfe) {
+                        // ignore non-number inputs like C, I, K, X
+                    }
+                }
+            } catch (InterruptedException e) {
+                inStatus = false;
+            }
+        }
+        
+        if (gameApp != null) {
+            gameApp.setMenuRequest(null, null);
         }
     }
 
