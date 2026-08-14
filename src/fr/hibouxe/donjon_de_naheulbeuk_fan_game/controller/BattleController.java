@@ -175,11 +175,11 @@ public class BattleController {
         while (!actionConfirmed) {
             int action = menu.askBattleAction(attacker);
             
-            boolean isTutorialBoss = false;
+            boolean isUnwinnableBoss = false;
             for (Character m : monsters) {
-                if (m.isBoss()) isTutorialBoss = true;
+                if (m.isBoss() && m.getLevel() >= 99) isUnwinnableBoss = true;
             }
-            if (isTutorialBoss && action != 4) {
+            if (isUnwinnableBoss && action != 4) {
                 menu.displayMessage("L'Orque est beaucoup trop puissant ! Vous devez FUIR !");
                 continue;
             }
@@ -258,7 +258,7 @@ public class BattleController {
                 }
             } else if (action == 4) {
                 menu.displayMessage("\n" + attacker.getName() + " tente de fuir lâchement !");
-                int fleeChance = isTutorialBoss ? 100 : random.nextInt(100);
+                int fleeChance = isUnwinnableBoss ? 100 : random.nextInt(100);
                 if (fleeChance > 50) {
                     menu.displayMessage("Fuite réussie ! Mais vous perdez un peu de dignité.");
                     monsters.clear(); // End the BattleController
