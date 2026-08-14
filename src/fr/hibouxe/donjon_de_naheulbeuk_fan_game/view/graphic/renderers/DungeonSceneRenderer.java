@@ -42,6 +42,7 @@ public class DungeonSceneRenderer implements Disposable {
     private int lastPlayerY = -1;
     private boolean isAnimating = false;
     public boolean isAnimating() { return isAnimating; }
+    private int lastFloor = -1;
 
     private Texture monsterTexture;
     private Texture chestTexture;
@@ -149,12 +150,14 @@ public class DungeonSceneRenderer implements Disposable {
                 }
             }
         }
+    // lastFloor tracker is moved outside
         float currentX = playerX * tileSize;
         float currentZ = playerY * tileSize;
-        if (heroSprite != null) {
+        if (heroSprite != null && lastFloor == currentFloor) {
             currentX = heroSprite.getX();
             currentZ = heroSprite.getZ();
         }
+        lastFloor = currentFloor;
 
         TextureRegion initialFrame = heroFrames.length > 0 && heroFrames[0].length > 0 ? heroFrames[0][0] : new TextureRegion(heroTexture);
         heroSprite = Decal.newDecal(1.4f, 2.0f, initialFrame, true);
