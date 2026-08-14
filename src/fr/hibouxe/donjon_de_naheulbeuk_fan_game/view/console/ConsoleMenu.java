@@ -210,7 +210,7 @@ public class ConsoleMenu implements IGameView {
 
     @Override
     public void displayVictory() {
-        displayMessage("\n C'est trop facile..");
+        displayMessage("\n Victoire de la Compagnie !");
     }
 
     @Override

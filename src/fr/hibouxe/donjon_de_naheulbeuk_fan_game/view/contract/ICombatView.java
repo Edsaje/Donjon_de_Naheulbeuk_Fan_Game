@@ -16,4 +16,6 @@ public interface ICombatView {
     void displayInventory(Team team);
     int askItemIndex();
     Character askItemTarget(Team team);
+    void displayDialogue(String message);
+    void clearMessages();
 }

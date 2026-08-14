@@ -73,6 +73,12 @@ public class BattleController {
             playRound();
 
             if (!areMonstersAlive()) { // Vérification si les monstres sont vaincus
+                if (monsters.isEmpty()) {
+                    menu.displayDialogue("\nLe combat s'arrête là... (Fuite)");
+                    menu.clearMessages();
+                    return true;
+                }
+
                 menu.displayVictory();
 
                 int totalXp = 0;
@@ -106,6 +112,8 @@ public class BattleController {
                             menu.displayMessage(c.getName() + " n'est plus inconscient !");
                         }
                     }
+                    menu.displayDialogue("\nFin du combat ! Appuyez sur Entrée pour continuer.");
+                    menu.clearMessages();
                 }
                 return true; // Victoire
             }
