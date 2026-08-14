@@ -100,6 +100,7 @@ public class Elf extends Character {
         String[] stats = {
             increaseStat("PV Max", 1, 3),
             increaseStat("PM Max", 3, 5),
+            increaseStat("Attaque", 1, 4), // Ajout de l'attaque physique !
             increaseStat("Attaque Magique", 1, 4),
             increaseStat("Vitesse", 2, 3),
             increaseStat("Défense", 0, 1)
