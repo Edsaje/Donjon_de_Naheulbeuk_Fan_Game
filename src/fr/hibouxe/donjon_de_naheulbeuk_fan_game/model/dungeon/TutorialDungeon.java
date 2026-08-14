@@ -219,11 +219,10 @@ public class TutorialDungeon extends Dungeon {
             }
         }
         
-        // Murs sauf pour le couloir central (x = 2)
-        for (int x = 0; x < 5; x++) {
-            for (int y = 0; y < 5; y++) {
-                if (x != 2) this.getGrid()[x][y].setWall(true);
-            }
+        // Creuser un couloir vertical sur la colonne x=2
+        for (int y = 0; y < 5; y++) {
+            this.getGrid()[2][y].setWall(false);
+            if (y < 4) this.getGrid()[2][y].removeWallBetween(this.getGrid()[2][y+1]);
         }
         
         // Joueur en bas
