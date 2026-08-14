@@ -76,7 +76,7 @@ public class GraphicHD2DView implements IGameView {
         inputQueue.clear();
         if (gameApp != null) {
             // Un "MenuRequest" vide mais avec 1 option invisible pour forcer la pause
-            gameApp.setMenuRequest(null, new String[]{"[Continuer]"});
+            gameApp.setMenuRequest("", new String[]{"[Continuer]"});
         }
         try {
             inputQueue.take();
