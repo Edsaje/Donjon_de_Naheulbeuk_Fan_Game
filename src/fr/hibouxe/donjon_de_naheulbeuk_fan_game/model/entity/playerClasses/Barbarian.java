@@ -47,13 +47,18 @@ public class Barbarian extends Character {
         return super.useSpecialSkill(skill, team, monster);
     }
     @Override
-    public void levelUp() {
-        super.levelUp();
-        this.healthPoint += 5;
-        this.attack += 4;
-        this.defense += 1;
-        this.speed += 1;
-        // menu.displayMessage(this.name + " sent encore plus fort des pieds ! (Niveau " + this.level + ") !");
+    public java.util.List<String> levelUp() {
+        java.util.List<String> messages = super.levelUp();
+        String[] stats = {
+            increaseStat("PV Max", 5, 8),
+            increaseStat("Attaque", 3, 6),
+            increaseStat("Défense", 1, 3),
+            increaseStat("Vitesse", 1, 2)
+        };
+        for (String msg : stats) {
+            if (msg != null) messages.add(msg);
+        }
+        return messages;
     }
 }
 

@@ -99,9 +99,9 @@ public class BattleController {
 
                     for (Character c : team.getMembers()) { //on donne l'xp aux vivants
                         if (c.getHealthPoint() > 0) {
-                            boolean leveledUp = c.gainXp(xpPerHero);
-                            if (leveledUp) {
-                                menu.displayMessage(c.getName() + " passe au niveau " + c.getLevel() + " !");
+                            java.util.List<String> levelUpMessages = c.gainXp(xpPerHero);
+                            for (String msg : levelUpMessages) {
+                                if (msg != null) menu.displayMessage(msg);
                             }
                         }
                     }

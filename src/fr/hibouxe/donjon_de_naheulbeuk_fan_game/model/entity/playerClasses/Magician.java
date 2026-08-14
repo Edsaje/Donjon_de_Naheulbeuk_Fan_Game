@@ -30,14 +30,18 @@ public class Magician extends Character {
     }
     
     @Override
-    public void levelUp() {
-        super.levelUp();
-        this.healthPoint += 2;
-        this.magicAttack += 4;
-        this.defense += 1;
-        this.magicDefense += 3;
-        this.speed += 1;
-        this.maxResource += 10;
-        // menu.displayMessage(this.name + " apprend de nouveaux mots compliqués pour sa magie (Niveau " + this.level + ") !");
+    public java.util.List<String> levelUp() {
+        java.util.List<String> messages = super.levelUp();
+        String[] stats = {
+            increaseStat("PV Max", 1, 3),
+            increaseStat("PM Max", 4, 7),
+            increaseStat("Attaque Magique", 2, 5),
+            increaseStat("Défense Magique", 2, 4),
+            increaseStat("Défense", 0, 1)
+        };
+        for (String msg : stats) {
+            if (msg != null) messages.add(msg);
+        }
+        return messages;
     }
 }

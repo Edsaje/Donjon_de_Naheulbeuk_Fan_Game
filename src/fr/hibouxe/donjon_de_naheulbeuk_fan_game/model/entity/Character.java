@@ -89,21 +89,38 @@ public class Character implements Serializable {
         this.currentResource = Math.min(this.maxResource, this.currentResource + amount);
     }
 
-    public boolean gainXp(int amount) {
+    public List<String> gainXp(int amount) {
         this.xp += amount;
-        boolean leveledUp = false;
+        List<String> messages = new ArrayList<>();
         while (this.xp >= this.xpToNextLevel) {
-            levelUp();
-            leveledUp = true;
+            messages.addAll(levelUp());
         }
-        return leveledUp;
+        return messages;
     }
 
-    public void levelUp() {
+    public List<String> levelUp() {
         this.level++;
         this.xp -= this.xpToNextLevel; // On retire l'XP consommée
         this.xpToNextLevel = (int) (100 * Math.pow(this.level, 1.5)); // Le prochain niveau sera plus long à atteindre
-        // (Les augmentations de stats se feront dans les sous-classes)
+        
+        List<String> msgs = new ArrayList<>();
+        msgs.add(this.name + " passe au niveau " + this.level + " !");
+        return msgs;
+    }
+    
+    protected String increaseStat(String statName, int min, int max) {
+        int gain = min + (int)(Math.random() * (max - min + 1));
+        if (gain > 0) {
+            if (statName.equals("PV Max")) { this.maxHealthPoint += gain; this.healthPoint += gain; }
+            else if (statName.equals("PM Max")) { this.maxResource += gain; this.currentResource += gain; }
+            else if (statName.equals("Attaque")) this.attack += gain;
+            else if (statName.equals("Défense")) this.defense += gain;
+            else if (statName.equals("Attaque Magique")) this.magicAttack += gain;
+            else if (statName.equals("Défense Magique")) this.magicDefense += gain;
+            else if (statName.equals("Vitesse")) this.speed += gain;
+            return statName + " augmente de " + gain + " !";
+        }
+        return null;
     }
 
     public boolean isBoss() {

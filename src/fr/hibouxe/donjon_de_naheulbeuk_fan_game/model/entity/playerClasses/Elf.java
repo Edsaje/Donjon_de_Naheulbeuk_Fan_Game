@@ -95,14 +95,18 @@ public class Elf extends Character {
     }
 
     @Override
-    public void levelUp() {
-        super.levelUp();
-        this.healthPoint += 2;
-        this.attack += 1;
-        this.magicAttack += 3;
-        this.defense += 1;
-        this.magicDefense += 2;
-        this.speed += 3;
-        // menu.displayMessage(this.name + " gagne encore en charisme, il va encore falloir enlever un bouton de la chemise (Niveau " + this.level + ") !");
+    public java.util.List<String> levelUp() {
+        java.util.List<String> messages = super.levelUp();
+        String[] stats = {
+            increaseStat("PV Max", 1, 3),
+            increaseStat("PM Max", 3, 5),
+            increaseStat("Attaque Magique", 1, 4),
+            increaseStat("Vitesse", 2, 3),
+            increaseStat("Défense", 0, 1)
+        };
+        for (String msg : stats) {
+            if (msg != null) messages.add(msg);
+        }
+        return messages;
     }
 }

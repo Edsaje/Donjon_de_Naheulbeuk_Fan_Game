@@ -40,13 +40,16 @@ public class Dwarf extends Character {
     }
     
     @Override
-    public void levelUp() {
-        super.levelUp();
-        this.healthPoint += 6;
-        this.attack += 2;
-        this.defense += 3;
-        this.magicDefense += 1;
-        this.speed += 1;
-        // menu.displayMessage(this.name + " chantonne : Je suis niveau " + this.level + " Tralalalala (Niveau " + this.level + ") !");
+    public java.util.List<String> levelUp() {
+        java.util.List<String> messages = super.levelUp();
+        String[] stats = {
+            increaseStat("PV Max", 4, 6),
+            increaseStat("Attaque", 2, 4),
+            increaseStat("Défense", 2, 4)
+        };
+        for (String msg : stats) {
+            if (msg != null) messages.add(msg);
+        }
+        return messages;
     }
 }

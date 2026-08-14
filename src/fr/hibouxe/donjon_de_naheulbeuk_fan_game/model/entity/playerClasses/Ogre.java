@@ -30,11 +30,17 @@ public class Ogre extends Character {
     }
     
     @Override
-    public void levelUp() {
-        super.levelUp();
-        this.healthPoint += 8;
-        this.attack += 3;
-        this.defense += 2;
-        // menu.displayMessage(this.name + " Akala, zog zog, glozou bok ! (Niveau " + this.level + ") !");
+    public java.util.List<String> levelUp() {
+        java.util.List<String> messages = super.levelUp();
+        String[] stats = {
+            increaseStat("PV Max", 7, 12),
+            increaseStat("Attaque", 2, 5),
+            increaseStat("Défense", 0, 1),
+            increaseStat("Vitesse", 0, 1)
+        };
+        for (String msg : stats) {
+            if (msg != null) messages.add(msg);
+        }
+        return messages;
     }
 }

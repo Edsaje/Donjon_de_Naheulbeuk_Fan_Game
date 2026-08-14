@@ -47,14 +47,21 @@ public class Ranger extends Character {
         return super.useSpecialSkill(skill, team, monster);
     }
     @Override
-    public void levelUp() {
-        super.levelUp();
-        this.healthPoint += 4;
-        this.attack += 2;
-        this.defense += 1;
-        this.magicDefense += 1;
-        this.speed += 2;
-        // menu.displayMessage(this.name + " en fait toujours trop à propos de ses compétences (Niveau " + this.level + ") !");
+    public java.util.List<String> levelUp() {
+        java.util.List<String> messages = super.levelUp();
+        String[] stats = {
+            increaseStat("PV Max", 2, 4),
+            increaseStat("PM Max", 1, 2),
+            increaseStat("Attaque", 1, 2),
+            increaseStat("Défense", 1, 2),
+            increaseStat("Attaque Magique", 1, 2),
+            increaseStat("Défense Magique", 1, 2),
+            increaseStat("Vitesse", 1, 2)
+        };
+        for (String msg : stats) {
+            if (msg != null) messages.add(msg);
+        }
+        return messages;
     }
 }
 
