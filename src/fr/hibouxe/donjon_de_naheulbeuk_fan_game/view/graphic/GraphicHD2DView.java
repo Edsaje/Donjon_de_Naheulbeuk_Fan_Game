@@ -273,6 +273,7 @@ public class GraphicHD2DView implements IGameView {
     @Override
     public String askPlayerMovement() {
         try {
+            inputQueue.clear(); // Évite l'accumulation de commandes pendant que le jeu réfléchit
             return inputQueue.take();
         } catch (InterruptedException e) {
             e.printStackTrace();

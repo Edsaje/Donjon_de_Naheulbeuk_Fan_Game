@@ -40,8 +40,28 @@ public class DungeonSceneRenderer implements Disposable {
     private float stateTime = 0f;
     private int lastPlayerX = -1;
     private int lastPlayerY = -1;
+    private float targetSpriteX = 0f;
+    private float targetSpriteZ = 0f;
     private boolean isAnimating = false;
     public boolean isAnimating() { return isAnimating; }
+
+    public float getHeroSpriteX(float fallback) {
+        return heroSprite != null ? heroSprite.getX() : fallback;
+    }
+
+    public float getHeroSpriteZ(float fallback) {
+        return heroSprite != null ? heroSprite.getZ() : fallback;
+    }
+
+    public boolean isAlmostFinished() {
+        if (!isAnimating) return true;
+        if (heroSprite == null) return true;
+        float moveSpeed = 4.0f * com.badlogic.gdx.Gdx.graphics.getDeltaTime();
+        float diffX = targetSpriteX - heroSprite.getX();
+        float diffZ = targetSpriteZ - heroSprite.getZ();
+        // Autoriser la saisie 2 frames avant la fin de l'animation
+        return (Math.abs(diffX) <= moveSpeed * 2.5f && Math.abs(diffZ) <= moveSpeed * 2.5f);
+    }
     private int lastFloor = -1;
 
     private Texture monsterTexture;
@@ -168,8 +188,8 @@ public class DungeonSceneRenderer implements Disposable {
     public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, int playerX, int playerY, int playerDirection) {
         this.currentDirection = playerDirection;
         // Animation et déplacement fluide du sprite
-        float targetSpriteX = playerX * tileSize;
-        float targetSpriteZ = playerY * tileSize;
+        this.targetSpriteX = playerX * tileSize;
+        this.targetSpriteZ = playerY * tileSize;
 
         float currentSpriteX = heroSprite.getX();
         float currentSpriteZ = heroSprite.getZ();
@@ -177,11 +197,22 @@ public class DungeonSceneRenderer implements Disposable {
         float diffX = targetSpriteX - currentSpriteX;
         float diffZ = targetSpriteZ - currentSpriteZ;
 
-        float moveSpeed = 12.0f * com.badlogic.gdx.Gdx.graphics.getDeltaTime();
+        // Vitesse de déplacement très ralentie (4.0f) pour le style Donjon Mystère
+        float moveSpeed = 4.0f * com.badlogic.gdx.Gdx.graphics.getDeltaTime();
         
         if (Math.abs(diffX) > moveSpeed || Math.abs(diffZ) > moveSpeed) {
-            if (Math.abs(diffX) > 0) currentSpriteX += Math.signum(diffX) * moveSpeed;
-            if (Math.abs(diffZ) > 0) currentSpriteZ += Math.signum(diffZ) * moveSpeed;
+            if (Math.abs(diffX) > moveSpeed) {
+                currentSpriteX += Math.signum(diffX) * moveSpeed;
+            } else {
+                currentSpriteX = targetSpriteX; // On snap pour éviter le tremblement (overshoot)
+            }
+            
+            if (Math.abs(diffZ) > moveSpeed) {
+                currentSpriteZ += Math.signum(diffZ) * moveSpeed;
+            } else {
+                currentSpriteZ = targetSpriteZ; // On snap pour éviter le tremblement (overshoot)
+            }
+            
             this.isAnimating = true;
         } else {
             currentSpriteX = targetSpriteX;
@@ -195,7 +226,13 @@ public class DungeonSceneRenderer implements Disposable {
             stateTime = 0f;
         }
 
-        int frameIndex = (int)(stateTime * 6) % 4;
+        int maxFrames = 1;
+        if (heroFrames.length > currentDirection) {
+            maxFrames = heroFrames[currentDirection].length;
+        }
+        
+        // Vitesse d'animation ajustée (8) proportionnellement au mouvement
+        int frameIndex = (int)(stateTime * 8) % maxFrames;
 
         if (heroFrames.length > currentDirection && heroFrames[currentDirection].length > frameIndex) {
             heroSprite.setTextureRegion(heroFrames[currentDirection][frameIndex]);

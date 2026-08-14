@@ -101,6 +101,8 @@ public class HD2DGameApp extends ApplicationAdapter {
     private java.util.List<String> currentMessages = new java.util.ArrayList<>();
     public String currentMenuTitle = null;
     public String[] currentMenuOptions = null;
+    
+    private long lastMoveTime = 0;
 
     public void setupBattle(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) {
         if (battleRenderer != null) {
@@ -179,8 +181,10 @@ public class HD2DGameApp extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         if (currentState == GameState.EXPLORATION && team != null) {
-            float targetWorldX = team.getX() * tileSize;
-            float targetWorldZ = team.getY() * tileSize;
+            float logicX = team.getX() * tileSize;
+            float logicZ = team.getY() * tileSize;
+            float targetWorldX = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteX(logicX) : logicX;
+            float targetWorldZ = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteZ(logicZ) : logicZ;
 
             // Restauration fluide de la position et hauteur de caméra d'exploration (Y = 14.0m)
             float camSpeed = 12.0f * Gdx.graphics.getDeltaTime();
@@ -203,8 +207,8 @@ public class HD2DGameApp extends ApplicationAdapter {
         if (currentState == GameState.TRANSITION) {
             return; // Bloque toute input pendant la transition
         }
-        if (dungeonRenderer != null && dungeonRenderer.isAnimating()) {
-            return; // Bloque toute input pendant le déplacement fluide
+        if (dungeonRenderer != null && !dungeonRenderer.isAlmostFinished()) {
+            return; // Bloque toute input pendant le déplacement fluide, sauf vers la toute fin
         }
         if (hudRenderer != null && hudRenderer.isMenuOpen()) {
             return; // En pause tant que le ConsoleMenu Dragon Quest est ouvert
@@ -226,14 +230,23 @@ public class HD2DGameApp extends ApplicationAdapter {
             return;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.W) || Gdx.input.isKeyJustPressed(Input.Keys.Z) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        // On vérifie le délai de 250ms pour ne pas se déplacer trop vite en continu
+        if (System.currentTimeMillis() - lastMoveTime < 250) {
+            return;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.Z) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
             parentView.pushInput("Z");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.S) || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            lastMoveTime = System.currentTimeMillis();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             parentView.pushInput("S");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.A) || Gdx.input.isKeyJustPressed(Input.Keys.Q) || Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            lastMoveTime = System.currentTimeMillis();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.Q) || Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             parentView.pushInput("Q");
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.D) || Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            lastMoveTime = System.currentTimeMillis();
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             parentView.pushInput("D");
+            lastMoveTime = System.currentTimeMillis();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_1)) {
             parentView.pushInput("1");
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_2) || Gdx.input.isKeyJustPressed(Input.Keys.NUMPAD_2)) {
