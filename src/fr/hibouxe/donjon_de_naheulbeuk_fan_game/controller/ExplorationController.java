@@ -167,6 +167,11 @@ public class ExplorationController {
     }
 
     private void handleSaveAction() {
+        if (isTutorial) {
+            menu.displayDialogue("\nSauvegarde Rapide impossible pendant le tutoriel ! Zangdar vous surveille...");
+            menu.clearMessages();
+            return;
+        }
         boolean quickSaved = saveManager.saveQuickSave(activeSlot, team, maze, currentFloor);
         if (quickSaved) {
             view.displaySaveSuccess(activeSlot);
