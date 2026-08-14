@@ -197,6 +197,7 @@ public class TutorialDungeon extends Dungeon {
         if (!hasMage) {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Magician mage = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Magician();
             mage.setManaPoint(0);
+            mage.setCurrentResource(0);
             team.getMembers().add(mage);
         }
 
@@ -234,8 +235,8 @@ public class TutorialDungeon extends Dungeon {
                 dialogues.add("Ranger : Il faut qu'on fasse le point sur notre situation stratégique, on ne sait pas ce qui nous attend au bout de ce couloir.");
                 dialogues.add("Elfe : C'est quoi la stratélique ?");
                 dialogues.add("Ranger : Misère...");
-                dialogues.add("[UI Tuto] : Appuyez sur [ECHAP] ou [M] pour ouvrir le Menu Principal.");
-                dialogues.add("[UI Tuto] : Allez dans [STATISTIQUES] pour vérifier l'état de la compagnie (PV / Mana).");
+                dialogues.add("[UI Tuto] : Regardez le panneau sur la droite de l'écran pour suivre l'état de la compagnie.");
+                dialogues.add("[UI Tuto] : Vous pouvez y voir les Points de Vie (PV) et le Mana (PM) de chaque héros en temps réel.");
                 break;
         }
         return dialogues;
