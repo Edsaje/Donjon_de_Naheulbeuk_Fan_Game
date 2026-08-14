@@ -177,7 +177,7 @@ public class BattleController {
             
             boolean isUnwinnableBoss = false;
             for (Character m : monsters) {
-                if (m.isBoss() && m.getLevel() >= 99) isUnwinnableBoss = true;
+                if (m.isBoss() && m.getLevel() >= 101) isUnwinnableBoss = true;
             }
             if (isUnwinnableBoss && action != 4) {
                 menu.displayMessage("L'Orque est beaucoup trop puissant ! Vous devez FUIR !");

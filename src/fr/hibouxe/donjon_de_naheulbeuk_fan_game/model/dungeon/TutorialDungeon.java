@@ -161,7 +161,7 @@ public class TutorialDungeon extends Dungeon {
 
         // L'Orque de patrouille devant l'escalier
         List<Character> patrol = new ArrayList<>();
-        Character orc = new Character("Patrouille Orque", "Boss", 99, 9999, 0, 999, 0, 999, 999, -1);
+        Character orc = new Character("Patrouille Orque", "Boss", 101, 9999, 0, 999, 0, 999, 999, -1);
         patrol.add(orc);
         this.getGrid()[4][5].setMonsters(patrol);
         
