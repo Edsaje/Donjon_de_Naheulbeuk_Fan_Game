@@ -89,7 +89,7 @@ public class HUDRenderer implements Disposable {
 
         // Toujours dessiner le menu contextuel s'il existe et n'est pas un menu de pause (dialogue)
         if (menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0])) {
-            renderContextualMenu(menuTitle, menuOptions);
+            renderContextualMenu(menuTitle, menuOptions, state);
         }
     }
 
@@ -119,46 +119,107 @@ public class HUDRenderer implements Disposable {
         }
     }
 
-    private void renderContextualMenu(String title, String[] options) {
-        int menuWidth = 350;
-        int menuHeight = 60 + options.length * 40;
-        int x = 30; // Aligné à gauche
-        int y = 50;
-        
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        
-        // Fenêtre Noire semi-transparente
-        shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.1f, 0.95f));
-        shapeRenderer.rect(x, y, menuWidth, menuHeight);
-        
-        // Bordure blanche/grise sobre
-        shapeRenderer.setColor(new Color(0.8f, 0.8f, 0.8f, 1f));
-        shapeRenderer.rectLine(x, y, x + menuWidth, y, 2);
-        shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 2);
-        shapeRenderer.rectLine(x, y, x, y + menuHeight, 2);
-        shapeRenderer.rectLine(x + menuWidth, y, x + menuWidth, y + menuHeight, 2);
+    private void renderContextualMenu(String title, String[] options, HD2DGameApp.GameState state) {
+        if (state == HD2DGameApp.GameState.BATTLE) {
+            // === MENU DE COMBAT (Style DQ3 HD-2D) ===
+            int menuWidth = 350;
+            int menuHeight = 60 + options.length * 40;
+            int x = 30; // Aligné à gauche, plus bas
+            int y = 50;
+            
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            // Fenêtre Noire semi-transparente
+            shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.1f, 0.95f));
+            shapeRenderer.rect(x, y, menuWidth, menuHeight);
+            
+            // Bordure grise sobre
+            shapeRenderer.setColor(new Color(0.8f, 0.8f, 0.8f, 1f));
+            shapeRenderer.rectLine(x, y, x + menuWidth, y, 2);
+            shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 2);
+            shapeRenderer.rectLine(x, y, x, y + menuHeight, 2);
+            shapeRenderer.rectLine(x + menuWidth, y, x + menuWidth, y + menuHeight, 2);
 
-        // Curseur
-        if (contextMenuSelection < options.length) {
-            // Affichage de haut en bas
-            int cursorY = y + menuHeight - 80 - contextMenuSelection * 40;
-            shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.3f, 0.8f)); // Curseur gris foncé
-            shapeRenderer.rect(x + 10, cursorY - 5, menuWidth - 20, 30);
+            // Curseur gris foncé
+            if (contextMenuSelection < options.length) {
+                int cursorY = y + menuHeight - 80 - contextMenuSelection * 40;
+                shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.3f, 0.8f));
+                shapeRenderer.rect(x + 10, cursorY - 5, menuWidth - 20, 30);
+            }
+            shapeRenderer.end();
+
+            uiBatch.begin();
+            font.setColor(Color.WHITE); // Titre blanc
+            font.draw(uiBatch, title, x + 25, y + menuHeight - 20);
+
+            font.setColor(Color.WHITE);
+            for (int i = 0; i < options.length; i++) {
+                String prefix = (i == contextMenuSelection) ? "> " : "  ";
+                font.draw(uiBatch, prefix + options[i], x + 35, y + menuHeight - 60 - i * 40);
+            }
+            uiBatch.end();
+
+        } else {
+            // === MENU HORS COMBAT (Style DQ1 Remake Items) ===
+            int columns = (options.length > 5 && options.length <= 8) ? 2 : 1;
+            int rows = (int) Math.ceil((double) options.length / columns);
+            
+            int itemWidth = 250;
+            int menuWidth = Math.max(300, columns * itemWidth + 60);
+            int menuHeight = 60 + rows * 40;
+            
+            // Placé en haut à gauche
+            int x = 50; 
+            int y = Gdx.graphics.getHeight() - menuHeight - 50; 
+            
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            
+            // Fenêtre Noire (95% opacité)
+            shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+            shapeRenderer.rect(x, y, menuWidth, menuHeight);
+            
+            // Bordure blanche épaisse (3px)
+            shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.rectLine(x, y, x + menuWidth, y, 3);
+            shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 3);
+            shapeRenderer.rectLine(x, y, x, y + menuHeight, 3);
+            shapeRenderer.rectLine(x + menuWidth, y, x + menuWidth, y + menuHeight, 3);
+            
+            // Curseur de sélection (fond de ligne gris transparent)
+            if (contextMenuSelection < options.length) {
+                int col = contextMenuSelection % columns;
+                int row = contextMenuSelection / columns;
+                
+                int highlightWidth = (columns == 1) ? menuWidth - 20 : itemWidth;
+                int cursorX = x + 10 + col * itemWidth;
+                int cursorY = y + menuHeight - 75 - row * 40;
+                
+                shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.4f, 0.6f));
+                shapeRenderer.rect(cursorX, cursorY, highlightWidth, 35);
+            }
+            shapeRenderer.end();
+
+            uiBatch.begin();
+            // Titre aligné à gauche
+            font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+            font.draw(uiBatch, title, x + 25, y + menuHeight - 15);
+
+            for (int i = 0; i < options.length; i++) {
+                int col = i % columns;
+                int row = i / columns;
+                
+                int textX = x + 40 + col * itemWidth;
+                int textY = y + menuHeight - 50 - row * 40;
+                
+                if (i == contextMenuSelection) {
+                    font.setColor(Color.GOLD);
+                    font.draw(uiBatch, ">>", textX - 25, textY);
+                }
+                
+                font.setColor(Color.WHITE);
+                font.draw(uiBatch, options[i], textX, textY);
+            }
+            uiBatch.end();
         }
-        
-        shapeRenderer.end();
-
-        uiBatch.begin();
-        font.setColor(Color.WHITE); // Titre blanc
-        font.draw(uiBatch, title, x + 25, y + menuHeight - 20);
-
-        font.setColor(Color.WHITE);
-        for (int i = 0; i < options.length; i++) {
-            // Affichage de haut en bas
-            String prefix = (i == contextMenuSelection) ? "> " : "  ";
-            font.draw(uiBatch, prefix + options[i], x + 35, y + menuHeight - 60 - i * 40);
-        }
-        uiBatch.end();
     }
 
     private void handleMenuInput(HD2DGameApp.GameState state, HD2DGameApp gameApp, java.util.List<String> messages, String menuTitle) {
@@ -352,62 +413,86 @@ public class HUDRenderer implements Disposable {
     private void renderDragonQuestWindow(Dungeon dungeon, int playerX, int playerY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        // Fenêtre Noire épurée (Remplacement du bleu/doré)
-        shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.1f, 0.9f));
-        shapeRenderer.rect(180, 90, 920, 540);
+        // 1. Fenêtre du Menu Principal (Top-Left)
+        int menuWidth = 350;
+        int menuHeight = 60 + menuOptions.length * 40;
+        int menuX = 50;
+        int menuY = Gdx.graphics.getHeight() - menuHeight - 50;
+
+        // Fond Noir (95% opacité)
+        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
         
-        // Bordure
-        shapeRenderer.setColor(Color.DARK_GRAY);
-        shapeRenderer.rectLine(180, 90, 1100, 90, 3);
-        shapeRenderer.rectLine(180, 630, 1100, 630, 3);
-        shapeRenderer.rectLine(180, 90, 180, 630, 3);
-        shapeRenderer.rectLine(1100, 90, 1100, 630, 3);
+        // Bordure blanche épaisse (3px)
+        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 3);
+        shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 3);
+        shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 3);
+        shapeRenderer.rectLine(menuX + menuWidth, menuY, menuX + menuWidth, menuY + menuHeight, 3);
 
-        // Séparateur vertical
-        shapeRenderer.rectLine(500, 100, 500, 620, 2);
+        // Curseur de sélection (fond de ligne gris transparent)
+        int cursorY = menuY + menuHeight - 75 - selectedOption * 40;
+        shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.4f, 0.6f));
+        shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 35);
 
-        // Curseur de sélection (Gris sombre)
-        int cursorY = 520 - selectedOption * 55;
-        shapeRenderer.setColor(new Color(0.25f, 0.25f, 0.25f, 0.8f));
-        shapeRenderer.rect(210, cursorY - 5, 275, 40);
+        // 2. Fenêtre du Statut de l'équipe (Bottom-Left)
+        int statusWidth = 450;
+        int statusHeight = 60 + ((team != null) ? team.getMembers().size() * 50 : 0);
+        int statusX = 50;
+        int statusY = menuY - statusHeight - 30; // Juste en dessous du menu
+
+        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.rect(statusX, statusY, statusWidth, statusHeight);
+        
+        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.rectLine(statusX, statusY, statusX + statusWidth, statusY, 3);
+        shapeRenderer.rectLine(statusX, statusY + statusHeight, statusX + statusWidth, statusY + statusHeight, 3);
+        shapeRenderer.rectLine(statusX, statusY, statusX, statusY + statusHeight, 3);
+        shapeRenderer.rectLine(statusX + statusWidth, statusY, statusX + statusWidth, statusY + statusHeight, 3);
 
         shapeRenderer.end();
 
-        // 4. Textes du ConsoleMenu et Statistiques de la Compagnie
+        // --- Textes ---
         uiBatch.begin();
-        font.draw(uiBatch, "ConsoleMenu", 400, 680);
+        
+        // Options du menu principal
+        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+        font.draw(uiBatch, "Menu", menuX + 25, menuY + menuHeight - 15);
 
-        // Rendu des choix du ConsoleMenu à gauche
         for (int i = 0; i < menuOptions.length; i++) {
+            int textX = menuX + 50;
+            int textY = menuY + menuHeight - 50 - i * 40;
+            
             if (i == selectedOption) {
-                font.setColor(Color.WHITE);
-                font.draw(uiBatch, "> " + menuOptions[i], 220, 520 - i * 55);
-            } else {
-                font.setColor(Color.LIGHT_GRAY);
-                font.draw(uiBatch, "  " + menuOptions[i], 220, 520 - i * 55);
+                font.setColor(Color.GOLD);
+                font.draw(uiBatch, ">>", textX - 30, textY);
             }
+            font.setColor(Color.WHITE);
+            font.draw(uiBatch, menuOptions[i], textX, textY);
         }
 
-        // Rendu du statut de l'équipe à droite
+        // Statut de la Compagnie
+        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+        font.draw(uiBatch, "Compagnie", statusX + 25, statusY + statusHeight - 15);
+        
         font.setColor(Color.WHITE);
         if (team != null && !team.getMembers().isEmpty()) {
-            font.draw(uiBatch, "COMPAGNIE", 540, 580);
-            font.setColor(Color.LIGHT_GRAY);
-            int startY = 520;
+            int startY = statusY + statusHeight - 50;
             for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character hero : team.getMembers()) {
-                String line = String.format("%-15s : Nv %d | PV: %d/%d  | %s: %d/%d",
+                String line = String.format("%-15s : Nv %d | PV: %d/%d | PM: %d/%d",
                         hero.getName(), hero.getLevel(),
                         hero.getHealthPoint(), hero.getMaxHealthPoint(),
-                        hero.getResourceName(), hero.getCurrentResource(), hero.getMaxResource());
-                font.draw(uiBatch, line, 540, startY);
+                        hero.getCurrentResource(), hero.getMaxResource());
+                font.draw(uiBatch, line, statusX + 25, startY);
                 startY -= 50;
             }
         } else {
-            font.draw(uiBatch, "--- COMPAGNIE (VIDE) ---", 540, 580);
+            font.draw(uiBatch, "(Vide)", statusX + 25, statusY + statusHeight - 50);
         }
-
+        
+        // Aide à la navigation en bas à droite (très discret)
         font.setColor(Color.LIGHT_GRAY);
-        font.draw(uiBatch, "[Utilise Z/W/S ou Fleches pour naviguer, ENTREE pour selectionner]", 540, 150);
+        font.draw(uiBatch, "[Utilise Z/W/S, ENTREE pour selectionner]", Gdx.graphics.getWidth() - 400, 50);
 
         uiBatch.end();
     }
