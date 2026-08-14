@@ -75,6 +75,9 @@ public class HUDRenderer implements Disposable {
 
         if (state == HD2DGameApp.GameState.BATTLE || state == HD2DGameApp.GameState.HUB) {
             renderMinimalistWindow(team, messages);
+            if (state == HD2DGameApp.GameState.BATTLE && team != null) {
+                renderBattleStatus(team);
+            }
         } else if (isMenuOpen) {
             renderDragonQuestWindow(dungeon, playerX, playerY, team);
         } else {
@@ -206,7 +209,44 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
-    
+    private void renderBattleStatus(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team) {
+        int windowWidth = 220;
+        int windowHeight = 40 + (team.getMembers().size() * 65);
+        int padding = 20;
+        int startX = 20;
+        int startY = Gdx.graphics.getHeight() - windowHeight - 20;
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.3f, 0.85f));
+        shapeRenderer.rect(startX, startY, windowWidth, windowHeight);
+
+        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.rectLine(startX, startY, startX + windowWidth, startY, 2);
+        shapeRenderer.rectLine(startX, startY + windowHeight, startX + windowWidth, startY + windowHeight, 2);
+        shapeRenderer.rectLine(startX, startY, startX, startY + windowHeight, 2);
+        shapeRenderer.rectLine(startX + windowWidth, startY, startX + windowWidth, startY + windowHeight, 2);
+        shapeRenderer.end();
+
+        uiBatch.begin();
+        font.setColor(Color.GOLD);
+        font.draw(uiBatch, "COMPAGNIE", startX + 20, startY + windowHeight - 15);
+        font.setColor(Color.WHITE);
+
+        int currentY = startY + windowHeight - 50;
+        for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character member : team.getMembers()) {
+            if (member.getHealthPoint() <= 0) font.setColor(Color.RED);
+            else font.setColor(Color.WHITE);
+            
+            font.draw(uiBatch, member.getName(), startX + 10, currentY);
+            currentY -= 20;
+            font.draw(uiBatch, "PV: " + member.getHealthPoint() + "/" + member.getMaxHealthPoint(), startX + 20, currentY);
+            currentY -= 20;
+            font.draw(uiBatch, member.getResourceName().substring(0, 1) + "P: " + member.getCurrentResource() + "/" + member.getMaxResource(), startX + 20, currentY);
+            currentY -= 25; // Espace entre persos
+        }
+        uiBatch.end();
+    }
+
     private void renderMinimalistWindow(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages) {
         if (messages == null || messages.isEmpty()) return;
 
