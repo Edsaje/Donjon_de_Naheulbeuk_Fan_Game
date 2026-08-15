@@ -1,0 +1,26 @@
+apply plugin: "java"
+apply plugin: "application"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+application {
+    mainClass = "fr.hibouxe.donjon_de_naheulbeuk_fan_game.desktop.DesktopLauncher"
+}
+
+dependencies {
+    implementation project(":core")
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
+}
+
+// L'application Desktop doit pouvoir lire les assets qui sont à la racine
+sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
+
+run {
+    workingDir = rootProject.file('assets').path
+    setIgnoreExitValue(true)
+}
