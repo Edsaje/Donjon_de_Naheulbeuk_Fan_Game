@@ -22,6 +22,9 @@ import java.util.List;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers.*;
 
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager;
+import com.badlogic.gdx.Graphics.DisplayMode;
+
 /**
  * Moteur principal LibGDX (ApplicationAdapter).
  * S'occupe du rendu 3D, de la boucle de jeu et de la gestion de la fenêtre.
@@ -29,7 +32,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers.*;
  * @author Hibouxe
  * @version 2.0
  */
-public class HD2DGameApp extends ApplicationAdapter {
+public class HD2DGameApp extends ApplicationAdapter implements GameSettingsManager.SettingsListener {
 
     public enum GameState {
         EXPLORATION,
@@ -79,6 +82,9 @@ public class HD2DGameApp extends ApplicationAdapter {
 
     @Override
     public void create() {
+        GameSettingsManager.getInstance().addListener(this);
+        applyDisplaySettings();
+
         camera = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.near = 0.1f;
         camera.far = 500f;
@@ -131,6 +137,18 @@ public class HD2DGameApp extends ApplicationAdapter {
         this.maze = maze;
         this.team = team;
         this.currentFloor = currentFloor;
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        if (camera != null) {
+            camera.viewportWidth = width;
+            camera.viewportHeight = height;
+            camera.update();
+        }
+        if (hudRenderer != null) {
+            hudRenderer.resize(width, height);
+        }
     }
 
     @Override
@@ -279,5 +297,36 @@ public class HD2DGameApp extends ApplicationAdapter {
         if (hudRenderer != null) hudRenderer.dispose();
         
         System.exit(0); // Ferme complètement le programme Java
+    }
+
+    // --- SettingsListener Implementation ---
+
+    @Override
+    public void onDisplaySettingsChanged() {
+        applyDisplaySettings();
+    }
+
+    private void applyDisplaySettings() {
+        GameSettingsManager config = GameSettingsManager.getInstance();
+        boolean isNowFullscreen = Gdx.graphics.isFullscreen();
+        
+        if (config.isFullscreen() && !isNowFullscreen) {
+            DisplayMode mode = Gdx.graphics.getDisplayMode();
+            Gdx.graphics.setFullscreenMode(mode);
+        } else if (!config.isFullscreen() && isNowFullscreen) {
+            Gdx.graphics.setWindowedMode(1280, 720);
+        }
+        
+        Gdx.graphics.setVSync(config.isVsync());
+    }
+
+    @Override
+    public void onAudioSettingsChanged() {
+        // Sera implémenté avec le SoundManager plus tard
+    }
+
+    @Override
+    public void onGameplaySettingsChanged() {
+        // Le Gameplay est lu directement par le contrôleur (ExplorationController)
     }
 }

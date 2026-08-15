@@ -30,6 +30,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 public class DungeonSceneRenderer implements Disposable {
     private Model floorModel;
     private Model wallBlockModel;
+    private Model wallTopModel;
     private Array<ModelInstance> instances = new Array<>();
     private Array<Decal> entityBillboards = new Array<>();
     private Decal heroSprite;
@@ -69,6 +70,7 @@ public class DungeonSceneRenderer implements Disposable {
     private Texture stairsTexture;
 
     private float tileSize = 2.0f;
+    private boolean usingObjModels = false;
 
     public DungeonSceneRenderer() {
         heroTexture = SpriteFactory.createHeroSprite("Ranger");
@@ -85,13 +87,45 @@ public class DungeonSceneRenderer implements Disposable {
         stairsTexture = SpriteFactory.createStairsSprite();
 
         ModelBuilder modelBuilder = new ModelBuilder();
-        floorModel = modelBuilder.createBox(2.0f, 0.1f, 2.0f,
-                new Material(ColorAttribute.createDiffuse(new Color(0.35f, 0.35f, 0.4f, 1f))),
-                Usage.Position | Usage.Normal);
+        
+        Texture floorTex = null;
+        Texture wallTex = null;
+        Texture wallTopTex = null;
+        try {
+            floorTex = new Texture(com.badlogic.gdx.Gdx.files.internal("assets/3d/Textures/wood_floor.jpg"), true);
+            floorTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        } catch(Exception e) { System.out.println("wood_floor.jpg introuvable."); }
+        try {
+            wallTex = new Texture(com.badlogic.gdx.Gdx.files.internal("assets/3d/Textures/wood_wall_front.jpg"), true);
+            wallTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        } catch(Exception e) { System.out.println("wood_wall_front.jpg introuvable."); }
+        try {
+            wallTopTex = new Texture(com.badlogic.gdx.Gdx.files.internal("assets/3d/Textures/wood_wall_top.jpg"), true);
+            wallTopTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        } catch(Exception e) { System.out.println("wood_wall_top.jpg introuvable."); }
 
-        wallBlockModel = modelBuilder.createBox(2.0f, 2.5f, 2.0f,
-                new Material(ColorAttribute.createDiffuse(new Color(0.5f, 0.35f, 0.25f, 1f))),
-                Usage.Position | Usage.Normal);
+        Material floorMat = floorTex != null ? 
+                new Material(com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute.createDiffuse(floorTex)) :
+                new Material(ColorAttribute.createDiffuse(new Color(0.35f, 0.35f, 0.4f, 1f)));
+                
+        Material wallMat = wallTex != null ? 
+                new Material(com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute.createDiffuse(wallTex)) :
+                new Material(ColorAttribute.createDiffuse(new Color(0.5f, 0.35f, 0.25f, 1f)));
+                
+        Material wallTopMat = wallTopTex != null ? 
+                new Material(com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute.createDiffuse(wallTopTex)) :
+                wallMat;
+
+        floorModel = modelBuilder.createBox(2.0f, 0.1f, 2.0f, floorMat,
+                com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal | com.badlogic.gdx.graphics.VertexAttributes.Usage.TextureCoordinates);
+
+        wallBlockModel = modelBuilder.createBox(2.0f, 2.5f, 2.0f, wallMat,
+                com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal | com.badlogic.gdx.graphics.VertexAttributes.Usage.TextureCoordinates);
+                
+        wallTopModel = modelBuilder.createBox(2.0f, 0.05f, 2.0f, wallTopMat,
+                com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal | com.badlogic.gdx.graphics.VertexAttributes.Usage.TextureCoordinates);
+                
+        usingObjModels = false;
     }
 
     public void setLeaderClass(String className) {
@@ -165,8 +199,15 @@ public class DungeonSceneRenderer implements Disposable {
                     }
                 } else {
                     ModelInstance wallBlock = new ModelInstance(wallBlockModel);
-                    wallBlock.transform.setToTranslation(posX, 1.25f, posZ);
+                    float wallY = usingObjModels ? 0f : 1.25f;
+                    wallBlock.transform.setToTranslation(posX, wallY, posZ);
                     instances.add(wallBlock);
+                    
+                    if (!usingObjModels && wallTopModel != null) {
+                        ModelInstance wallTop = new ModelInstance(wallTopModel);
+                        wallTop.transform.setToTranslation(posX, 2.5f + 0.025f, posZ);
+                        instances.add(wallTop);
+                    }
                 }
             }
         }
@@ -264,6 +305,7 @@ public class DungeonSceneRenderer implements Disposable {
     public void dispose() {
         if (floorModel != null) floorModel.dispose();
         if (wallBlockModel != null) wallBlockModel.dispose();
+        if (wallTopModel != null) wallTopModel.dispose();
         if (heroTexture != null) heroTexture.dispose();
         if (monsterTexture != null) monsterTexture.dispose();
         if (chestTexture != null) chestTexture.dispose();

@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+}
+
+group = 'fr.hibouxe'
+version = '1.0-SNAPSHOT'
+
+// On utilise Java 17 (standard récent) pour supporter les "switch expressions"
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://jitpack.io" }
+}
+
+ext {
+    gdxVersion = '1.12.1'
+    gdxControllersVersion = '2.2.3' // Version moderne pour la gestion manette
+}
+
+// Configuration pour conserver ton architecture de dossiers actuelle
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+            // On exclut le dossier assets du code source Java
+            exclude 'assets/**'
+        }
+        resources {
+            srcDirs = ['src']
+            // On inclut uniquement le dossier assets dans les ressources
+            include 'assets/**'
+        }
+    }
+}
+
+dependencies {
+    // --- LibGDX Core & Desktop (remplace tes anciens .jar) ---
+    implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    
+    // --- Support Manette (Controller) ---
+    implementation "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
+    implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
+}
+
+// Tâche optionnelle pour lancer le jeu directement depuis Gradle
+task run(type: JavaExec) {
+    mainClass = 'fr.hibouxe.donjon_de_naheulbeuk_fan_game.Main'
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = project.projectDir
+    ignoreExitValue = true
+}

@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager;
 
 /**
  * Composant de rendu 2D spécialisé pour l'Interface Utilisateur (HUD) et le ConsoleMenu Interactif Dragon Quest (SRP).
@@ -28,7 +29,14 @@ public class HUDRenderer implements Disposable {
     private boolean isMenuOpen = false;
     private int selectedOption = 0;
     private String[] menuOptions = {
-            "Status", "Sac", "équipement", "Magie", "Sauvegarder", "Fermer"
+            "Status", "Sac", "Équipement", "Magie", "Sauvegarder", "Paramètres", "Fermer"
+    };
+    
+    // --- Settings Menu State ---
+    private boolean isSettingsMenuOpen = false;
+    private int selectedSettingsOption = 0;
+    private String[] settingsOptions = {
+            "Plein Ecran : ", "V-Sync : ", "Vitesse Marche : ", "Vitesse Texte : ", "Retour"
     };
 
     public HUDRenderer() {
@@ -36,6 +44,15 @@ public class HUDRenderer implements Disposable {
         font = new BitmapFont();
         font.getData().setScale(1.2f);
         shapeRenderer = new ShapeRenderer();
+        uiViewport = new com.badlogic.gdx.utils.viewport.FitViewport(1280, 720);
+    }
+    
+    private com.badlogic.gdx.utils.viewport.Viewport uiViewport;
+
+    public void resize(int width, int height) {
+        uiViewport.update(width, height, true);
+        uiBatch.setProjectionMatrix(uiViewport.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(uiViewport.getCamera().combined);
     }
 
     public boolean isMenuOpen() {
@@ -50,8 +67,8 @@ public class HUDRenderer implements Disposable {
         font.getData().setScale(2.5f);
         font.setColor(Color.WHITE);
         String text = "ÉTAGE " + floor;
-        float x = (Gdx.graphics.getWidth() / 2f) - (text.length() * 15f);
-        float y = (Gdx.graphics.getHeight() / 2f);
+        float x = (1280 / 2f) - (text.length() * 15f);
+        float y = (720 / 2f);
         font.draw(uiBatch, text, x, y);
         font.getData().setScale(1.2f);
         uiBatch.end();
@@ -78,6 +95,8 @@ public class HUDRenderer implements Disposable {
             if (state == HD2DGameApp.GameState.BATTLE && team != null) {
                 renderBattleStatus(team);
             }
+        } else if (isSettingsMenuOpen) {
+            renderSettingsWindow();
         } else if (isMenuOpen) {
             renderDragonQuestWindow(dungeon, playerX, playerY, team);
         } else {
@@ -174,7 +193,7 @@ public class HUDRenderer implements Disposable {
             
             // Placé en haut à gauche
             int x = 50; 
-            int y = Gdx.graphics.getHeight() - menuHeight - 50; 
+            int y = 720 - menuHeight - 50; 
             
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             
@@ -232,18 +251,28 @@ public class HUDRenderer implements Disposable {
         if (messages != null && !messages.isEmpty()) return; // Désactivé pendant un dialogue
         if (menuTitle != null) return; // Désactivé pendant un sous-menu contextuel
 
-        // Touche 'M' ou 'ECHAP' pour ouvrir/fermer le ConsoleMenu
-        if (Gdx.input.isKeyJustPressed(Input.Keys.M) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            isMenuOpen = !isMenuOpen;
+        // Touche 'M' ou 'ECHAP' pour fermer les menus
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.M) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ESCAPE)) {
+            if (isSettingsMenuOpen) {
+                isSettingsMenuOpen = false;
+                GameSettingsManager.getInstance().saveSettings();
+            } else {
+                isMenuOpen = !isMenuOpen;
+            }
+            return;
+        }
+
+        if (isSettingsMenuOpen) {
+            handleSettingsMenuInput();
             return;
         }
 
         if (isMenuOpen) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) || Gdx.input.isKeyJustPressed(Input.Keys.Z) || Gdx.input.isKeyJustPressed(Input.Keys.W)) {
+            if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.Z) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.W)) {
                 selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN) || Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+            } else if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.S)) {
                 selectedOption = (selectedOption + 1) % menuOptions.length;
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            } else if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE)) {
                 if (selectedOption == 0 && gameApp.parentView != null) {
                     gameApp.parentView.pushInput("C");
                     isMenuOpen = false;
@@ -253,9 +282,36 @@ public class HUDRenderer implements Disposable {
                 } else if (selectedOption == 4 && gameApp.parentView != null) {
                     gameApp.parentView.pushInput("K");
                     isMenuOpen = false;
-                } else if (selectedOption == 5) {
-                    isMenuOpen = false; // Option 6 : Fermer
+                } else if (selectedOption == 5) { // Paramètres
+                    isSettingsMenuOpen = true;
+                } else if (selectedOption == 6) { // Fermer
+                    isMenuOpen = false;
                 }
+            }
+        }
+    }
+
+    private void handleSettingsMenuInput() {
+        GameSettingsManager config = GameSettingsManager.getInstance();
+
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.UP) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.Z) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.W)) {
+            selectedSettingsOption = (selectedSettingsOption - 1 + settingsOptions.length) % settingsOptions.length;
+        } else if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.DOWN) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.S)) {
+            selectedSettingsOption = (selectedSettingsOption + 1) % settingsOptions.length;
+        } else if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.ENTER) || Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE)) {
+            if (selectedSettingsOption == 0) {
+                config.setFullscreen(!config.isFullscreen());
+            } else if (selectedSettingsOption == 1) {
+                config.setVsync(!config.isVsync());
+            } else if (selectedSettingsOption == 2) {
+                config.setMovementSpeed(config.getMovementSpeed() > 1.0f ? 1.0f : 1.5f);
+            } else if (selectedSettingsOption == 3) {
+                int nextSpeed = config.getTextSpeed() + 1;
+                if (nextSpeed > 3) nextSpeed = 1;
+                config.setTextSpeed(nextSpeed);
+            } else if (selectedSettingsOption == 4) { // Retour
+                isSettingsMenuOpen = false;
+                config.saveSettings(); // Sauvegarde automatique en quittant
             }
         }
     }
@@ -269,7 +325,7 @@ public class HUDRenderer implements Disposable {
         int statusHeight = 450;
         // Placé à côté du menu de gauche (x = 50 + menuWidth (environ 300) + 20)
         int x = 370;
-        int y = Gdx.graphics.getHeight() - statusHeight - 50;
+        int y = 720 - statusHeight - 50;
         
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
@@ -337,7 +393,7 @@ public class HUDRenderer implements Disposable {
                 rowCount++;
             }
         }
-        
+            
         uiBatch.end();
     }
 
@@ -352,9 +408,9 @@ public class HUDRenderer implements Disposable {
 
         uiBatch.begin();
         font.setColor(Color.WHITE);
-        font.draw(uiBatch, "ÉTAGE " + currentFloor, 20, 700);
+        font.draw(uiBatch, "ÉTAGE " + currentFloor, 20, 720 - 20);
         font.setColor(Color.LIGHT_GRAY);
-        font.draw(uiBatch, "[M/ECHAP: ConsoleMenu]", 1100, 40);
+        font.draw(uiBatch, "[M/ECHAP: Menu]", 1280 - 180, 40);
         uiBatch.end();
     }
 
@@ -362,10 +418,10 @@ public class HUDRenderer implements Disposable {
         int padding = 15;
         int barWidth = 120;
         int barHeight = 8;
-        int startX = Gdx.graphics.getWidth() - 250; // Aligné à droite
-        int startY = 300; // Position de départ Y
-
+        int startX = 1280 - 250; // Aligné à droite
+        
         int memberCount = team.getMembers().size();
+        int startY = (720 + (memberCount * 80)) / 2; // Centré verticalement
         
         // Optionnel : un fond très léger semi-transparent derrière tous les statuts pour la lisibilité
         // shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -447,8 +503,8 @@ public class HUDRenderer implements Disposable {
 
         if (state == HD2DGameApp.GameState.BATTLE) {
             // Affichage ultra épuré type "Texte flottant" (sans fond) pour les combats
-            int screenWidth = Gdx.graphics.getWidth();
-            int screenHeight = Gdx.graphics.getHeight();
+            int screenWidth = 1280;
+            int screenHeight = 720;
             
             // Placé très bas sur l'écran
             int textY = screenHeight / 12; 
@@ -472,9 +528,9 @@ public class HUDRenderer implements Disposable {
         }
 
         // Affichage classique (Boîte de dialogue) pour l'exploration
+        int boxWidth = 1280 - 200; // Marge de 100px de chaque côté
         int boxX = 100;
         int boxY = 20;
-        int boxWidth = 1080;
         int boxHeight = 180;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -496,6 +552,53 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
+    private void renderSettingsWindow() {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        int menuWidth = 450;
+        int menuHeight = 60 + settingsOptions.length * 40;
+        int menuX = (1280 - menuWidth) / 2;
+        int menuY = (720 - menuHeight) / 2;
+
+        // Fond Noir (95% opacité)
+        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
+        
+        // Bordure blanche épaisse (3px)
+        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 3);
+        shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 3);
+        shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 3);
+        shapeRenderer.rectLine(menuX + menuWidth, menuY, menuX + menuWidth, menuY + menuHeight, 3);
+
+        // Curseur de sélection
+        int cursorY = menuY + menuHeight - 75 - selectedSettingsOption * 40;
+        shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.4f, 0.6f));
+        shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 35);
+
+        shapeRenderer.end();
+        uiBatch.begin();
+
+        GameSettingsManager config = GameSettingsManager.getInstance();
+
+        // Titre
+        font.draw(uiBatch, "PARAMETRES", menuX + menuWidth / 2f - 70, menuY + menuHeight - 15);
+
+        for (int i = 0; i < settingsOptions.length; i++) {
+            String text = settingsOptions[i];
+            
+            // Ajouter la valeur dynamique
+            if (i == 0) text += (config.isFullscreen() ? "Oui" : "Non");
+            else if (i == 1) text += (config.isVsync() ? "Oui" : "Non");
+            else if (i == 2) text += (config.getMovementSpeed() > 1f ? "Rapide" : "Normal");
+            else if (i == 3) text += (config.getTextSpeed() == 3 ? "Instant" : (config.getTextSpeed() == 2 ? "Rapide" : "Normal"));
+            
+            font.draw(uiBatch, text, menuX + 30, menuY + menuHeight - 50 - (i * 40));
+        }
+
+        uiBatch.end();
+    }
+
     private void renderDragonQuestWindow(Dungeon dungeon, int playerX, int playerY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
@@ -503,7 +606,7 @@ public class HUDRenderer implements Disposable {
         int menuWidth = 350;
         int menuHeight = 60 + menuOptions.length * 40;
         int menuX = 50;
-        int menuY = Gdx.graphics.getHeight() - menuHeight - 50;
+        int menuY = 720 - menuHeight - 50;
 
         // Fond Noir (95% opacité)
         shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
@@ -578,7 +681,7 @@ public class HUDRenderer implements Disposable {
         
         // Aide à la navigation en bas à droite (très discret)
         font.setColor(Color.LIGHT_GRAY);
-        font.draw(uiBatch, "[Utilise Z/W/S, ENTREE pour selectionner]", Gdx.graphics.getWidth() - 400, 50);
+        font.draw(uiBatch, "[Utilise Z/W/S, ENTREE pour selectionner]", 1280 - 400, 50);
 
         uiBatch.end();
     }
