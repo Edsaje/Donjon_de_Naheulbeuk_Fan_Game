@@ -78,7 +78,7 @@ public class ExplorationController implements GameState {
         java.util.List<String> dialogues = maze.getFloorIntroDialogues(floorNumber);
         if (dialogues != null) {
             for (String d : dialogues) {
-                menu.displayDialogue(d);
+                menu.displayDialogue(locManager.getString(d));
             }
         }
     }
@@ -94,8 +94,8 @@ public class ExplorationController implements GameState {
                     gameContext.pushState(new InventoryController(team, menu, gameContext, maze));
                 } else if (selection == 1) { // Magie
                     menu.displayDialogue("Pas de magie disponible.");
-                } else if (selection == 2) { // CompÃƒÂ©tences
-                    menu.displayDialogue("GÃƒÂ©rÃƒÂ© par l'interface dÃƒÂ©diÃƒÂ©e en combat.");
+                } else if (selection == 2) { // CompÃƒÆ’Ã‚Â©tences
+                    menu.displayDialogue("GÃƒÆ’Ã‚Â©rÃƒÆ’Ã‚Â© par l'interface dÃƒÆ’Ã‚Â©diÃƒÆ’Ã‚Â©e en combat.");
                 } else if (selection == 3) { // Status
                     subState = SubState.STATUS_MENU;
                     menu.displayStatusScreen(team);
@@ -203,7 +203,7 @@ public class ExplorationController implements GameState {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EventResult result = currentCell.getEvent().trigger(team);
             if (result != null && result.getDialogsToDisplay() != null) {
                 for (String d : result.getDialogsToDisplay()) {
-                    menu.displayDialogue(d);
+                    menu.displayDialogue(locManager.getString(d));
                 }
             }
         }
@@ -284,7 +284,7 @@ public class ExplorationController implements GameState {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EventResult eResult = result.getEventResult();
             if (eResult != null && eResult.getDialogsToDisplay() != null) {
                 for (String d : eResult.getDialogsToDisplay()) {
-                    menu.displayDialogue(d);
+                    menu.displayDialogue(locManager.getString(d));
                 }
             }
             return false;

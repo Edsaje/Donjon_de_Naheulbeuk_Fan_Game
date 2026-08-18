@@ -17,17 +17,16 @@ public class WoundedElfEvent implements ICellEvent {
     public EventResult trigger(Team team) {
         List<String> dialogs = new ArrayList<>();
         if (!elfJoined) {
-            dialogs.add("Ranger : Hé l'Elfe, lève-toi, on doit sortir d'ici.");
-            dialogs.add("Elfe : *gémissement* J'ai trop mal à la tête... je peux à peine marcher.");
-            dialogs.add("Ranger : Bon, rejoins le groupe, mais il va falloir te rafistoler avant qu'on bouge d'ici.");
+            dialogs.add("TUTO_FLOOR_2_ELF_DEAD_1");
+            dialogs.add("TUTO_FLOOR_2_ELF_DEAD_2");
+            dialogs.add("TUTO_FLOOR_2_ELF_DEAD_3");
             
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Elf elfe = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Elf();
             elfe.setHealthPoint(1);
             team.getMembers().add(elfe);
             elfJoined = true;
-            dialogs.add("\n[L'Elfe a rejoint le groupe, mais elle est gravement blessée !]");
         } else {
-            dialogs.add("\nL'Elfe est trop blessée pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
+            dialogs.add("TUTO_FLOOR_2_ELF_WOUNDED");
         }
         return new EventResult(true, dialogs);
     }

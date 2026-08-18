@@ -18,60 +18,27 @@ public class TutorialDungeon extends Dungeon {
     public boolean prepareFloor(int floorNumber, Team team) {
         switch (floorNumber) {
             case 1:
-                return prepareFloor1(team);
-            case 2:
-                return prepareFloor2(team);
-            case 3:
-                return prepareFloor3(team);
-            case 4:
-                return prepareFloor4(team);
-            case 5:
-                return prepareFloor5(team);
-            default:
-                return true;
-        }
-    }
-
-    @Override
-    public java.util.List<String> getFloorIntroDialogues(int floorNumber) {
-        java.util.List<String> dialogues = new java.util.ArrayList<>();
-        switch (floorNumber) {
-            case 1:
-                dialogues.add("\n=== CHAPITRE 0 : Fuite de la taverne ===");
-                dialogues.add("Ranger : AÃ¯e... J'ai un mal de crÃ¢ne effroyable...");
-                dialogues.add("Ranger : OÃ¹ est-ce que je suis ? J'Ã©tais tellement occupÃ© Ã  courir que je me suis perdu ! Je dois retrouver les autres !");
-                dialogues.add("Utilisez Z, Q, S, D (ou les flÃ¨ches) pour vous dÃ©placer dans le couloir.");
-                dialogues.add("Atteignez l'escalier au bout du chemin pour avancer.");
-                break;
-            case 2:
-                dialogues.add("Ranger : Hey mais c'est l'Elfe ! Elle est par terre...");
-                dialogues.add("Ranger : Je ferai mieux d'aller voir !");
-                break;
-            case 3:
-                dialogues.add("Voleur : Chuuut ! Restez dans l'ombre ! On ne voit rien avec ce brouillard...");
-                dialogues.add("Voleur : Il y a une patrouille d'Orques GÃ©ants juste devant. Ils sont trop nombreux !");
-                dialogues.add("Ranger : Comment on passe alors ?");
-                dialogues.add("Voleur : On va utiliser la Ruse !");
-                dialogues.add("[UI Tuto] : Avancez pour dissiper le brouillard de guerre.");
-                dialogues.add("[UI Tuto] : La Minimap en haut Ã  droite affiche les ennemis en rouge. Ã‰vitez-les !");
-                dialogues.add("[UI Tuto] : Si un combat inÃ©vitable se dÃ©clenche, utilisez la commande [Fuir] !");
+                dialogues.add("TUTO_FLOOR_1_INTRO_1");
+                dialogues.add("TUTO_FLOOR_1_INTRO_2");
+                dialogues.add("TUTO_FLOOR_1_INTRO_3");
+                dialogues.add("TUTO_FLOOR_1_INTRO_4");
+                dialogues.add("TUTO_FLOOR_1_INTRO_5");
                 break;
             case 4:
-                dialogues.add("Ogre : Chprouk ! Grrrumph !");
-                dialogues.add("Magicienne : Non, tu ne peux pas le manger ! Ã‰coutez-moi, bande de rustres...");
-                dialogues.add("Magicienne : Mes rÃ©serves d'Ã©nergie astrale sont complÃ¨tement Ã©puisÃ©es et ma robe est pleine de poussiÃ¨re. Il nous faut faire une pause !");
-                dialogues.add("Ranger : Il faut qu'on fasse le point sur notre situation stratÃ©gique, on ne sait pas ce qui nous attend au bout de ce couloir.");
-                dialogues.add("Elfe : C'est quoi la stratÃ©lique ?");
-                dialogues.add("Ranger : MisÃ¨re...");
-                dialogues.add("[UI Tuto] : Regardez le panneau sur la droite de l'Ã©cran pour suivre l'Ã©tat de la compagnie.");
-                dialogues.add("[UI Tuto] : Vous pouvez y voir les Points de Vie (PV) et le Mana (PM) de chaque hÃ©ros en temps rÃ©el.");
+                dialogues.add("TUTO_FLOOR_4_OGRE_1");
+                dialogues.add("TUTO_FLOOR_4_MAGI_1");
+                dialogues.add("TUTO_FLOOR_4_RANGER_1");
+                dialogues.add("TUTO_FLOOR_4_ELF_1");
+                dialogues.add("TUTO_FLOOR_4_RANGER_2");
+                dialogues.add("TUTO_FLOOR_4_SYS_1");
+                dialogues.add("TUTO_FLOOR_4_MAGI_2");
+                dialogues.add("TUTO_FLOOR_4_MAGI_3");
                 break;
             case 5:
-                dialogues.add("[Bruits mÃ©talliques et cris de guerre depuis la salle suivante...]");
-                dialogues.add("Nain : Prends Ã§a dans les rotules, face de pet !");
-                dialogues.add("Barbare : CROM ! Taper la porte ! Taper les gardes !");
-                dialogues.add("Ranger : Ils ont trouvÃ© la sortie ! Mais ils sont encerclÃ©s, il faut qu'on les aide !");
-                dialogues.add("[UI Tuto] : Utilisez les compÃ©tences spÃ©cifiques de chaque hÃ©ros pour prendre l'avantage en combat.");
+                dialogues.add("TUTO_FLOOR_5_NAIN_1");
+                dialogues.add("TUTO_FLOOR_5_BARB_1");
+                dialogues.add("TUTO_FLOOR_5_RANGER_1");
+                dialogues.add("TUTO_FLOOR_5_SYS_1");
                 break;
         }
         return dialogues;
