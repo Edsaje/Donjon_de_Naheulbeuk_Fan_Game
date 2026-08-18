@@ -18,11 +18,43 @@ public class TutorialDungeon extends Dungeon {
     public boolean prepareFloor(int floorNumber, Team team) {
         switch (floorNumber) {
             case 1:
+                return prepareFloor1(team);
+            case 2:
+                return prepareFloor2(team);
+            case 3:
+                return prepareFloor3(team);
+            case 4:
+                return prepareFloor4(team);
+            case 5:
+                return prepareFloor5(team);
+            default:
+                return true;
+        }
+    }
+
+    @Override
+    public java.util.List<String> getFloorIntroDialogues(int floorNumber) {
+        java.util.List<String> dialogues = new java.util.ArrayList<>();
+        switch (floorNumber) {
+            case 1:
                 dialogues.add("TUTO_FLOOR_1_INTRO_1");
                 dialogues.add("TUTO_FLOOR_1_INTRO_2");
                 dialogues.add("TUTO_FLOOR_1_INTRO_3");
                 dialogues.add("TUTO_FLOOR_1_INTRO_4");
                 dialogues.add("TUTO_FLOOR_1_INTRO_5");
+                break;
+            case 2:
+                dialogues.add("TUTO_FLOOR_2_ELF_DEAD_1");
+                dialogues.add("TUTO_FLOOR_2_ELF_DEAD_2");
+                break;
+            case 3:
+                dialogues.add("TUTO_FLOOR_3_INTRO_1");
+                dialogues.add("TUTO_FLOOR_3_INTRO_2");
+                dialogues.add("TUTO_FLOOR_3_INTRO_3");
+                dialogues.add("TUTO_FLOOR_3_INTRO_4");
+                dialogues.add("TUTO_FLOOR_3_INTRO_5");
+                dialogues.add("TUTO_FLOOR_3_INTRO_6");
+                dialogues.add("TUTO_FLOOR_3_INTRO_7");
                 break;
             case 4:
                 dialogues.add("TUTO_FLOOR_4_OGRE_1");
@@ -43,8 +75,7 @@ public class TutorialDungeon extends Dungeon {
         }
         return dialogues;
     }
-
-    private boolean prepareFloor1(Team team) {
+private boolean prepareFloor1(Team team) {
         // Taille pour un petit couloir en "U"
         this.setWidth(5);
         this.setHeight(5);
