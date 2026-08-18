@@ -31,8 +31,8 @@ public class ExplorationController implements GameState {
 
     private ISaveManager saveManager;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager;
-    private float moveTimer = 0.25f;
-    private final float moveCooldown = 0.25f;
+    private float moveTimer = 0.5f;
+    private final float moveCooldown = 0.5f;
 
     private GameContext gameContext;
 
@@ -91,11 +91,11 @@ public class ExplorationController implements GameState {
             if ("ENTER".equals(action)) {
                 int selection = menu.getMenuSelection();
                 if (selection == 0) { // Sac
-                    gameContext.pushState(new InventoryController(team, menu, gameContext));
+                    gameContext.pushState(new InventoryController(team, menu, gameContext, maze));
                 } else if (selection == 1) { // Magie
                     menu.displayDialogue("Pas de magie disponible.");
-                } else if (selection == 2) { // Compétences
-                    menu.displayDialogue("Géré par l'interface dédiée en combat.");
+                } else if (selection == 2) { // CompÃƒÂ©tences
+                    menu.displayDialogue("GÃƒÂ©rÃƒÂ© par l'interface dÃƒÂ©diÃƒÂ©e en combat.");
                 } else if (selection == 3) { // Status
                     subState = SubState.STATUS_MENU;
                     menu.displayStatusScreen(team);
@@ -160,7 +160,7 @@ public class ExplorationController implements GameState {
                 menu.displayStatusScreen(team);
                 return false;
             case "MENU_INVENTORY":
-                gameContext.pushState(new InventoryController(team, menu, gameContext));
+                gameContext.pushState(new InventoryController(team, menu, gameContext, maze));
                 return false;
             case "MENU_EQUIPMENT":
                 menu.displayMessage("Menu d'Equipement non implemente.");

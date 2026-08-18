@@ -38,9 +38,9 @@ public class TutorialDungeon extends Dungeon {
         switch (floorNumber) {
             case 1:
                 dialogues.add("\n=== CHAPITRE 0 : Fuite de la taverne ===");
-                dialogues.add("Ranger : Aïe... J'ai un mal de crâne effroyable...");
-                dialogues.add("Ranger : Où est-ce que je suis ? J'étais tellement occupé à courir que je me suis perdu ! Je dois retrouver les autres !");
-                dialogues.add("Utilisez Z, Q, S, D (ou les flèches) pour vous déplacer dans le couloir.");
+                dialogues.add("Ranger : AÃ¯e... J'ai un mal de crÃ¢ne effroyable...");
+                dialogues.add("Ranger : OÃ¹ est-ce que je suis ? J'Ã©tais tellement occupÃ© Ã  courir que je me suis perdu ! Je dois retrouver les autres !");
+                dialogues.add("Utilisez Z, Q, S, D (ou les flÃ¨ches) pour vous dÃ©placer dans le couloir.");
                 dialogues.add("Atteignez l'escalier au bout du chemin pour avancer.");
                 break;
             case 2:
@@ -49,29 +49,29 @@ public class TutorialDungeon extends Dungeon {
                 break;
             case 3:
                 dialogues.add("Voleur : Chuuut ! Restez dans l'ombre ! On ne voit rien avec ce brouillard...");
-                dialogues.add("Voleur : Il y a une patrouille d'Orques Géants juste devant. Ils sont trop nombreux !");
+                dialogues.add("Voleur : Il y a une patrouille d'Orques GÃ©ants juste devant. Ils sont trop nombreux !");
                 dialogues.add("Ranger : Comment on passe alors ?");
                 dialogues.add("Voleur : On va utiliser la Ruse !");
                 dialogues.add("[UI Tuto] : Avancez pour dissiper le brouillard de guerre.");
-                dialogues.add("[UI Tuto] : La Minimap en haut à droite affiche les ennemis en rouge. Évitez-les !");
-                dialogues.add("[UI Tuto] : Si un combat inévitable se déclenche, utilisez la commande [Fuir] !");
+                dialogues.add("[UI Tuto] : La Minimap en haut Ã  droite affiche les ennemis en rouge. Ã‰vitez-les !");
+                dialogues.add("[UI Tuto] : Si un combat inÃ©vitable se dÃ©clenche, utilisez la commande [Fuir] !");
                 break;
             case 4:
                 dialogues.add("Ogre : Chprouk ! Grrrumph !");
-                dialogues.add("Magicienne : Non, tu ne peux pas le manger ! Écoutez-moi, bande de rustres...");
-                dialogues.add("Magicienne : Mes réserves d'énergie astrale sont complètement épuisées et ma robe est pleine de poussière. Il nous faut faire une pause !");
-                dialogues.add("Ranger : Il faut qu'on fasse le point sur notre situation stratégique, on ne sait pas ce qui nous attend au bout de ce couloir.");
-                dialogues.add("Elfe : C'est quoi la stratélique ?");
-                dialogues.add("Ranger : Misère...");
-                dialogues.add("[UI Tuto] : Regardez le panneau sur la droite de l'écran pour suivre l'état de la compagnie.");
-                dialogues.add("[UI Tuto] : Vous pouvez y voir les Points de Vie (PV) et le Mana (PM) de chaque héros en temps réel.");
+                dialogues.add("Magicienne : Non, tu ne peux pas le manger ! Ã‰coutez-moi, bande de rustres...");
+                dialogues.add("Magicienne : Mes rÃ©serves d'Ã©nergie astrale sont complÃ¨tement Ã©puisÃ©es et ma robe est pleine de poussiÃ¨re. Il nous faut faire une pause !");
+                dialogues.add("Ranger : Il faut qu'on fasse le point sur notre situation stratÃ©gique, on ne sait pas ce qui nous attend au bout de ce couloir.");
+                dialogues.add("Elfe : C'est quoi la stratÃ©lique ?");
+                dialogues.add("Ranger : MisÃ¨re...");
+                dialogues.add("[UI Tuto] : Regardez le panneau sur la droite de l'Ã©cran pour suivre l'Ã©tat de la compagnie.");
+                dialogues.add("[UI Tuto] : Vous pouvez y voir les Points de Vie (PV) et le Mana (PM) de chaque hÃ©ros en temps rÃ©el.");
                 break;
             case 5:
-                dialogues.add("[Bruits métalliques et cris de guerre depuis la salle suivante...]");
-                dialogues.add("Nain : Prends ça dans les rotules, face de pet !");
+                dialogues.add("[Bruits mÃ©talliques et cris de guerre depuis la salle suivante...]");
+                dialogues.add("Nain : Prends Ã§a dans les rotules, face de pet !");
                 dialogues.add("Barbare : CROM ! Taper la porte ! Taper les gardes !");
-                dialogues.add("Ranger : Ils ont trouvé la sortie ! Mais ils sont encerclés, il faut qu'on les aide !");
-                dialogues.add("[UI Tuto] : Utilisez les compétences spécifiques de chaque héros pour prendre l'avantage en combat.");
+                dialogues.add("Ranger : Ils ont trouvÃ© la sortie ! Mais ils sont encerclÃ©s, il faut qu'on les aide !");
+                dialogues.add("[UI Tuto] : Utilisez les compÃ©tences spÃ©cifiques de chaque hÃ©ros pour prendre l'avantage en combat.");
                 break;
         }
         return dialogues;
@@ -87,7 +87,7 @@ public class TutorialDungeon extends Dungeon {
         for (int x = 0; x < 5; x++) {
             for (int y = 0; y < 5; y++) {
                 this.getGrid()[x][y] = new Cell(x, y);
-                this.getGrid()[x][y].setRoomId(1); // On met dans une même "salle" pour le brouillard de guerre
+                this.getGrid()[x][y].setRoomId(1); // On met dans une mÃªme "salle" pour le brouillard de guerre
             }
         }
 
@@ -105,7 +105,7 @@ public class TutorialDungeon extends Dungeon {
         this.getGrid()[2][3].setWall(false);
         this.getGrid()[1][3].setWall(false);
 
-        // Retrait des murs séparateurs
+        // Retrait des murs sÃ©parateurs
         this.getGrid()[1][1].removeWallBetween(this.getGrid()[2][1]);
         this.getGrid()[2][1].removeWallBetween(this.getGrid()[3][1]);
         this.getGrid()[3][1].removeWallBetween(this.getGrid()[3][2]);
@@ -113,7 +113,7 @@ public class TutorialDungeon extends Dungeon {
         this.getGrid()[3][3].removeWallBetween(this.getGrid()[2][3]);
         this.getGrid()[2][3].removeWallBetween(this.getGrid()[1][3]);
 
-        // 3. Placer l'équipe au début
+        // 3. Placer l'Ã©quipe au dÃ©but
         team.setX(1);
         team.setY(1);
         
@@ -155,8 +155,11 @@ public class TutorialDungeon extends Dungeon {
         // Escalier tout en haut
         this.getGrid()[1][0].setStairs(true);
 
-        // Ajouter l'événement de l'Elfe
-        this.getGrid()[1][2].setEvent(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.WoundedElfEvent());
+        // Ajouter l'Ã©vÃ©nement de l'Elfe
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.WoundedElfEvent elfEvent = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.WoundedElfEvent();
+        this.getGrid()[1][2].setEvent(elfEvent);
+        this.getGrid()[1][3].setEvent(elfEvent);
+        this.getGrid()[2][2].setEvent(elfEvent);
         
         return false;
     }
@@ -174,7 +177,7 @@ public class TutorialDungeon extends Dungeon {
         }
         
         // Creuser un petit labyrinthe
-        // Ligne de départ
+        // Ligne de dÃ©part
         for (int x = 1; x < 6; x++) {
             this.getGrid()[x][1].setWall(false);
             if (x < 5) this.getGrid()[x][1].removeWallBetween(this.getGrid()[x+1][1]);
@@ -190,7 +193,7 @@ public class TutorialDungeon extends Dungeon {
             if (x < 5) this.getGrid()[x][5].removeWallBetween(this.getGrid()[x+1][5]);
         }
 
-        // Joueur commence au début (en bas à gauche)
+        // Joueur commence au dÃ©but (en bas Ã  gauche)
         team.setX(1);
         team.setY(1);
         
@@ -203,7 +206,7 @@ public class TutorialDungeon extends Dungeon {
             team.getMembers().add(new Thief());
         }
 
-        // Escalier à la fin (en haut à droite)
+        // Escalier Ã  la fin (en haut Ã  droite)
         this.getGrid()[5][5].setStairs(true);
 
         // L'Orque de patrouille devant l'escalier
@@ -295,7 +298,7 @@ public class TutorialDungeon extends Dungeon {
         guards.add(DataManager.createMonster("goblin"));
         this.getGrid()[2][3].setMonsters(guards);
 
-        // Escalier de sortie (Liberté !)
+        // Escalier de sortie (LibertÃ© !)
         this.getGrid()[2][4].setStairs(true);
 
         return false;
