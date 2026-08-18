@@ -4,79 +4,158 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IMenuView;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.state.GameState;
 
-public class InventoryController {
-
+public class InventoryController implements GameState {
+    private enum State { SELECT_ACTION, SELECT_ITEM, SELECT_TARGET, SELECT_SLOT_TO_UNEQUIP }
+    private State currentState = State.SELECT_ACTION;
+    
+    private Team team;
     private IMenuView menu;
-    private LocalizationManager locManager;
+    private GameContext gameContext;
+    private int actionChoice = -1; // 0=Use, 1=Unequip
+    private Item selectedItem = null;
+    private Character selectedTarget = null;
+    private java.util.List<Item> currentItemList;
 
-    public InventoryController(IMenuView menu, LocalizationManager locManager) {
+    public InventoryController(Team team, IMenuView menu, GameContext gameContext) {
+        this.team = team;
         this.menu = menu;
-        this.locManager = locManager;
+        this.gameContext = gameContext;
     }
 
-    public boolean handleInventoryAction(Team team, boolean isTutorial, int currentFloor, boolean elfJoined, boolean elfHealed) {
-        menu.displayInventory(team);
-        int choice = menu.askInventoryMenuChoice();
-        boolean healed = false;
+    @Override
+    public void enter() {
+        currentState = State.SELECT_ACTION;
+        promptAction();
+    }
 
-        switch (choice) {
-            case 1:
-                if (!team.getInventory().isEmpty()) {
-                    int itemIndex = menu.askItemIndex();
-                    if (itemIndex >= 0 && itemIndex < team.getInventory().size()) {
-                        Item selectedItem = team.getInventory().get(itemIndex);
-                        Character target = menu.askItemTarget(team);
-                        if (target != null) {
-                            if (selectedItem instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion && target.getHealthPoint() >= target.getMaxHealthPoint()) {
-                                menu.displayDialogue("\n" + target.getName() + " a déjà tous ses PV !");
+    @Override
+    public void update(float deltaTime) {}
 
-                                break;
-                            }
-                            boolean used = selectedItem.use(target);
-                            if (used) {
-                                team.removeItem(selectedItem);
-                                menu.displayMessage("\n" + target.getName() + " utilise ou s'équipe de " + selectedItem.getName() + " !"); 
-                                if (isTutorial && currentFloor == 2 && elfJoined && !elfHealed && target.getClass().getSimpleName().equals("Elf")) { 
-                                    healed = true;
-                                    String healLine = locManager.getString("TUTO_FLOOR_2_ELF_HEALED_1");
-                                    menu.displayDialogue(healLine); 
-                                } else {
-                                    menu.displayDialogue("\nAppuyez sur Entrée pour continuer.");
-                                }
+    @Override
+    public void onInput(String action) {
+        if ("ESCAPE".equals(action)) {
+            gameContext.popState();
+            return;
+        }
 
-                            } else {
-                                menu.displayDialogue("\n" + target.getName() + " ne peut pas utiliser ça ! C'est réservé à une autre classe...");
-
-                            }
-                        }
+        if ("ENTER".equals(action)) {
+            int selection = menu.getMenuSelection();
+            if (currentState == State.SELECT_ACTION) {
+                if (selection == 0) {
+                    actionChoice = 0;
+                    currentState = State.SELECT_ITEM;
+                    promptItem();
+                } else if (selection == 1) {
+                    actionChoice = 1;
+                    currentState = State.SELECT_TARGET;
+                    promptTarget();
+                } else {
+                    gameContext.popState();
+                }
+            } else if (currentState == State.SELECT_ITEM) {
+                if (selection >= 0 && selection < currentItemList.size()) {
+                    selectedItem = currentItemList.get(selection);
+                    currentState = State.SELECT_TARGET;
+                    promptTarget();
+                } else {
+                    currentState = State.SELECT_ACTION;
+                    promptAction();
+                }
+            } else if (currentState == State.SELECT_TARGET) {
+                if (selection >= 0 && selection < team.getMembers().size()) {
+                    selectedTarget = team.getMembers().get(selection);
+                    if (actionChoice == 0) {
+                        useItem(selectedItem, selectedTarget);
+                    } else if (actionChoice == 1) {
+                        currentState = State.SELECT_SLOT_TO_UNEQUIP;
+                        promptSlot();
                     }
                 } else {
-                    menu.displayDialogue("Le sac à dos est vide ! Impossible d'utiliser un objet.");
-
-                }
-                break;
-
-            case 2:
-                Character unequipTarget = menu.askItemTarget(team);
-                if (unequipTarget != null) {
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot slot = menu.askSlotToUnequip();
-                    if (slot != null) {
-                        boolean success = unequipTarget.unequip(slot, team);
-                        if (success) {
-                            menu.displayDialogue("\n" + unequipTarget.getName() + " retire son équipement et le met dans le sac !");
-                        } else {
-                            menu.displayDialogue("\nAucun équipement, ou le sac est plein !");
-                        }
-
+                    if (actionChoice == 0) {
+                        currentState = State.SELECT_ITEM;
+                        promptItem();
+                    } else {
+                        currentState = State.SELECT_ACTION;
+                        promptAction();
                     }
                 }
-                break;
-
-            case 3:
-                break;
+            } else if (currentState == State.SELECT_SLOT_TO_UNEQUIP) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot slot = null;
+                switch (selection) {
+                    case 0: slot = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot.WEAPON; break;
+                    case 1: slot = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot.CHEST; break;
+                    case 2: slot = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot.JEWELRY; break;
+                }
+                if (slot != null) {
+                    boolean success = selectedTarget.unequip(slot, team);
+                    if (success) {
+                        menu.displayDialogue("\n" + selectedTarget.getName() + " retire son équipement !");
+                    } else {
+                        menu.displayDialogue("\nRien d'équipé ou sac plein.");
+                    }
+                }
+                gameContext.popState();
+            }
         }
-        return healed;
+    }
+
+    private void promptAction() {
+        menu.setMenuRequest("INVENTAIRE", new String[]{"Utiliser un objet", "Déséquiper", "Retour"});
+    }
+
+    private void promptItem() {
+        currentItemList = team.getInventory();
+        if (currentItemList.isEmpty()) {
+            menu.displayDialogue("Le sac est vide !");
+            gameContext.popState();
+            return;
+        }
+        String[] options = new String[currentItemList.size() + 1];
+        for (int i = 0; i < currentItemList.size(); i++) {
+            options[i] = currentItemList.get(i).getName();
+        }
+        options[currentItemList.size()] = "Retour";
+        menu.setMenuRequest("CHOISIR UN OBJET", options);
+    }
+
+    private void promptTarget() {
+        String[] options = new String[team.getMembers().size() + 1];
+        for (int i = 0; i < team.getMembers().size(); i++) {
+            options[i] = team.getMembers().get(i).getName();
+        }
+        options[team.getMembers().size()] = "Retour";
+        menu.setMenuRequest("CIBLE", options);
+    }
+    
+    private void promptSlot() {
+        menu.setMenuRequest("EMPLACEMENT", new String[]{"Arme", "Armure (Torse)", "Bijoux", "Retour"});
+    }
+
+    private void useItem(Item item, Character target) {
+        if (item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion && target.getHealthPoint() >= target.getMaxHealthPoint()) {
+            menu.displayDialogue("\n" + target.getName() + " a déjà tous ses PV !");
+            gameContext.popState();
+            return;
+        }
+        if (item.use(target)) {
+            team.removeItem(item);
+            menu.displayMessage("\n" + target.getName() + " utilise " + item.getName() + " !");
+            
+            // Check for tutorial specific event
+            if (target.getClass().getSimpleName().equals("Elf")) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.ICellEvent event = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.WoundedElfEvent(); // Dummy coords
+                event.onItemUsed(item, target, null);
+            }
+        } else {
+            menu.displayDialogue("\n" + target.getName() + " ne peut pas utiliser ça !");
+        }
+        gameContext.popState();
+    }
+
+    @Override
+    public void exit() {
+        menu.setMenuRequest(null, null);
     }
 }

@@ -5,4 +5,6 @@ public interface GameContext {
     void resumeExploration();
     void goToMainMenu();
     void exitGame();
+    void pushState(fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.state.GameState state);
+    void popState();
 }

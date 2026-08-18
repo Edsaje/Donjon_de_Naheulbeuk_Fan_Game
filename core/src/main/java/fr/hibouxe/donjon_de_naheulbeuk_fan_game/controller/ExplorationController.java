@@ -26,13 +26,8 @@ public class ExplorationController implements GameState {
     private boolean isTutorial;
     private int activeSlot = 1;
     private boolean elfJoined = false;
-    private boolean elfHealed = false;
-    private InventoryController inventoryController;
-    
-    private enum SubState { EXPLORING, PAUSE_MENU, STATUS_MENU, INVENTORY_SELECT_CATEGORY, INVENTORY_SELECT_ITEM, INVENTORY_SELECT_TARGET }
+    private enum SubState { EXPLORING, PAUSE_MENU, STATUS_MENU }
     private SubState subState = SubState.EXPLORING;
-    private int selectedItemIndex = -1;
-    private int selectedCategory = -1;
 
     private ISaveManager saveManager;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager;
@@ -55,7 +50,6 @@ public class ExplorationController implements GameState {
         this.gameContext = gameContext;
         this.saveManager = saveManager;
         this.locManager = locManager;
-        this.inventoryController = new InventoryController(menu, locManager);
     }
 
     public void setCurrentFloor(int floor) {
@@ -85,60 +79,19 @@ public class ExplorationController implements GameState {
         }
     }
 
-    private List<Item> getFilteredInventory(int categoryIndex) {
-        List<Item> filtered = new java.util.ArrayList<>();
-        for (Item item : team.getInventory()) {
-            boolean isEquip = item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment;
-            boolean isUsable = item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion;
-            if (categoryIndex == 0 && isUsable) filtered.add(item);
-            else if (categoryIndex == 1 && isEquip) filtered.add(item);
-            else if (categoryIndex == 2 && !isEquip && !isUsable) filtered.add(item);
-        }
-        return filtered;
-    }
-
     @Override
     public void onInput(String action) {
         if (!running) return;
 
-        if (subState == SubState.INVENTORY_SELECT_CATEGORY) {
-            if ("ENTER".equals(action)) {
-                int categoryIndex = menu.getMenuSelection();
-                if (categoryIndex == 3) {
-                    subState = SubState.EXPLORING;
-                    if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                        ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest(null, null);
-                    }
-                } else {
-                    selectedCategory = categoryIndex;
-                    subState = SubState.INVENTORY_SELECT_ITEM;
-                    
-                    List<Item> filtered = getFilteredInventory(selectedCategory);
-                    String[] options = new String[filtered.size() + 1];
-                    for (int i = 0; i < filtered.size(); i++) {
-                        options[i] = filtered.get(i).getName();
-                    }
-                    options[options.length - 1] = "Retour";
-                    if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                        ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest("OBJETS", options);
-                    }
-                }
-            } else if ("X".equals(action) || "ECHAP".equals(action)) {
-                subState = SubState.EXPLORING;
-                if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                    ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest(null, null);
-                }
-            }
-            return;
-        } else if (subState == SubState.PAUSE_MENU) {
+        if (subState == SubState.PAUSE_MENU) {
             if ("ENTER".equals(action)) {
                 int selection = menu.getMenuSelection();
                 if (selection == 0) { // Sac
-                    handleInventoryAction();
+                    gameContext.pushState(new InventoryController(team, menu, gameContext));
                 } else if (selection == 1) { // Magie
                     menu.displayDialogue("Pas de magie disponible.");
                 } else if (selection == 2) { // Compétences
-                    menu.displayDialogue("Géré par l'interface dédié en combat.");
+                    menu.displayDialogue("Géré par l'interface dédiée en combat.");
                 } else if (selection == 3) { // Status
                     subState = SubState.STATUS_MENU;
                     if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
@@ -152,85 +105,12 @@ public class ExplorationController implements GameState {
                         ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).displaySaveSuccess(1);
                     }
                 } else if (selection == 6) { // Quitter
-                    com.badlogic.gdx.Gdx.app.exit();
+                    gameContext.exitGame();
                 }
             } else if ("X".equals(action) || "ECHAP".equals(action)) {
                 subState = SubState.EXPLORING;
                 if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
                     ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest(null, null);
-                }
-            }
-            return;
-        } else if (subState == SubState.INVENTORY_SELECT_ITEM) {
-            if ("ENTER".equals(action)) {
-                int selection = menu.getMenuSelection();
-                List<Item> filtered = getFilteredInventory(selectedCategory);
-                if (selection == filtered.size()) {
-                    subState = SubState.INVENTORY_SELECT_CATEGORY;
-                    if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                        ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest("CATEGORIES", new String[]{"Consommables", "Equipements", "Camelote", "Retour"});
-                    }
-                } else if (selection >= 0 && selection < filtered.size()) {
-                    Item selected = filtered.get(selection);
-                    selectedItemIndex = team.getInventory().indexOf(selected);
-                    
-                    if (selectedCategory == 2) {
-                        menu.displayDialogue("\nÇa ne sert à rien, c'est juste de la camelote !");
-                    } else {
-                        subState = SubState.INVENTORY_SELECT_TARGET;
-                        String[] options = new String[team.getMembers().size() + 1];
-                        for (int i = 0; i < team.getMembers().size(); i++) {
-                            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character member = team.getMembers().get(i);
-                            options[i] = member.getName() + " (PV: " + member.getHealthPoint() + "/" + member.getMaxHealthPoint() + ")";
-                        }
-                        options[options.length - 1] = "Retour";
-                        if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                            ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest("CIBLE_OBJET", options);
-                        }
-                    }
-                }
-            } else if ("X".equals(action) || "ECHAP".equals(action)) {
-                subState = SubState.INVENTORY_SELECT_CATEGORY;
-                if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                    ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest("CATEGORIES", new String[]{"Consommables", "Equipements", "Camelote", "Retour"});
-                }
-            }
-            return;
-        } else if (subState == SubState.INVENTORY_SELECT_TARGET) {
-            if ("ENTER".equals(action)) {
-                int targetIndex = menu.getMenuSelection();
-                if (targetIndex >= 0 && targetIndex < team.getMembers().size()) {
-                    Character target = team.getMembers().get(targetIndex);
-                    Item selectedItem = team.getInventory().get(selectedItemIndex);
-                    boolean used = selectedItem.use(target);
-                    if (used) {
-                        team.removeItem(selectedItem);
-                        menu.displayMessage("\n" + target.getName() + " utilise " + selectedItem.getName() + " !");
-                        if (isTutorial && currentFloor == 2 && !elfHealed && target.getClass().getSimpleName().equals("Elf")) {
-                            this.elfHealed = true;
-                            menu.displayDialogue(locManager.getString("TUTO_FLOOR_2_ELF_HEALED_1"));
-                            if (maze.getGrid()[1][2].getEvent() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.WoundedElfEvent) {
-                                maze.getGrid()[1][2].getEvent().onItemUsed(selectedItem, target, maze);
-                            }
-                        }
-                    } else {
-                        menu.displayDialogue("\n" + target.getName() + " ne peut pas utiliser ça !");
-                    }
-                }
-                subState = SubState.EXPLORING;
-                if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                    ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest(null, null);
-                }
-            } else if ("X".equals(action) || "ECHAP".equals(action)) {
-                subState = SubState.INVENTORY_SELECT_ITEM;
-                List<Item> filtered = getFilteredInventory(selectedCategory);
-                String[] options = new String[filtered.size() + 1];
-                for (int i = 0; i < filtered.size(); i++) {
-                    options[i] = filtered.get(i).getName();
-                }
-                options[options.length - 1] = "Retour";
-                if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                    ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest("OBJETS", options);
                 }
             }
             return;
@@ -282,7 +162,7 @@ public class ExplorationController implements GameState {
                 menu.displayStatusScreen(team);
                 return false;
             case "MENU_INVENTORY":
-                handleInventoryAction();
+                gameContext.pushState(new InventoryController(team, menu, gameContext));
                 return false;
             case "MENU_EQUIPMENT":
                 menu.displayMessage("Menu d'Equipement non implemente.");
@@ -312,7 +192,7 @@ public class ExplorationController implements GameState {
     }
 
     private boolean checkTutorialScripts(String choice) {
-        if (isTutorial && currentFloor == 2 && elfJoined && !elfHealed) {
+        if (isTutorial && currentFloor == 2 && elfJoined ) {
             if ("ZSQD".contains(choice) || choice.equals("ENTER")) {
                 if (choice.equals("ENTER")) {
                     handleInteraction();
@@ -334,17 +214,6 @@ public class ExplorationController implements GameState {
             maze.moveMonsters(team);
             Cell newCell = maze.getGrid()[team.getX()][team.getY()];
             handleCellEvents(newCell);
-        }
-    }
-
-    private void handleInventoryAction() {
-        if (team.getInventory().isEmpty()) {
-            menu.displayDialogue("Le sac à dos est vide !");
-            return;
-        }
-        subState = SubState.INVENTORY_SELECT_CATEGORY;
-        if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-            ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest("CATEGORIES", new String[]{"Consommables", "Equipements", "Camelote", "Retour"});
         }
     }
 
@@ -452,7 +321,7 @@ public class ExplorationController implements GameState {
     }
 
     private void handleInteraction() {
-        if (isTutorial && currentFloor == 2 && !elfHealed) {
+        if (isTutorial && currentFloor == 2 ) {
             int targetX = team.getX();
             int targetY = team.getY();
             

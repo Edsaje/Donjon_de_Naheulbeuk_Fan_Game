@@ -22,8 +22,33 @@ public class Game implements InputListener, GameContext {
         this.saveManager = saveManager;
         initMainMenu();
     }
-    
+    private java.util.Stack<GameState> stateStack = new java.util.Stack<>();
+
+    @Override
+    public void pushState(GameState newState) {
+        if (currentState != null) {
+            stateStack.push(currentState);
+        }
+        currentState = newState;
+        if (currentState != null) {
+            currentState.enter();
+        }
+    }
+
+    @Override
+    public void popState() {
+        if (currentState != null) {
+            currentState.exit();
+        }
+        if (!stateStack.isEmpty()) {
+            currentState = stateStack.pop();
+        } else {
+            currentState = null;
+        }
+    }
+
     public void changeState(GameState newState) {
+        stateStack.clear();
         if (currentState != null) {
             currentState.exit();
         }
