@@ -20,8 +20,7 @@ public class BattleController implements GameState {
     private Runnable onVictory;
     private Runnable onDefeat;
     private Runnable onFlee;
-    private Character[] turnOrderCache = new Character[20];
-    private int turnOrderSize = 0;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.BattleEngine engine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.BattleEngine();
     private int currentTurnIndex = 0;
     private Character currentCombatant;
 
@@ -50,40 +49,19 @@ public class BattleController implements GameState {
     @Override
     public void update(float deltaTime) {
         if (state == BattleState.ROUND_START) {
-            turnOrderSize = 0;
-            for (Character c : team.getMembers()) {
-                if (c.getHealthPoint() > 0 && turnOrderSize < 20) {
-                    turnOrderCache[turnOrderSize++] = c;
-                }
-            }
-            for (Character c : monsters) {
-                if (c.getHealthPoint() > 0 && turnOrderSize < 20) {
-                    turnOrderCache[turnOrderSize++] = c;
-                }
-            }
-            
-            // Tri d'initiative (Tri à bulles pour 0 allocation)
-            for (int i = 0; i < turnOrderSize - 1; i++) {
-                for (int j = 0; j < turnOrderSize - i - 1; j++) {
-                    if (turnOrderCache[j].getSpeed() < turnOrderCache[j + 1].getSpeed()) {
-                        Character temp = turnOrderCache[j];
-                        turnOrderCache[j] = turnOrderCache[j + 1];
-                        turnOrderCache[j + 1] = temp;
-                    }
-                }
-            }
+            engine.initRound(team, monsters);
             
             currentTurnIndex = 0;
             state = BattleState.NEXT_COMBATANT;
         } else if (state == BattleState.NEXT_COMBATANT) {
             if (checkEndCondition()) return;
 
-            if (currentTurnIndex >= turnOrderSize) {
+            if (currentTurnIndex >= engine.getTurnOrderSize()) {
                 state = BattleState.ROUND_START;
                 return;
             }
 
-            currentCombatant = turnOrderCache[currentTurnIndex];
+            currentCombatant = engine.getTurnOrderCache()[currentTurnIndex];
             currentTurnIndex++;
 
             if (currentCombatant.getHealthPoint() <= 0) {
@@ -130,18 +108,10 @@ public class BattleController implements GameState {
     }
 
     private void executeEnemyTurn() {
-        menu.displayMessage(currentCombatant.getName() + " attaque ! (IA)");
-        
-        Character target = null;
-        for (Character p : team.getMembers()) {
-            if (p.getHealthPoint() > 0) {
-                target = p;
-                break;
-            }
-        }
-        if (target != null) {
-            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatResult result = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatSystem.executeAttack(currentCombatant, target, true);
-            menu.displayMessage(target.getName() + " perd " + result.getDamage() + " PV !");
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.CombatResult result = engine.executeAIAttack(currentCombatant, team);
+        menu.displayMessage(result.getMessage());
+        if (result.getDamageMessage() != null) {
+            menu.displayMessage(result.getDamageMessage());
         }
         
         state = BattleState.NEXT_COMBATANT;

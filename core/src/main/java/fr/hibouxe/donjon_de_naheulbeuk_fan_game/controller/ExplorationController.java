@@ -94,24 +94,18 @@ public class ExplorationController implements GameState {
                     menu.displayDialogue("Géré par l'interface dédiée en combat.");
                 } else if (selection == 3) { // Status
                     subState = SubState.STATUS_MENU;
-                    if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                        ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).displayStatusScreen(team);
-                    }
+                    menu.displayStatusScreen(team);
                 } else if (selection == 4) { // Options
                     menu.displayDialogue("Les options sont accessibles via la touche M.");
                 } else if (selection == 5) { // Sauvegarder
-                    if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                        saveManager.saveQuickSave(1, team, maze, currentFloor);
-                        ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).displaySaveSuccess(1);
-                    }
+                    saveManager.saveQuickSave(1, team, maze, currentFloor);
+                    menu.displaySaveSuccess(1);
                 } else if (selection == 6) { // Quitter
                     gameContext.exitGame();
                 }
             } else if ("X".equals(action) || "ECHAP".equals(action)) {
                 subState = SubState.EXPLORING;
-                if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                    ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).setMenuRequest(null, null);
-                }
+                menu.setMenuRequest(null, null);
             }
             return;
         }
@@ -321,35 +315,17 @@ public class ExplorationController implements GameState {
     }
 
     private void handleInteraction() {
-        if (isTutorial && currentFloor == 2 ) {
-            int targetX = team.getX();
-            int targetY = team.getY();
-            
-            if (team.getFacingDirection() == 1) targetY -= 1; // Nord
-            else if (team.getFacingDirection() == 0) targetY += 1; // Sud
-            else if (team.getFacingDirection() == 2) targetX -= 1; // Ouest
-            else if (team.getFacingDirection() == 3) targetX += 1; // Est
-            
-            if (targetX == 1 && targetY == 2) {
-                if (!elfJoined) {
-                    interactWithElf();
-                }
-            }
-        }
-    }
-    
-    private void interactWithElf() {
-        if (!elfJoined) {
-            menu.displayDialogue("Ranger : He l'Elfe, leve-toi, on doit sortir d'ici.");
-            menu.displayDialogue("Elfe : *gemissement* J'ai trop mal a la tete... je peux a peine marcher.");
-            menu.displayDialogue("Ranger : Bon, rejoins le groupe, mais il va falloir te rafistoler avant qu'on bouge d'ici.");
-            
-            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Elf elfe = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Elf();
-            elfe.setHealthPoint(1);
-            team.getMembers().add(elfe);
-            elfJoined = true;
-            menu.displayDialogue("\n[L'Elfe a rejoint le groupe, mais elle est gravement blessee !]");
-            menu.clearMessages();
+        int targetX = team.getX();
+        int targetY = team.getY();
+        
+        if (team.getFacingDirection() == 1) targetY -= 1; // Nord
+        else if (team.getFacingDirection() == 0) targetY += 1; // Sud
+        else if (team.getFacingDirection() == 2) targetX -= 1; // Ouest
+        else if (team.getFacingDirection() == 3) targetX += 1; // Est
+        
+        if (targetX >= 0 && targetX < maze.getWidth() && targetY >= 0 && targetY < maze.getHeight()) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell targetCell = maze.getGrid()[targetX][targetY];
+            handleCellEvents(targetCell);
         }
     }
 

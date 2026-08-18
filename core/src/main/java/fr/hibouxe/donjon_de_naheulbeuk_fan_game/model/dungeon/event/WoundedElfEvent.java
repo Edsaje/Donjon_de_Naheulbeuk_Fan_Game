@@ -1,7 +1,7 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IMenuView;
+
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;

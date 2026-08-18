@@ -30,6 +30,7 @@ public class HubController implements GameState {
     public void enter() {
         menu.displayMessage("\n=== LE CAMPEMENT (HubController) ===");
         menu.displayMessage("La compagnie se repose autour d'un feu de camp mal allumé par l'Elfe...");
+        menu.setMenuRequest("Le Campement", new String[]{"Aller au Donjon", "Statistiques", "Sauvegarder", "Quitter"});
     }
 
     @Override
@@ -37,29 +38,32 @@ public class HubController implements GameState {
 
     @Override
     public void onInput(String action) {
-        int choice = menu.askHubChoice();
-        switch (choice) {
-            case 1:
-                menu.displayMessage("Vous rangez vos affaires et vous dirigez vers l'entrée du gouffre...");
-                break;
-            case 2:
-                menu.displayDialogue("\n[Le menu Statistiques détaillé sera disponible dans une prochaine version !]");
-                break;
-            case 3:
-                // Note: Inventory not supported here in GUI yet
-                break;
-            case 4:
-                boolean saved = saveManager.saveHubSave(activeSlot, team, 1);
-                if (saved) {
-                    menu.displayMessage("\n[Sauvegarde] Progression de la Compagnie enregistrée avec succès dans le Slot " + activeSlot + " !");
-                } else {
-                    menu.displayMessage("\n[Erreur] Échec de la sauvegarde.");
-                }
-                break;
-            case 5:
-                menu.displayMessage("Fin de l'aventure ! Le Nain pleure car il n'a pas eu son or.");
-                System.exit(0);
-                break;
+        if ("ENTER".equals(action)) {
+            int choice = menu.getMenuSelection();
+            menu.resetMenuSelection();
+            switch (choice) {
+                case 0:
+                    menu.displayMessage("Vous rangez vos affaires et vous dirigez vers l'entrée du gouffre...");
+                    // Transition non implémentée (nécessite GameContext)
+                    break;
+                case 1:
+                    menu.displayDialogue("\n[Le menu Statistiques détaillé sera disponible dans une prochaine version !]");
+                    menu.setMenuRequest("Le Campement", new String[]{"Aller au Donjon", "Statistiques", "Sauvegarder", "Quitter"});
+                    break;
+                case 2:
+                    boolean saved = saveManager.saveHubSave(activeSlot, team, 1);
+                    if (saved) {
+                        menu.displayMessage("\n[Sauvegarde] Progression enregistrée avec succès dans le Slot " + activeSlot + " !");
+                    } else {
+                        menu.displayMessage("\n[Erreur] Échec de la sauvegarde.");
+                    }
+                    menu.setMenuRequest("Le Campement", new String[]{"Aller au Donjon", "Statistiques", "Sauvegarder", "Quitter"});
+                    break;
+                case 3:
+                    menu.displayMessage("Fin de l'aventure ! Le Nain pleure car il n'a pas eu son or.");
+                    System.exit(0);
+                    break;
+            }
         }
     }
 
