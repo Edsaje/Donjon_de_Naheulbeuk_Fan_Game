@@ -27,4 +27,7 @@ public interface IMenuView {
     String askPlayerString();
     int getMenuSelection();
     void resetMenuSelection();
+    void setMenuRequest(String title, String[] options);
+    void displaySaveSuccess(int slot);
+    void displaySaveError();
 }

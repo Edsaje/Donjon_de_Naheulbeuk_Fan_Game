@@ -137,12 +137,9 @@ public class BattleController implements GameState {
     @Override
     public void onInput(String action) {
         if ("ENTER".equals(action)) {
-            if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp app = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) menu;
-                int selection = app.getMenuSelection();
-                app.setMenuRequest(null, null); // Close the action menu
-                onActionSelected(selection);
-            }
+            int selection = menu.getMenuSelection();
+            menu.setMenuRequest(null, null);
+            onActionSelected(selection);
         }
     }
     

@@ -1,1 +1,2 @@
+include 'core', 'desktop'
 rootProject.name = 'Donjon_de_Naheulbeuk_Fan_Game'

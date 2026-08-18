@@ -118,6 +118,11 @@ public class Game implements InputListener, GameContext {
     }
 
     @Override
+    public void exitGame() {
+        System.exit(0);
+    }
+
+    @Override
     public void triggerBattle(java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters, Runnable onVictory, Runnable onDefeat, Runnable onFlee) {
         if (currentState instanceof ExplorationController) {
             suspendedExplorationState = currentState;

@@ -198,7 +198,12 @@ public abstract class Dungeon implements Serializable {
      */
     public abstract boolean prepareFloor(int floorNumber, Team team);
 
-
+    /**
+     * Retourne les dialogues d'introduction d'un étage.
+     * @param floorNumber Numéro de l'étage
+     * @return Liste des textes à afficher
+     */
+    public abstract java.util.List<String> getFloorIntroDialogues(int floorNumber);
 
     /**
      * Vérifie si les conditions de complétion de l'expédition sont remplies (ex: Boss vaincu).

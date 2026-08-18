@@ -19,4 +19,6 @@ public interface ICombatView {
     Character askItemTarget(Team team);
     void displayDialogue(String message);
     void clearMessages();
+    int getMenuSelection();
+    void setMenuRequest(String title, String[] options);
 }

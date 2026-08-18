@@ -76,65 +76,12 @@ public class ExplorationController implements GameState {
             floorIntroPlayed = true;
         }
     }
-
     private void playFloorIntro(int floorNumber) {
-        java.util.List<String> dialogues = new java.util.ArrayList<>();
-        if (maze instanceof TutorialDungeon) {
-            switch (floorNumber) {
-                case 1:
-                    dialogues.add("\n=== CHAPITRE 0 : Fuite de la taverne ===");
-                    dialogues.add("Ranger : Aïe... J'ai un mal de crâne effroyable...");
-                    dialogues.add("Ranger : Où est-ce que je suis ? J'étais tellement occupé à courir que je me suis perdu ! Je dois retrouver les autres !");
-                    dialogues.add("Utilisez Z, Q, S, D (ou les flèches) pour vous déplacer dans le couloir.");
-                    dialogues.add("Atteignez l'escalier au bout du chemin pour avancer.");
-                    break;
-                case 2:
-                    dialogues.add("Ranger : Hey mais c'est l'Elfe ! Elle est par terre...");
-                    dialogues.add("Ranger : Je ferai mieux d'aller voir !");
-                    break;
-                case 3:
-                    dialogues.add("Voleur : Chuuut ! Restez dans l'ombre ! On ne voit rien avec ce brouillard...");
-                    dialogues.add("Voleur : Il y a une patrouille d'Orques Géants juste devant. Ils sont trop nombreux !");
-                    dialogues.add("Ranger : Comment on passe alors ?");
-                    dialogues.add("Voleur : On va utiliser la Ruse !");
-                    dialogues.add("[UI Tuto] : Avancez pour dissiper le brouillard de guerre.");
-                    dialogues.add("[UI Tuto] : La Minimap en haut à droite affiche les ennemis en rouge. Évitez-les !");
-                    dialogues.add("[UI Tuto] : Si un combat inévitable se déclenche, utilisez la commande [Fuir] !");
-                    break;
-                case 4:
-                    dialogues.add("Ogre : Chprouk ! Grrrumph !");
-                    dialogues.add("Magicienne : Non, tu ne peux pas le manger ! Écoutez-moi, bande de rustres...");
-                    dialogues.add("Magicienne : Mes réserves d'énergie astrale sont complètement épuisées et ma robe est pleine de poussière. Il nous faut faire une pause !");
-                    dialogues.add("Ranger : Il faut qu'on fasse le point sur notre situation stratégique, on ne sait pas ce qui nous attend au bout de ce couloir.");
-                    dialogues.add("Elfe : C'est quoi la stratélique ?");
-                    dialogues.add("Ranger : Misère...");
-                    dialogues.add("[UI Tuto] : Regardez le panneau sur la droite de l'écran pour suivre l'état de la compagnie.");
-                    dialogues.add("[UI Tuto] : Vous pouvez y voir les Points de Vie (PV) et le Mana (PM) de chaque héros en temps réel.");
-                    break;
-                case 5:
-                    dialogues.add("[Bruits métalliques et cris de guerre depuis la salle suivante...]");
-                    dialogues.add("Nain : Prends ça dans les rotules, face de pet !");
-                    dialogues.add("Barbare : CROM ! Taper la porte ! Taper les gardes !");
-                    dialogues.add("Ranger : Ils ont trouvé la sortie ! Mais ils sont encerclés, il faut qu'on les aide !");
-                    dialogues.add("[UI Tuto] : Utilisez les compétences spécifiques de chaque héros pour prendre l'avantage en combat.");
-                    break;
+        java.util.List<String> dialogues = maze.getFloorIntroDialogues(floorNumber);
+        if (dialogues != null) {
+            for (String d : dialogues) {
+                menu.displayDialogue(d);
             }
-        } else if (maze instanceof NaheulbeukDungeon) {
-            if (floorNumber == 4) {
-                dialogues.add("Ranger : On est presque devant le bureau de Zangdar ! Préparez vos armes !");
-            } else if (floorNumber == 5) {
-                dialogues.add("=== ÉTAGE 5 : L'ANTICHAMBRE DU BUREAU DE ZANGDAR ===");
-                dialogues.add("Magicienne : Attention ! C'est un Golem de Fer ! C'est une machine à baffes insensible aux armes simples !");
-                dialogues.add("Nain : YAAAAAAAAAH ! (Il charge la hache en avant, frappe l'acier et se tord les poignets !)");
-                dialogues.add("Zangdar (depuis son balcon) : Insolents ! Misérables cloportes ! Vous n'emporterez jamais la statuette de Gladeulfeurh ! Golem de fer, réduis-les en bouillie !");
-            } else {
-                dialogues.add("=== DESCENTE à L'ÉTAGE " + floorNumber + " ===");
-                dialogues.add("Narrateur : La compagnie avance prudemment dans les ténèbres...");
-            }
-        }
-        
-        for (String d : dialogues) {
-            menu.displayDialogue(d);
         }
     }
 

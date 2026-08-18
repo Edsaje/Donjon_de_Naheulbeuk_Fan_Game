@@ -65,6 +65,23 @@ public class NaheulbeukDungeon extends Dungeon {
     }
 
     @Override
+    public java.util.List<String> getFloorIntroDialogues(int floorNumber) {
+        java.util.List<String> dialogues = new java.util.ArrayList<>();
+        if (floorNumber == 4) {
+            dialogues.add("Ranger : On est presque devant le bureau de Zangdar ! Préparez vos armes !");
+        } else if (floorNumber == 5) {
+            dialogues.add("=== ÉTAGE 5 : L'ANTICHAMBRE DU BUREAU DE ZANGDAR ===");
+            dialogues.add("Magicienne : Attention ! C'est un Golem de Fer ! C'est une machine à baffes insensible aux armes simples !");
+            dialogues.add("Nain : YAAAAAAAAAH ! (Il charge la hache en avant, frappe l'acier et se tord les poignets !)");
+            dialogues.add("Zangdar (depuis son balcon) : Insolents ! Misérables cloportes ! Vous n'emporterez jamais la statuette de Gladeulfeurh ! Golem de fer, réduis-les en bouillie !");
+        } else {
+            dialogues.add("=== DESCENTE À L'ÉTAGE " + floorNumber + " ===");
+            dialogues.add("Narrateur : La compagnie avance prudemment dans les ténèbres...");
+        }
+        return dialogues;
+    }
+
+    @Override
     public boolean isExpeditionComplete(int floorNumber) {
         if (floorNumber == 5) {
             // Check if Golem is dead. It's the only monster left.
