@@ -400,7 +400,7 @@ public class HUDRenderer implements Disposable {
         if (messages == null || messages.isEmpty()) return;
 
         // Extraire le dernier message
-        String currentMessage = messages.get(messages.size() - 1);
+        String currentMessage = messages.get(0);
         String speakerName = null;
         String dialogueText = currentMessage;
 
