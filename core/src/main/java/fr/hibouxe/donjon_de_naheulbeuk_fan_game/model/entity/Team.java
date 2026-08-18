@@ -185,8 +185,7 @@ public class Team implements Serializable {
         if (candidates.isEmpty()) {
             return null;
         }
-        java.util.Random random = new java.util.Random();
-        return candidates.get(random.nextInt(candidates.size()));
+        return candidates.get(this.randomProvider.nextInt(candidates.size()));
     }
 }
 
