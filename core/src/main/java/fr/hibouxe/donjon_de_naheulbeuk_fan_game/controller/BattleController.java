@@ -4,19 +4,17 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.ICombatView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.state.GameState;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.BattleEngine.BattleState;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 
 public class BattleController implements GameState {
-    public enum BattleState { INIT, ROUND_START, NEXT_COMBATANT, PLAYER_ACTION_CHOICE, EXECUTING_ACTION, ENEMY_TURN, RESOLVE, END }
-
     private Team team;
     private List<Character> monsters;
     private ICombatView menu;
     
-    private BattleState state = BattleState.INIT;
     private Runnable onVictory;
     private Runnable onDefeat;
     private Runnable onFlee;
@@ -46,25 +44,29 @@ public class BattleController implements GameState {
     @Override
     public void enter() {
         menu.displayBattleStatus(monsters, team);
-        this.state = BattleState.ROUND_START;
+        engine.setState(BattleState.ROUND_START);
     }
     
     @Override
     public void update(float deltaTime) {
+        BattleState state = engine.getState();
         if (state == BattleState.ROUND_START) {
             engine.initRound(team, monsters);
             
             currentTurnIndex = 0;
-            state = BattleState.NEXT_COMBATANT;
+            engine.setState(BattleState.NEXT_COMBATANT);
         } else if (state == BattleState.NEXT_COMBATANT) {
-            if (checkEndCondition()) return;
-
-            if (currentTurnIndex >= engine.getTurnOrderSize()) {
-                state = BattleState.ROUND_START;
+            if (engine.checkEndCondition()) {
+                handleBattleEnd();
                 return;
             }
 
-            currentCombatant = engine.getTurnOrderCache()[currentTurnIndex];
+            if (currentTurnIndex >= engine.getTurnOrderSize()) {
+                engine.setState(BattleState.ROUND_START);
+                return;
+            }
+
+            currentCombatant = engine.getCombatant(currentTurnIndex);
             currentTurnIndex++;
 
             if (currentCombatant.getHealthPoint() <= 0) {
@@ -72,37 +74,22 @@ public class BattleController implements GameState {
             }
 
             if (team.getMembers().contains(currentCombatant)) {
-                state = BattleState.PLAYER_ACTION_CHOICE;
+                engine.setState(BattleState.PLAYER_ACTION_CHOICE);
                 promptPlayerAction();
             } else {
-                state = BattleState.ENEMY_TURN;
+                engine.setState(BattleState.ENEMY_TURN);
                 executeEnemyTurn();
             }
         }
     }
     
-    private boolean checkEndCondition() {
-        boolean allMonstersDead = true;
-        for (Character m : monsters) {
-            if (m.getHealthPoint() > 0) allMonstersDead = false;
-        }
-        if (allMonstersDead) {
-            state = BattleState.END;
+    private void handleBattleEnd() {
+        if (engine.isVictory()) {
             menu.displayVictory();
             if (onVictory != null) onVictory.run();
-            return true;
-        }
-
-        boolean allPlayersDead = true;
-        for (Character p : team.getMembers()) {
-            if (p.getHealthPoint() > 0) allPlayersDead = false;
-        }
-        if (allPlayersDead) {
-            state = BattleState.END;
+        } else {
             if (onDefeat != null) onDefeat.run();
-            return true;
         }
-        return false;
     }
 
     private void promptPlayerAction() {
@@ -117,7 +104,7 @@ public class BattleController implements GameState {
             menu.displayMessage(result.getDamageMessage());
         }
         
-        state = BattleState.NEXT_COMBATANT;
+        engine.setState(BattleState.NEXT_COMBATANT);
     }
 
     @Override
@@ -130,7 +117,7 @@ public class BattleController implements GameState {
     }
     
     public void onActionSelected(int index) {
-        state = BattleState.EXECUTING_ACTION;
+        engine.setState(BattleState.EXECUTING_ACTION);
         if (index == 0) {
             // Attaque
             Character target = null;
@@ -144,19 +131,19 @@ public class BattleController implements GameState {
                 menu.displayMessage(currentCombatant.getName() + " attaque " + target.getName() + " !");
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatResult result = this.combatEngine.executeAttack(currentCombatant, target, false);
             }
-            state = BattleState.NEXT_COMBATANT;
+            engine.setState(BattleState.NEXT_COMBATANT);
         } else if (index == 1) {
             menu.displayMessage("Compétence non implémentée.");
-            state = BattleState.NEXT_COMBATANT;
+            engine.setState(BattleState.NEXT_COMBATANT);
         } else if (index == 2) {
             menu.displayMessage("Objet (Mock partiel).");
-            state = BattleState.NEXT_COMBATANT;
+            engine.setState(BattleState.NEXT_COMBATANT);
         } else if (index == 3) {
             menu.displayMessage("Vous fuyez lâchement !");
-            state = BattleState.END;
+            engine.setState(BattleState.END);
             if (onFlee != null) onFlee.run(); // Fleeing
         } else {
-            state = BattleState.NEXT_COMBATANT;
+            engine.setState(BattleState.NEXT_COMBATANT);
         }
     }
 

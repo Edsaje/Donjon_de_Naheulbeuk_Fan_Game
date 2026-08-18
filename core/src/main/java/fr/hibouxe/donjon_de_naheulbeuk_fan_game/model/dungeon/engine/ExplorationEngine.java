@@ -3,6 +3,8 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EventResult;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MoveResult;
 
 public class ExplorationEngine {
     private Dungeon maze;
@@ -17,7 +19,7 @@ public class ExplorationEngine {
         this.maze = maze;
     }
 
-    public boolean processPlayerMove(int deltaX, int deltaY) {
+    public MoveResult processPlayerMove(int deltaX, int deltaY) {
         int targetX = team.getX() + deltaX;
         int targetY = team.getY() + deltaY;
 
@@ -25,7 +27,8 @@ public class ExplorationEngine {
             Cell targetCell = maze.getGrid()[targetX][targetY];
 
             if (targetCell.hasBlockingEvent()) {
-                return false;
+                EventResult result = targetCell.getEvent().trigger(team);
+                return new MoveResult(MoveResult.MoveStatus.EVENT_TRIGGERED, result);
             }
 
             if (targetCell.isWalkable()) {
@@ -34,9 +37,10 @@ public class ExplorationEngine {
                 if (!targetCell.hasMonster() && !targetCell.hasStairs()) {
                     maze.moveMonsters(team);
                 }
-                return true;
+                return new MoveResult(MoveResult.MoveStatus.SUCCESS);
             }
         }
-        return false;
+        return new MoveResult(MoveResult.MoveStatus.BLOCKED);
     }
 }
+

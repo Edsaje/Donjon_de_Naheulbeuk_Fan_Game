@@ -37,6 +37,17 @@ public class LocalizationManager {
         }
     }
 
+    public String getString(String key, Object... args) {
+        if (properties.isEmpty()) {
+            loadLanguage(currentLanguage);
+        }
+        String template = properties.getProperty(key, "[" + key + "]");
+        if (args != null && args.length > 0) {
+            return String.format(template, args);
+        }
+        return template;
+    }
+
     public String getString(String key) {
         if (properties.isEmpty()) {
             loadLanguage(currentLanguage);

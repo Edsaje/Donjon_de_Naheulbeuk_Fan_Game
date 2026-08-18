@@ -31,7 +31,8 @@ public class ExplorationController implements GameState {
 
     private ISaveManager saveManager;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager;
-    private long lastMoveTime = 0;
+    private float moveTimer = 0.25f;
+    private final float moveCooldown = 0.25f;
 
     private GameContext gameContext;
 
@@ -117,14 +118,14 @@ public class ExplorationController implements GameState {
             return;
         }
 
-        if (System.currentTimeMillis() - lastMoveTime < 250) {
+        if (moveTimer < moveCooldown) {
             return;
         }
 
         boolean moved = handleMovementAction(action);
 
         if (moved) {
-            lastMoveTime = System.currentTimeMillis();
+            moveTimer = 0.0f;
             handlePostMovement();
             maze.updateFogOfWar(team.getX(), team.getY(), 3);
             view.display(maze, team, currentFloor);
@@ -189,17 +190,6 @@ public class ExplorationController implements GameState {
     }
 
     private boolean checkTutorialScripts(String choice) {
-        if (isTutorial && currentFloor == 2 && elfJoined ) {
-            if ("ZSQD".contains(choice) || choice.equals("ENTER")) {
-                if (choice.equals("ENTER")) {
-                    handleInteraction();
-                } else {
-                    menu.displayDialogue("\nL'Elfe est trop blessee pour avancer. Appuyez sur ECHAP pour ouvrir le menu, allez dans SAC, et utilisez la Potion de Soin sur l'Elfe.");
-                    menu.clearMessages();
-                }
-                return true;
-            }
-        }
         return false;
     }
 
@@ -249,13 +239,13 @@ public class ExplorationController implements GameState {
             if (take) {
                 boolean added = team.addItem(item);
                 if (added) {
-                    menu.displayMessage("\n" + item.getName() + " ramasse(e), esperons que le Nain ne vole rien !");
+                    menu.displayMessage(locManager.getString("ITEM_PICKUP", item.getName()));
                     currentCell.setItem(null); 
                 } else {
-                    menu.displayMessage("\nJe crois que le Nain essaye encore de porter trop d'objets !");
+                    menu.displayMessage(locManager.getString("INVENTORY_FULL"));
                 }
             } else {
-                menu.displayMessage("\nVous laissez le coffre intact.");
+                menu.displayMessage(locManager.getString("ITEM_LEAVE"));
             }
         }
 
@@ -289,25 +279,17 @@ public class ExplorationController implements GameState {
     }
 
     public boolean tryMove(int deltaX, int deltaY) {
-        int targetX = team.getX() + deltaX;
-        int targetY = team.getY() + deltaY;
-        
-        if (targetX >= 0 && targetX < maze.getWidth() && targetY >= 0 && targetY < maze.getHeight()) {
-            Cell targetCell = maze.getGrid()[targetX][targetY];
-            
-            if (targetCell.hasBlockingEvent()) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EventResult result = targetCell.getEvent().trigger(team);
-                if (result != null && result.getDialogsToDisplay() != null) {
-                    for (String d : result.getDialogsToDisplay()) {
-                        menu.displayDialogue(d);
-                    }
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MoveResult result = engine.processPlayerMove(deltaX, deltaY);
+        if (result.getStatus() == fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MoveResult.MoveStatus.EVENT_TRIGGERED) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EventResult eResult = result.getEventResult();
+            if (eResult != null && eResult.getDialogsToDisplay() != null) {
+                for (String d : eResult.getDialogsToDisplay()) {
+                    menu.displayDialogue(d);
                 }
-                return false;
             }
-            
-            return engine.processPlayerMove(deltaX, deltaY);
+            return false;
         }
-        return false;
+        return result.getStatus() == fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MoveResult.MoveStatus.SUCCESS;
     }
 
     private void handleInteraction() {
@@ -326,7 +308,9 @@ public class ExplorationController implements GameState {
     }
 
     @Override
-    public void update(float deltaTime) {}
+    public void update(float deltaTime) {
+        moveTimer += deltaTime;
+    }
 
     @Override
     public void exit() {
