@@ -94,9 +94,9 @@ public class InventoryController implements GameState {
                 if (slot != null) {
                     boolean success = selectedTarget.unequip(slot, team);
                     if (success) {
-                        menu.displayDialogue("\n" + selectedTarget.getName() + " retire son Ã©quipement !");
+                        menu.displayDialogue("\n" + selectedTarget.getName() + " retire son ÃƒÂ©quipement !");
                     } else {
-                        menu.displayDialogue("\nRien d'Ã©quipÃ© ou sac plein.");
+                        menu.displayDialogue("\nRien d'ÃƒÂ©quipÃƒÂ© ou sac plein.");
                     }
                 }
                 gameContext.popState();
@@ -105,7 +105,7 @@ public class InventoryController implements GameState {
     }
 
     private void promptAction() {
-        menu.setMenuRequest("INVENTAIRE", new String[]{"Utiliser un objet", "DÃ©sÃ©quiper", "Retour"});
+        menu.setMenuRequest("INVENTAIRE", new String[]{"Utiliser un objet", "DÃƒÂ©sÃƒÂ©quiper", "Retour"});
     }
 
     private void promptItem() {
@@ -138,7 +138,7 @@ public class InventoryController implements GameState {
 
     private void useItem(Item item, Character target) {
         if (item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion && target.getHealthPoint() >= target.getMaxHealthPoint()) {
-            menu.displayDialogue("\n" + target.getName() + " a dÃ©jÃ  tous ses PV !");
+            menu.displayDialogue("\n" + target.getName() + " a dÃƒÂ©jÃƒÂ  tous ses PV !");
             gameContext.popState();
             return;
         }
@@ -148,12 +148,15 @@ public class InventoryController implements GameState {
             
             // Check for tutorial specific event
             if (target.getClass().getSimpleName().equals("Elf")) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.ICellEvent event = maze.getGrid()[team.getX()][team.getY()].getEvent();
-                if (event != null) 
-                event.onItemUsed(item, target, maze);
+                for (int x=0; x<maze.getWidth(); x++) {
+                    for (int y=0; y<maze.getHeight(); y++) {
+                        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.ICellEvent e = maze.getGrid()[x][y].getEvent();
+                        if (e != null) e.onItemUsed(item, target, maze);
+                    }
+                }
             }
         } else {
-            menu.displayDialogue("\n" + target.getName() + " ne peut pas utiliser Ã§a !");
+            menu.displayDialogue("\n" + target.getName() + " ne peut pas utiliser ÃƒÂ§a !");
         }
         gameContext.popState();
     }

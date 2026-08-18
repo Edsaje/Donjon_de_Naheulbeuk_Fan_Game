@@ -156,8 +156,8 @@ private boolean prepareFloor1(Team team) {
         // Ajouter l'Ã©vÃ©nement de l'Elfe
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.WoundedElfEvent elfEvent = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.WoundedElfEvent();
         this.getGrid()[1][2].setEvent(elfEvent);
-        this.getGrid()[1][3].setEvent(elfEvent);
-        this.getGrid()[2][2].setEvent(elfEvent);
+        // Removed 1,3
+        // Removed 2,2
         
         return false;
     }
