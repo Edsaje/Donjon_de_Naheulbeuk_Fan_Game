@@ -2,22 +2,56 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 public class NaheulbeukDungeon extends Dungeon {
 
+    private final Map<Integer, FloorBlueprint> blueprints = new HashMap<>();
+
     public NaheulbeukDungeon() {
-        super(21, 21); // Taille de base (qui pourra s'étendre)
+        super(21, 21); // Taille de base
+        initBlueprints();
+    }
+
+    private void initBlueprints() {
+        // Floor 4 config
+        FloorBlueprint f4 = new FloorBlueprint(29, 8, 3, 1);
+        f4.getIntroDialogues().add("Ranger : On est presque devant le bureau de Zangdar ! Préparez vos armes !");
+        blueprints.put(4, f4);
+
+        // Floor 5 config
+        FloorBlueprint f5 = new FloorBlueprint(31, 0, 0, 0);
+        f5.setBossType("Golem");
+        f5.getIntroDialogues().add("=== ÉTAGE 5 : L'ANTICHAMBRE DU BUREAU DE ZANGDAR ===");
+        f5.getIntroDialogues().add("Magicienne : Attention ! C'est un Golem de Fer ! C'est une machine à baffes insensible aux armes simples !");
+        f5.getIntroDialogues().add("Nain : YAAAAAAAAAH ! (Il charge la hache en avant, frappe l'acier et se tord les poignets !)");
+        f5.getIntroDialogues().add("Zangdar (depuis son balcon) : Insolents ! Misérables cloportes ! Vous n'emporterez jamais la statuette de Gladeulfeurh ! Golem de fer, réduis-les en bouillie !");
+        blueprints.put(5, f5);
+    }
+
+    private FloorBlueprint getBlueprintForFloor(int floorNumber) {
+        if (blueprints.containsKey(floorNumber)) {
+            return blueprints.get(floorNumber);
+        }
+        // Default generated blueprint
+        FloorBlueprint bp = new FloorBlueprint(21 + (floorNumber * 2), 5 + floorNumber, 3, 1);
+        bp.getIntroDialogues().add("=== DESCENTE À L'ÉTAGE " + floorNumber + " ===");
+        bp.getIntroDialogues().add("Narrateur : La compagnie avance prudemment dans les ténèbres...");
+        return bp;
     }
 
     @Override
     public boolean prepareFloor(int floorNumber, Team team) {
-        // 1. Adapter la taille selon l'étage
-        int newSize = 21 + (floorNumber * 2); // De plus en plus grand !
-        this.setWidth(newSize);
-        this.setHeight(newSize);
-        this.setGrid(new Cell[newSize][newSize]);
-        for (int x = 0; x < newSize; x++) {
-            for (int y = 0; y < newSize; y++) {
+        FloorBlueprint bp = getBlueprintForFloor(floorNumber);
+
+        // 1. Adapter la taille
+        this.setWidth(bp.getSize());
+        this.setHeight(bp.getSize());
+        this.setGrid(new Cell[bp.getSize()][bp.getSize()]);
+        for (int x = 0; x < bp.getSize(); x++) {
+            for (int y = 0; y < bp.getSize(); y++) {
                 this.getGrid()[x][y] = new Cell(x, y);
             }
         }
@@ -25,81 +59,47 @@ public class NaheulbeukDungeon extends Dungeon {
         // 2. Générer la structure
         generatePMDDungeon();
 
-        // 3. Placer l'équipe au point de départ
+        // 3. Placer l'équipe
         int[] startPos = getFirstWalkablePosition();
         team.setX(startPos[0]);
         team.setY(startPos[1]);
 
-        // 4. Peuplement et Scénario spécifique à Naheulbeuk
-        if (floorNumber == 4) {
-            
-            generateMonsters(8, team.getX(), team.getY());
-            generateItems(3);
-            generateStairs(1);
-        } else if (floorNumber == 5) {
-            
-            
-            
-            
-            
-            // Boss spawn at startPos (or maybe near startPos?) Let's put it on the current start position, or the team's position.
-            // Actually, the ExplorationController checked if the team killed the boss on the *stairs* previously.
-            // Wait, in the old logic, when currentFloor == 5, they spawned the boss on the currentCell when stepping on stairs. 
-            // In prepareFloor, we spawn the boss on the floor. Let's spawn it in the room.
-            generateMonsters(0, team.getX(), team.getY()); // Just to clean up
-            
-            // On spawne le boss à la première place libre
-            int[] bossPos = getFirstWalkablePosition(); // Usually same as start pos but we'll let them walk into it
-            List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> bossList = new java.util.ArrayList<>();
+        // 4. Peuplement depuis le blueprint
+        if ("Golem".equals(bp.getBossType())) {
+            int[] bossPos = getFirstWalkablePosition(); 
+            List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> bossList = new ArrayList<>();
             bossList.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem());
             this.getGrid()[bossPos[0]][bossPos[1]].setMonsters(bossList);
-            // Pas d'escalier, car c'est la fin !
         } else {
-            // étages standards
-            generateMonsters(5 + floorNumber, team.getX(), team.getY());
-            generateItems(3);
-            generateStairs(1);
+            generateMonsters(bp.getNumMonsters(), team.getX(), team.getY());
         }
+        generateItems(bp.getNumItems());
+        generateStairs(bp.getNumStairs());
         
-        return false; // L'expédition n'est pas encore terminée
+        return false;
     }
 
     @Override
-    public java.util.List<String> getFloorIntroDialogues(int floorNumber) {
-        java.util.List<String> dialogues = new java.util.ArrayList<>();
-        if (floorNumber == 4) {
-            dialogues.add("Ranger : On est presque devant le bureau de Zangdar ! Préparez vos armes !");
-        } else if (floorNumber == 5) {
-            dialogues.add("=== ÉTAGE 5 : L'ANTICHAMBRE DU BUREAU DE ZANGDAR ===");
-            dialogues.add("Magicienne : Attention ! C'est un Golem de Fer ! C'est une machine à baffes insensible aux armes simples !");
-            dialogues.add("Nain : YAAAAAAAAAH ! (Il charge la hache en avant, frappe l'acier et se tord les poignets !)");
-            dialogues.add("Zangdar (depuis son balcon) : Insolents ! Misérables cloportes ! Vous n'emporterez jamais la statuette de Gladeulfeurh ! Golem de fer, réduis-les en bouillie !");
-        } else {
-            dialogues.add("=== DESCENTE À L'ÉTAGE " + floorNumber + " ===");
-            dialogues.add("Narrateur : La compagnie avance prudemment dans les ténèbres...");
-        }
-        return dialogues;
+    public List<String> getFloorIntroDialogues(int floorNumber) {
+        return getBlueprintForFloor(floorNumber).getIntroDialogues();
     }
 
     @Override
     public boolean isExpeditionComplete(int floorNumber) {
-        if (floorNumber == 5) {
-            // Check if Golem is dead. It's the only monster left.
-            // Wait, if we return true from here, how do we know the Golem is dead?
-            // ExplorationController clears the monster from the cell on victory.
-            // We can just iterate over all cells and check if any has a Golem.
+        FloorBlueprint bp = getBlueprintForFloor(floorNumber);
+        if ("Golem".equals(bp.getBossType())) {
             for (int x = 0; x < getWidth(); x++) {
                 for (int y = 0; y < getHeight(); y++) {
                     if (getGrid()[x][y].hasMonster()) {
                         for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character c : getGrid()[x][y].getMonsters()) {
                             if (c instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem) {
-                                return false; // Golem is still alive
+                                return false; 
                             }
                         }
                     }
                 }
             }
-            return true; // Golem is dead!
+            return true; // Golem is dead
         }
         return false;
     }
