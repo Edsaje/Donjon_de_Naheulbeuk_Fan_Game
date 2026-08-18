@@ -6,6 +6,14 @@ java {
 }
 
 dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
 }

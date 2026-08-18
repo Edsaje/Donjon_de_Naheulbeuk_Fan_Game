@@ -263,14 +263,11 @@ public class DungeonGenerator {
     }
 
     private Character getRandomMonster() {
-        int roll = random.nextInt(6);
+        int roll = random.nextInt(3); // currently only 3 in monsters.json
         return switch (roll) {
-            case 0 -> new Orc();
-            case 1 -> new Skeleton();
-            case 2 -> new Spider();
-            case 3 -> new Troll();
-            case 4 -> new Undead();
-            default -> new Goblin();
+            case 0 -> fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.DataManager.createMonster("orc");
+            case 1 -> fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.DataManager.createMonster("skeleton");
+            default -> fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.DataManager.createMonster("goblin");
         };
     }
 

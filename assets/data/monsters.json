@@ -1,0 +1,46 @@
+{
+  "monsters": [
+    {
+      "id": "goblin",
+      "name": "Gobelin",
+      "hp": 25,
+      "maxHp": 25,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 5,
+      "defense": 2,
+      "speed": 6,
+      "xpYield": 10,
+      "aiTactics": "CowardTactics",
+      "spriteName": "goblin_sprite"
+    },
+    {
+      "id": "skeleton",
+      "name": "Squelette",
+      "hp": 40,
+      "maxHp": 40,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 8,
+      "defense": 5,
+      "speed": 4,
+      "xpYield": 15,
+      "aiTactics": "WarriorTactics",
+      "spriteName": "skeleton_sprite"
+    },
+    {
+      "id": "orc",
+      "name": "Orque",
+      "hp": 80,
+      "maxHp": 80,
+      "mp": 10,
+      "maxMp": 10,
+      "attack": 15,
+      "defense": 8,
+      "speed": 3,
+      "xpYield": 50,
+      "aiTactics": "WarriorTactics",
+      "spriteName": "orc_sprite"
+    }
+  ]
+}
