@@ -7,6 +7,11 @@ import java.util.List;
 public class BattleEngine {
     private Character[] turnOrderCache = new Character[20];
     private int turnOrderSize = 0;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.ICombatEngine combatEngine;
+
+    public BattleEngine(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.ICombatEngine combatEngine) {
+        this.combatEngine = combatEngine;
+    }
 
     public void initRound(Team team, List<Character> monsters) {
         turnOrderSize = 0;
@@ -50,7 +55,7 @@ public class BattleEngine {
             }
         }
         if (target != null) {
-            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatResult sysResult = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatSystem.executeAttack(currentCombatant, target, true);
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatResult sysResult = this.combatEngine.executeAttack(currentCombatant, target, true);
             return new CombatResult(
                 currentCombatant.getName() + " attaque ! (IA)",
                 target.getName() + " perd " + sysResult.getDamage() + " PV !"

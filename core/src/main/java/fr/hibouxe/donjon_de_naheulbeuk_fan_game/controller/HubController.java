@@ -61,7 +61,7 @@ public class HubController implements GameState {
                     break;
                 case 3:
                     menu.displayMessage("Fin de l'aventure ! Le Nain pleure car il n'a pas eu son or.");
-                    System.exit(0);
+                    com.badlogic.gdx.Gdx.app.exit();
                     break;
             }
         }

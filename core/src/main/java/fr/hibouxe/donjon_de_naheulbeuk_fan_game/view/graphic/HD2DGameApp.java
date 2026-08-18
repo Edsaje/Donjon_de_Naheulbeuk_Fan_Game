@@ -39,7 +39,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
  * @author Hibouxe
  * @version 2.0
  */
-public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsManager.SettingsListener, IGameView {
+public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsManager.SettingsListener {
 
     public enum GameState {
         EXPLORATION,
@@ -76,6 +76,14 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     private KeyboardLayout activeKeyboardLayout = KeyboardLayout.detectSystemLayout();
 
     private GameSettingsManager settingsManager;
+    private ViewProvider viewProvider;
+
+    public ViewProvider getViewProvider() {
+        if (viewProvider == null) {
+            viewProvider = new ViewProvider(this, hudRenderer, battleRenderer);
+        }
+        return viewProvider;
+    }
 
     public HD2DGameApp(GameSettingsManager settingsManager) {
         this.settingsManager = settingsManager;
@@ -331,35 +339,35 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     }
 
     // --- IGameView Implementation ---
-    @Override public void clearMessages() { currentMessages.clear(); }
-    @Override public void displayMessage(String message) { 
+    public void clearMessages() { currentMessages.clear(); }
+    public void displayMessage(String message) { 
         if (message != null && !message.trim().isEmpty()) {
             for (String line : message.split("\n")) {
                 if (!line.trim().isEmpty()) currentMessages.add(line);
             }
         }
     }
-    @Override public void displayDialogue(String message) { displayMessage(message); }
-    @Override public int askPlayerInt() { return 1; }
-    @Override public String askPlayerString() { return ""; }
-    @Override public void displayTitleScreen() {}
-    @Override public int askMainMenuChoice() { return 1; }
-    @Override public int askHubChoice() { return 1; }
-    @Override public boolean askLoadQuickSavePrompt() { return false; }
-    @Override public boolean askLoadQuickSavePrompt(int slot, String summary) { return false; }
-    @Override public boolean askConfirmAbandonQuickSave() { return false; }
-    @Override public int askSlotChoice(String actionTitle, String[] slotSummaries) { return 1; }
-    @Override public int askSlotManagementAction() { return 0; }
-    @Override public int askTargetCopySlot(int sourceSlot, String[] slotSummaries) { return 0; }
-    @Override public void displayTransitionScreen(int floorNumber) { 
+    public void displayDialogue(String message) { displayMessage(message); }
+    public int askPlayerInt() { return 1; }
+    public String askPlayerString() { return ""; }
+    public void displayTitleScreen() {}
+    public int askMainMenuChoice() { return 1; }
+    public int askHubChoice() { return 1; }
+    public boolean askLoadQuickSavePrompt() { return false; }
+    public boolean askLoadQuickSavePrompt(int slot, String summary) { return false; }
+    public boolean askConfirmAbandonQuickSave() { return false; }
+    public int askSlotChoice(String actionTitle, String[] slotSummaries) { return 1; }
+    public int askSlotManagementAction() { return 0; }
+    public int askTargetCopySlot(int sourceSlot, String[] slotSummaries) { return 0; }
+    public void displayTransitionScreen(int floorNumber) { 
         setState(GameState.TRANSITION);
         setTransitionFloor(floorNumber);
     }
-    @Override public void display(Dungeon maze, Team team, int currentFloor) { setContext(maze, team, currentFloor); }
-    @Override public void displayDungeon(Dungeon maze, Team team, int currentFloor) { setContext(maze, team, currentFloor); }
-    @Override public String askPlayerMovement() { return ""; }
-    @Override public boolean askPickupItem(Item item) { return true; }
-    @Override public void displayInventory(Team team) {
+    public void display(Dungeon maze, Team team, int currentFloor) { setContext(maze, team, currentFloor); }
+    public void displayDungeon(Dungeon maze, Team team, int currentFloor) { setContext(maze, team, currentFloor); }
+    public String askPlayerMovement() { return ""; }
+    public boolean askPickupItem(Item item) { return true; }
+    public void displayInventory(Team team) {
         String[] options = new String[team.getInventory().size() + 1];
         for(int i=0; i<team.getInventory().size(); i++) {
             options[i] = team.getInventory().get(i).getName();
@@ -367,8 +375,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         options[options.length-1] = "Retour";
         setMenuRequest("INVENTAIRE", options);
     }
-    @Override public int askInventoryMenuChoice() { return 3; }
-    @Override public void displayStatusScreen(Team team) {
+    public int askInventoryMenuChoice() { return 3; }
+    public void displayStatusScreen(Team team) {
         String[] options = new String[team.getMembers().size() + 1];
         for (int i = 0; i < team.getMembers().size(); i++) {
             options[i] = team.getMembers().get(i).getName();
@@ -376,21 +384,21 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         options[options.length - 1] = "Retour";
         setMenuRequest("STATISTIQUES", options);
     }
-    @Override public EquipmentSlot askSlotToUnequip() { return null; }
-    @Override public boolean askUseItem() { return false; }
-    @Override public int askItemIndex() { return -1; }
-    @Override public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character askItemTarget(Team team) { return null; }
-    @Override public void displayBattleStatus(java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters, Team team) { setupBattle(team, monsters); setState(GameState.BATTLE); }
-    @Override public int askBattleAction(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character attacker) { return 1; }
-    @Override public void showActionMenu(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character combatant, java.util.List<String> actions) {
+    public EquipmentSlot askSlotToUnequip() { return null; }
+    public boolean askUseItem() { return false; }
+    public int askItemIndex() { return -1; }
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character askItemTarget(Team team) { return null; }
+    public void displayBattleStatus(java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters, Team team) { setupBattle(team, monsters); setState(GameState.BATTLE); }
+    public int askBattleAction(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character attacker) { return 1; }
+    public void showActionMenu(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character combatant, java.util.List<String> actions) {
         setMenuRequest("Action: " + combatant.getName(), actions.toArray(new String[0]));
     }
-    @Override public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill askSkill(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character attacker, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) { return null; }
-    @Override public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character askMonsterTarget(java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) { return monsters.isEmpty() ? null : monsters.get(0); }
-    @Override public void displayTurn(String characterName) {}
-    @Override public void displayVictory() { displayMessage("Victoire !"); }
-    @Override public void displayDefeat() { displayMessage("Défaite !"); }
-    @Override public void displaySaveSuccess(int slot) { displayMessage("Sauvegardé !"); }
-    @Override public void displaySaveError() { displayMessage("Erreur save"); }
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill askSkill(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character attacker, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) { return null; }
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character askMonsterTarget(java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) { return monsters.isEmpty() ? null : monsters.get(0); }
+    public void displayTurn(String characterName) {}
+    public void displayVictory() { displayMessage("Victoire !"); }
+    public void displayDefeat() { displayMessage("Défaite !"); }
+    public void displaySaveSuccess(int slot) { displayMessage("Sauvegardé !"); }
+    public void displaySaveError() { displayMessage("Erreur save"); }
 }
 

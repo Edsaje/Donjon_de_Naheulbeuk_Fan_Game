@@ -20,7 +20,8 @@ public class BattleController implements GameState {
     private Runnable onVictory;
     private Runnable onDefeat;
     private Runnable onFlee;
-    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.BattleEngine engine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.BattleEngine();
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.ICombatEngine combatEngine;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.BattleEngine engine;
     private int currentTurnIndex = 0;
     private Character currentCombatant;
 
@@ -28,6 +29,8 @@ public class BattleController implements GameState {
         this.team = team;
         this.monsters = monsters;
         this.menu = menu;
+        this.combatEngine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.StandardCombatEngine();
+        this.engine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.BattleEngine(this.combatEngine);
     }
     
     public void setCallbacks(Runnable onVictory, Runnable onDefeat, Runnable onFlee) {
@@ -139,7 +142,7 @@ public class BattleController implements GameState {
             }
             if (target != null) {
                 menu.displayMessage(currentCombatant.getName() + " attaque " + target.getName() + " !");
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatResult result = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatSystem.executeAttack(currentCombatant, target, false);
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatResult result = this.combatEngine.executeAttack(currentCombatant, target, false);
             }
             state = BattleState.NEXT_COMBATANT;
         } else if (index == 1) {

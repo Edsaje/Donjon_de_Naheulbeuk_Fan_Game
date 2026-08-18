@@ -35,6 +35,8 @@ public class ExplorationController implements GameState {
 
     private GameContext gameContext;
 
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.ExplorationEngine engine;
+
     public ExplorationController(Dungeon maze, Team team, IExplorationView view, IMenuView menu, ICombatView combatView, boolean isTutorial, GameContext gameContext, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager) {
         this(maze, team, view, menu, combatView, isTutorial, 1, gameContext, saveManager, locManager);
     }
@@ -50,6 +52,7 @@ public class ExplorationController implements GameState {
         this.gameContext = gameContext;
         this.saveManager = saveManager;
         this.locManager = locManager;
+        this.engine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.ExplorationEngine(maze, team);
     }
 
     public void setCurrentFloor(int floor) {
@@ -202,13 +205,7 @@ public class ExplorationController implements GameState {
 
     private void handlePostMovement() {
         Cell currentCell = maze.getGrid()[team.getX()][team.getY()];
-        boolean tookStairs = handleCellEvents(currentCell);
-
-        if (running && !currentCell.hasMonster() && !tookStairs) {
-            maze.moveMonsters(team);
-            Cell newCell = maze.getGrid()[team.getX()][team.getY()];
-            handleCellEvents(newCell);
-        }
+        handleCellEvents(currentCell);
     }
 
     private boolean handleCellEvents(Cell currentCell) {
@@ -270,6 +267,7 @@ public class ExplorationController implements GameState {
                     view.displayTransitionScreen(currentFloor);
                     this.maze = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.TutorialDungeon();
                     this.maze.prepareFloor(currentFloor, team);
+                    this.engine.setDungeon(this.maze);
                     this.floorIntroPlayed = true;
                     playFloorIntro(currentFloor);
                 } else {
@@ -281,6 +279,7 @@ public class ExplorationController implements GameState {
                 view.displayTransitionScreen(currentFloor);
                 this.maze = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.NaheulbeukDungeon();
                 this.maze.prepareFloor(currentFloor, team);
+                this.engine.setDungeon(this.maze);
                 this.floorIntroPlayed = true;
                 playFloorIntro(currentFloor);
             }
@@ -306,10 +305,7 @@ public class ExplorationController implements GameState {
                 return false;
             }
             
-            if (targetCell.isWalkable()) {
-                team.move(deltaX, deltaY);
-                return true;
-            }
+            return engine.processPlayerMove(deltaX, deltaY);
         }
         return false;
     }
