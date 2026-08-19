@@ -1,0 +1,62 @@
+# Blender 5.2.0 LTS MTL File: 'Campement_Decor.blend'
+# www.blender.org
+
+newmtl GrassLands_NEW_C
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd D:/Hibouxe/Assets/Pixel_3D_RPG_Grasslands_2.0/TileSheet/Updated_Sheets/GrassLands_NEW_C.png
+
+newmtl GrassLands_NEW_C.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd D:/Hibouxe/Assets/Pixel_3D_RPG_Grasslands_2.0/TileSheet/Updated_Sheets/GrassLands_NEW_C.png
+
+newmtl GrassLands_NEW_C.004
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd D:/Hibouxe/Assets/Pixel_3D_RPG_Grasslands_2.0/TileSheet/Updated_Sheets/GrassLands_NEW_C.png
+
+newmtl Grassland_Tileatlas_01.011
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd D:/Hibouxe/Assets/Pixel_3D_RPG_Grasslands_2.0/TileSheet/Updated_Sheets/GrassLands_NEW_C.png
+
+newmtl Grassland_Tileatlas_01.012
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd D:/Hibouxe/Assets/Pixel_3D_RPG_Grasslands_2.0/TileSheet/Updated_Sheets/GrassLands_NEW_C.png
+
+newmtl Grassland_Tileatlas_01.013
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd D:/Hibouxe/Assets/Pixel_3D_RPG_Grasslands_2.0/TileSheet/Updated_Sheets/GrassLands_NEW_C.png

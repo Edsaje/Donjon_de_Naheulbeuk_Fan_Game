@@ -36,8 +36,8 @@ public class VillageController implements GameState {
         menu.displayMessage("Bienvenue au Campement !");
     }
 
-    private float boundX = 9.5f;
-    private float boundZ = 9.5f;
+    private float boundX = 10.0f;
+    private float boundZ = 10.0f;
 
     @Override
     public void update(float deltaTime) {
@@ -56,18 +56,18 @@ public class VillageController implements GameState {
             // Collision (Limites simples)
             if (nextX < -boundX) nextX = -boundX;
             if (nextX > boundX) nextX = boundX;
-            if (nextZ < -boundZ) nextZ = -boundZ;
+            if (nextZ > boundZ) nextZ = boundZ; // Mur Sud fermé
             
-            // Porte vers le sud (Donjons)
-            if (nextZ > boundZ) {
+            // Porte vers le NORD (Donjons) -> Z négatif
+            if (nextZ < -boundZ) {
                 if (nextX >= -1.5f && nextX <= 1.5f) {
                     // Laisse avancer un peu pour declencher le menu
-                    if (nextZ > boundZ + 1.0f) {
-                        nextZ = boundZ + 1.0f;
+                    if (nextZ < -boundZ - 1.0f) {
+                        nextZ = -boundZ - 1.0f;
                         openDungeonSelection();
                     }
                 } else {
-                    nextZ = boundZ;
+                    nextZ = -boundZ;
                 }
             }
             
@@ -94,7 +94,7 @@ public class VillageController implements GameState {
                 menu.setMenuRequest(null, null);
                 if (choice == 0) game.startDungeon("TUTORIAL");
                 else if (choice == 1) game.startDungeon("NAHEULBEUK");
-                else playerZ -= 2.0f; // Recule pour ne pas re-declencher
+                else playerZ += 2.0f; // Recule vers le Sud pour ne pas re-declencher
             } else if (currentMenuState == VillageMenuState.NONE) {
                 handleInteraction();
             }
@@ -106,7 +106,7 @@ public class VillageController implements GameState {
             } else {
                 currentMenuState = VillageMenuState.NONE;
                 menu.setMenuRequest(null, null);
-                playerZ -= 2.0f; // Recule pour eviter la boucle
+                playerZ += 2.0f; // Recule vers le Sud pour eviter la boucle
             }
         }
         
