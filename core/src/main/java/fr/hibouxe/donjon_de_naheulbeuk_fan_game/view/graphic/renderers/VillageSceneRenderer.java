@@ -45,12 +45,15 @@ public class VillageSceneRenderer implements Disposable {
             grassTexture = new Texture(com.badlogic.gdx.Gdx.files.internal("models/village/grass_texture.png"), true);
             grassTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 
+            com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters params = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters();
+            params.flipV = false;
+
             // Le sol en herbe
-            grassModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Grass_Tile_01.obj"));
+            grassModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Grass_Tile_01.obj"), params);
             grassModel.materials.get(0).set(TextureAttribute.createDiffuse(grassTexture));
 
             // La taverne
-            tavernModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Inn_Stone_01.obj"));
+            tavernModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Inn_Stone_01.obj"), params);
             tavernModel.materials.get(0).set(TextureAttribute.createDiffuse(townTexture));
             
         } catch (Exception e) {
