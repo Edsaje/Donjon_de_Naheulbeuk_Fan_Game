@@ -176,7 +176,7 @@ public class Game implements InputListener, GameContext {
     private class MainMenuState implements GameState {
         @Override public void enter() {
             app.setState(HD2DGameApp.GameState.HUB);
-            app.setMenuRequest("Menu Principal", new String[]{"Nouvelle Partie", "Charger Partie", "Gérer Sauvegardes", "Quitter"});
+            app.setMenuRequest("Menu Principal", new String[]{"Nouvelle Partie", "Charger Partie", "Gérer Sauvegardes", "[TEST] Campement", "Quitter"});
         }
         @Override public void update(float deltaTime) {}
         @Override public void onInput(String action) {
@@ -186,7 +186,12 @@ public class Game implements InputListener, GameContext {
                 if (choice == 0) changeState(new NewGameMenuState());
                 else if (choice == 1) changeState(new LoadMenuState());
                 else if (choice == 2) changeState(new ManageSavesMenuState());
-                else if (choice == 3) com.badlogic.gdx.Gdx.app.exit();
+                else if (choice == 3) {
+                    team = new Team();
+                    team.getMembers().add(new Ranger());
+                    goToVillage();
+                }
+                else if (choice == 4) com.badlogic.gdx.Gdx.app.exit();
             }
         }
         @Override public void exit() {}
