@@ -1,1 +1,0 @@
-import com.badlogic.gdx.graphics.g3d.loader.ObjLoader; public class test_objloader { public static void main(String[] args) { ObjLoader.ObjLoaderParameters p = new ObjLoader.ObjLoaderParameters(); System.out.println(p.flipV); } }

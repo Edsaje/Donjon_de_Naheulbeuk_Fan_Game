@@ -1,1 +1,0 @@
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder; import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder; public class test_rect { public static void main(String[] args) { System.out.println("Testing..."); } }

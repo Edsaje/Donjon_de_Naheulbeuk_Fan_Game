@@ -1,1 +1,0 @@
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute; import com.badlogic.gdx.graphics.g2d.TextureRegion; import com.badlogic.gdx.graphics.Texture; public class test_texattr { public static void main(String[] args) { Texture t = null; TextureRegion r = new TextureRegion(t); TextureAttribute.createDiffuse(r); } }
