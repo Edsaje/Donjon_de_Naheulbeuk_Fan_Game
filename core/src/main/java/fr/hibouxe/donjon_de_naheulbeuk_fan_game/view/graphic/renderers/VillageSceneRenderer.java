@@ -48,31 +48,9 @@ public class VillageSceneRenderer implements Disposable {
             com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters params = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters();
             params.flipV = false;
 
-            // Construire un modèle d'herbe sur mesure avec ModelBuilder et TextureRegion (évite les bugs UV de Blender)
-            com.badlogic.gdx.graphics.g3d.utils.ModelBuilder modelBuilder = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
-            TextureRegion grassReg = new TextureRegion(grassTexture, 0, 0, 32, 32); // Coin en haut à gauche = Herbe pure
-            com.badlogic.gdx.graphics.g3d.Material grassMat = new com.badlogic.gdx.graphics.g3d.Material(TextureAttribute.createDiffuse(grassReg));
-            
-            modelBuilder.begin();
-            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder mpb = modelBuilder.part("grass", com.badlogic.gdx.graphics.GL20.GL_TRIANGLES, com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal | com.badlogic.gdx.graphics.VertexAttributes.Usage.TextureCoordinates, grassMat);
-            float u1 = grassReg.getU();
-            float v1 = grassReg.getV();
-            float u2 = grassReg.getU2();
-            float v2 = grassReg.getV2();
-
-            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo v00 = new com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo().setPos(-1f, 0f, 0f).setNor(0f, 1f, 0f).setCol(null).setUV(u1, v1);
-            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo v10 = new com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo().setPos(0f, 0f, 0f).setNor(0f, 1f, 0f).setCol(null).setUV(u2, v1);
-            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo v11 = new com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo().setPos(0f, 0f, -1f).setNor(0f, 1f, 0f).setCol(null).setUV(u2, v2);
-            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo v01 = new com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo().setPos(-1f, 0f, -1f).setNor(0f, 1f, 0f).setCol(null).setUV(u1, v2);
-            
-            short i1 = mpb.vertex(v00);
-            short i2 = mpb.vertex(v10);
-            short i3 = mpb.vertex(v11);
-            short i4 = mpb.vertex(v01);
-            mpb.index(i1, i2, i3);
-            mpb.index(i1, i3, i4);
-            
-            grassModel = modelBuilder.end();
+            // Le sol en herbe
+            grassModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Grass_Tile_01.obj"), params);
+            grassModel.materials.get(0).set(TextureAttribute.createDiffuse(grassTexture));
 
             // La taverne
             tavernModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Inn_Stone_01.obj"), params);
