@@ -261,7 +261,8 @@ public class ExplorationController implements GameState {
                     this.floorIntroPlayed = true;
                     playFloorIntro(currentFloor);
                 } else {
-                    running = false; 
+                    menu.displayMessage("\nL'air frais ! Vous avez survécu et établi un petit campement !");
+                    gameContext.goToVillage();
                 }
             } else {
                 menu.displayMessage("\nVous trouvez un escalier lugubre qui descend dans les profondeurs...");

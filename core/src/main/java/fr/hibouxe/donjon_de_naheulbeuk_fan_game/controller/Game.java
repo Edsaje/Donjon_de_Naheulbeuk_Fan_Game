@@ -146,6 +146,16 @@ public class Game implements InputListener, GameContext {
     }
 
     @Override
+    public void goToVillage() {
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.Village village = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.Village();
+        // Optionnel : Sauvegarder la nouvelle progression
+        VillageController vc = new VillageController(team, village, app.getViewProvider().getMenuView(), currentSlot, saveManager, this);
+        app.setState(HD2DGameApp.GameState.VILLAGE);
+        app.setMenuRequest(null, null);
+        changeState(vc);
+    }
+
+    @Override
     public void exitGame() {
         com.badlogic.gdx.Gdx.app.exit();
     }
