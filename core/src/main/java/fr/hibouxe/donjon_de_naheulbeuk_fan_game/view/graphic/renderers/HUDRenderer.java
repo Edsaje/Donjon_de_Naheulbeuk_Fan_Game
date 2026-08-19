@@ -110,10 +110,15 @@ public class HUDRenderer implements Disposable {
                 renderStatusScreen(team, contextMenuSelection);
             } else {
                 renderContextualMenu(menuTitle, menuOptions, state);
-                if (team != null && !isMenuOpen && state != HD2DGameApp.GameState.BATTLE) {
-                    renderDragonQuestTeamStatus(team, 720 - (60 + menuOptions.length * 40) - 50);
+                if (team != null && state != HD2DGameApp.GameState.BATTLE) {
+                    int contextX = isMenuOpen ? 50 + 350 + 20 : 50;
+                    renderDragonQuestTeamStatus(team, contextX, 720 - (60 + menuOptions.length * 40) - 50);
                 }
             }
+        } else if (isMenuOpen && team != null) {
+            // Dessiner le statut de l'équipe sous le menu principal s'il n'y a pas de menu contextuel
+            int menuHeight = 60 + 7 * 40; // 7 options dans le menu principal
+            renderDragonQuestTeamStatus(team, 50, 720 - menuHeight - 50);
         }
         
         if (messages != null && !messages.isEmpty()) {
@@ -540,21 +545,6 @@ public class HUDRenderer implements Disposable {
         shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.4f, 0.6f));
         shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 35);
 
-        // 2. Fenêtre du Statut de l'équipe (Bottom-Left)
-        int statusWidth = 450;
-        int statusHeight = 60 + ((team != null) ? team.getMembers().size() * 50 : 0);
-        int statusX = 50;
-        int statusY = menuY - statusHeight - 30; // Juste en dessous du menu
-
-        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
-        shapeRenderer.rect(statusX, statusY, statusWidth, statusHeight);
-        
-        shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.rectLine(statusX, statusY, statusX + statusWidth, statusY, 3);
-        shapeRenderer.rectLine(statusX, statusY + statusHeight, statusX + statusWidth, statusY + statusHeight, 3);
-        shapeRenderer.rectLine(statusX, statusY, statusX, statusY + statusHeight, 3);
-        shapeRenderer.rectLine(statusX + statusWidth, statusY, statusX + statusWidth, statusY + statusHeight, 3);
-
         shapeRenderer.end();
 
         // --- Textes ---
@@ -574,25 +564,6 @@ public class HUDRenderer implements Disposable {
             }
             font.setColor(Color.WHITE);
             font.draw(uiBatch, menuOptions[i], textX, textY);
-        }
-
-        // Statut de la Compagnie
-        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
-        font.draw(uiBatch, "Compagnie", statusX + 25, statusY + statusHeight - 15);
-        
-        font.setColor(Color.WHITE);
-        if (team != null && !team.getMembers().isEmpty()) {
-            int startY = statusY + statusHeight - 50;
-            for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character hero : team.getMembers()) {
-                String line = String.format("%-15s : Nv %d | PV: %d/%d | PM: %d/%d",
-                        hero.getName(), hero.getLevel(),
-                        hero.getHealthPoint(), hero.getMaxHealthPoint(),
-                        hero.getCurrentResource(), hero.getMaxResource());
-                font.draw(uiBatch, line, statusX + 25, startY);
-                startY -= 50;
-            }
-        } else {
-            font.draw(uiBatch, "(Vide)", statusX + 25, statusY + statusHeight - 50);
         }
         
         // Aide à la navigation en bas à droite (très discret)
@@ -762,12 +733,11 @@ public class HUDRenderer implements Disposable {
         return false;
     }
 
-    private void renderDragonQuestTeamStatus(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, int menuY) {
+    private void renderDragonQuestTeamStatus(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, int statusX, int menuY) {
         if (team == null) return;
         shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled);
         int statusWidth = 450;
         int statusHeight = 60 + team.getMembers().size() * 50;
-        int statusX = 50;
         int statusY = menuY - statusHeight - 30;
 
         shapeRenderer.setColor(new com.badlogic.gdx.graphics.Color(0.05f, 0.05f, 0.05f, 0.95f));
