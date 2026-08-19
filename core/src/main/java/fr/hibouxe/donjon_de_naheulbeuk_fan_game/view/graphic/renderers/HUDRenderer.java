@@ -92,7 +92,6 @@ public class HUDRenderer implements Disposable {
         Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
 
         if (state == HD2DGameApp.GameState.BATTLE || state == HD2DGameApp.GameState.HUB) {
-            renderMinimalistWindow(team, messages, state);
             if (state == HD2DGameApp.GameState.BATTLE && team != null) {
                 renderBattleStatus(team);
             }
@@ -102,9 +101,6 @@ public class HUDRenderer implements Disposable {
             renderDragonQuestWindow(dungeon, playerX, playerY, team);
         } else {
             renderExplorationHUD(dungeon, playerX, playerY, currentFloor, state);
-            if (messages != null && !messages.isEmpty()) {
-                renderMinimalistWindow(team, messages, state);
-            }
         }
 
         // Toujours dessiner le menu contextuel s'il existe et n'est pas un menu de pause (dialogue)
@@ -118,6 +114,10 @@ public class HUDRenderer implements Disposable {
                     renderDragonQuestTeamStatus(team, 720 - (60 + menuOptions.length * 40) - 50);
                 }
             }
+        }
+        
+        if (messages != null && !messages.isEmpty()) {
+            renderMinimalistWindow(team, messages, state);
         }
     }
 
@@ -173,8 +173,8 @@ public class HUDRenderer implements Disposable {
             int menuWidth = Math.max(300, columns * itemWidth + 60);
             int menuHeight = 60 + rows * 40;
             
-            // Placé en haut à gauche
-            int x = 50; 
+            // Placé en haut à gauche, ou décalé (poupée russe) si le menu principal est ouvert
+            int x = isMenuOpen ? 50 + 350 + 20 : 50; 
             int y = 720 - menuHeight - 50; 
             
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

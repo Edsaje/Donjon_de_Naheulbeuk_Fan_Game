@@ -138,8 +138,9 @@ public class InventoryController implements GameState {
 
     private void useItem(Item item, Character target) {
         if (item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion && target.getHealthPoint() >= target.getMaxHealthPoint()) {
-            menu.displayDialogue("\n" + target.getName() + " a dÃƒÂ©jÃƒÂ  tous ses PV !");
-            gameContext.popState();
+            menu.displayDialogue("\n" + target.getName() + " a déjà tous ses PV !");
+            currentState = State.SELECT_TARGET;
+            promptTarget();
             return;
         }
         if (item.use(target)) {
@@ -155,10 +156,12 @@ public class InventoryController implements GameState {
                     }
                 }
             }
+            gameContext.popState();
         } else {
-            menu.displayDialogue("\n" + target.getName() + " ne peut pas utiliser ÃƒÂ§a !");
+            menu.displayDialogue("\n" + target.getName() + " ne peut pas utiliser ça !");
+            currentState = State.SELECT_TARGET;
+            promptTarget();
         }
-        gameContext.popState();
     }
 
     @Override
