@@ -61,6 +61,8 @@ public class VillageSceneRenderer implements Disposable {
             try {
                 treeModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Lrg_Tree.obj"), params);
                 treeModel.materials.get(0).set(TextureAttribute.createDiffuse(grassTexture));
+                treeModel.materials.get(0).set(new com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute(1f));
+                treeModel.materials.get(0).set(com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute.createAlphaTest(0.5f));
             } catch (Exception e) {
                 com.badlogic.gdx.Gdx.app.log("VillageSceneRenderer", "Lrg_Tree.obj non trouvé, on s'en passe pour les limites.");
             }
@@ -97,6 +99,7 @@ public class VillageSceneRenderer implements Disposable {
 
                         ModelInstance tree = new ModelInstance(treeModel);
                         tree.transform.setToTranslation(x * 1.0f, 0, z * 1.0f);
+                        tree.transform.rotate(com.badlogic.gdx.math.Vector3.Y, 45f);
                         instances.add(tree);
                     }
                 }
