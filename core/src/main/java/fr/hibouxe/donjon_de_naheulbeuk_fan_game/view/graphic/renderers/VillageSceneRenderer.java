@@ -23,9 +23,8 @@ public class VillageSceneRenderer implements Disposable {
     private AssetProvider assetProvider;
     private ObjLoader objLoader;
 
-    private Model grassModel;
+    private Model decorModel;
     private Model tavernModel;
-    private Model treeModel;
     private Texture townTexture;
     private Texture grassTexture;
 
@@ -49,20 +48,21 @@ public class VillageSceneRenderer implements Disposable {
             com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters params = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters();
             params.flipV = true;
 
-            // Le sol en herbe
-            grassModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Grass_Tile_01.obj"), params);
-            grassModel.materials.get(0).set(TextureAttribute.createDiffuse(grassTexture));
-
-            // La taverne
+            // La taverne (bâtiment interactif)
             tavernModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Inn_Stone_01.obj"), params);
             tavernModel.materials.get(0).set(TextureAttribute.createDiffuse(townTexture));
             
-            // Les limites (rochers)
+            // Le décor complet (Blender)
             try {
-                treeModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Mountain_Tile_01.obj"), params);
-                treeModel.materials.get(0).set(TextureAttribute.createDiffuse(grassTexture));
+                decorModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Campement_Decor.obj"), params);
+                // Si les textures ne se chargent pas toutes seules via le .mtl, on force la grassTexture pour l'instant
+                if (decorModel.materials.size > 0) {
+                    for (com.badlogic.gdx.graphics.g3d.Material mat : decorModel.materials) {
+                        mat.set(TextureAttribute.createDiffuse(grassTexture));
+                    }
+                }
             } catch (Exception e) {
-                com.badlogic.gdx.Gdx.app.log("VillageSceneRenderer", "Mountain_Tile_01.obj non trouvé.");
+                com.badlogic.gdx.Gdx.app.log("VillageSceneRenderer", "Campement_Decor.obj non trouvé. Le campement sera vide en attendant.");
             }
             
         } catch (Exception e) {
@@ -73,34 +73,9 @@ public class VillageSceneRenderer implements Disposable {
     public void buildScene(Village village) {
         instances.clear();
 
-        int boundX = 10;
-        int boundZ = 10;
-
-        if (grassModel != null) {
-            // Generer un grand sol en herbe
-            for (int x = -boundX - 2; x <= boundX + 2; x++) {
-                for (int z = -boundZ - 2; z <= boundZ + 2; z++) {
-                    ModelInstance grass = new ModelInstance(grassModel);
-                    grass.transform.setToTranslation(x * 1.0f, 0, z * 1.0f);
-                    instances.add(grass);
-                }
-            }
-        }
-
-        // Placer les arbres autour (Limites)
-        if (treeModel != null) {
-            for (int x = -boundX; x <= boundX; x++) {
-                for (int z = -boundZ; z <= boundZ; z++) {
-                    if (x == -boundX || x == boundX || z == -boundZ || z == boundZ) {
-                        // Sauf la porte d'entree vers le Sud (Donjons)
-                        if (z == boundZ && x >= -1 && x <= 1) continue;
-
-                        ModelInstance tree = new ModelInstance(treeModel);
-                        tree.transform.setToTranslation(x * 1.0f, 0, z * 1.0f);
-                        instances.add(tree);
-                    }
-                }
-            }
+        // Placer le décor de Blender
+        if (decorModel != null) {
+            instances.add(new ModelInstance(decorModel));
         }
 
         // Placer la Taverne (si niveau > 0)
@@ -138,7 +113,7 @@ public class VillageSceneRenderer implements Disposable {
 
     @Override
     public void dispose() {
-        if (grassModel != null) grassModel.dispose();
+        if (decorModel != null) decorModel.dispose();
         if (tavernModel != null) tavernModel.dispose();
         if (townTexture != null) townTexture.dispose();
         if (grassTexture != null) grassTexture.dispose();
