@@ -55,16 +55,23 @@ public class VillageSceneRenderer implements Disposable {
             
             modelBuilder.begin();
             com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder mpb = modelBuilder.part("grass", com.badlogic.gdx.graphics.GL20.GL_TRIANGLES, com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal | com.badlogic.gdx.graphics.VertexAttributes.Usage.TextureCoordinates, grassMat);
-            mpb.setUVRange(grassReg);
+            float u1 = grassReg.getU();
+            float v1 = grassReg.getV();
+            float u2 = grassReg.getU2();
+            float v2 = grassReg.getV2();
+
+            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo v00 = new com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo().setPos(-1f, 0f, 0f).setNor(0f, 1f, 0f).setCol(null).setUV(u1, v1);
+            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo v10 = new com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo().setPos(0f, 0f, 0f).setNor(0f, 1f, 0f).setCol(null).setUV(u2, v1);
+            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo v11 = new com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo().setPos(0f, 0f, -1f).setNor(0f, 1f, 0f).setCol(null).setUV(u2, v2);
+            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo v01 = new com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo().setPos(-1f, 0f, -1f).setNor(0f, 1f, 0f).setCol(null).setUV(u1, v2);
             
-            // Créer un carré 1x1 au sol
-            mpb.rect(
-                -1f, 0f, 0f,
-                0f, 0f, 0f,
-                0f, 0f, -1f,
-                -1f, 0f, -1f,
-                0f, 1f, 0f
-            );
+            short i1 = mpb.vertex(v00);
+            short i2 = mpb.vertex(v10);
+            short i3 = mpb.vertex(v11);
+            short i4 = mpb.vertex(v01);
+            mpb.index(i1, i2, i3);
+            mpb.index(i1, i3, i4);
+            
             grassModel = modelBuilder.end();
 
             // La taverne
