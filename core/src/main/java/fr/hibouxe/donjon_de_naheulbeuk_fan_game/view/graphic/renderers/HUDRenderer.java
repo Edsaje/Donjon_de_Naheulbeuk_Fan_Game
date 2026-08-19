@@ -670,7 +670,7 @@ public class HUDRenderer implements Disposable {
                 }
                 return true;
             }
-            if ("X".equals(action) || ("ENTER".equals(action) && contextMenuSelection == options.length - 1)) {
+            if ("X".equals(action) || ("ENTER".equals(action) && "Retour".equals(options[contextMenuSelection]))) {
                 gameApp.setMenuRequest(null, null);
                 isMenuOpen = true; 
                 return true;
