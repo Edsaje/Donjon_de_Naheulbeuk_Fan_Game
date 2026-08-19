@@ -354,7 +354,11 @@ public class HUDRenderer implements Disposable {
 
         uiBatch.begin();
         font.setColor(Color.WHITE);
-        font.draw(uiBatch, "ÉTAGE " + currentFloor, 20, 720 - 20);
+        if (state == HD2DGameApp.GameState.EXPLORATION) {
+            font.draw(uiBatch, "ÉTAGE " + currentFloor, 20, 720 - 20);
+        } else if (state == HD2DGameApp.GameState.VILLAGE) {
+            font.draw(uiBatch, "CAMPEMENT", 20, 720 - 20);
+        }
         font.setColor(Color.LIGHT_GRAY);
         font.draw(uiBatch, "[M/ECHAP: Menu]", 1280 - 180, 40);
         uiBatch.end();

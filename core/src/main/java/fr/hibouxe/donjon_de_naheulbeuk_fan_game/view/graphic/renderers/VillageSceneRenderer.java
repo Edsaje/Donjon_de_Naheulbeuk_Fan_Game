@@ -46,7 +46,7 @@ public class VillageSceneRenderer implements Disposable {
             grassTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 
             // Le sol en herbe
-            grassModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Tile_Grass_01.obj"));
+            grassModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Grass_Tile_01.obj"));
             grassModel.materials.get(0).set(TextureAttribute.createDiffuse(grassTexture));
 
             // La taverne
@@ -61,17 +61,19 @@ public class VillageSceneRenderer implements Disposable {
     public void buildScene(Village village) {
         instances.clear();
 
-        // Generer un grand sol en herbe
-        for (int x = -10; x <= 10; x++) {
-            for (int z = -10; z <= 10; z++) {
-                ModelInstance grass = new ModelInstance(grassModel);
-                grass.transform.setToTranslation(x * 2.0f, 0, z * 2.0f);
-                instances.add(grass);
+        if (grassModel != null) {
+            // Generer un grand sol en herbe sans trou (le modele fait 1x1, on translate de 1.0f)
+            for (int x = -20; x <= 20; x++) {
+                for (int z = -20; z <= 20; z++) {
+                    ModelInstance grass = new ModelInstance(grassModel);
+                    grass.transform.setToTranslation(x * 1.0f, 0, z * 1.0f);
+                    instances.add(grass);
+                }
             }
         }
 
         // Placer la Taverne (si niveau > 0)
-        if (village != null && village.getTavernLevel() > 0) {
+        if (village != null && village.getTavernLevel() > 0 && tavernModel != null) {
             ModelInstance tavern = new ModelInstance(tavernModel);
             tavern.transform.setToTranslation(0f, 0f, -8f);
             instances.add(tavern);
