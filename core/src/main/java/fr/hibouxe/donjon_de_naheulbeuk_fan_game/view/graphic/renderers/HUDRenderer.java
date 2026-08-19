@@ -26,6 +26,14 @@ public class HUDRenderer implements Disposable {
     private BitmapFont font;
     private ShapeRenderer shapeRenderer;
 
+    private String floatingMessage = null;
+    private float floatingMessageTimer = 0f;
+    
+    public void showFloatingMessage(String msg, float duration) {
+        this.floatingMessage = msg;
+        this.floatingMessageTimer = duration;
+    }
+
     private boolean isMenuOpen = false;
     private int selectedOption = 0;
     private String[] menuOptions = {
@@ -121,6 +129,23 @@ public class HUDRenderer implements Disposable {
             renderDragonQuestTeamStatus(team, 50, 720 - menuHeight - 50);
         }
         
+        if (floatingMessage != null && floatingMessageTimer > 0) {
+            floatingMessageTimer -= Gdx.graphics.getDeltaTime();
+            uiBatch.begin();
+            font.getData().setScale(2.5f);
+            com.badlogic.gdx.graphics.g2d.GlyphLayout layout = new com.badlogic.gdx.graphics.g2d.GlyphLayout(font, floatingMessage);
+            float cx = (1280 - layout.width) / 2;
+            float cy = (720 + layout.height) / 2 + 150;
+            font.setColor(0, 0, 0, 1);
+            font.draw(uiBatch, floatingMessage, cx + 2, cy - 2);
+            font.setColor(1, 1, 0, 1);
+            font.draw(uiBatch, floatingMessage, cx, cy);
+            font.getData().setScale(1.5f);
+            uiBatch.end();
+        } else {
+            floatingMessage = null;
+        }
+
         if (messages != null && !messages.isEmpty()) {
             renderMinimalistWindow(team, messages, state);
         }

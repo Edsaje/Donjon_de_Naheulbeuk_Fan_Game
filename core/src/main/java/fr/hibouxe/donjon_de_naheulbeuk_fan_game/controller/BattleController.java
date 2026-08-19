@@ -93,7 +93,7 @@ public class BattleController implements GameState {
     }
 
     private void promptPlayerAction() {
-        menu.displayMessage("Tour de " + currentCombatant.getName() + " !");
+        menu.displayTurn(currentCombatant.getName());
         menu.showActionMenu(currentCombatant, Arrays.asList("Attaque", "Compétence", "Objet", "Fuite"));
     }
 

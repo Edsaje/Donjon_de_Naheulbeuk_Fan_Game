@@ -395,7 +395,11 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     }
     public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill askSkill(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character attacker, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) { return null; }
     public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character askMonsterTarget(java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) { return monsters.isEmpty() ? null : monsters.get(0); }
-    public void displayTurn(String characterName) {}
+    public void displayTurn(String characterName) {
+        if (hudRenderer != null) {
+            hudRenderer.showFloatingMessage("Tour de " + characterName + " !", 1.5f);
+        }
+    }
     public void displayVictory() { displayMessage("Victoire !"); }
     public void displayDefeat() { displayMessage("Défaite !"); }
     public void displaySaveSuccess(int slot) { displayMessage("Sauvegardé !"); }
