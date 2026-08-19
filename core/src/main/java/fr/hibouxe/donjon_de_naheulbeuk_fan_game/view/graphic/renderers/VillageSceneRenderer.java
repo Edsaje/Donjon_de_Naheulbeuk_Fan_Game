@@ -46,7 +46,7 @@ public class VillageSceneRenderer implements Disposable {
             grassTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 
             com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters params = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters();
-            params.flipV = false;
+            params.flipV = true;
 
             // Le sol en herbe
             grassModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Grass_Tile_01.obj"), params);
