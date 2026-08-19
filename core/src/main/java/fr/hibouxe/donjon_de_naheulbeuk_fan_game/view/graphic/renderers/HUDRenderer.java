@@ -656,6 +656,9 @@ public class HUDRenderer implements Disposable {
     public void resetContextMenuSelection() { this.contextMenuSelection = 0; }
 
     public boolean onInput(String action, HD2DGameApp gameApp) {
+        if (action != null && action.startsWith("MENU_")) {
+            return false;
+        }
         if (gameApp != null && gameApp.currentMenuTitle != null && gameApp.currentMenuOptions != null) {
             String[] options = gameApp.currentMenuOptions;
             if ("Z".equals(action) || "Q".equals(action) || "UP".equals(action)) {
@@ -664,7 +667,14 @@ public class HUDRenderer implements Disposable {
             } else if ("S".equals(action) || "D".equals(action) || "DOWN".equals(action)) {
                 contextMenuSelection = (contextMenuSelection + 1) % options.length;
                 return true;
-            } else if ("X".equals(action) || ("ENTER".equals(action) && contextMenuSelection == options.length - 1)) {
+            }
+            if ("INVENTAIRE".equals(gameApp.currentMenuTitle) || "CIBLE_OBJET".equals(gameApp.currentMenuTitle) || "CATEGORIES".equals(gameApp.currentMenuTitle) || "OBJETS".equals(gameApp.currentMenuTitle) || "PAUSE".equals(gameApp.currentMenuTitle)) {
+                if ("ENTER".equals(action) || "SPACE".equals(action) || "X".equals(action)) {
+                    return false;
+                }
+                return true;
+            }
+            if ("X".equals(action) || ("ENTER".equals(action) && contextMenuSelection == options.length - 1)) {
                 gameApp.setMenuRequest(null, null);
                 isMenuOpen = true; 
                 return true;
@@ -727,10 +737,8 @@ public class HUDRenderer implements Disposable {
                 return true;
             } else if ("ENTER".equals(action) || "SPACE".equals(action)) {
                 if (selectedOption == 0) {
-                    isMenuOpen = false;
                     gameApp.pushInput("MENU_STATUS");
                 } else if (selectedOption == 1) {
-                    isMenuOpen = false;
                     gameApp.pushInput("MENU_INVENTORY");
                 } else if (selectedOption == 2) {
                     isMenuOpen = false;

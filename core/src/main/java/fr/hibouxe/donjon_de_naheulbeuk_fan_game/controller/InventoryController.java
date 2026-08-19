@@ -38,7 +38,7 @@ public class InventoryController implements GameState {
 
     @Override
     public void onInput(String action) {
-        if ("ESCAPE".equals(action)) {
+        if ("X".equals(action) || "ESCAPE".equals(action)) {
             gameContext.popState();
             return;
         }
