@@ -48,7 +48,6 @@ public class Game implements InputListener, GameContext {
     }
 
     public void changeState(GameState newState) {
-        stateStack.clear();
         if (currentState != null) {
             currentState.exit();
         }
@@ -56,6 +55,10 @@ public class Game implements InputListener, GameContext {
         if (currentState != null) {
             currentState.enter();
         }
+    }
+
+    public GameState getCurrentState() {
+        return currentState;
     }
 
     private void initMainMenu() {
@@ -97,10 +100,10 @@ public class Game implements InputListener, GameContext {
             SaveData data = saveManager.loadHubSave(slot);
             if (data != null) {
                 this.team = data.getTeam();
-                HubController hc = new HubController(team, app.getViewProvider().getMenuView(), currentSlot, saveManager);
-                app.setState(HD2DGameApp.GameState.HUB);
+                VillageController vc = new VillageController(team, data.getVillage(), app.getViewProvider().getMenuView(), currentSlot, saveManager, this);
+                app.setState(HD2DGameApp.GameState.VILLAGE);
                 app.setMenuRequest(null, null);
-                changeState(hc);
+                changeState(vc);
             } else {
                 changeState(new MainMenuState());
             }

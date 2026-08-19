@@ -45,6 +45,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         EXPLORATION,
         BATTLE,
         HUB,
+        VILLAGE,
         TRANSITION
     }
 
@@ -67,6 +68,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     private DungeonSceneRenderer dungeonRenderer;
     private BattleArenaRenderer battleRenderer;
     private HUDRenderer hudRenderer;
+    private VillageSceneRenderer villageRenderer;
 
     private InputManager inputManager;
     private Game game;
@@ -102,7 +104,9 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             return true;
         }
 
-        if (currentMenuTitle != null && ("PAUSE".equals(currentMenuTitle) || "STATISTIQUES".equals(currentMenuTitle) || "INVENTAIRE".equals(currentMenuTitle) || "CIBLE_OBJET".equals(currentMenuTitle) || "CATEGORIES".equals(currentMenuTitle) || "OBJETS".equals(currentMenuTitle))) {
+        if (currentMenuTitle != null && ("PAUSE".equals(currentMenuTitle) || "STATISTIQUES".equals(currentMenuTitle) 
+|| "INVENTAIRE".equals(currentMenuTitle) || "CIBLE_OBJET".equals(currentMenuTitle) || 
+"CATEGORIES".equals(currentMenuTitle) || "OBJETS".equals(currentMenuTitle))) {
             if (hudRenderer != null) {
                 boolean consumed = hudRenderer.onInput(action, this);
                 if (!consumed) {
@@ -148,8 +152,6 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         
         Gdx.input.setCatchKey(com.badlogic.gdx.Input.Keys.ESCAPE, true);
         
-        assetProvider = new AssetProvider();
-
         camera = new PerspectiveCamera(45, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.near = 0.1f;
         camera.far = 500f;
@@ -161,9 +163,11 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         modelBatch = new ModelBatch();
         decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
 
+        assetProvider = new AssetProvider();
         dungeonRenderer = new DungeonSceneRenderer(assetProvider);
         battleRenderer = new BattleArenaRenderer(this.assetProvider);
         hudRenderer = new HUDRenderer(this.settingsManager);
+        villageRenderer = new VillageSceneRenderer(this.assetProvider);
     }
 
     private boolean sceneNeedsBuild = false;
@@ -285,6 +289,18 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             camera.update();
 
             dungeonRenderer.render(modelBatch, decalBatch, environment, camera, team.getX(), team.getY(), team.getFacingDirection());
+        } else if (currentState == GameState.VILLAGE && game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController vc = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) game.getCurrentState();
+            float vX = vc.getPlayerX();
+            float vZ = vc.getPlayerZ();
+            
+            camera.position.x += (vX - camera.position.x) * 0.1f;
+            camera.position.y += (14.0f - camera.position.y) * 0.1f;
+            camera.position.z += ((vZ + 12f) - camera.position.z) * 0.1f;
+            camera.lookAt(camera.position.x, 0.0f, camera.position.z - 12f);
+            camera.update();
+            
+            villageRenderer.render(modelBatch, decalBatch, environment, camera, vX, vZ);
         } else {
             battleRenderer.render(modelBatch, decalBatch, environment, camera);
         }
