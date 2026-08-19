@@ -48,9 +48,24 @@ public class VillageSceneRenderer implements Disposable {
             com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters params = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters();
             params.flipV = false;
 
-            // Le sol en herbe
-            grassModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Grass_Tile_01.obj"), params);
-            grassModel.materials.get(0).set(TextureAttribute.createDiffuse(grassTexture));
+            // Construire un modèle d'herbe sur mesure avec ModelBuilder et TextureRegion (évite les bugs UV de Blender)
+            com.badlogic.gdx.graphics.g3d.utils.ModelBuilder modelBuilder = new com.badlogic.gdx.graphics.g3d.utils.ModelBuilder();
+            TextureRegion grassReg = new TextureRegion(grassTexture, 0, 0, 32, 32); // Coin en haut à gauche = Herbe pure
+            com.badlogic.gdx.graphics.g3d.Material grassMat = new com.badlogic.gdx.graphics.g3d.Material(TextureAttribute.createDiffuse(grassReg));
+            
+            modelBuilder.begin();
+            com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder mpb = modelBuilder.part("grass", com.badlogic.gdx.graphics.GL20.GL_TRIANGLES, com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal | com.badlogic.gdx.graphics.VertexAttributes.Usage.TextureCoordinates, grassMat);
+            mpb.setUVRange(grassReg);
+            
+            // Créer un carré 1x1 au sol
+            mpb.rect(
+                -1f, 0f, 0f,
+                0f, 0f, 0f,
+                0f, 0f, -1f,
+                -1f, 0f, -1f,
+                0f, 1f, 0f
+            );
+            grassModel = modelBuilder.end();
 
             // La taverne
             tavernModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Inn_Stone_01.obj"), params);
