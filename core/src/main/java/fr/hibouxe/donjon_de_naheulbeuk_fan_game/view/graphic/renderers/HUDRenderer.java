@@ -639,7 +639,7 @@ public class HUDRenderer implements Disposable {
                 contextMenuSelection = (contextMenuSelection + 1) % options.length;
                 return true;
             }
-            if ("INVENTAIRE".equals(gameApp.currentMenuTitle) || "CIBLE_OBJET".equals(gameApp.currentMenuTitle) || "CATEGORIES".equals(gameApp.currentMenuTitle) || "OBJETS".equals(gameApp.currentMenuTitle) || "PAUSE".equals(gameApp.currentMenuTitle)) {
+            if ("INVENTAIRE".equals(gameApp.currentMenuTitle) || "CIBLE_OBJET".equals(gameApp.currentMenuTitle) || "CATEGORIES".equals(gameApp.currentMenuTitle) || "OBJETS".equals(gameApp.currentMenuTitle) || "PAUSE".equals(gameApp.currentMenuTitle) || "CHOISIR UN OBJET".equals(gameApp.currentMenuTitle) || "CIBLE".equals(gameApp.currentMenuTitle) || "EMPLACEMENT".equals(gameApp.currentMenuTitle)) {
                 if ("ENTER".equals(action) || "SPACE".equals(action) || "X".equals(action)) {
                     return false;
                 }
