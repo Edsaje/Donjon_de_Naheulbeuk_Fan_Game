@@ -16,6 +16,7 @@ public class SaveData implements Serializable {
 
     private Team team;
     private Dungeon dungeon;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.Village village;
     private int currentFloor;
     private boolean isQuickSave;
 
@@ -30,6 +31,7 @@ public class SaveData implements Serializable {
     public SaveData(Team team, Dungeon dungeon, int currentFloor, boolean isQuickSave) {
         this.team = team;
         this.dungeon = dungeon;
+        this.village = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.Village(); // Fallback for now
         this.currentFloor = currentFloor;
         this.isQuickSave = isQuickSave;
     }
@@ -40,6 +42,11 @@ public class SaveData implements Serializable {
 
     public Dungeon getDungeon() {
         return dungeon;
+    }
+
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.Village getVillage() {
+        if (village == null) village = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.Village(); // For old saves compatibility
+        return village;
     }
 
     public int getCurrentFloor() {
