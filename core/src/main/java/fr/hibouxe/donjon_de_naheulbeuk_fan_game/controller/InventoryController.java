@@ -105,10 +105,12 @@ public class InventoryController implements GameState {
     }
 
     private void promptAction() {
-        menu.setMenuRequest("INVENTAIRE", new String[]{"Utiliser un objet", "DÃƒÂ©sÃƒÂ©quiper", "Retour"});
+        menu.resetMenuSelection();
+        menu.setMenuRequest("INVENTAIRE", new String[]{"Utiliser un objet", "Déséquiper", "Retour"});
     }
 
     private void promptItem() {
+        menu.resetMenuSelection();
         currentItemList = team.getInventory();
         if (currentItemList.isEmpty()) {
             menu.displayDialogue("Le sac est vide !");
@@ -124,6 +126,7 @@ public class InventoryController implements GameState {
     }
 
     private void promptTarget() {
+        menu.resetMenuSelection();
         String[] options = new String[team.getMembers().size() + 1];
         for (int i = 0; i < team.getMembers().size(); i++) {
             options[i] = team.getMembers().get(i).getName();
@@ -133,14 +136,15 @@ public class InventoryController implements GameState {
     }
     
     private void promptSlot() {
+        menu.resetMenuSelection();
         menu.setMenuRequest("EMPLACEMENT", new String[]{"Arme", "Armure (Torse)", "Bijoux", "Retour"});
     }
 
     private void useItem(Item item, Character target) {
         if (item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion && target.getHealthPoint() >= target.getMaxHealthPoint()) {
             menu.displayDialogue("\n" + target.getName() + " a déjà tous ses PV !");
-            currentState = State.SELECT_TARGET;
-            promptTarget();
+            currentState = State.SELECT_ITEM;
+            promptItem();
             return;
         }
         if (item.use(target)) {
@@ -159,8 +163,8 @@ public class InventoryController implements GameState {
             gameContext.popState();
         } else {
             menu.displayDialogue("\n" + target.getName() + " ne peut pas utiliser ça !");
-            currentState = State.SELECT_TARGET;
-            promptTarget();
+            currentState = State.SELECT_ITEM;
+            promptItem();
         }
     }
 
