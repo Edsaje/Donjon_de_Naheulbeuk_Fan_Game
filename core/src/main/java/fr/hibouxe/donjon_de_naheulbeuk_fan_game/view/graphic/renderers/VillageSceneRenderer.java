@@ -42,7 +42,7 @@ public class VillageSceneRenderer implements Disposable {
             townTexture = new Texture(com.badlogic.gdx.Gdx.files.internal("models/village/town_texture.png"), true);
             townTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
             
-            grassTexture = new Texture(com.badlogic.gdx.Gdx.files.internal("models/village/grass_texture.png"), true);
+            grassTexture = new Texture(com.badlogic.gdx.Gdx.files.internal("models/village/GrassLands_NEW_C.png"), true);
             grassTexture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
 
             com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters params = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters();
