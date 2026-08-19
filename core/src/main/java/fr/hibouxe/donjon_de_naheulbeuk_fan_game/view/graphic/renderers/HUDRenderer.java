@@ -670,10 +670,14 @@ public class HUDRenderer implements Disposable {
                 }
                 return true;
             }
-            if ("X".equals(action) || ("ENTER".equals(action) && "Retour".equals(options[contextMenuSelection]))) {
-                gameApp.setMenuRequest(null, null);
-                isMenuOpen = true; 
-                return true;
+            if ("STATISTIQUES".equals(gameApp.currentMenuTitle)) {
+                if ("X".equals(action) || ("ENTER".equals(action) && "Retour".equals(options[contextMenuSelection]))) {
+                    gameApp.setMenuRequest(null, null);
+                    isMenuOpen = true; 
+                    return true;
+                }
+            } else if ("X".equals(action) || ("ENTER".equals(action) && "Retour".equals(options[contextMenuSelection]))) {
+                return false;
             } else if ("ENTER".equals(action) || "SPACE".equals(action)) {
                 return false;
             } else if (action.matches("[1-9]")) {
