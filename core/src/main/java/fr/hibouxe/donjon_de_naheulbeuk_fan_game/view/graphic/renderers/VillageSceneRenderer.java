@@ -25,6 +25,7 @@ public class VillageSceneRenderer implements Disposable {
 
     private Model grassModel;
     private Model tavernModel;
+    private Model treeModel;
     private Texture townTexture;
     private Texture grassTexture;
 
@@ -56,6 +57,14 @@ public class VillageSceneRenderer implements Disposable {
             tavernModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Inn_Stone_01.obj"), params);
             tavernModel.materials.get(0).set(TextureAttribute.createDiffuse(townTexture));
             
+            // L'arbre (limites)
+            try {
+                treeModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Lrg_Tree.obj"), params);
+                treeModel.materials.get(0).set(TextureAttribute.createDiffuse(grassTexture));
+            } catch (Exception e) {
+                com.badlogic.gdx.Gdx.app.log("VillageSceneRenderer", "Lrg_Tree.obj non trouvé, on s'en passe pour les limites.");
+            }
+            
         } catch (Exception e) {
             com.badlogic.gdx.Gdx.app.error("VillageSceneRenderer", "Failed to load village assets", e);
         }
@@ -64,13 +73,32 @@ public class VillageSceneRenderer implements Disposable {
     public void buildScene(Village village) {
         instances.clear();
 
+        int boundX = 10;
+        int boundZ = 10;
+
         if (grassModel != null) {
-            // Generer un grand sol en herbe sans trou (le modele fait 1x1, on translate de 1.0f)
-            for (int x = -20; x <= 20; x++) {
-                for (int z = -20; z <= 20; z++) {
+            // Generer un grand sol en herbe
+            for (int x = -boundX - 2; x <= boundX + 2; x++) {
+                for (int z = -boundZ - 2; z <= boundZ + 2; z++) {
                     ModelInstance grass = new ModelInstance(grassModel);
                     grass.transform.setToTranslation(x * 1.0f, 0, z * 1.0f);
                     instances.add(grass);
+                }
+            }
+        }
+
+        // Placer les arbres autour (Limites)
+        if (treeModel != null) {
+            for (int x = -boundX; x <= boundX; x++) {
+                for (int z = -boundZ; z <= boundZ; z++) {
+                    if (x == -boundX || x == boundX || z == -boundZ || z == boundZ) {
+                        // Sauf la porte d'entree vers le Sud (Donjons)
+                        if (z == boundZ && x >= -1 && x <= 1) continue;
+
+                        ModelInstance tree = new ModelInstance(treeModel);
+                        tree.transform.setToTranslation(x * 1.0f, 0, z * 1.0f);
+                        instances.add(tree);
+                    }
                 }
             }
         }

@@ -36,33 +36,78 @@ public class VillageController implements GameState {
         menu.displayMessage("Bienvenue au Campement !");
     }
 
+    private float boundX = 9.5f;
+    private float boundZ = 9.5f;
+
     @Override
     public void update(float deltaTime) {
+        if (currentMenuState != VillageMenuState.NONE) return;
+
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider input = game.getInputProvider();
         if (input != null) {
-            if (input.isUpPressed()) {
-                playerZ -= moveSpeed * deltaTime;
+            float nextX = playerX;
+            float nextZ = playerZ;
+            
+            if (input.isUpPressed()) nextZ -= moveSpeed * deltaTime;
+            if (input.isDownPressed()) nextZ += moveSpeed * deltaTime;
+            if (input.isLeftPressed()) nextX -= moveSpeed * deltaTime;
+            if (input.isRightPressed()) nextX += moveSpeed * deltaTime;
+            
+            // Collision (Limites simples)
+            if (nextX < -boundX) nextX = -boundX;
+            if (nextX > boundX) nextX = boundX;
+            if (nextZ < -boundZ) nextZ = -boundZ;
+            
+            // Porte vers le sud (Donjons)
+            if (nextZ > boundZ) {
+                if (nextX >= -1.5f && nextX <= 1.5f) {
+                    // Laisse avancer un peu pour declencher le menu
+                    if (nextZ > boundZ + 1.0f) {
+                        nextZ = boundZ + 1.0f;
+                        openDungeonSelection();
+                    }
+                } else {
+                    nextZ = boundZ;
+                }
             }
-            if (input.isDownPressed()) {
-                playerZ += moveSpeed * deltaTime;
-            }
-            if (input.isLeftPressed()) {
-                playerX -= moveSpeed * deltaTime;
-            }
-            if (input.isRightPressed()) {
-                playerX += moveSpeed * deltaTime;
-            }
+            
+            playerX = nextX;
+            playerZ = nextZ;
         }
     }
+
+    private void openDungeonSelection() {
+        currentMenuState = VillageMenuState.DUNGEON_SELECTION;
+        menu.setMenuRequest("Partir à l'Aventure ?", new String[]{"Donjon du Tutoriel", "Donjon de Naheulbeuk", "Rester ici"});
+    }
+
+    private enum VillageMenuState { NONE, DUNGEON_SELECTION, TAVERN, VILLAGE_MENU }
+    private VillageMenuState currentMenuState = VillageMenuState.NONE;
 
     @Override
     public void onInput(String action) {
         if ("ENTER".equals(action)) {
-            handleInteraction();
+            if (currentMenuState == VillageMenuState.DUNGEON_SELECTION) {
+                int choice = menu.getMenuSelection();
+                menu.resetMenuSelection();
+                currentMenuState = VillageMenuState.NONE;
+                menu.setMenuRequest(null, null);
+                if (choice == 0) game.startDungeon("TUTORIAL");
+                else if (choice == 1) game.startDungeon("NAHEULBEUK");
+                else playerZ -= 2.0f; // Recule pour ne pas re-declencher
+            } else if (currentMenuState == VillageMenuState.NONE) {
+                handleInteraction();
+            }
         }
         
         if ("M".equals(action) || "ESCAPE".equals(action)) {
-            openVillageMenu();
+            if (currentMenuState == VillageMenuState.NONE) {
+                openVillageMenu();
+            } else {
+                currentMenuState = VillageMenuState.NONE;
+                menu.setMenuRequest(null, null);
+                playerZ -= 2.0f; // Recule pour eviter la boucle
+            }
         }
         
         if (action != null && action.startsWith("MENU_")) {

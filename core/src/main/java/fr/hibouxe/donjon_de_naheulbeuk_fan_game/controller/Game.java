@@ -301,6 +301,20 @@ public class Game implements InputListener, GameContext {
         }
         @Override public void exit() {}
     }
+    @Override
+    public void startDungeon(String dungeonId) {
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon maze;
+        if ("TUTORIAL".equals(dungeonId)) {
+            maze = new TutorialDungeon();
+        } else {
+            maze = new NaheulbeukDungeon();
+        }
+        maze.prepareFloor(1, team);
+        ExplorationController ec = new ExplorationController(maze, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+        app.setState(HD2DGameApp.GameState.EXPLORATION);
+        app.setMenuRequest(null, null);
+        changeState(ec);
+    }
 }
 
 
