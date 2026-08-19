@@ -15,8 +15,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager;
 
 /**
- * Composant de rendu 2D sp├®cialis├® pour l'Interface Utilisateur (HUD) et le ConsoleMenu Interactif Dragon Quest (SRP).
- * Ouvre une fen├¬tre bleue ├á bordure dor├®e (Sac, Sorts, ├®quipement, Carte, Sauvegarde) ├á la pression de 'M' ou 'ECHAP'.
+ * Composant de rendu 2D spécialisé pour l'Interface Utilisateur (HUD) et le ConsoleMenu Interactif Dragon Quest (SRP).
+ * Ouvre une fenêtre bleue à bordure dorée (Sac, Sorts, Équipement, Carte, Sauvegarde) à la pression de 'M' ou 'ECHAP'.
  *
  * @author Hibouxe
  * @version 2.0
@@ -29,7 +29,7 @@ public class HUDRenderer implements Disposable {
     private boolean isMenuOpen = false;
     private int selectedOption = 0;
     private String[] menuOptions = {
-            "Status", "Sac", "├ëquipement", "Magie", "Sauvegarder", "Param├¿tres", "Fermer"
+            "Status", "Sac", "Équipement", "Magie", "Sauvegarder", "Paramètres", "Fermer"
     };
     
     // --- Settings Menu State ---
@@ -69,7 +69,7 @@ public class HUDRenderer implements Disposable {
         uiBatch.begin();
         font.getData().setScale(2.5f);
         font.setColor(Color.WHITE);
-        String text = "├ëTAGE " + floor;
+        String text = "ÉTAGE " + floor;
         float x = (1280 / 2f) - (text.length() * 15f);
         float y = (720 / 2f);
         font.draw(uiBatch, text, x, y);
@@ -83,7 +83,7 @@ public class HUDRenderer implements Disposable {
      * @param dungeon Donjon actuel
      * @param playerX Position X du joueur
      * @param playerY Position Y du joueur
-     * @param currentFloor ├®tage actuel
+     * @param currentFloor Étage actuel
      * */
     public void renderHUD(Dungeon dungeon, int playerX, int playerY, int currentFloor, HD2DGameApp.GameState state, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, String menuTitle, String[] menuOptions, HD2DGameApp gameApp) {
 
@@ -127,7 +127,7 @@ public class HUDRenderer implements Disposable {
             // === MENU DE COMBAT (Style DQ3 HD-2D) ===
             int menuWidth = 350;
             int menuHeight = 60 + options.length * 40;
-            int x = 30; // Align├® ├á gauche, plus bas
+            int x = 30; // Aligné à gauche, plus bas
             int y = 50;
             
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -142,7 +142,7 @@ public class HUDRenderer implements Disposable {
             shapeRenderer.rectLine(x, y, x, y + menuHeight, 2);
             shapeRenderer.rectLine(x + menuWidth, y, x + menuWidth, y + menuHeight, 2);
 
-            // Curseur gris fonc├®
+            // Curseur gris foncé
             if (contextMenuSelection < options.length) {
                 int cursorY = y + menuHeight - 80 - contextMenuSelection * 40;
                 shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.3f, 0.8f));
@@ -170,24 +170,24 @@ public class HUDRenderer implements Disposable {
             int menuWidth = Math.max(300, columns * itemWidth + 60);
             int menuHeight = 60 + rows * 40;
             
-            // Plac├® en haut ├á gauche
+            // Placé en haut à gauche
             int x = 50; 
             int y = 720 - menuHeight - 50; 
             
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             
-            // Fen├¬tre Noire (95% opacit├®)
+            // Fenêtre noire (95% opacité)
             shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
             shapeRenderer.rect(x, y, menuWidth, menuHeight);
             
-            // Bordure blanche ├®paisse (3px)
+            // Bordure blanche épaisse (3px)
             shapeRenderer.setColor(Color.WHITE);
             shapeRenderer.rectLine(x, y, x + menuWidth, y, 3);
             shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 3);
             shapeRenderer.rectLine(x, y, x, y + menuHeight, 3);
             shapeRenderer.rectLine(x + menuWidth, y, x + menuWidth, y + menuHeight, 3);
             
-            // Curseur de s├®lection (fond de ligne gris transparent)
+            // Curseur de sélection (fond de ligne gris transparent)
             if (contextMenuSelection < options.length) {
                 int col = contextMenuSelection % columns;
                 int row = contextMenuSelection / columns;
@@ -202,7 +202,7 @@ public class HUDRenderer implements Disposable {
             shapeRenderer.end();
 
             uiBatch.begin();
-            // Titre align├® ├á gauche
+            // Titre aligné à gauche
             font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
             font.draw(uiBatch, title, x + 25, y + menuHeight - 15);
 
@@ -236,17 +236,17 @@ public class HUDRenderer implements Disposable {
         
         int statusWidth = 600;
         int statusHeight = 450;
-        // Plac├® ├á c├┤t├® du menu de gauche (x = 50 + menuWidth (environ 300) + 20)
+        // Placé à côté du menu de gauche (x = 50 + menuWidth (environ 300) + 20)
         int x = 370;
         int y = 720 - statusHeight - 50;
         
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
-        // Fen├¬tre Noire (95% opacit├®)
+        // Fenêtre Noire (95% opacité)
         shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
         shapeRenderer.rect(x, y, statusWidth, statusHeight);
         
-        // Bordure blanche ├®paisse (3px)
+        // Bordure blanche épaisse (3px)
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rectLine(x, y, x + statusWidth, y, 3);
         shapeRenderer.rectLine(x, y + statusHeight, x + statusWidth, y + statusHeight, 3);
@@ -264,7 +264,7 @@ public class HUDRenderer implements Disposable {
         font.setColor(Color.WHITE);
         int currentY = y + statusHeight - 60;
         
-        // Section Sant├® & Prog
+        // Section Santé & Prog
         font.draw(uiBatch, "Sant├® : " + hero.getHealthPoint() + " / " + hero.getMaxHealthPoint(), x + 30, currentY);
         font.draw(uiBatch, hero.getResourceName() + " : " + hero.getCurrentResource() + " / " + hero.getMaxResource(), x + 300, currentY);
         currentY -= 35;
@@ -285,7 +285,7 @@ public class HUDRenderer implements Disposable {
         font.draw(uiBatch, "Vitesse : " + hero.getSpeed(), x + 30, currentY);
         currentY -= 50;
         
-        // ├ëquipements
+        //équipements
         font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
         font.draw(uiBatch, "├ëquipement actuel", x + 25, currentY);
         font.setColor(Color.WHITE);
@@ -321,7 +321,7 @@ public class HUDRenderer implements Disposable {
 
         uiBatch.begin();
         font.setColor(Color.WHITE);
-        font.draw(uiBatch, "├ëTAGE " + currentFloor, 20, 720 - 20);
+        font.draw(uiBatch, "ÉTAGE " + currentFloor, 20, 720 - 20);
         font.setColor(Color.LIGHT_GRAY);
         font.draw(uiBatch, "[M/ECHAP: Menu]", 1280 - 180, 40);
         uiBatch.end();
@@ -334,9 +334,9 @@ public class HUDRenderer implements Disposable {
         int startX = 1280 - 250; // Align├® ├á droite
         
         int memberCount = team.getMembers().size();
-        int startY = (720 + (memberCount * 80)) / 2; // Centr├® verticalement
+        int startY = (720 + (memberCount * 80)) / 2; // Centré verticalement
         
-        // Optionnel : un fond tr├¿s l├®ger semi-transparent derri├¿re tous les statuts pour la lisibilit├®
+        // Optionnel : un fond très léger semi-transparent derrière tous les statuts pour la lisibilité
         // shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         // shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.4f));
         // shapeRenderer.rect(startX - 20, startY - (memberCount * 80) + 40, 260, memberCount * 80);
@@ -385,7 +385,7 @@ public class HUDRenderer implements Disposable {
             font.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
             font.draw(uiBatch, member.getResourceName().substring(0, 1) + "M", startX, currentY - 38);
             
-            // Valeurs num├®riques sur le c├┤t├® droit des barres
+            // Valeurs numériques sur le côté droit des barres
             font.setColor(Color.WHITE);
             font.draw(uiBatch, String.valueOf(member.getHealthPoint()), startX + 30 + barWidth + 10, currentY - 18);
             font.draw(uiBatch, String.valueOf(member.getCurrentResource()), startX + 30 + barWidth + 10, currentY - 38);
@@ -415,18 +415,18 @@ public class HUDRenderer implements Disposable {
         }
 
         if (state == HD2DGameApp.GameState.BATTLE) {
-            // Affichage ultra ├®pur├® type "Texte flottant" (sans fond) pour les combats
+            // Affichage ultra épuré type "Texte flottant" (sans fond) pour les combats
             int screenWidth = 1280;
             int screenHeight = 720;
             
-            // Plac├® tr├¿s bas sur l'├®cran
+            // Placé très bas sur l'écran
             int textY = screenHeight / 12; 
             
             // Approximation simple du centrage pour le texte
             int textX = (screenWidth / 2) - (dialogueText.length() * 4); 
 
             uiBatch.begin();
-            // Effet d'ombre/contour noir pour la lisibilit├®
+            // Effet d'ombre/contour noir pour la lisibilité
             font.setColor(Color.BLACK);
             font.draw(uiBatch, dialogueText, textX + 2, textY - 2);
             font.draw(uiBatch, dialogueText, textX - 2, textY + 2);
@@ -440,8 +440,8 @@ public class HUDRenderer implements Disposable {
             return;
         }
 
-        // Affichage classique (Bo├«te de dialogue) pour l'exploration
-        int boxWidth = 1280 - 200; // Marge de 100px de chaque c├┤t├®
+        // Affichage classique pour l'exploration
+        int boxWidth = 1280 - 200; // Marge de 100px de chaque côté
         int boxX = 100;
         int boxY = 20;
         int boxHeight = 180;
@@ -473,18 +473,18 @@ public class HUDRenderer implements Disposable {
         int menuX = (1280 - menuWidth) / 2;
         int menuY = (720 - menuHeight) / 2;
 
-        // Fond Noir (95% opacit├®)
+        // Fond Noir (95% opacité)
         shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
         shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
         
-        // Bordure blanche ├®paisse (3px)
+        // Bordure blanche épaisse (3px)
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 3);
         shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX + menuWidth, menuY, menuX + menuWidth, menuY + menuHeight, 3);
 
-        // Curseur de s├®lection
+        // Curseur de sélection
         int cursorY = menuY + menuHeight - 75 - selectedSettingsOption * 40;
         shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.4f, 0.6f));
         shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 35);
@@ -515,29 +515,29 @@ public class HUDRenderer implements Disposable {
     private void renderDragonQuestWindow(Dungeon dungeon, int playerX, int playerY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        // 1. Fen├¬tre du Menu Principal (Top-Left)
+        // 1. Fenêtre du Menu Principal (Top-Left)
         int menuWidth = 350;
         int menuHeight = 60 + menuOptions.length * 40;
         int menuX = 50;
         int menuY = 720 - menuHeight - 50;
 
-        // Fond Noir (95% opacit├®)
+        // Fond Noir (95% opacité)
         shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
         shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
         
-        // Bordure blanche ├®paisse (3px)
+        // Bordure blanche épaisse (3px)
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 3);
         shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX + menuWidth, menuY, menuX + menuWidth, menuY + menuHeight, 3);
 
-        // Curseur de s├®lection (fond de ligne gris transparent)
+        // Curseur de sélection (fond de ligne gris transparent)
         int cursorY = menuY + menuHeight - 75 - selectedOption * 40;
         shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.4f, 0.6f));
         shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 35);
 
-        // 2. Fen├¬tre du Statut de l'├®quipe (Bottom-Left)
+        // 2. Fenêtre du Statut de l'équipe (Bottom-Left)
         int statusWidth = 450;
         int statusHeight = 60 + ((team != null) ? team.getMembers().size() * 50 : 0);
         int statusX = 50;
@@ -592,7 +592,7 @@ public class HUDRenderer implements Disposable {
             font.draw(uiBatch, "(Vide)", statusX + 25, statusY + statusHeight - 50);
         }
         
-        // Aide ├á la navigation en bas ├á droite (tr├¿s discret)
+        // Aide à la navigation en bas à droite (très discret)
         font.setColor(Color.LIGHT_GRAY);
         font.draw(uiBatch, "[Utilise Z/W/S, ENTREE pour selectionner]", 1280 - 400, 50);
 
@@ -636,7 +636,7 @@ public class HUDRenderer implements Disposable {
             }
         }
 
-        // Marqueur Joueur en Dor├®
+        // Marqueur Joueur en Doré
         int playerDrawX = originX + playerX * miniCellSize;
         int playerDrawY = originY + (dungeon.getHeight() - 1 - playerY) * miniCellSize;
         shapeRenderer.setColor(Color.GOLD);

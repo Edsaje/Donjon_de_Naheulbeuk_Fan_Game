@@ -118,6 +118,17 @@ public class BattleController implements GameState {
     
     public void onActionSelected(int index) {
         engine.setState(BattleState.EXECUTING_ACTION);
+        boolean isUnwinnable = false;
+        for (Character m : monsters) {
+            if ("Patrouille Orque".equals(m.getName())) isUnwinnable = true;
+        }
+        
+        if (isUnwinnable && index != 3) {
+            menu.displayMessage("Impossible ! Ils sont trop nombreux, fuyez !");
+            engine.setState(BattleState.PLAYER_ACTION_CHOICE);
+            promptPlayerAction();
+            return;
+        }
         if (index == 0) {
             // Attaque
             Character target = null;
