@@ -38,21 +38,25 @@ public class VillageController implements GameState {
 
     @Override
     public void update(float deltaTime) {
-        // Input polling (continu) handled here or by InputManager
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider input = game.getInputProvider();
+        if (input != null) {
+            if (input.isUpPressed()) {
+                playerZ -= moveSpeed * deltaTime;
+            }
+            if (input.isDownPressed()) {
+                playerZ += moveSpeed * deltaTime;
+            }
+            if (input.isLeftPressed()) {
+                playerX -= moveSpeed * deltaTime;
+            }
+            if (input.isRightPressed()) {
+                playerX += moveSpeed * deltaTime;
+            }
+        }
     }
 
     @Override
     public void onInput(String action) {
-        if ("UP".equals(action) || "Z".equals(action)) {
-            playerZ -= moveSpeed * 0.1f;
-        } else if ("DOWN".equals(action) || "S".equals(action)) {
-            playerZ += moveSpeed * 0.1f;
-        } else if ("LEFT".equals(action) || "Q".equals(action)) {
-            playerX -= moveSpeed * 0.1f;
-        } else if ("RIGHT".equals(action) || "D".equals(action)) {
-            playerX += moveSpeed * 0.1f;
-        }
-        
         if ("ENTER".equals(action)) {
             handleInteraction();
         }

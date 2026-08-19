@@ -16,11 +16,18 @@ public class Game implements InputListener, GameContext {
     private Team team;
     private int currentSlot = 1;
     private ISaveManager saveManager;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider;
 
-    public Game(HD2DGameApp app, ISaveManager saveManager) {
+    public Game(HD2DGameApp app, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider) {
         this.app = app;
         this.saveManager = saveManager;
+        this.inputProvider = inputProvider;
         initMainMenu();
+    }
+    
+    @Override
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider getInputProvider() {
+        return inputProvider;
     }
     private java.util.Stack<GameState> stateStack = new java.util.Stack<>();
 

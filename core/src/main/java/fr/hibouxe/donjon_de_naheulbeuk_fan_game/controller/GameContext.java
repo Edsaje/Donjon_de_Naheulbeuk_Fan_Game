@@ -8,4 +8,5 @@ public interface GameContext {
     void exitGame();
     void pushState(fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.state.GameState state);
     void popState();
+    fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider getInputProvider();
 }

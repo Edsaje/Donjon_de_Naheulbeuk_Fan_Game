@@ -26,7 +26,7 @@ public class DesktopLauncher {
         
         InputManager inputManager = new InputManager();
         FileSaveManager saveManager = new FileSaveManager();
-        Game game = new Game(app, saveManager);
+        Game game = new Game(app, saveManager, inputManager);
         inputManager.setListener(game);
         app.setDependencies(inputManager, game);
 
