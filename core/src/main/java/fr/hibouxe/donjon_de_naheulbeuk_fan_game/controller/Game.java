@@ -170,10 +170,36 @@ public class Game implements InputListener, GameContext {
             if ("ENTER".equals(action)) {
                 int choice = app.getMenuSelection();
                 app.resetMenuSelection();
-                if (choice == 0) runTutorial();
+                if (choice == 0) changeState(new NewGameMenuState());
                 else if (choice == 1) changeState(new LoadMenuState());
                 else if (choice == 2) changeState(new ManageSavesMenuState());
                 else if (choice == 3) com.badlogic.gdx.Gdx.app.exit();
+            }
+        }
+        @Override public void exit() {}
+    }
+
+    private class NewGameMenuState implements GameState {
+        @Override public void enter() {
+            String[] options = new String[4];
+            for (int i = 1; i <= 3; i++) {
+                options[i-1] = saveManager.getSlotSummary(i);
+            }
+            options[3] = "Retour";
+            app.setMenuRequest("Choisir un Slot", options);
+        }
+        @Override public void update(float deltaTime) {}
+        @Override public void onInput(String action) {
+            if ("ENTER".equals(action)) {
+                int choice = app.getMenuSelection();
+                app.resetMenuSelection();
+                if (choice >= 0 && choice < 3) {
+                    currentSlot = choice + 1;
+                    saveManager.deleteSlot(currentSlot);
+                    runTutorial();
+                } else if (choice == 3) {
+                    changeState(new MainMenuState());
+                }
             }
         }
         @Override public void exit() {}
