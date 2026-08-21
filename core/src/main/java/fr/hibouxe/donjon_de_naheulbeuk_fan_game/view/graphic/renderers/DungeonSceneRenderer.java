@@ -28,8 +28,9 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
  */
 public class DungeonSceneRenderer implements Disposable {
     private Model floorModel;
-    private Model wallBlockModel;
-    private Model wallTopModel;
+    private Model wallStraightModel;
+    private Model wallCornerModel;
+    private Model wallInnerCornerModel;
     private Array<ModelInstance> instances = new Array<>();
     private Array<Decal> entityBillboards = new Array<>();
     private Decal heroSprite;
@@ -69,13 +70,12 @@ public class DungeonSceneRenderer implements Disposable {
     private Texture stairsTexture;
     private Texture elfTexture;
 
-    private Texture floorTex;
-    private Texture wallTex;
-    private Texture wallTopTex;
+    private Texture dungeonTex;
 
     private com.badlogic.gdx.utils.Pool<ModelInstance> floorPool;
-    private com.badlogic.gdx.utils.Pool<ModelInstance> wallBlockPool;
-    private com.badlogic.gdx.utils.Pool<ModelInstance> wallTopPool;
+    private com.badlogic.gdx.utils.Pool<ModelInstance> wallStraightPool;
+    private com.badlogic.gdx.utils.Pool<ModelInstance> wallCornerPool;
+    private com.badlogic.gdx.utils.Pool<ModelInstance> wallInnerCornerPool;
     
     private com.badlogic.gdx.utils.Pool<Decal> decalPool;
 
@@ -84,7 +84,7 @@ public class DungeonSceneRenderer implements Disposable {
     private TextureRegion stairsRegion;
     private TextureRegion[][] elfFrames;
 
-    private float tileSize = 2.0f;
+    private float tileSize = 1.0f;
     private boolean usingObjModels = false;
 
     private AssetProvider assetProvider;
@@ -112,56 +112,39 @@ public class DungeonSceneRenderer implements Disposable {
             elfFrames = TextureRegion.split(elfTexture, 64, 64);
         }
 
-        ModelBuilder modelBuilder = new ModelBuilder();
+        com.badlogic.gdx.graphics.g3d.loader.ObjLoader objLoader = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader();
         
-        try {
-            this.floorTex = new Texture(com.badlogic.gdx.Gdx.files.internal("3d/Textures/wood_floor.jpg"), true);
-            this.floorTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
-        } catch(Exception e) { com.badlogic.gdx.Gdx.app.error("DungeonSceneRenderer", "wood_floor.jpg introuvable.", e); }
-        try {
-            this.wallTex = new Texture(com.badlogic.gdx.Gdx.files.internal("3d/Textures/wood_wall_front.jpg"), true);
-            this.wallTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
-        } catch(Exception e) { com.badlogic.gdx.Gdx.app.error("DungeonSceneRenderer", "wood_wall_front.jpg introuvable.", e); }
-        try {
-            this.wallTopTex = new Texture(com.badlogic.gdx.Gdx.files.internal("3d/Textures/wood_wall_top.jpg"), true);
-            this.wallTopTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
-        } catch(Exception e) { com.badlogic.gdx.Gdx.app.error("DungeonSceneRenderer", "wood_wall_top.jpg introuvable.", e); }
+        floorModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/floor.obj"));
+        wallStraightModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/wall_straight.obj"));
+        wallCornerModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/wall_corner.obj"));
+        wallInnerCornerModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/wall_inner_corner.obj"));
+        
+        dungeonTex = new Texture(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/texture.png"), true);
+        dungeonTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+        com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute texAttr = com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute.createDiffuse(dungeonTex);
 
-        Material floorMat = floorTex != null ? 
-                new Material(com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute.createDiffuse(floorTex)) :
-                new Material(ColorAttribute.createDiffuse(new Color(0.35f, 0.35f, 0.4f, 1f)));
-                
-        Material wallMat = wallTex != null ? 
-                new Material(com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute.createDiffuse(wallTex)) :
-                new Material(ColorAttribute.createDiffuse(new Color(0.5f, 0.35f, 0.25f, 1f)));
-                
-        Material wallTopMat = wallTopTex != null ? 
-                new Material(com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute.createDiffuse(wallTopTex)) :
-                wallMat;
-
-        floorModel = modelBuilder.createBox(2.0f, 0.1f, 2.0f, floorMat,
-                com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal | com.badlogic.gdx.graphics.VertexAttributes.Usage.TextureCoordinates);
-
-        wallBlockModel = modelBuilder.createBox(2.0f, 2.5f, 2.0f, wallMat,
-                com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal | com.badlogic.gdx.graphics.VertexAttributes.Usage.TextureCoordinates);
-                
-        wallTopModel = modelBuilder.createBox(2.0f, 0.05f, 2.0f, wallTopMat,
-                com.badlogic.gdx.graphics.VertexAttributes.Usage.Position | com.badlogic.gdx.graphics.VertexAttributes.Usage.Normal | com.badlogic.gdx.graphics.VertexAttributes.Usage.TextureCoordinates);
+        for (Material m : floorModel.materials) m.set(texAttr);
+        for (Material m : wallStraightModel.materials) m.set(texAttr);
+        for (Material m : wallCornerModel.materials) m.set(texAttr);
+        for (Material m : wallInnerCornerModel.materials) m.set(texAttr);
 
         this.floorPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
             @Override protected ModelInstance newObject() { return new ModelInstance(floorModel); }
         };
-        this.wallBlockPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
-            @Override protected ModelInstance newObject() { return new ModelInstance(wallBlockModel); }
+        this.wallStraightPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
+            @Override protected ModelInstance newObject() { return new ModelInstance(wallStraightModel); }
         };
-        this.wallTopPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
-            @Override protected ModelInstance newObject() { return new ModelInstance(wallTopModel); }
+        this.wallCornerPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
+            @Override protected ModelInstance newObject() { return new ModelInstance(wallCornerModel); }
+        };
+        this.wallInnerCornerPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
+            @Override protected ModelInstance newObject() { return new ModelInstance(wallInnerCornerModel); }
         };
         this.decalPool = new com.badlogic.gdx.utils.Pool<Decal>() {
             @Override protected Decal newObject() { return Decal.newDecal(1f, 1f, new TextureRegion(), true); }
         };
 
-        usingObjModels = false;
+        usingObjModels = true;
     }
 
     public void setLeaderClass(String className) {
@@ -179,13 +162,14 @@ public class DungeonSceneRenderer implements Disposable {
 
     public void buildScene(Dungeon dungeon, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, float playerX, float playerZ, int currentFloor) {
         
-        float oldHeroX = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getX() : (playerX * 2.0f);
-        float oldHeroZ = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getZ() : (playerZ * 2.0f);
+        float oldHeroX = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getX() : (playerX * tileSize + 0.5f);
+        float oldHeroZ = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getZ() : (playerZ * tileSize + 0.5f);
 
         for (ModelInstance instance : instances) {
             if (instance.model == floorModel) floorPool.free(instance);
-            else if (instance.model == wallBlockModel) wallBlockPool.free(instance);
-            else if (instance.model == wallTopModel) wallTopPool.free(instance);
+            else if (instance.model == wallStraightModel) wallStraightPool.free(instance);
+            else if (instance.model == wallCornerModel) wallCornerPool.free(instance);
+            else if (instance.model == wallInnerCornerModel) wallInnerCornerPool.free(instance);
         }
         for (Decal d : entityBillboards) decalPool.free(d);
         instances.clear();
@@ -203,14 +187,15 @@ public class DungeonSceneRenderer implements Disposable {
 
                 if (cell.isWalkable()) {
                     ModelInstance floor = floorPool.obtain();
-                    floor.transform.setToTranslation(posX, 0f, posZ);
+                    floor.transform.setToTranslation(posX + 0.5f, 0f, posZ + 0.5f);
+                    floor.transform.rotate(com.badlogic.gdx.math.Vector3.Y, 0f);
                     instances.add(floor);
 
                     if (cell.hasMonster()) {
                         Decal monsterSprite = decalPool.obtain();
                         monsterSprite.setTextureRegion(monsterRegion);
                         monsterSprite.setDimensions(1.2f, 1.8f);
-                        monsterSprite.setPosition(posX, 1.0f, posZ);
+                        monsterSprite.setPosition(posX + 0.5f, 1.0f, posZ + 0.5f);
                         entityBillboards.add(monsterSprite);
                     }
 
@@ -218,7 +203,7 @@ public class DungeonSceneRenderer implements Disposable {
                         Decal chestSprite = decalPool.obtain();
                         chestSprite.setTextureRegion(chestRegion);
                         chestSprite.setDimensions(1.2f, 1.2f);
-                        chestSprite.setPosition(posX, 0.7f, posZ);
+                        chestSprite.setPosition(posX + 0.5f, 0.7f, posZ + 0.5f);
                         entityBillboards.add(chestSprite);
                     }
 
@@ -226,7 +211,7 @@ public class DungeonSceneRenderer implements Disposable {
                         Decal stairsSprite = decalPool.obtain();
                         stairsSprite.setTextureRegion(stairsRegion);
                         stairsSprite.setDimensions(1.6f, 1.6f);
-                        stairsSprite.setPosition(posX, 1.0f, posZ);
+                        stairsSprite.setPosition(posX + 0.5f, 1.0f, posZ + 0.5f);
                         entityBillboards.add(stairsSprite);
                     }
                     
@@ -241,21 +226,61 @@ public class DungeonSceneRenderer implements Disposable {
                                 Decal elfSprite = decalPool.obtain();
                                 elfSprite.setTextureRegion(elfFrames[0][0]);
                                 elfSprite.setDimensions(1.8f, 1.8f);
-                                elfSprite.setPosition(posX, 1.0f, posZ);
+                                elfSprite.setPosition(posX + 0.5f, 1.0f, posZ + 0.5f);
                                 entityBillboards.add(elfSprite);
                             }
                         }
                     }
                 } else {
-                    ModelInstance wallBlock = wallBlockPool.obtain();
-                    float wallY = usingObjModels ? 0f : 1.25f;
-                    wallBlock.transform.setToTranslation(posX, wallY, posZ);
-                    instances.add(wallBlock);
-                    
-                    if (!usingObjModels && wallTopModel != null) {
-                        ModelInstance wallTop = wallTopPool.obtain();
-                        wallTop.transform.setToTranslation(posX, 2.5f + 0.025f, posZ);
-                        instances.add(wallTop);
+                    boolean n = (y > 0) ? !grid[x][y-1].isWalkable() : true;
+                    boolean s = (y < dungeon.getHeight() - 1) ? !grid[x][y+1].isWalkable() : true;
+                    boolean w = (x > 0) ? !grid[x-1][y].isWalkable() : true;
+                    boolean e = (x < dungeon.getWidth() - 1) ? !grid[x+1][y].isWalkable() : true;
+
+                    if (n && s && e && w) {
+                        continue;
+                    }
+
+                    boolean floorN = !n;
+                    boolean floorS = !s;
+                    boolean floorE = !e;
+                    boolean floorW = !w;
+
+                    int openCount = (floorN ? 1 : 0) + (floorS ? 1 : 0) + (floorE ? 1 : 0) + (floorW ? 1 : 0);
+
+                    ModelInstance wall = null;
+                    float angle = 0f;
+
+                    if (openCount == 1) {
+                        wall = wallStraightPool.obtain();
+                        if (floorN) angle = 180f;
+                        else if (floorE) angle = 90f;
+                        else if (floorS) angle = 0f;
+                        else if (floorW) angle = 270f;
+                    } else if (openCount == 2) {
+                        if ((floorN && floorS) || (floorE && floorW)) {
+                            wall = wallStraightPool.obtain();
+                            if (floorN && floorS) angle = 90f;
+                            else angle = 0f;
+                        } else {
+                            wall = wallCornerPool.obtain();
+                            if (floorN && floorE) angle = 180f;
+                            else if (floorE && floorS) angle = 90f;
+                            else if (floorS && floorW) angle = 0f;
+                            else if (floorW && floorN) angle = 270f;
+                        }
+                    } else if (openCount >= 3) {
+                        wall = wallInnerCornerPool.obtain();
+                        if (!floorN) angle = 0f;
+                        else if (!floorE) angle = 90f;
+                        else if (!floorS) angle = 180f;
+                        else if (!floorW) angle = 270f;
+                    }
+
+                    if (wall != null) {
+                        wall.transform.setToTranslation(posX + 0.5f, 0.5f, posZ + 0.5f);
+                        wall.transform.rotate(com.badlogic.gdx.math.Vector3.Y, angle);
+                        instances.add(wall);
                     }
                 }
             }
@@ -278,8 +303,8 @@ public class DungeonSceneRenderer implements Disposable {
 
     public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, float playerX, float playerZ, int playerDirection) {
         this.currentDirection = playerDirection;
-        this.targetSpriteX = playerX * tileSize;
-        this.targetSpriteZ = playerZ * tileSize;
+        this.targetSpriteX = playerX * tileSize + 0.5f;
+        this.targetSpriteZ = playerZ * tileSize + 0.5f;
 
         float currentSpriteX = heroSprite.getX();
         float currentSpriteZ = heroSprite.getZ();
@@ -338,11 +363,10 @@ public class DungeonSceneRenderer implements Disposable {
     @Override
     public void dispose() {
         if (floorModel != null) floorModel.dispose();
-        if (wallBlockModel != null) wallBlockModel.dispose();
-        if (wallTopModel != null) wallTopModel.dispose();
-        if (floorTex != null) floorTex.dispose();
-        if (wallTex != null) wallTex.dispose();
-        if (wallTopTex != null) wallTopTex.dispose();
+        if (wallStraightModel != null) wallStraightModel.dispose();
+        if (wallCornerModel != null) wallCornerModel.dispose();
+        if (wallInnerCornerModel != null) wallInnerCornerModel.dispose();
+        if (dungeonTex != null) dungeonTex.dispose();
         // Les textures heroTexture, monsterTexture, chestTexture, stairsTexture sont gérées par l'AssetProvider
     }
 }

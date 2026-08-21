@@ -11,9 +11,9 @@ public class BillboardSprite {
 
     public BillboardSprite(Character character, float gridX, float gridY) {
         this.character = character;
-        float tileSize = 2.0f;
-        this.worldX = gridX * tileSize;
-        this.worldZ = gridY * tileSize;
+        float tileSize = 1.0f;
+        this.worldX = gridX * tileSize + 0.5f;
+        this.worldZ = gridY * tileSize + 0.5f;
     }
 
     public void faceCamera(float cameraX, float cameraZ) {

@@ -74,7 +74,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     private Game game;
     private Dungeon maze;
     private Team team;
-    private float tileSize = 2.0f;
+    private float tileSize = 1.0f;
     private KeyboardLayout activeKeyboardLayout = KeyboardLayout.detectSystemLayout();
 
     private GameSettingsManager settingsManager;
@@ -242,9 +242,9 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
         if (sceneNeedsBuild && dungeonRenderer != null && maze != null && team != null) {
             if (cameraNeedsSnap) {
-                float startWorldX = team.getX() * tileSize;
-                float startWorldZ = team.getY() * tileSize;
-                camera.position.set(startWorldX, 14f, startWorldZ + 12f);
+                float startWorldX = team.getX() * tileSize + 0.5f;
+                float startWorldZ = team.getY() * tileSize + 0.5f;
+                camera.position.set(startWorldX, 7f, startWorldZ + 6f);
                 camera.lookAt(startWorldX, 0f, startWorldZ);
                 camera.update();
                 cameraNeedsSnap = false;
@@ -283,17 +283,17 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                 playerZ = ec.getPlayerZ();
             }
 
-            float logicX = playerX * tileSize;
-            float logicZ = playerZ * tileSize;
+            float logicX = playerX * tileSize + 0.5f;
+            float logicZ = playerZ * tileSize + 0.5f;
             float targetWorldX = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteX(logicX) : logicX;
             float targetWorldZ = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteZ(logicZ) : logicZ;
 
-            // Restauration fluide de la position et hauteur de caméra d'exploration (Y = 14.0m)
+            // Restauration fluide de la position et hauteur de caméra d'exploration (Y = 7.0m)
             float camSpeed = 12.0f * Gdx.graphics.getDeltaTime();
             camera.position.x += (targetWorldX - camera.position.x) * 0.1f;
-            camera.position.y += (14.0f - camera.position.y) * 0.1f;
-            camera.position.z += ((targetWorldZ + 12f) - camera.position.z) * 0.1f;
-            camera.lookAt(camera.position.x, 0.0f, camera.position.z - 12f);
+            camera.position.y += (7.0f - camera.position.y) * 0.1f;
+            camera.position.z += ((targetWorldZ + 6f) - camera.position.z) * 0.1f;
+            camera.lookAt(camera.position.x, 0.0f, camera.position.z - 6f);
             camera.update();
 
             dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection());
