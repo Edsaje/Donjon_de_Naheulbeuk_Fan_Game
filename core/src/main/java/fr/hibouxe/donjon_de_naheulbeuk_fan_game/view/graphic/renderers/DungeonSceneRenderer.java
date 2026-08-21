@@ -1,6 +1,4 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers;
-
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.SpriteFactory;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp;
 
 import com.badlogic.gdx.graphics.Color;
@@ -179,10 +177,10 @@ public class DungeonSceneRenderer implements Disposable {
         }
     }
 
-    public void buildScene(Dungeon dungeon, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, int playerX, int playerY, int currentFloor) {
+    public void buildScene(Dungeon dungeon, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, float playerX, float playerZ, int currentFloor) {
         
         float oldHeroX = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getX() : (playerX * 2.0f);
-        float oldHeroZ = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getZ() : (playerY * 2.0f);
+        float oldHeroZ = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getZ() : (playerZ * 2.0f);
 
         for (ModelInstance instance : instances) {
             if (instance.model == floorModel) floorPool.free(instance);
@@ -266,8 +264,8 @@ public class DungeonSceneRenderer implements Disposable {
         float currentX = oldHeroX;
         float currentZ = oldHeroZ;
 
-        lastPlayerX = playerX;
-        lastPlayerY = playerY;
+        lastPlayerX = (int) playerX;
+        lastPlayerY = (int) playerZ;
         lastFloor = currentFloor;
 
         TextureRegion initialFrame = heroFrames.length > 0 && heroFrames[0].length > 0 ? heroFrames[0][0] : new TextureRegion(heroTexture);
@@ -278,11 +276,10 @@ public class DungeonSceneRenderer implements Disposable {
         entityBillboards.add(heroSprite);
     }
 
-    public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, int playerX, int playerY, int playerDirection) {
+    public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, float playerX, float playerZ, int playerDirection) {
         this.currentDirection = playerDirection;
-        // Animation et déplacement fluide du sprite
         this.targetSpriteX = playerX * tileSize;
-        this.targetSpriteZ = playerY * tileSize;
+        this.targetSpriteZ = playerZ * tileSize;
 
         float currentSpriteX = heroSprite.getX();
         float currentSpriteZ = heroSprite.getZ();
@@ -290,26 +287,11 @@ public class DungeonSceneRenderer implements Disposable {
         float diffX = targetSpriteX - currentSpriteX;
         float diffZ = targetSpriteZ - currentSpriteZ;
 
-        // Vitesse de déplacement très ralentie (4.0f) pour le style Donjon Mystère
-        float moveSpeed = 4.0f * com.badlogic.gdx.Gdx.graphics.getDeltaTime();
-        
-        if (Math.abs(diffX) > moveSpeed || Math.abs(diffZ) > moveSpeed) {
-            if (Math.abs(diffX) > moveSpeed) {
-                currentSpriteX += Math.signum(diffX) * moveSpeed;
-            } else {
-                currentSpriteX = targetSpriteX; // On snap pour éviter le tremblement (overshoot)
-            }
-            
-            if (Math.abs(diffZ) > moveSpeed) {
-                currentSpriteZ += Math.signum(diffZ) * moveSpeed;
-            } else {
-                currentSpriteZ = targetSpriteZ; // On snap pour éviter le tremblement (overshoot)
-            }
-            
+        if (Math.abs(diffX) > 0.01f || Math.abs(diffZ) > 0.01f) {
             this.isAnimating = true;
-        } else {
             currentSpriteX = targetSpriteX;
             currentSpriteZ = targetSpriteZ;
+        } else {
             this.isAnimating = false;
         }
 

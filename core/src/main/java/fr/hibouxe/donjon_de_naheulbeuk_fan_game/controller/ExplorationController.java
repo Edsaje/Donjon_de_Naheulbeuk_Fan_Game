@@ -29,6 +29,10 @@ public class ExplorationController implements GameState {
     private enum SubState { EXPLORING, PAUSE_MENU, STATUS_MENU }
     private SubState subState = SubState.EXPLORING;
 
+    private float playerX = 0f;
+    private float playerZ = 0f;
+    private float moveSpeed = 4.0f;
+
     private ISaveManager saveManager;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager;
     private float moveTimer = 0.5f;
@@ -65,8 +69,10 @@ public class ExplorationController implements GameState {
     @Override
     public void enter() {
         this.running = true;
+        this.playerX = team.getX() + 0.5f; // start in the center of the tile
+        this.playerZ = team.getY() + 0.5f;
         
-        maze.updateFogOfWar(team.getX(), team.getY(), 3);
+        maze.updateFogOfWar((int)playerX, (int)playerZ, 3);
         view.display(maze, team, currentFloor);
         
         if (!floorIntroPlayed) {
@@ -118,18 +124,7 @@ public class ExplorationController implements GameState {
             return;
         }
 
-        if (moveTimer < moveCooldown) {
-            return;
-        }
-
-        boolean moved = handleMovementAction(action);
-
-        if (moved) {
-            moveTimer = 0.0f;
-            handlePostMovement();
-            maze.updateFogOfWar(team.getX(), team.getY(), 3);
-            view.display(maze, team, currentFloor);
-        }
+        handleMovementAction(action);
     }
 
     private boolean handleMovementAction(String choice) {
@@ -137,18 +132,6 @@ public class ExplorationController implements GameState {
             case "ENTER":
                 handleInteraction();
                 return false;
-            case "Z":
-                team.setFacingDirection(1); // Nord
-                return tryMove(0, -1);
-            case "S":
-                team.setFacingDirection(0); // Sud
-                return tryMove(0, 1);
-            case "Q":
-                team.setFacingDirection(2); // Ouest
-                return tryMove(-1, 0);
-            case "D":
-                team.setFacingDirection(3); // Est
-                return tryMove(1, 0);
             case "1": team.setActiveLeaderIndex(0); return false;
             case "2": team.setActiveLeaderIndex(1); return false;
             case "3": team.setActiveLeaderIndex(2); return false;
@@ -279,23 +262,9 @@ public class ExplorationController implements GameState {
         return false;
     }
 
-    public boolean tryMove(int deltaX, int deltaY) {
-        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MoveResult result = engine.processPlayerMove(deltaX, deltaY);
-        if (result.getStatus() == fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MoveResult.MoveStatus.EVENT_TRIGGERED) {
-            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EventResult eResult = result.getEventResult();
-            if (eResult != null && eResult.getDialogsToDisplay() != null) {
-                for (String d : eResult.getDialogsToDisplay()) {
-                    menu.displayDialogue(locManager.getString(d));
-                }
-            }
-            return false;
-        }
-        return result.getStatus() == fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MoveResult.MoveStatus.SUCCESS;
-    }
-
     private void handleInteraction() {
-        int targetX = team.getX();
-        int targetY = team.getY();
+        int targetX = (int) playerX;
+        int targetY = (int) playerZ;
         
         if (team.getFacingDirection() == 1) targetY -= 1; // Nord
         else if (team.getFacingDirection() == 0) targetY += 1; // Sud
@@ -310,11 +279,59 @@ public class ExplorationController implements GameState {
 
     @Override
     public void update(float deltaTime) {
-        moveTimer += deltaTime;
+        if (!running || subState != SubState.EXPLORING) return;
+        
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider input = gameContext.getInputProvider();
+        if (input != null) {
+            float nextX = playerX;
+            float nextZ = playerZ;
+            
+            if (input.isUpPressed()) nextZ -= moveSpeed * deltaTime;
+            if (input.isDownPressed()) nextZ += moveSpeed * deltaTime;
+            if (input.isLeftPressed()) nextX -= moveSpeed * deltaTime;
+            if (input.isRightPressed()) nextX += moveSpeed * deltaTime;
+            
+            // Allow moving in X and Z independently if the respective target cell is walkable
+            int currentGridX = (int) playerX;
+            int currentGridZ = (int) playerZ;
+            
+            // Fix bounds and collisions for X
+            float boundedNextX = Math.max(0, Math.min(nextX, maze.getWidth() - 1 + 0.99f));
+            int nextGridX = (int) boundedNextX;
+            if (maze.getGrid()[nextGridX][currentGridZ].isWalkable()) {
+                playerX = boundedNextX;
+            }
+            
+            // Fix bounds and collisions for Z
+            float boundedNextZ = Math.max(0, Math.min(nextZ, maze.getHeight() - 1 + 0.99f));
+            int nextGridZ = (int) boundedNextZ;
+            if (maze.getGrid()[(int)playerX][nextGridZ].isWalkable()) {
+                playerZ = boundedNextZ;
+            }
+
+            if (input.isUpPressed()) team.setFacingDirection(1);
+            else if (input.isDownPressed()) team.setFacingDirection(0);
+            else if (input.isLeftPressed()) team.setFacingDirection(2);
+            else if (input.isRightPressed()) team.setFacingDirection(3);
+
+            int newGridX = (int) playerX;
+            int newGridZ = (int) playerZ;
+            
+            if (newGridX != currentGridX || newGridZ != currentGridZ) {
+                team.setX(newGridX);
+                team.setY(newGridZ);
+                handlePostMovement();
+                maze.updateFogOfWar(newGridX, newGridZ, 3);
+                view.display(maze, team, currentFloor);
+            }
+        }
     }
 
     @Override
     public void exit() {
         this.running = false;
     }
+    
+    public float getPlayerX() { return playerX; }
+    public float getPlayerZ() { return playerZ; }
 }

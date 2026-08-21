@@ -275,8 +275,16 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         if (currentState == GameState.EXPLORATION && team != null) {
-            float logicX = team.getX() * tileSize;
-            float logicZ = team.getY() * tileSize;
+            float playerX = team.getX();
+            float playerZ = team.getY();
+            if (game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController ec = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) game.getCurrentState();
+                playerX = ec.getPlayerX();
+                playerZ = ec.getPlayerZ();
+            }
+
+            float logicX = playerX * tileSize;
+            float logicZ = playerZ * tileSize;
             float targetWorldX = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteX(logicX) : logicX;
             float targetWorldZ = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteZ(logicZ) : logicZ;
 
@@ -288,7 +296,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             camera.lookAt(camera.position.x, 0.0f, camera.position.z - 12f);
             camera.update();
 
-            dungeonRenderer.render(modelBatch, decalBatch, environment, camera, team.getX(), team.getY(), team.getFacingDirection());
+            dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection());
         } else if (currentState == GameState.VILLAGE && game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController vc = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) game.getCurrentState();
             float vX = vc.getPlayerX();
