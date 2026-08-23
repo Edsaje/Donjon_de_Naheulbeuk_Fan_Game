@@ -1,0 +1,11 @@
+{
+  "name": "Snowy",
+  "texturePath": "models/dungeon/snowy/texture.png",
+  "floorModel": "models/dungeon/snowy/floor.obj",
+  "wallStraightModel": "models/dungeon/snowy/wall_straight.obj",
+  "wallCornerModel": "models/dungeon/snowy/wall_corner.obj",
+  "wallInnerCornerModel": "models/dungeon/snowy/wall_inner_corner.obj",
+  "wallStraightOffset": [0.0, 0.0, 0.0],
+  "wallCornerOffset": [0.0, 0.0, 0.0],
+  "wallInnerCornerOffset": [0.0, 0.0, 0.0]
+}

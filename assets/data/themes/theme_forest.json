@@ -1,0 +1,11 @@
+{
+  "name": "Forest",
+  "texturePath": "models/dungeon/forest/texture.png",
+  "floorModel": "models/dungeon/forest/floor.obj",
+  "wallStraightModel": "models/dungeon/forest/wall_straight.obj",
+  "wallCornerModel": "models/dungeon/forest/wall_corner.obj",
+  "wallInnerCornerModel": "models/dungeon/forest/wall_inner_corner.obj",
+  "wallStraightOffset": [0.0, 0.0, 0.0],
+  "wallCornerOffset": [0.0, 0.0, 0.0],
+  "wallInnerCornerOffset": [0.0, 0.0, 0.0]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Naheulbeuk",
+  "tileSize": 5.0,
+  "texturePath": "models/dungeon/naheulbeuk/texture.png",
+  "floorModel": "models/dungeon/naheulbeuk/floor.obj",
+  "wallModel": "models/dungeon/naheulbeuk/wall.obj",
+  "wallOffset": [0.0, 0.0, 0.0]
+}

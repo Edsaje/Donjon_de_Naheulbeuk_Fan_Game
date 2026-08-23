@@ -1,0 +1,11 @@
+{
+  "name": "Cavern",
+  "texturePath": "models/dungeon/cavern/texture.png",
+  "floorModel": "models/dungeon/cavern/floor.obj",
+  "wallStraightModel": "models/dungeon/cavern/wall_straight.obj",
+  "wallCornerModel": "models/dungeon/cavern/wall_corner.obj",
+  "wallInnerCornerModel": "models/dungeon/cavern/wall_inner_corner.obj",
+  "wallStraightOffset": [0.0, 0.0, 0.0],
+  "wallCornerOffset": [0.0, 0.0, 0.0],
+  "wallInnerCornerOffset": [0.0, 0.0, 0.0]
+}

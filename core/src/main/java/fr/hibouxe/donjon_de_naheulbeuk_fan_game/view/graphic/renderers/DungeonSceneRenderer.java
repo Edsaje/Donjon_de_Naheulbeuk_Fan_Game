@@ -15,22 +15,22 @@ import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Json;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.theme.DungeonTheme;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 
 /**
- * Composant de rendu 3D spécialisé pour la scène d'exploration du Donjon (SRP).
- * Gère la construction 3D des dalles, des murs massifs, des coffres et des escaliers.
+ * Composant de rendu 3D spÃƒÂ©cialisÃƒÂ© pour la scÃƒÂ¨ne d'exploration du Donjon (SRP).
+ * GÃƒÂ¨re la construction 3D des dalles, des murs massifs, des coffres et des escaliers.
  *
  * @author Hibouxe
  * @version 1.0
  */
 public class DungeonSceneRenderer implements Disposable {
     private Model floorModel;
-    private Model wallStraightModel;
-    private Model wallCornerModel;
-    private Model wallInnerCornerModel;
+    private Model wallModel;
     private Array<ModelInstance> instances = new Array<>();
     private Array<Decal> entityBillboards = new Array<>();
     private Decal heroSprite;
@@ -73,9 +73,7 @@ public class DungeonSceneRenderer implements Disposable {
     private Texture dungeonTex;
 
     private com.badlogic.gdx.utils.Pool<ModelInstance> floorPool;
-    private com.badlogic.gdx.utils.Pool<ModelInstance> wallStraightPool;
-    private com.badlogic.gdx.utils.Pool<ModelInstance> wallCornerPool;
-    private com.badlogic.gdx.utils.Pool<ModelInstance> wallInnerCornerPool;
+    private com.badlogic.gdx.utils.Pool<ModelInstance> wallPool;
     
     private com.badlogic.gdx.utils.Pool<Decal> decalPool;
 
@@ -89,10 +87,17 @@ public class DungeonSceneRenderer implements Disposable {
 
     private AssetProvider assetProvider;
 
-    public DungeonSceneRenderer(AssetProvider assetProvider) {
+    private DungeonTheme theme;
+
+    public DungeonSceneRenderer(AssetProvider assetProvider, String themePath) {
         this.assetProvider = assetProvider;
+        
+        Json json = new Json();
+        String jsonStr = com.badlogic.gdx.Gdx.files.internal(themePath).readString();
+        this.theme = json.fromJson(DungeonTheme.class, jsonStr);
+
         heroTexture = assetProvider.getHeroSprite("Ranger");
-        // Découpage automatique si l'image fait 256x256 (64x64 par frame)
+        // DÃƒÂ©coupage automatique si l'image fait 256x256 (64x64 par frame)
         if (heroTexture.getWidth() >= 256) {
             heroFrames = TextureRegion.split(heroTexture, 64, 64);
         } else {
@@ -112,34 +117,25 @@ public class DungeonSceneRenderer implements Disposable {
             elfFrames = TextureRegion.split(elfTexture, 64, 64);
         }
 
+        com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters param = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters();
+        param.flipV = true;
         com.badlogic.gdx.graphics.g3d.loader.ObjLoader objLoader = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader();
         
-        floorModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/floor.obj"));
-        wallStraightModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/wall_straight.obj"));
-        wallCornerModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/wall_corner.obj"));
-        wallInnerCornerModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/wall_inner_corner.obj"));
+        floorModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal(theme.getFloorModel()), param);
+        wallModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal(theme.getWallModel()), param);
         
-        dungeonTex = new Texture(com.badlogic.gdx.Gdx.files.internal("models/dungeon/cavern/texture.png"), true);
-        dungeonTex.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
-        com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute texAttr = com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute.createDiffuse(dungeonTex);
+        // We let LibGDX handle the materials defined in the .mtl file!
+        com.badlogic.gdx.graphics.g3d.attributes.IntAttribute cullOff = com.badlogic.gdx.graphics.g3d.attributes.IntAttribute.createCullFace(0);
+        
+        this.tileSize = theme.getTileSize();
 
-        for (Material m : floorModel.materials) m.set(texAttr);
-        for (Material m : wallStraightModel.materials) m.set(texAttr);
-        for (Material m : wallCornerModel.materials) m.set(texAttr);
-        for (Material m : wallInnerCornerModel.materials) m.set(texAttr);
+        for (Material m : floorModel.materials) { m.set(cullOff); }
+        for (Material m : wallModel.materials) { m.set(cullOff); }
 
         this.floorPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
             @Override protected ModelInstance newObject() { return new ModelInstance(floorModel); }
         };
-        this.wallStraightPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
-            @Override protected ModelInstance newObject() { return new ModelInstance(wallStraightModel); }
-        };
-        this.wallCornerPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
-            @Override protected ModelInstance newObject() { return new ModelInstance(wallCornerModel); }
-        };
-        this.wallInnerCornerPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
-            @Override protected ModelInstance newObject() { return new ModelInstance(wallInnerCornerModel); }
-        };
+        this.wallPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() { @Override protected ModelInstance newObject() { return new ModelInstance(wallModel); } };
         this.decalPool = new com.badlogic.gdx.utils.Pool<Decal>() {
             @Override protected Decal newObject() { return Decal.newDecal(1f, 1f, new TextureRegion(), true); }
         };
@@ -149,7 +145,7 @@ public class DungeonSceneRenderer implements Disposable {
 
     public void setLeaderClass(String className) {
         if (heroTexture != null) {
-            heroTexture = null; // L'AssetProvider s'occupe de la gestion mémoire
+            heroTexture = null; // L'AssetProvider s'occupe de la gestion mÃƒÂ©moire
         }
         heroTexture = assetProvider.getHeroSprite(className);
         if (heroTexture.getWidth() >= 256) {
@@ -162,20 +158,18 @@ public class DungeonSceneRenderer implements Disposable {
 
     public void buildScene(Dungeon dungeon, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, float playerX, float playerZ, int currentFloor) {
         
-        float oldHeroX = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getX() : (playerX * tileSize + 0.5f);
-        float oldHeroZ = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getZ() : (playerZ * tileSize + 0.5f);
+        float oldHeroX = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getX() : (playerX * tileSize);
+        float oldHeroZ = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getZ() : (playerZ * tileSize);
 
         for (ModelInstance instance : instances) {
             if (instance.model == floorModel) floorPool.free(instance);
-            else if (instance.model == wallStraightModel) wallStraightPool.free(instance);
-            else if (instance.model == wallCornerModel) wallCornerPool.free(instance);
-            else if (instance.model == wallInnerCornerModel) wallInnerCornerPool.free(instance);
+            else if (instance.model == wallModel) wallPool.free(instance);
         }
         for (Decal d : entityBillboards) decalPool.free(d);
         instances.clear();
         entityBillboards.clear();
         
-        // (Ligne de téléportation supprimée ici pour permettre la fluidité)
+        // (Ligne de tÃƒÂ©lÃƒÂ©portation supprimÃƒÂ©e ici pour permettre la fluiditÃƒÂ©)
 
         Cell[][] grid = dungeon.getGrid();
 
@@ -185,25 +179,20 @@ public class DungeonSceneRenderer implements Disposable {
                 float posX = x * tileSize;
                 float posZ = y * tileSize;
 
+                float half = tileSize / 2f;
                 if (cell.isWalkable()) {
                     ModelInstance floor = floorPool.obtain();
-                    floor.transform.setToTranslation(posX + 0.5f, 0f, posZ + 0.5f);
+                    floor.transform.setToTranslation(posX + half, 0f, posZ + half);
                     floor.transform.rotate(com.badlogic.gdx.math.Vector3.Y, 0f);
                     instances.add(floor);
 
-                    if (cell.hasMonster()) {
-                        Decal monsterSprite = decalPool.obtain();
-                        monsterSprite.setTextureRegion(monsterRegion);
-                        monsterSprite.setDimensions(1.2f, 1.8f);
-                        monsterSprite.setPosition(posX + 0.5f, 1.0f, posZ + 0.5f);
-                        entityBillboards.add(monsterSprite);
-                    }
+
 
                     if (cell.hasItem()) {
                         Decal chestSprite = decalPool.obtain();
                         chestSprite.setTextureRegion(chestRegion);
                         chestSprite.setDimensions(1.2f, 1.2f);
-                        chestSprite.setPosition(posX + 0.5f, 0.7f, posZ + 0.5f);
+                        chestSprite.setPosition(posX + half, 0.7f, posZ + half);
                         entityBillboards.add(chestSprite);
                     }
 
@@ -211,11 +200,11 @@ public class DungeonSceneRenderer implements Disposable {
                         Decal stairsSprite = decalPool.obtain();
                         stairsSprite.setTextureRegion(stairsRegion);
                         stairsSprite.setDimensions(1.6f, 1.6f);
-                        stairsSprite.setPosition(posX + 0.5f, 1.0f, posZ + 0.5f);
+                        stairsSprite.setPosition(posX + half, 1.0f, posZ + half);
                         entityBillboards.add(stairsSprite);
                     }
                     
-                                // SCRIPT ELFE (Tutoriel - étage 2)
+                                // SCRIPT ELFE (Tutoriel - ÃƒÂ©tage 2)
                     if (currentFloor == 2 && x == 1 && y == 2) {
                         boolean elfSaved = false;
                         for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character m : team.getMembers()) {
@@ -226,7 +215,7 @@ public class DungeonSceneRenderer implements Disposable {
                                 Decal elfSprite = decalPool.obtain();
                                 elfSprite.setTextureRegion(elfFrames[0][0]);
                                 elfSprite.setDimensions(1.8f, 1.8f);
-                                elfSprite.setPosition(posX + 0.5f, 1.0f, posZ + 0.5f);
+                                elfSprite.setPosition(posX + half, 1.0f, posZ + half);
                                 entityBillboards.add(elfSprite);
                             }
                         }
@@ -245,47 +234,38 @@ public class DungeonSceneRenderer implements Disposable {
                     boolean floorS = !s;
                     boolean floorE = !e;
                     boolean floorW = !w;
-
-                    int openCount = (floorN ? 1 : 0) + (floorS ? 1 : 0) + (floorE ? 1 : 0) + (floorW ? 1 : 0);
-
-                    ModelInstance wall = null;
-                    float angle = 0f;
-
-                    if (openCount == 1) {
-                        wall = wallStraightPool.obtain();
-                        if (floorN) angle = 180f;
-                        else if (floorE) angle = 90f;
-                        else if (floorS) angle = 0f;
-                        else if (floorW) angle = 270f;
-                    } else if (openCount == 2) {
-                        if ((floorN && floorS) || (floorE && floorW)) {
-                            wall = wallStraightPool.obtain();
-                            if (floorN && floorS) angle = 90f;
-                            else angle = 0f;
-                        } else {
-                            wall = wallCornerPool.obtain();
-                            if (floorN && floorE) angle = 180f;
-                            else if (floorE && floorS) angle = 90f;
-                            else if (floorS && floorW) angle = 0f;
-                            else if (floorW && floorN) angle = 270f;
-                        }
-                    } else if (openCount >= 3) {
-                        wall = wallInnerCornerPool.obtain();
-                        if (!floorN) angle = 0f;
-                        else if (!floorE) angle = 90f;
-                        else if (!floorS) angle = 180f;
-                        else if (!floorW) angle = 270f;
-                    }
-
-                    if (wall != null) {
-                        wall.transform.setToTranslation(posX + 0.5f, 0.5f, posZ + 0.5f);
-                        wall.transform.rotate(com.badlogic.gdx.math.Vector3.Y, angle);
-                        instances.add(wall);
-                    }
+                      if (floorN) {
+                          ModelInstance wallN = wallPool.obtain();
+                          wallN.transform.setToTranslation(posX + half, theme.getWallOffset()[1], posZ + half);
+                          wallN.transform.rotate(com.badlogic.gdx.math.Vector3.Y, 0f);
+                          wallN.transform.translate(theme.getWallOffset()[0], 0, theme.getWallOffset()[2] - half);
+                          instances.add(wallN);
+                      }
+                      if (floorS) {
+                          ModelInstance wallS = wallPool.obtain();
+                          wallS.transform.setToTranslation(posX + half, theme.getWallOffset()[1], posZ + half);
+                          wallS.transform.rotate(com.badlogic.gdx.math.Vector3.Y, 180f);
+                          wallS.transform.translate(theme.getWallOffset()[0], 0, theme.getWallOffset()[2] - half);
+                          instances.add(wallS);
+                      }
+                      if (floorE) {
+                          ModelInstance wallE = wallPool.obtain();
+                          wallE.transform.setToTranslation(posX + half, theme.getWallOffset()[1], posZ + half);
+                          wallE.transform.rotate(com.badlogic.gdx.math.Vector3.Y, 270f);
+                          wallE.transform.translate(theme.getWallOffset()[0], 0, theme.getWallOffset()[2] - half);
+                          instances.add(wallE);
+                      }
+                      if (floorW) {
+                          ModelInstance wallW = wallPool.obtain();
+                          wallW.transform.setToTranslation(posX + half, theme.getWallOffset()[1], posZ + half);
+                          wallW.transform.rotate(com.badlogic.gdx.math.Vector3.Y, 90f);
+                          wallW.transform.translate(theme.getWallOffset()[0], 0, theme.getWallOffset()[2] - half);
+                          instances.add(wallW);
+                      }
                 }
             }
         }
-        // --- Positionnement du Joueur (Héros) ---
+        // --- Positionnement du Joueur (HÃƒÂ©ros) ---
         float currentX = oldHeroX;
         float currentZ = oldHeroZ;
 
@@ -301,10 +281,10 @@ public class DungeonSceneRenderer implements Disposable {
         entityBillboards.add(heroSprite);
     }
 
-    public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, float playerX, float playerZ, int playerDirection) {
+    public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, float playerX, float playerZ, int playerDirection, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup> roamingMonsters) {
         this.currentDirection = playerDirection;
-        this.targetSpriteX = playerX * tileSize + 0.5f;
-        this.targetSpriteZ = playerZ * tileSize + 0.5f;
+        this.targetSpriteX = playerX * tileSize;
+        this.targetSpriteZ = playerZ * tileSize;
 
         float currentSpriteX = heroSprite.getX();
         float currentSpriteZ = heroSprite.getZ();
@@ -331,7 +311,7 @@ public class DungeonSceneRenderer implements Disposable {
             maxFrames = heroFrames[currentDirection].length;
         }
         
-        // Vitesse d'animation ajustée (8) proportionnellement au mouvement
+        // Vitesse d'animation ajustÃƒÂ©e (8) proportionnellement au mouvement
         int frameIndex = (int)(stateTime * 8) % maxFrames;
 
         if (heroFrames.length > currentDirection && heroFrames[currentDirection].length > frameIndex) {
@@ -348,7 +328,27 @@ public class DungeonSceneRenderer implements Disposable {
             sprite.lookAt(camera.position, camera.up);
             decalBatch.add(sprite);
         }
+        
+        java.util.List<Decal> tempDecals = new java.util.ArrayList<>();
+        for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup mg : roamingMonsters) {
+            Decal mgSprite = decalPool.obtain();
+            mgSprite.setTextureRegion(monsterRegion);
+            if (mg.isBoss()) {
+                mgSprite.setColor(Color.RED);
+                mgSprite.setDimensions(1.5f, 2.0f);
+            } else {
+                mgSprite.setColor(Color.WHITE);
+                mgSprite.setDimensions(1.2f, 1.8f);
+            }
+            mgSprite.setPosition(mg.getX() * tileSize, 1.0f, mg.getZ() * tileSize);
+            mgSprite.lookAt(camera.position, camera.up);
+            decalBatch.add(mgSprite);
+            tempDecals.add(mgSprite);
+        }
         decalBatch.flush();
+        for (Decal d : tempDecals) {
+            decalPool.free(d);
+        }
     }
 
     private Texture createColoredTexture(Color color) {
@@ -363,10 +363,10 @@ public class DungeonSceneRenderer implements Disposable {
     @Override
     public void dispose() {
         if (floorModel != null) floorModel.dispose();
-        if (wallStraightModel != null) wallStraightModel.dispose();
-        if (wallCornerModel != null) wallCornerModel.dispose();
-        if (wallInnerCornerModel != null) wallInnerCornerModel.dispose();
+        if (wallModel != null) wallModel.dispose();
         if (dungeonTex != null) dungeonTex.dispose();
-        // Les textures heroTexture, monsterTexture, chestTexture, stairsTexture sont gérées par l'AssetProvider
+        // Les textures heroTexture, monsterTexture, chestTexture, stairsTexture sont gÃƒÂ©rÃƒÂ©es par l'AssetProvider
     }
 }
+
+

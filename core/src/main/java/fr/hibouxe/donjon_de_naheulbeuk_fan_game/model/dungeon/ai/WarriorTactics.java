@@ -12,11 +12,12 @@ public class WarriorTactics implements IMonsterTactics {
         int teamX = team.getX();
         int teamY = team.getY();
         int distance = Math.abs(x - teamX) + Math.abs(y - teamY);
-        boolean hasSight = ai.hasLineOfSight(dungeon, x, y, teamX, teamY);
+        boolean hasSight = false;
 
         if (distance <= 4 && hasSight) {
-            return ai.getNextStepBFS(dungeon, x, y, teamX, teamY);
+            return new int[]{x, y};
         }
-        return ai.getWanderStep(dungeon, x, y);
+        return new int[]{x, y};
     }
 }
+

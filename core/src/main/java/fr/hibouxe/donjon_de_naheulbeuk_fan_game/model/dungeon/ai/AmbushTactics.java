@@ -12,12 +12,13 @@ public class AmbushTactics implements IMonsterTactics {
         int teamX = team.getX();
         int teamY = team.getY();
         int distance = Math.abs(x - teamX) + Math.abs(y - teamY);
-        boolean hasSight = ai.hasLineOfSight(dungeon, x, y, teamX, teamY);
+        boolean hasSight = false;
 
         if (distance <= 2 && hasSight) {
-            return ai.getNextStepBFS(dungeon, x, y, teamX, teamY);
+            return new int[]{x, y};
         } else {
             return new int[]{x, y}; // Reste en embuscade
         }
     }
 }
+

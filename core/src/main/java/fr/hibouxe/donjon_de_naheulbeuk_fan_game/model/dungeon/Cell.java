@@ -29,7 +29,7 @@ public class Cell implements Serializable {
     private boolean wallWest = true;
     private boolean wallEast = true;
 
-    private List<Character> monsters = new ArrayList<>(); // groupe de monstres
+    
     private Item item = null;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.ICellEvent event = null;
     private boolean stairs = false;
@@ -83,14 +83,7 @@ public class Cell implements Serializable {
         }
     }
 
-    /**
-     * Indique si un monstre est présent sur cette case.
-     *
-     * @return true si la case contient un monstre, false sinon.
-     */
-    public boolean hasMonster() {
-        return !monsters.isEmpty();
-    } //true si la liste n'est pas vide
+
 
     /**
      * @return Coordonnée X de la case
@@ -190,19 +183,7 @@ public class Cell implements Serializable {
         this.wallEast = wallEast;
     }
 
-    /**
-     * @return Les monstres présent sur la case (ou null si aucun)
-     */
-    public List<Character> getMonsters() {
-        return monsters;
-    }
 
-    /**
-     * @param monsters Monstre à placer sur la case (ou null pour retirer)
-     */
-    public void setMonsters(List<Character> monsters) {
-        this.monsters = monsters;
-    }
 
     /**
      * Indique si un coffre ou un objet est présent sur cette case.

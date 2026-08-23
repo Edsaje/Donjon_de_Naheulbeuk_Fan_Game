@@ -21,6 +21,15 @@ public abstract class Dungeon implements Serializable {
 
     private transient DungeonGenerator generator = new DungeonGenerator();
     private transient MonsterAI monsterAI = new MonsterAI();
+    private java.util.List<RoamingMonsterGroup> roamingMonsters = new java.util.ArrayList<>();
+
+    public java.util.List<RoamingMonsterGroup> getRoamingMonsters() {
+        return roamingMonsters;
+    }
+
+    public void setRoamingMonsters(java.util.List<RoamingMonsterGroup> roamingMonsters) {
+        this.roamingMonsters = roamingMonsters;
+    }
 
     /**
      * Construit une grille de labyrinthe aux dimensions spécifiées.
@@ -52,10 +61,10 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Génère un labyrinthe style Pokémon Donjon Mystère avec 3x3 Secteurs de Salles et Couloirs.
+     * Génère un donjon hybride avec l'algorithme des Salles et Couloirs.
      */
-    public void generatePMDDungeon() {
-        getGenerator().generatePMDDungeon(this);
+    public void generateHybridDungeon() {
+        getGenerator().generateHybridDungeon(this);
     }
 
 

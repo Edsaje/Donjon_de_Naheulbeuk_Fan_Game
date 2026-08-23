@@ -211,7 +211,7 @@ private boolean prepareFloor1(Team team) {
         List<Character> patrol = new ArrayList<>();
         Character orc = new Character("Patrouille Orque", "Boss", 101, 9999, 0, 999, 0, 999, 999, -1);
         patrol.add(orc);
-        this.getGrid()[4][5].setMonsters(patrol);
+        this.getRoamingMonsters().add(new RoamingMonsterGroup(4, 5, patrol, false));
         
         return false;
     }
@@ -294,7 +294,7 @@ private boolean prepareFloor1(Team team) {
         guards.add(boss);
         guards.add(DataManager.createMonster("goblin"));
         guards.add(DataManager.createMonster("goblin"));
-        this.getGrid()[2][3].setMonsters(guards);
+        this.getRoamingMonsters().add(new RoamingMonsterGroup(2, 3, guards, false));
 
         // Escalier de sortie (LibertÃ© !)
         this.getGrid()[2][4].setStairs(true);

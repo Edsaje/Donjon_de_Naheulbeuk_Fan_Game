@@ -624,10 +624,7 @@ public class HUDRenderer implements Disposable {
                         shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.35f, 0.8f));
                         shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
 
-                        if (cell.hasMonster()) {
-                            shapeRenderer.setColor(Color.RED);
-                            shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
-                        } else if (cell.hasItem()) {
+                        if (cell.hasItem()) {
                             shapeRenderer.setColor(Color.CYAN);
                             shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
                         } else if (cell.hasStairs()) {
@@ -638,12 +635,21 @@ public class HUDRenderer implements Disposable {
                 }
             }
         }
-
+        
         // Marqueur Joueur en Doré
         int playerDrawX = originX + playerX * miniCellSize;
         int playerDrawY = originY + (dungeon.getHeight() - 1 - playerY) * miniCellSize;
         shapeRenderer.setColor(Color.GOLD);
         shapeRenderer.rect(playerDrawX - 1, playerDrawY - 1, miniCellSize + 1, miniCellSize + 1);
+
+        for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup mg : dungeon.getRoamingMonsters()) {
+            if (dungeon.getGrid()[(int)mg.getX()][(int)mg.getZ()].isDiscovered()) {
+                int mDrawX = originX + (int)mg.getX() * miniCellSize;
+                int mDrawY = originY + (dungeon.getHeight() - 1 - (int)mg.getZ()) * miniCellSize;
+                shapeRenderer.setColor(Color.RED);
+                shapeRenderer.rect(mDrawX, mDrawY, miniCellSize - 1, miniCellSize - 1);
+            }
+        }
     }
 
     @Override

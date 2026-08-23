@@ -31,7 +31,7 @@ public class ExplorationController implements GameState {
 
     private float playerX = 0f;
     private float playerZ = 0f;
-    private float moveSpeed = 4.0f;
+    private float moveSpeed = 1.5f;
 
     private ISaveManager saveManager;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager;
@@ -191,29 +191,7 @@ public class ExplorationController implements GameState {
             }
         }
         
-        if (currentCell.hasMonster()) {
-            java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters = currentCell.getMonsters();
 
-            gameContext.triggerBattle(monsters, () -> {
-                view.displayDungeon(maze, team, currentFloor);
-                currentCell.getMonsters().clear(); 
-                
-                if (isTutorial && currentFloor == 5) {
-                    menu.displayDialogue(locManager.getString("TUTO_FLOOR_5_POST_NAIN_1"));
-                    menu.displayDialogue(locManager.getString("TUTO_FLOOR_5_POST_RANGER_1"));
-                }
-
-                if (maze.isExpeditionComplete(currentFloor)) {
-                    running = false; 
-                }
-            }, () -> {
-                view.displayDungeon(maze, team, currentFloor);
-                running = false; 
-            }, () -> {
-                currentCell.getMonsters().clear();
-                view.displayDungeon(maze, team, currentFloor);
-            });
-        }
 
         if (currentCell.hasItem()) {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item item = currentCell.getItem();
@@ -291,23 +269,37 @@ public class ExplorationController implements GameState {
             if (input.isLeftPressed()) nextX -= moveSpeed * deltaTime;
             if (input.isRightPressed()) nextX += moveSpeed * deltaTime;
             
-            // Allow moving in X and Z independently if the respective target cell is walkable
-            int currentGridX = (int) playerX;
-            int currentGridZ = (int) playerZ;
+            float radius = 0.25f; // Logical radius of the player's hitbox
             
-            // Fix bounds and collisions for X
-            float boundedNextX = Math.max(0, Math.min(nextX, maze.getWidth() - 1 + 0.99f));
-            int nextGridX = (int) boundedNextX;
-            if (maze.getGrid()[nextGridX][currentGridZ].isWalkable()) {
-                playerX = boundedNextX;
+            // Move X
+            float boundedNextX = Math.max(radius, Math.min(nextX, maze.getWidth() - radius));
+            int minZ = (int) (playerZ - radius);
+            int maxZ = (int) (playerZ + radius);
+            boolean canMoveX = true;
+            if (boundedNextX > playerX) {
+                int hitX = (int)(boundedNextX + radius);
+                if (!maze.getGrid()[hitX][minZ].isWalkable() || !maze.getGrid()[hitX][maxZ].isWalkable()) canMoveX = false;
+            } else if (boundedNextX < playerX) {
+                int hitX = (int)(boundedNextX - radius);
+                if (!maze.getGrid()[hitX][minZ].isWalkable() || !maze.getGrid()[hitX][maxZ].isWalkable()) canMoveX = false;
             }
+            int oldGridX = (int) playerX;
+            if (canMoveX) playerX = boundedNextX;
             
-            // Fix bounds and collisions for Z
-            float boundedNextZ = Math.max(0, Math.min(nextZ, maze.getHeight() - 1 + 0.99f));
-            int nextGridZ = (int) boundedNextZ;
-            if (maze.getGrid()[(int)playerX][nextGridZ].isWalkable()) {
-                playerZ = boundedNextZ;
+            // Move Z
+            float boundedNextZ = Math.max(radius, Math.min(nextZ, maze.getHeight() - radius));
+            int minX = (int) (playerX - radius);
+            int maxX = (int) (playerX + radius);
+            boolean canMoveZ = true;
+            if (boundedNextZ > playerZ) {
+                int hitZ = (int)(boundedNextZ + radius);
+                if (!maze.getGrid()[minX][hitZ].isWalkable() || !maze.getGrid()[maxX][hitZ].isWalkable()) canMoveZ = false;
+            } else if (boundedNextZ < playerZ) {
+                int hitZ = (int)(boundedNextZ - radius);
+                if (!maze.getGrid()[minX][hitZ].isWalkable() || !maze.getGrid()[maxX][hitZ].isWalkable()) canMoveZ = false;
             }
+            int oldGridZ = (int) playerZ;
+            if (canMoveZ) playerZ = boundedNextZ;
 
             if (input.isUpPressed()) team.setFacingDirection(1);
             else if (input.isDownPressed()) team.setFacingDirection(0);
@@ -317,12 +309,62 @@ public class ExplorationController implements GameState {
             int newGridX = (int) playerX;
             int newGridZ = (int) playerZ;
             
-            if (newGridX != currentGridX || newGridZ != currentGridZ) {
+            if (newGridX != oldGridX || newGridZ != oldGridZ) {
                 team.setX(newGridX);
                 team.setY(newGridZ);
                 handlePostMovement();
                 maze.updateFogOfWar(newGridX, newGridZ, 3);
                 view.display(maze, team, currentFloor);
+            }
+        }
+
+        java.util.Iterator<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup> it = maze.getRoamingMonsters().iterator();
+        while (it.hasNext()) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup mg = it.next();
+            if (mg.isBoss()) {
+                mg.setState(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup.AIState.IDLE);
+            } else {
+                float dx = playerX - mg.getX();
+                float dz = playerZ - mg.getZ();
+                float dist = (float) Math.sqrt(dx * dx + dz * dz);
+                
+                if (dist < 4.0f) {
+                    mg.setState(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup.AIState.CHASE);
+                    float speed = 2.0f;
+                    float nx = mg.getX() + (dx / dist) * speed * deltaTime;
+                    float nz = mg.getZ() + (dz / dist) * speed * deltaTime;
+                    
+                    if (maze.getGrid()[Math.max(0, Math.min(maze.getWidth() - 1, (int)nx))][(int)mg.getZ()].isWalkable()) {
+                        mg.setX(nx);
+                    }
+                    if (maze.getGrid()[(int)mg.getX()][Math.max(0, Math.min(maze.getHeight() - 1, (int)nz))].isWalkable()) {
+                        mg.setZ(nz);
+                    }
+                } else {
+                    mg.setState(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup.AIState.PATROL);
+                }
+            }
+            
+            float mdx = playerX - mg.getX();
+            float mdz = playerZ - mg.getZ();
+            if (Math.sqrt(mdx * mdx + mdz * mdz) < 0.8f) {
+                it.remove();
+                gameContext.triggerBattle(mg.getMonsters(), () -> {
+                    view.displayDungeon(maze, team, currentFloor);
+                    if (isTutorial && currentFloor == 5) {
+                        menu.displayDialogue(locManager.getString("TUTO_FLOOR_5_POST_NAIN_1"));
+                        menu.displayDialogue(locManager.getString("TUTO_FLOOR_5_POST_RANGER_1"));
+                    }
+                    if (maze.isExpeditionComplete(currentFloor)) {
+                        running = false; 
+                    }
+                }, () -> {
+                    view.displayDungeon(maze, team, currentFloor);
+                    running = false; 
+                }, () -> {
+                    view.displayDungeon(maze, team, currentFloor);
+                });
+                break; 
             }
         }
     }

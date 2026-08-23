@@ -57,7 +57,7 @@ public class NaheulbeukDungeon extends Dungeon {
         }
 
         // 2. Générer la structure
-        generatePMDDungeon();
+        this.generateHybridDungeon();
 
         // 3. Placer l'équipe
         int[] startPos = getFirstWalkablePosition();
@@ -69,7 +69,7 @@ public class NaheulbeukDungeon extends Dungeon {
             int[] bossPos = getFirstWalkablePosition(); 
             List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> bossList = new ArrayList<>();
             bossList.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem());
-            this.getGrid()[bossPos[0]][bossPos[1]].setMonsters(bossList);
+            this.getRoamingMonsters().add(new RoamingMonsterGroup(bossPos[0], bossPos[1], bossList, true));
         } else {
             generateMonsters(bp.getNumMonsters(), team.getX(), team.getY());
         }
@@ -88,13 +88,11 @@ public class NaheulbeukDungeon extends Dungeon {
     public boolean isExpeditionComplete(int floorNumber) {
         FloorBlueprint bp = getBlueprintForFloor(floorNumber);
         if ("Golem".equals(bp.getBossType())) {
-            for (int x = 0; x < getWidth(); x++) {
-                for (int y = 0; y < getHeight(); y++) {
-                    if (getGrid()[x][y].hasMonster()) {
-                        for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character c : getGrid()[x][y].getMonsters()) {
-                            if (c instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem) {
-                                return false; 
-                            }
+            for (RoamingMonsterGroup group : getRoamingMonsters()) {
+                if (group.isBoss()) {
+                    for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character c : group.getMonsters()) {
+                        if (c instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem) {
+                            return false; 
                         }
                     }
                 }

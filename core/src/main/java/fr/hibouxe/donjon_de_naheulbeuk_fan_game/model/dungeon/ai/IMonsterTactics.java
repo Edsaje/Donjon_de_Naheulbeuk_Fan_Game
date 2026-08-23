@@ -9,3 +9,4 @@ import java.io.Serializable;
 public interface IMonsterTactics extends Serializable {
     int[] determineTargetStep(MonsterAI ai, Dungeon dungeon, Character monster, int groupSize, int x, int y, Team team);
 }
+

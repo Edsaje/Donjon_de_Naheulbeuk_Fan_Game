@@ -1,0 +1,11 @@
+{
+  "name": "Creepy",
+  "texturePath": "models/dungeon/creepy/texture.png",
+  "floorModel": "models/dungeon/creepy/floor.obj",
+  "wallStraightModel": "models/dungeon/creepy/wall_straight.obj",
+  "wallCornerModel": "models/dungeon/creepy/wall_corner.obj",
+  "wallInnerCornerModel": "models/dungeon/creepy/wall_inner_corner.obj",
+  "wallStraightOffset": [0.0, 0.0, 0.0],
+  "wallCornerOffset": [0.0, 0.0, 0.0],
+  "wallInnerCornerOffset": [0.0, 0.0, 0.0]
+}

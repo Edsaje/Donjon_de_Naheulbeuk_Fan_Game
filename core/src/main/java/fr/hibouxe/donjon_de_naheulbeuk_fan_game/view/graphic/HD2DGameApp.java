@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
@@ -62,6 +63,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     private ModelBatch modelBatch;
     private DecalBatch decalBatch;
     private Environment environment;
+    private PointLight heroLight;
 
     private AssetProvider assetProvider;
 
@@ -157,14 +159,20 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         camera.far = 500f;
 
         environment = new Environment();
+        // Ambient light is updated per-state in render()
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f));
-        environment.add(new DirectionalLight().set(0.85f, 0.75f, 0.6f, -1f, -0.8f, -0.5f));
+        
+        // A global directional light (moonlight/sunlight)
+        environment.add(new DirectionalLight().set(0.15f, 0.15f, 0.2f, -1f, -0.8f, -0.5f));
+
+        heroLight = new PointLight().set(1.0f, 0.7f, 0.4f, 0f, 2f, 0f, 30f);
+        environment.add(heroLight);
 
         modelBatch = new ModelBatch();
         decalBatch = new DecalBatch(new CameraGroupStrategy(camera));
 
         assetProvider = new AssetProvider();
-        dungeonRenderer = new DungeonSceneRenderer(assetProvider);
+        dungeonRenderer = new DungeonSceneRenderer(assetProvider, "data/themes/theme_naheulbeuk.json");
         battleRenderer = new BattleArenaRenderer(this.assetProvider);
         hudRenderer = new HUDRenderer(this.settingsManager);
         villageRenderer = new VillageSceneRenderer(this.assetProvider);
@@ -296,8 +304,17 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             camera.lookAt(camera.position.x, 0.0f, camera.position.z - 6f);
             camera.update();
 
-            dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection());
+            // Update lighting for Dungeon
+            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.05f, 0.05f, 0.1f, 1f));
+            heroLight.intensity = 25f + (float)(Math.random() * 2f); // Flicker effect
+            heroLight.setPosition(camera.position.x, camera.position.y, camera.position.z);
+
+            dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection(), maze != null ? maze.getRoamingMonsters() : new java.util.ArrayList<>());
         } else if (currentState == GameState.VILLAGE && game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) {
+            // Update lighting for Village (brighter)
+            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f));
+            heroLight.intensity = 0f; // Turn off hero light
+
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController vc = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) game.getCurrentState();
             float vX = vc.getPlayerX();
             float vZ = vc.getPlayerZ();
@@ -310,6 +327,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             
             villageRenderer.render(modelBatch, decalBatch, environment, camera, vX, vZ);
         } else {
+            // Update lighting for Battle (brighter)
+            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f));
+            heroLight.intensity = 0f;
+
             battleRenderer.render(modelBatch, decalBatch, environment, camera);
         }
 

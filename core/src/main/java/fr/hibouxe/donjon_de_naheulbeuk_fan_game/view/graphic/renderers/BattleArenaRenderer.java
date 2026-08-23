@@ -1,6 +1,5 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers;
 
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.SpriteFactory;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp;
 
 import com.badlogic.gdx.graphics.Color;

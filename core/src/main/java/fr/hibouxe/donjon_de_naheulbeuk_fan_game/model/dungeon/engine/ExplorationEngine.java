@@ -33,10 +33,7 @@ public class ExplorationEngine {
 
             if (targetCell.isWalkable()) {
                 team.move(deltaX, deltaY);
-                
-                if (!targetCell.hasMonster() && !targetCell.hasStairs()) {
-                    maze.moveMonsters(team);
-                }
+
                 return new MoveResult(MoveResult.MoveStatus.SUCCESS);
             }
         }
