@@ -16,6 +16,27 @@ import java.util.List;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.state.GameState;
 
 public class ExplorationController implements GameState {
+    private boolean isBlockedByDoor(float newX, float newZ, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell cell, boolean isNS) {
+        float lx = newX - (int)newX;
+        float lz = newZ - (int)newZ;
+        
+        if (isNS) {
+            // Door blocks Z. Plane is at lz = 0.5
+            // Pillars are at lx < 0.35 and lx > 0.65
+            if (lz > 0.35f && lz < 0.65f) {
+                if (!cell.isDoorOpen()) return true; // Hit closed door
+                if (lx < 0.35f || lx > 0.65f) return true; // Hit pillars of open door
+            }
+        } else {
+            // Door blocks X. Plane is at lx = 0.5
+            // Pillars are at lz < 0.35 and lz > 0.65
+            if (lx > 0.35f && lx < 0.65f) {
+                if (!cell.isDoorOpen()) return true; // Hit closed door
+                if (lz < 0.35f || lz > 0.65f) return true; // Hit pillars of open door
+            }
+        }
+        return false;
+    }
     private Dungeon maze;
     private Team team;
     private boolean running;
@@ -100,8 +121,8 @@ public class ExplorationController implements GameState {
                     gameContext.pushState(new InventoryController(team, menu, gameContext, maze));
                 } else if (selection == 1) { // Magie
                     menu.displayDialogue("Pas de magie disponible.");
-                } else if (selection == 2) { // CompÃƒÆ’Ã‚Â©tences
-                    menu.displayDialogue("GÃƒÆ’Ã‚Â©rÃƒÆ’Ã‚Â© par l'interface dÃƒÆ’Ã‚Â©diÃƒÆ’Ã‚Â©e en combat.");
+                } else if (selection == 2) { // CompÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©tences
+                    menu.displayDialogue("GÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©rÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© par l'interface dÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©diÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©e en combat.");
                 } else if (selection == 3) { // Status
                     subState = SubState.STATUS_MENU;
                     menu.displayStatusScreen(team);
@@ -217,12 +238,12 @@ public class ExplorationController implements GameState {
                     currentFloor++;
                     view.displayTransitionScreen(currentFloor);
                     this.maze = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.TutorialDungeon();
-                    this.maze.prepareFloor(currentFloor, team);
+                    this.maze.prepareFloor(currentFloor, team, gameContext.getMonsterRepository());
                     this.engine.setDungeon(this.maze);
                     this.floorIntroPlayed = true;
                     playFloorIntro(currentFloor);
                 } else {
-                    menu.displayMessage("\nL'air frais ! Vous avez survécu et établi un petit campement !");
+                    menu.displayMessage("\nL'air frais ! Vous avez survÃƒÆ’Ã‚Â©cu et ÃƒÆ’Ã‚Â©tabli un petit campement !");
                     gameContext.goToVillage();
                 }
             } else {
@@ -230,7 +251,7 @@ public class ExplorationController implements GameState {
                 currentFloor++;
                 view.displayTransitionScreen(currentFloor);
                 this.maze = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.NaheulbeukDungeon();
-                this.maze.prepareFloor(currentFloor, team);
+                this.maze.prepareFloor(currentFloor, team, gameContext.getMonsterRepository());
                 this.engine.setDungeon(this.maze);
                 this.floorIntroPlayed = true;
                 playFloorIntro(currentFloor);
@@ -241,8 +262,19 @@ public class ExplorationController implements GameState {
     }
 
     private void handleInteraction() {
-        int targetX = (int) playerX;
-        int targetY = (int) playerZ;
+        int currentX = (int) this.playerX;
+        int currentY = (int) this.playerZ;
+        
+        if (currentX >= 0 && currentX < maze.getWidth() && currentY >= 0 && currentY < maze.getHeight()) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell currentCell = maze.getGrid()[currentX][currentY];
+            if (currentCell.hasDoor() && !currentCell.isDoorOpen()) {
+                currentCell.setDoorOpen(true);
+                return;
+            }
+        }
+
+        int targetX = currentX;
+        int targetY = currentY;
         
         if (team.getFacingDirection() == 1) targetY -= 1; // Nord
         else if (team.getFacingDirection() == 0) targetY += 1; // Sud
@@ -251,7 +283,11 @@ public class ExplorationController implements GameState {
         
         if (targetX >= 0 && targetX < maze.getWidth() && targetY >= 0 && targetY < maze.getHeight()) {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell targetCell = maze.getGrid()[targetX][targetY];
-            handleCellEvents(targetCell);
+            if (targetCell.hasDoor() && !targetCell.isDoorOpen()) {
+                targetCell.setDoorOpen(true);
+            } else {
+                handleCellEvents(targetCell);
+            }
         }
     }
 
@@ -283,6 +319,17 @@ public class ExplorationController implements GameState {
                 int hitX = (int)(boundedNextX - radius);
                 if (!maze.getGrid()[hitX][minZ].isWalkable() || !maze.getGrid()[hitX][maxZ].isWalkable()) canMoveX = false;
             }
+            
+            int cx = (int)boundedNextX; int cz = (int)playerZ;
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell currentCellX = maze.getGrid()[cx][cz];
+            if (currentCellX.hasDoor()) {
+                boolean isDoorNS = false;
+                if (cx > 0 && maze.getGrid()[cx-1][cz].isWall()) isDoorNS = true;
+                else if (cx < maze.getWidth() - 1 && maze.getGrid()[cx+1][cz].isWall()) isDoorNS = true;
+                
+                if (isBlockedByDoor(boundedNextX, playerZ, currentCellX, isDoorNS)) canMoveX = false;
+            }
+
             int oldGridX = (int) playerX;
             if (canMoveX) playerX = boundedNextX;
             
@@ -298,6 +345,17 @@ public class ExplorationController implements GameState {
                 int hitZ = (int)(boundedNextZ - radius);
                 if (!maze.getGrid()[minX][hitZ].isWalkable() || !maze.getGrid()[maxX][hitZ].isWalkable()) canMoveZ = false;
             }
+            
+            cx = (int)playerX; cz = (int)boundedNextZ;
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell currentCellZ = maze.getGrid()[cx][cz];
+            if (currentCellZ.hasDoor()) {
+                boolean isDoorNS = false;
+                if (cx > 0 && maze.getGrid()[cx-1][cz].isWall()) isDoorNS = true;
+                else if (cx < maze.getWidth() - 1 && maze.getGrid()[cx+1][cz].isWall()) isDoorNS = true;
+                
+                if (isBlockedByDoor(playerX, boundedNextZ, currentCellZ, isDoorNS)) canMoveZ = false;
+            }
+
             int oldGridZ = (int) playerZ;
             if (canMoveZ) playerZ = boundedNextZ;
 
@@ -377,3 +435,5 @@ public class ExplorationController implements GameState {
     public float getPlayerX() { return playerX; }
     public float getPlayerZ() { return playerZ; }
 }
+
+
