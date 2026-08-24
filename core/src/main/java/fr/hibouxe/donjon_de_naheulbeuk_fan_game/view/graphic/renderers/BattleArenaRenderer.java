@@ -1,4 +1,4 @@
-﻿package fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers;
+package fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp;
 
