@@ -35,7 +35,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 
 /**
  * Moteur principal LibGDX (ApplicationAdapter).
- * S'occupe du rendu 3D, de la boucle de jeu et de la gestion de la fenÃªtre.
+ * S'occupe du rendu 3D, de la boucle de jeu et de la gestion de la fenÃƒÂªtre.
  *
  * @author Hibouxe
  * @version 2.0
@@ -117,7 +117,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                     if ("ZSQD".contains(action) || "UP".equals(action) || "DOWN".equals(action)) {
                         return true; // Bloquer les mouvements d'exploration
                     }
-                    return false; // Laisse le Controller gÃ©rer ENTER ou X
+                    return false; // Laisse le Controller gÃƒÂ©rer ENTER ou X
                 }
                 return true;
             }
@@ -193,7 +193,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         if (battleRenderer != null) {
             battleRenderer.setupTeamBattleArena(team);
             battleRenderer.setDungeonTheme("naheulbeuk");
-            if (maze != null) battleRenderer.setDungeonTheme(maze.getTheme());
+            if (maze != null) battleRenderer.setDungeonTheme("naheulbeuk");
         }
     }
 
@@ -214,7 +214,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         if (this.maze != maze) {
             this.cameraNeedsSnap = true;
         }
-        this.sceneNeedsBuild = true; // Toujours reconstruire la scÃ¨ne pour mettre Ã  jour les entitÃ©s (morts, coffres)
+        this.sceneNeedsBuild = true; // Toujours reconstruire la scÃƒÂ¨ne pour mettre ÃƒÂ  jour les entitÃƒÂ©s (morts, coffres)
         this.maze = maze;
         this.team = team;
         this.currentFloor = currentFloor;
@@ -247,7 +247,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character leader = team.getActiveLeader();
                 if (leader != null) {
                     dungeonRenderer.setLeaderClass(leader.getClass().getSimpleName());
-                    sceneNeedsBuild = true; // Reconstruire la scÃ¨ne pour appliquer le sprite
+                    sceneNeedsBuild = true; // Reconstruire la scÃƒÂ¨ne pour appliquer le sprite
                 }
             }
         }
@@ -292,7 +292,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             float targetWorldX = logicX;
             float targetWorldZ = logicZ;
 
-            // Restauration fluide de la position et hauteur de camÃ©ra d'exploration (Y = 7.0m)
+            // Restauration fluide de la position et hauteur de camÃƒÂ©ra d'exploration (Y = 7.0m)
             float camSpeed = 12.0f * Gdx.graphics.getDeltaTime();
             camera.position.x += (targetWorldX - camera.position.x) * 0.1f;
             camera.position.y += (12.0f - camera.position.y) * 0.1f;
@@ -374,12 +374,12 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     @Override
     public void onAudioSettingsChanged() {
-        // Sera implÃ©mentÃ© avec le SoundManager plus tard
+        // Sera implÃƒÂ©mentÃƒÂ© avec le SoundManager plus tard
     }
 
     @Override
     public void onGameplaySettingsChanged() {
-        // Le Gameplay est lu directement par le contrÃ´leur (ExplorationController)
+        // Le Gameplay est lu directement par le contrÃƒÂ´leur (ExplorationController)
     }
 
     // --- IGameView Implementation ---
@@ -445,8 +445,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         }
     }
     public void displayVictory() { displayMessage("Victoire !"); }
-    public void displayDefeat() { displayMessage("DÃ©faite !"); }
-    public void displaySaveSuccess(int slot) { displayMessage("SauvegardÃ© !"); }
+    public void displayDefeat() { displayMessage("DÃƒÂ©faite !"); }
+    public void displaySaveSuccess(int slot) { displayMessage("SauvegardÃƒÂ© !"); }
     public void displaySaveError() { displayMessage("Erreur save"); }
 }
 
