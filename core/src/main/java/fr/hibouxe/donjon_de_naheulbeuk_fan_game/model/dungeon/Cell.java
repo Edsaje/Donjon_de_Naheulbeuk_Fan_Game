@@ -35,6 +35,10 @@ public class Cell implements Serializable {
     private boolean stairs = false;
     private boolean hasDoor = false;
     private boolean doorOpen = false;
+    private float doorOpenProgress = 0f;
+    private boolean hasChest = false;
+    private boolean chestOpen = false;
+    private float chestOpenProgress = 0f;
     /**
      * Initialise une cellule avec ses coordonnées (X, Y).
      * Par défaut, tous les murs sont fermés et la case est non visitée.
@@ -246,6 +250,15 @@ public class Cell implements Serializable {
     public void setHasDoor(boolean b) { hasDoor = b; }
     public boolean isDoorOpen() { return doorOpen; }
     public void setDoorOpen(boolean b) { doorOpen = b; }
+    public float getDoorOpenProgress() { return doorOpenProgress; }
+    public void setDoorOpenProgress(float p) { doorOpenProgress = p; }
+
+    public boolean hasChest() { return hasChest; }
+    public void setHasChest(boolean b) { hasChest = b; }
+    public boolean isChestOpen() { return chestOpen; }
+    public void setChestOpen(boolean b) { chestOpen = b; }
+    public float getChestOpenProgress() { return chestOpenProgress; }
+    public void setChestOpenProgress(float p) { chestOpenProgress = p; }
 
     public boolean isDiscovered() {
         return discovered;

@@ -31,6 +31,17 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 public class DungeonSceneRenderer implements Disposable {
     private Model floorModel;
     private Model wallModel;
+    
+    private Model chestBaseModel;
+    private Model chestLidModel;
+    private Model doorFrameModel;
+    private Model doorModel;
+    
+    private com.badlogic.gdx.utils.Pool<ModelInstance> chestBasePool;
+    private com.badlogic.gdx.utils.Pool<ModelInstance> chestLidPool;
+    private com.badlogic.gdx.utils.Pool<ModelInstance> doorFramePool;
+    private com.badlogic.gdx.utils.Pool<ModelInstance> doorPool;
+
     private Array<ModelInstance> instances = new Array<>();
     private Array<Decal> entityBillboards = new Array<>();
     private Decal heroSprite;
@@ -124,6 +135,20 @@ public class DungeonSceneRenderer implements Disposable {
         floorModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal(theme.getFloorModel()), param);
         wallModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal(theme.getWallModel()), param);
         
+        try {
+            chestBaseModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/common/chest_base.obj"), param);
+            chestLidModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/common/chest_lid.obj"), param);
+        } catch (Exception e) {
+            com.badlogic.gdx.Gdx.app.log("DungeonRenderer", "Missing chest models, fallback to decal");
+        }
+        
+        try {
+            doorFrameModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/naheulbeuk/door_frame.obj"), param);
+            doorModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/dungeon/naheulbeuk/door.obj"), param);
+        } catch (Exception e) {
+            com.badlogic.gdx.Gdx.app.log("DungeonRenderer", "Missing door models");
+        }
+        
         // We let LibGDX handle the materials defined in the .mtl file!
         com.badlogic.gdx.graphics.g3d.attributes.IntAttribute cullOff = com.badlogic.gdx.graphics.g3d.attributes.IntAttribute.createCullFace(0);
         
@@ -131,11 +156,20 @@ public class DungeonSceneRenderer implements Disposable {
 
         for (Material m : floorModel.materials) { m.set(cullOff); }
         for (Material m : wallModel.materials) { m.set(cullOff); }
+        if (chestBaseModel != null) for (Material m : chestBaseModel.materials) m.set(cullOff);
+        if (chestLidModel != null) for (Material m : chestLidModel.materials) m.set(cullOff);
+        if (doorFrameModel != null) for (Material m : doorFrameModel.materials) m.set(cullOff);
+        if (doorModel != null) for (Material m : doorModel.materials) m.set(cullOff);
 
         this.floorPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() {
             @Override protected ModelInstance newObject() { return new ModelInstance(floorModel); }
         };
         this.wallPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() { @Override protected ModelInstance newObject() { return new ModelInstance(wallModel); } };
+        
+        this.chestBasePool = new com.badlogic.gdx.utils.Pool<ModelInstance>() { @Override protected ModelInstance newObject() { return new ModelInstance(chestBaseModel); } };
+        this.chestLidPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() { @Override protected ModelInstance newObject() { return new ModelInstance(chestLidModel); } };
+        this.doorFramePool = new com.badlogic.gdx.utils.Pool<ModelInstance>() { @Override protected ModelInstance newObject() { return new ModelInstance(doorFrameModel); } };
+        this.doorPool = new com.badlogic.gdx.utils.Pool<ModelInstance>() { @Override protected ModelInstance newObject() { return new ModelInstance(doorModel); } };
         this.decalPool = new com.badlogic.gdx.utils.Pool<Decal>() {
             @Override protected Decal newObject() { return Decal.newDecal(1f, 1f, new TextureRegion(), true); }
         };
@@ -188,12 +222,38 @@ public class DungeonSceneRenderer implements Disposable {
 
 
 
-                    if (cell.hasItem()) {
-                        Decal chestSprite = decalPool.obtain();
-                        chestSprite.setTextureRegion(chestRegion);
-                        chestSprite.setDimensions(1.2f, 1.2f);
-                        chestSprite.setPosition(posX + half, 0.7f, posZ + half);
-                        entityBillboards.add(chestSprite);
+                    if (cell.hasItem() || cell.hasChest()) {
+                        if (chestBaseModel != null && chestLidModel != null) {
+                            ModelInstance base = chestBasePool.obtain();
+                            base.transform.setToTranslation(posX + half, 0f, posZ + half);
+                            instances.add(base);
+                            
+                            ModelInstance lid = chestLidPool.obtain();
+                            lid.transform.setToTranslation(posX + half, 0f, posZ + half);
+                            // Animation du couvercle: de 0 à -90 degrés autour de l'axe X
+                            float angle = 90f * cell.getChestOpenProgress();
+                            lid.transform.rotate(com.badlogic.gdx.math.Vector3.X, -angle);
+                            instances.add(lid);
+                        } else {
+                            // Fallback 2D
+                            Decal chestSprite = decalPool.obtain();
+                            chestSprite.setTextureRegion(chestRegion);
+                            chestSprite.setDimensions(1.2f, 1.2f);
+                            chestSprite.setPosition(posX + half, 0.7f, posZ + half);
+                            entityBillboards.add(chestSprite);
+                        }
+                    }
+                    
+                    if (cell.hasDoor() && doorFrameModel != null && doorModel != null) {
+                        ModelInstance frame = doorFramePool.obtain();
+                        frame.transform.setToTranslation(posX + half, 0f, posZ + half);
+                        instances.add(frame);
+                        
+                        ModelInstance door = doorPool.obtain();
+                        door.transform.setToTranslation(posX + half, 0f, posZ + half);
+                        float doorAngle = 90f * cell.getDoorOpenProgress();
+                        door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, doorAngle);
+                        instances.add(door);
                     }
 
                     if (cell.hasStairs()) {

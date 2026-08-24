@@ -124,4 +124,25 @@ public class ExplorationEngine {
         }
         return false;
     }
+
+    /**
+     * Met à jour les animations de la grille (portes, coffres)
+     */
+    public void updateAnimations(float deltaTime) {
+        float animationSpeed = 2.0f; // 0.5 sec to open
+        
+        for (int x = 0; x < maze.getWidth(); x++) {
+            for (int y = 0; y < maze.getHeight(); y++) {
+                Cell cell = maze.getGrid()[x][y];
+                
+                if (cell.isDoorOpen() && cell.getDoorOpenProgress() < 1.0f) {
+                    cell.setDoorOpenProgress(Math.min(1.0f, cell.getDoorOpenProgress() + deltaTime * animationSpeed));
+                }
+                
+                if (cell.isChestOpen() && cell.getChestOpenProgress() < 1.0f) {
+                    cell.setChestOpenProgress(Math.min(1.0f, cell.getChestOpenProgress() + deltaTime * animationSpeed));
+                }
+            }
+        }
+    }
 }

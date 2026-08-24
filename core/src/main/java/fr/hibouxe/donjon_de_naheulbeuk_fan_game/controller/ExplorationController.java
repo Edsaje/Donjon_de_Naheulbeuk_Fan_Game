@@ -263,6 +263,9 @@ public class ExplorationController implements GameState {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell targetCell = maze.getGrid()[targetX][targetY];
             if (targetCell.hasDoor() && !targetCell.isDoorOpen()) {
                 targetCell.setDoorOpen(true);
+            } else if ((targetCell.hasChest() || targetCell.hasItem()) && !targetCell.isChestOpen()) {
+                targetCell.setChestOpen(true);
+                handleCellEvents(targetCell);
             } else {
                 handleCellEvents(targetCell);
             }
@@ -285,6 +288,9 @@ public class ExplorationController implements GameState {
                 view.display(maze, team, currentFloor);
             }
         }
+
+        // Update grid animations (doors, chests)
+        engine.updateAnimations(deltaTime);
 
         // Delegate AI behavior to MonsterAIEngine
         if (aiEngine != null) {
