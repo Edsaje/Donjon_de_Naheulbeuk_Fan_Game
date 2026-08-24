@@ -74,7 +74,6 @@ public class HUDRenderer implements Disposable {
         Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
         Gdx.gl.glBlendFunc(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
 
-        uiBatch.begin();
         float progress = Math.min(1.0f, (System.currentTimeMillis() - startTime) / 1000.0f);
 
         uiViewport.apply();
@@ -95,6 +94,7 @@ public class HUDRenderer implements Disposable {
         }
         shapeRenderer.end();
 
+        uiBatch.begin();
         font.getData().setScale(2.5f);
         font.setColor(Color.WHITE);
         String text = "Ã‰TAGE " + floor;
@@ -152,27 +152,7 @@ public class HUDRenderer implements Disposable {
         if (floatingMessage != null && floatingMessageTimer > 0) {
             floatingMessageTimer -= Gdx.graphics.getDeltaTime();
             uiBatch.begin();
-            float progress = Math.min(1.0f, (System.currentTimeMillis() - startTime) / 1000.0f);
-
-        uiViewport.apply();
-        shapeRenderer.setProjectionMatrix(uiViewport.getCamera().combined);
-        shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.BLACK);
-        float squareSize = 64f;
-        int cols = (int)(1280 / squareSize) + 2;
-        int rows = (int)(720 / squareSize) + 2;
-        float currentSize = squareSize * progress;
-
-        for(int i = 0; i < cols; i++) {
-            for(int j = 0; j < rows; j++) {
-                float cx = i * squareSize + squareSize / 2f;
-                float cy = j * squareSize + squareSize / 2f;
-                shapeRenderer.rect(cx - currentSize/2f, cy - currentSize/2f, currentSize, currentSize);
-            }
-        }
-        shapeRenderer.end();
-
-        font.getData().setScale(2.5f);
+            font.getData().setScale(2.5f);
             com.badlogic.gdx.graphics.g2d.GlyphLayout layout = new com.badlogic.gdx.graphics.g2d.GlyphLayout(font, floatingMessage);
             float cx = (1280 - layout.width) / 2;
             float cy = (720 + layout.height) / 2 + 150;
