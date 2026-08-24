@@ -22,8 +22,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 
 /**
- * Composant de rendu 3D spÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cialisÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© pour la scÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨ne d'exploration du Donjon (SRP).
- * GÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨re la construction 3D des dalles, des murs massifs, des coffres et des escaliers.
+ * Composant de rendu 3D spÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©cialisÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© pour la scÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨ne d'exploration du Donjon (SRP).
+ * GÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨re la construction 3D des dalles, des murs massifs, des coffres et des escaliers.
  *
  * @author Hibouxe
  * @version 1.0
@@ -108,7 +108,7 @@ public class DungeonSceneRenderer implements Disposable {
         this.theme = json.fromJson(DungeonTheme.class, jsonStr);
 
         heroTexture = assetProvider.getHeroSprite("Ranger");
-        // DÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©coupage automatique si l'image fait 256x256 (64x64 par frame)
+        // DÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©coupage automatique si l'image fait 256x256 (64x64 par frame)
         if (heroTexture.getWidth() >= 256) {
             heroFrames = TextureRegion.split(heroTexture, 64, 64);
         } else {
@@ -174,7 +174,7 @@ public class DungeonSceneRenderer implements Disposable {
     public int getInstancesCount() { return instances.size; }
     public void setLeaderClass(String className) {
         if (heroTexture != null) {
-            heroTexture = null; // L'AssetProvider s'occupe de la gestion mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©moire
+            heroTexture = null; // L'AssetProvider s'occupe de la gestion mÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©moire
         }
         heroTexture = assetProvider.getHeroSprite(className);
         if (heroTexture.getWidth() >= 256) {
@@ -201,7 +201,7 @@ public class DungeonSceneRenderer implements Disposable {
         instances.add(debugBox);
         entityBillboards.clear();
         
-        // (Ligne de tÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©lÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©portation supprimÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©e ici pour permettre la fluiditÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©)
+        // (Ligne de tÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©lÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©portation supprimÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©e ici pour permettre la fluiditÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©)
 
         Cell[][] grid = dungeon.getGrid();
 
@@ -228,20 +228,20 @@ public class DungeonSceneRenderer implements Disposable {
                             
                             ModelInstance lid = chestLidPool.obtain();
                             
-                            // ParamÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨tres de la charniÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨re du coffre (coordonnÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©es depuis Blender)
+                            // ParamÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨tres de la charniÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨re du coffre (coordonnÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©es depuis Blender)
                             // Dans Blender: Y est la profondeur, Z est la hauteur.
                             // Dans LibGDX: Z est la profondeur, Y est la hauteur.
                             float hingeZ = 0.14676f; // Inverse du Y de Blender (-0.14676 -> 0.14676)
-                            float hingeY = 0.5f;     // A MODIFIER: La hauteur (Z dans Blender) de ta charniÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨re!
+                            float hingeY = 0.5f;     // A MODIFIER: La hauteur (Z dans Blender) de ta charniÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨re!
                             
                             // 1. Placement au centre
                             lid.transform.setToTranslation(posX + half, 0f, posZ + half);
-                            // 2. DÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©placement sur la charniÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨re
+                            // 2. DÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©placement sur la charniÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨re
                             lid.transform.translate(0f, hingeY, hingeZ);
                             // 3. Rotation du couvercle
                             float angle = 90f * cell.getChestOpenProgress();
                             lid.transform.rotate(com.badlogic.gdx.math.Vector3.X, -angle);
-                            // 4. DÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©placement inverse
+                            // 4. DÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©placement inverse
                             lid.transform.translate(0f, -hingeY, -hingeZ);
                             
                             instances.add(lid);
@@ -255,7 +255,7 @@ public class DungeonSceneRenderer implements Disposable {
                     } else if (cell.hasItem()) {
                         // Les objets normaux par terre utilisent le sprite 2D
                         Decal itemSprite = decalPool.obtain();
-                        itemSprite.setTextureRegion(chestRegion); // TODO: Utiliser un sprite spÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cifique pour l'item
+                        itemSprite.setTextureRegion(chestRegion); // TODO: Utiliser un sprite spÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©cifique pour l'item
                         itemSprite.setDimensions(0.5f, 0.5f); // Plus petit pour qu'on sache que c'est un loot au sol
                         itemSprite.setPosition(posX + half, 0.3f, posZ + half);
                         entityBillboards.add(itemSprite);
@@ -274,18 +274,18 @@ public class DungeonSceneRenderer implements Disposable {
                         instances.add(frame);
                         
                         ModelInstance door = doorPool.obtain();
-                        float hingeX = 0.493241f; // CoordonnÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©e X de la charniÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨re dans Blender
+                        float hingeX = 0.493241f; // CoordonnÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©e X de la charniÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨re dans Blender
                         
                         // 1. Placement au centre de la case
                         door.transform.setToTranslation(posX + half, 0f, posZ + half);
                         // 2. Alignement avec le couloir (Est/Ouest ou Nord/Sud)
                         door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, baseAngle);
-                        // 3. DÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©placement sur la charniÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨re locale
+                        // 3. DÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©placement sur la charniÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨re locale
                         door.transform.translate(hingeX, 0f, 0f);
                         // 4. Rotation d'ouverture de la porte
                         float doorAngle = 90f * cell.getDoorOpenProgress();
                         door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, doorAngle);
-                        // 5. DÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©placement inverse pour ramener la gÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©omÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©trie de la porte
+                        // 5. DÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©placement inverse pour ramener la gÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©omÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©trie de la porte
                         door.transform.translate(-hingeX, 0f, 0f);
                         
                         instances.add(door);
@@ -299,7 +299,7 @@ public class DungeonSceneRenderer implements Disposable {
                         entityBillboards.add(stairsSprite);
                     }
                     
-                                // SCRIPT ELFE (Tutoriel - ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©tage 2)
+                                // SCRIPT ELFE (Tutoriel - ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©tage 2)
                     if (currentFloor == 2 && x == 1 && y == 2) {
                         boolean elfSaved = false;
                         for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character m : team.getMembers()) {
@@ -360,7 +360,7 @@ public class DungeonSceneRenderer implements Disposable {
                 }
             }
         }
-        // --- Positionnement du Joueur (HÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ros) ---
+        // --- Positionnement du Joueur (HÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©ros) ---
         float currentX = oldHeroX;
         float currentZ = oldHeroZ;
 
@@ -378,8 +378,8 @@ public class DungeonSceneRenderer implements Disposable {
 
     public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, float playerX, float playerZ, int playerDirection, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup> roamingMonsters) {
         this.currentDirection = playerDirection;
-        this.targetSpriteX = playerX * tileSize;
-        this.targetSpriteZ = playerZ * tileSize;
+        this.targetSpriteX = playerX * tileSize + (tileSize / 2f);
+        this.targetSpriteZ = playerZ * tileSize + (tileSize / 2f);
 
         float currentSpriteX = heroSprite.getX();
         float currentSpriteZ = heroSprite.getZ();
@@ -406,7 +406,7 @@ public class DungeonSceneRenderer implements Disposable {
             maxFrames = heroFrames[currentDirection].length;
         }
         
-        // Vitesse d'animation ajustÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©e (8) proportionnellement au mouvement
+        // Vitesse d'animation ajustÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©e (8) proportionnellement au mouvement
         int frameIndex = (int)(stateTime * 8) % maxFrames;
 
         if (heroFrames.length > currentDirection && heroFrames[currentDirection].length > frameIndex) {
@@ -468,7 +468,7 @@ public class DungeonSceneRenderer implements Disposable {
                 }
             }
             
-            mgSprite.setPosition(mg.getX() * tileSize, 1.0f, mg.getZ() * tileSize);
+            mgSprite.setPosition(mg.getX() * tileSize + (tileSize / 2f), 1.0f, mg.getZ() * tileSize + (tileSize / 2f));
             com.badlogic.gdx.math.Vector3 mgCamDir = new com.badlogic.gdx.math.Vector3(-camera.direction.x, 0, -camera.direction.z).nor();
             mgSprite.setRotation(mgCamDir, com.badlogic.gdx.math.Vector3.Y);
             decalBatch.add(mgSprite);
@@ -494,7 +494,7 @@ public class DungeonSceneRenderer implements Disposable {
         if (floorModel != null) floorModel.dispose();
         if (wallModel != null) wallModel.dispose();
         if (dungeonTex != null) dungeonTex.dispose();
-        // Les textures heroTexture, monsterTexture, chestTexture, stairsTexture sont gÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©rÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©es par l'AssetProvider
+        // Les textures heroTexture, monsterTexture, chestTexture, stairsTexture sont gÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©rÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©es par l'AssetProvider
     }
 }
 
