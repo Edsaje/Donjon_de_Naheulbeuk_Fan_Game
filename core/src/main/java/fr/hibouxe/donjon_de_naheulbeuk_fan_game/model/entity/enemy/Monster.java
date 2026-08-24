@@ -1,34 +1,28 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy;
 
-import com.badlogic.gdx.utils.JsonValue;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.ai.*;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.DataManager;
 
 public class Monster extends Character {
     private String spriteName;
 
-    public Monster(String id) {
-        this(DataManager.getMonsterData(id));
-    }
-
-    public Monster(JsonValue data) {
+    public Monster(MonsterDef data) {
         super(
-            data.getString("name"),
+            data.name,
             "Monster",
             1, // level
-            data.getInt("hp", 10),
-            data.getInt("mp", 0),
-            data.getInt("attack", 0),
+            data.hp,
+            data.mp,
+            data.attack,
             0, // magicAttack
-            data.getInt("defense", 0),
+            data.defense,
             0, // magicDefense
-            data.getInt("speed", 0)
+            data.speed
         );
-        this.setXp(data.getInt("xpYield", 0));
-        this.spriteName = data.getString("spriteName", "");
+        this.setXp(data.xpYield);
+        this.spriteName = data.spriteName;
         
-        String tacticsName = data.getString("aiTactics", "WarriorTactics");
+        String tacticsName = data.aiTactics != null ? data.aiTactics : "WarriorTactics";
         if ("CowardTactics".equals(tacticsName)) {
             this.tactics = new CowardTactics();
         } else if ("AmbushTactics".equals(tacticsName)) {

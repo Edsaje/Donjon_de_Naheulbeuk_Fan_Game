@@ -10,4 +10,5 @@ public interface GameContext {
     void popState();
     void startDungeon(String dungeonId);
     fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider getInputProvider();
+    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository getMonsterRepository();
 }

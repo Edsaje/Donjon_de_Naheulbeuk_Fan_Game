@@ -9,7 +9,7 @@ import java.util.List;
 import java.io.Serializable;
 
 /**
- * GÃ¨re la Compagnie de Naheulbeuk (l'Ã©quipe des hÃ©ros).
+ * Gère la Compagnie de Naheulbeuk (l'équipe des héros).
  * Maintient la liste des aventuriers ainsi que la position globale de la compagnie (X, Y) dans le donjon.
  *
  * @author Hibouxe
@@ -17,8 +17,11 @@ import java.io.Serializable;
  */
 public class Team implements Serializable {
     private static final long serialVersionUID = 1L;
-    private int x = 0; // Position X du joueur (dÃ©part en 0)
-    private int y = 0; // Position Y du joueur (dÃ©part en 0)
+    private int x = 0; // Position X du joueur (départ en 0)
+    private int y = 0; // Position Y du joueur (départ en 0)
+    private float playerX = 0f;
+    private float playerZ = 0f;
+    private float moveSpeed = 1.5f;
     private int facingDirection = 0; // 0=Sud, 1=Nord, 2=Ouest, 3=Est
     private int activeLeaderIndex = 0; // 0=Ranger, 1=Nain, etc.
     private List<Character> members = new ArrayList<>();
@@ -32,8 +35,8 @@ public class Team implements Serializable {
     }
 
     /**
-     * Initialise l'Ã©quipe en ajoutant tous les membres iconiques de la Compagnie de Naheulbeuk :
-     * Le Ranger, le Nain, l'Ã‰lfette, le Barbare, la Magicienne, l'Ogre et le Voleur.
+     * Initialise l'équipe en ajoutant tous les membres iconiques de la Compagnie de Naheulbeuk :
+     * Le Ranger, le Nain, l'Élfette, le Barbare, la Magicienne, l'Ogre et le Voleur.
      */
     public Team(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider randomProvider) {
         this.randomProvider = randomProvider;
@@ -51,10 +54,10 @@ public class Team implements Serializable {
     }
 
     /**
-     * Ajoute un objet au sac Ã  dos de la compagnie s'il reste de la place.
+     * Ajoute un objet au sac à dos de la compagnie s'il reste de la place.
      *
-     * @param item L'objet Ã  ajouter dans l'inventaire
-     * @return true si l'objet a Ã©tÃ© ajoutÃ©, false si le sac est plein.
+     * @param item L'objet à ajouter dans l'inventaire
+     * @return true si l'objet a été ajouté, false si le sac est plein.
      */
     public boolean addItem(Item item) {
         if (this.inventory.size() < maxCapacity) {
@@ -65,16 +68,16 @@ public class Team implements Serializable {
     }
 
     /**
-     * Retire un objet du sac Ã  dos de la compagnie.
+     * Retire un objet du sac à dos de la compagnie.
      *
-     * @param item L'objet Ã  retirer
+     * @param item L'objet à retirer
      */
     public void removeItem(Item item) {
         this.inventory.remove(item);
     }
 
     /**
-     * DÃ©place la compagnie.
+     * Déplace la compagnie.
      */
     public void move(int dx, int dy) {
         this.x += dx;
@@ -82,7 +85,7 @@ public class Team implements Serializable {
     }
 
     /**
-     * @return Position X actuelle de l'Ã©quipe
+     * @return Position X actuelle de l'équipe
      */
     public int getX() {
         return x;
@@ -96,7 +99,7 @@ public class Team implements Serializable {
     }
 
     /**
-     * @return Position Y actuelle de l'Ã©quipe
+     * @return Position Y actuelle de l'équipe
      */
     public int getY() {
         return y;
@@ -107,6 +110,30 @@ public class Team implements Serializable {
      */
     public void setY(int y) {
         this.y = y;
+    }
+
+    public float getPlayerX() {
+        return playerX;
+    }
+
+    public void setPlayerX(float playerX) {
+        this.playerX = playerX;
+    }
+
+    public float getPlayerZ() {
+        return playerZ;
+    }
+
+    public void setPlayerZ(float playerZ) {
+        this.playerZ = playerZ;
+    }
+
+    public float getMoveSpeed() {
+        return moveSpeed;
+    }
+
+    public void setMoveSpeed(float moveSpeed) {
+        this.moveSpeed = moveSpeed;
     }
 
     public int getFacingDirection() {
@@ -133,7 +160,7 @@ public class Team implements Serializable {
     }
 
     /**
-     * @return Liste des membres de l'Ã©quipe
+     * @return Liste des membres de l'équipe
      */
     public List<Character> getMembers() {
         return members;
@@ -147,14 +174,14 @@ public class Team implements Serializable {
     }
 
     /**
-     * @return La liste des objets contenus dans le sac Ã  dos
+     * @return La liste des objets contenus dans le sac à dos
      */
     public List<Item> getInventory() {
         return inventory;
     }
 
     /**
-     * @param inventory Nouveau contenu du sac Ã  dos
+     * @param inventory Nouveau contenu du sac à dos
      */
     public void setInventory(List<Item> inventory) {
         this.inventory = inventory;
@@ -169,11 +196,11 @@ public class Team implements Serializable {
     }
 
     /**
-     * SÃ©lectionne alÃ©atoirement un membre vivant de la Compagnie en excluant le personnage spÃ©cifiÃ©.
-     * Utile pour les attaques Ã  rebond ou les tirs alliÃ©s.
+     * Sélectionne aléatoirement un membre vivant de la Compagnie en excluant le personnage spécifié.
+     * Utile pour les attaques à rebond ou les tirs alliés.
      *
-     * @param excludedMember Le personnage Ã  exclure de la sÃ©lection
-     * @return Un membre de l'Ã©quipe au hasard (ou null si aucun autre membre n'est vivant).
+     * @param excludedMember Le personnage à exclure de la sélection
+     * @return Un membre de l'équipe au hasard (ou null si aucun autre membre n'est vivant).
      */
     public Character getRandomMemberExcept(Character excludedMember) {
         List<Character> candidates = new ArrayList<>();

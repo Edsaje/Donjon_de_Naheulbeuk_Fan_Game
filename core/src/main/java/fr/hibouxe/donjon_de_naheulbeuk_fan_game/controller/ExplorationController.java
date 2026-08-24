@@ -121,8 +121,8 @@ public class ExplorationController implements GameState {
                     gameContext.pushState(new InventoryController(team, menu, gameContext, maze));
                 } else if (selection == 1) { // Magie
                     menu.displayDialogue("Pas de magie disponible.");
-                } else if (selection == 2) { // CompÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©tences
-                    menu.displayDialogue("GÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©rÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â© par l'interface dÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©diÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©e en combat.");
+                } else if (selection == 2) { // Compétences
+                    menu.displayDialogue("Géré par l'interface dédiée en combat.");
                 } else if (selection == 3) { // Status
                     subState = SubState.STATUS_MENU;
                     menu.displayStatusScreen(team);
@@ -243,7 +243,7 @@ public class ExplorationController implements GameState {
                     this.floorIntroPlayed = true;
                     playFloorIntro(currentFloor);
                 } else {
-                    menu.displayMessage("\nL'air frais ! Vous avez survÃƒÆ’Ã‚Â©cu et ÃƒÆ’Ã‚Â©tabli un petit campement !");
+                    menu.displayMessage("\nL'air frais ! Vous avez survécu et établi un petit campement !");
                     gameContext.goToVillage();
                 }
             } else {

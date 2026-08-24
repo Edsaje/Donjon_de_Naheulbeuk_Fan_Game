@@ -43,7 +43,7 @@ public class NaheulbeukDungeon extends Dungeon {
     }
 
     @Override
-    public boolean prepareFloor(int floorNumber, Team team) {
+    public boolean prepareFloor(int floorNumber, Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
         FloorBlueprint bp = getBlueprintForFloor(floorNumber);
 
         // 1. Adapter la taille
@@ -71,7 +71,7 @@ public class NaheulbeukDungeon extends Dungeon {
             bossList.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem());
             this.getRoamingMonsters().add(new RoamingMonsterGroup(bossPos[0], bossPos[1], bossList, true));
         } else {
-            generateMonsters(bp.getNumMonsters(), team.getX(), team.getY());
+            generateMonsters(bp.getNumMonsters(), team.getX(), team.getY(), repository);
         }
         generateItems(bp.getNumItems());
         generateStairs(bp.getNumStairs());

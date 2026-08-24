@@ -7,6 +7,8 @@ public class DungeonTheme {
     private String wallTexturePath;
     private String floorModel;
     private String wallModel;
+    private String doorModel;
+    private String doorFrameModel;
     private float[] wallOffset = {0f, 0f, 0f};
 
     public DungeonTheme() {}
@@ -23,6 +25,11 @@ public class DungeonTheme {
     public void setFloorModel(String floorModel) { this.floorModel = floorModel; }
     public String getWallModel() { return wallModel; }
     public void setWallModel(String wallModel) { this.wallModel = wallModel; }
+    public String getDoorModel() { return doorModel; }
+    public void setDoorModel(String doorModel) { this.doorModel = doorModel; }
+    public String getDoorFrameModel() { return doorFrameModel; }
+    public void setDoorFrameModel(String doorFrameModel) { this.doorFrameModel = doorFrameModel; }
     public float[] getWallOffset() { return wallOffset; }
     public void setWallOffset(float[] wallOffset) { this.wallOffset = wallOffset; }
 }
+

@@ -7,8 +7,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 
 /**
- * ReprÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©sente le Barbare dans la Compagnie de Naheulbeuk.
- * Combattant de mÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢tinage lourd rÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©putÃƒÆ’Ã†â€™ÃƒÆ’Ã‚Â  pour sa puissance d'attaque brute.
+ * Représente le Barbare dans la Compagnie de Naheulbeuk.
+ * Combattant de mâtinage lourd réputé pour sa puissance d'attaque brute.
  *
  * @author Hibouxe
  * @version 1.0
@@ -16,22 +16,22 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 public class Barbarian extends Character {
 
     /**
-     * Initialise le Barbare avec ses statistiques de dÃƒÆ’Ã‚Â©part.
+     * Initialise le Barbare avec ses statistiques de départ.
      */
     public Barbarian() {
         super("Le Barbare", "Barbare", 1, 12, 0, 10, 0, 3, 3, 11);
         this.setResourceName("Rage");
         this.setMaxResource(100);
         this.setCurrentResource(0);
-        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Hurlement Barbare", 30, "Une attaque d'une violence inouÃƒÆ’Ã‚Â¯e.", false));
+        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Hurlement Barbare", 30, "Une attaque d'une violence inouïe.", false));
     }
 
     /**
-     * ExÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©cute l'attaque dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©vastatrice du Barbare en consommant 20 points de Rage.
+     * Exécute l'attaque dévastatrice du Barbare en consommant 20 points de Rage.
      *
-     * @param skill   La compÃƒÆ’Ã‚Â©tence utilisÃƒÆ’Ã‚Â©e
+     * @param skill   La compétence utilisée
      * @param team    La compagnie de Naheulbeuk
-     * @param monster Le monstre ciblÃƒÆ’Ã‚Â©
+     * @param monster Le monstre ciblé
      */
     @Override
     public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult useSpecialSkill(Skill skill, Team team, Character monster) {

@@ -94,9 +94,9 @@ public class InventoryController implements GameState {
                 if (slot != null) {
                     boolean success = selectedTarget.unequip(slot, team);
                     if (success) {
-                        menu.displayDialogue("\n" + selectedTarget.getName() + " retire son ÃƒÂ©quipement !");
+                        menu.displayDialogue("\n" + selectedTarget.getName() + " retire son équipement !");
                     } else {
-                        menu.displayDialogue("\nRien d'ÃƒÂ©quipÃƒÂ© ou sac plein.");
+                        menu.displayDialogue("\nRien d'équipé ou sac plein.");
                     }
                 }
                 gameContext.popState();

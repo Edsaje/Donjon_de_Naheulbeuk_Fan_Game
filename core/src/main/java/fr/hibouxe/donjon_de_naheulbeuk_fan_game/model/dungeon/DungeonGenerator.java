@@ -88,6 +88,28 @@ public class DungeonGenerator {
             Room curr = rooms.get(i);
             carveCorridor(grid, prev.getCenterX(), prev.getCenterY(), curr.getCenterX(), curr.getCenterY());
         }
+
+        for (int x = 1; x < width - 1; x++) {
+            for (int y = 1; y < height - 1; y++) {
+                Cell c = grid[x][y];
+                if (c.isWall() || c.getRoomId() > 0) continue;
+                
+                int roomNeighbors = 0;
+                if (grid[x+1][y].getRoomId() > 0) roomNeighbors++;
+                if (grid[x-1][y].getRoomId() > 0) roomNeighbors++;
+                if (grid[x][y+1].getRoomId() > 0) roomNeighbors++;
+                if (grid[x][y-1].getRoomId() > 0) roomNeighbors++;
+                
+                if (roomNeighbors >= 1) {
+                    boolean verticalCorridor = grid[x-1][y].isWall() && grid[x+1][y].isWall();
+                    boolean horizontalCorridor = grid[x][y-1].isWall() && grid[x][y+1].isWall();
+                    
+                    if (verticalCorridor || horizontalCorridor) {
+                        c.setHasDoor(true);
+                    }
+                }
+            }
+        }
     }
 
     private void carveRoom(Cell[][] grid, Room room, int roomId) {
@@ -129,7 +151,7 @@ public class DungeonGenerator {
         }
     }
 
-    public void generateMonsters(Dungeon dungeon, int count, int startX, int startY) {
+    public void generateMonsters(Dungeon dungeon, int count, int startX, int startY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
         int width = dungeon.getWidth();
         int height = dungeon.getHeight();
         Cell[][] grid = dungeon.getGrid();
@@ -155,7 +177,7 @@ public class DungeonGenerator {
                     int groupSize = random.nextInt(3) + 1;
 
                     for (int j = 0; j < groupSize; j++) {
-                        enemyGroup.add(getRandomMonster());
+                        enemyGroup.add(getRandomMonster(repository));
                     }
 
                     dungeon.getRoamingMonsters().add(new RoamingMonsterGroup(x, y, enemyGroup, false));
@@ -225,12 +247,14 @@ public class DungeonGenerator {
         }
     }
 
-    private Character getRandomMonster() {
+    private Character getRandomMonster(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
         int roll = random.nextInt(3);
         return switch (roll) {
-            case 0 -> fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.DataManager.createMonster("orc");
-            case 1 -> fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.DataManager.createMonster("skeleton");
-            default -> fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.DataManager.createMonster("goblin");
+            case 0 -> new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(repository.getMonsterData("orc"));
+            case 1 -> new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(repository.getMonsterData("skeleton"));
+            default -> new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(repository.getMonsterData("goblin"));
         };
     }
 }
+
+

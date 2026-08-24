@@ -6,13 +6,20 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 
+/**
+ * Représente l'Ogre dans la Compagnie de Naheulbeuk.
+ * L'Ogre est un sac à PV et frappe très fort, mais n'a aucune intelligence ni magie.
+ *
+ * @author Hibouxe
+ * @version 1.0
+ */
 public class Ogre extends Character {
     public Ogre() {
         super("L'Ogre", "Ogre", 1, 20, 0, 5, 0, 10, 5, 4);
         this.setResourceName("Rage");
         this.setMaxResource(100);
         this.setCurrentResource(0);
-        this.skills.add(new Skill("ÃƒÆ’Ã¢â‚¬Â°crasement Massif", 30, "Ignore la dÃƒÆ’Ã‚Â©fense de la cible.", false));
+        this.skills.add(new Skill("Écrasement Massif", 30, "Ignore la défense de la cible.", false));
     }
 
     @Override

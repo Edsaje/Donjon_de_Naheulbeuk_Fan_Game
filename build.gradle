@@ -19,3 +19,59 @@ allprojects {
         maven { url "https://jitpack.io" }
     }
 }
+
+task fixEncoding {
+    doLast {
+        def files = [
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/controller/ExplorationController.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/model/dungeon/Cell.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/model/dungeon/DungeonGenerator.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/model/dungeon/TutorialDungeon.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/model/entity/playerClasses/Barbarian.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/model/entity/playerClasses/Dwarf.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/model/entity/playerClasses/Elf.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/model/entity/playerClasses/Ogre.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/model/entity/playerClasses/Ranger.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/model/entity/playerClasses/Thief.java',
+            'core/src/main/java/fr/hibouxe/donjon_de_naheulbeuk_fan_game/view/graphic/renderers/DungeonSceneRenderer.java'
+        ]
+        def replacements = [
+            'ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©': 'é',
+            'ÃƒÆ’Ã†â€™Ãƒâ€ ââ‚¬â„¢ÃƒÆ’ââ‚¬Â âââ€šÂ¬ââ€žÂ¢ÃƒÆ’Ã†â€™âââ€šÂ¬Ã…Â¡ÃƒÆ’ââ‚¬Å¡Ãƒâ€šÃ‚Â©': 'é',
+            'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©': 'é',
+            'ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢': 'â',
+            'ÃƒÆ’Ã†â€™ÃƒÆ’Ã‚Â ': 'à',
+            'ÃƒÆ’Ã‚Â©': 'é',
+            'ÃƒÂ©': 'é',
+            'ÃƒÆ’Ã‚Â¨': 'è',
+            'ÃƒÂ¨': 'è',
+            'ÃƒÆ’Ã‚Â\u00A0': 'à',
+            'ÃƒÂ\u00A0': 'à',
+            'ÃƒÂ¢': 'â',
+            'ÃƒÂ®': 'î',
+            'ÃƒÂª': 'ê',
+            'ÃƒÂ´': 'ô',
+            'ÃƒÂ»': 'û',
+            'ÃƒÂ§': 'ç',
+            'Ã©': 'é',
+            'Ã¨': 'è',
+            'Ã\u00A0': 'à'
+        ]
+        for (f in files) {
+            def file = new File(f)
+            if (!file.exists()) continue
+            def content = file.getText('UTF-8')
+            def changed = false
+            for (def entry : replacements) {
+                if (content.contains(entry.key)) {
+                    content = content.replace(entry.key, entry.value)
+                    changed = true
+                }
+            }
+            if (changed) {
+                file.setText(content, 'UTF-8')
+                println \"Fixed: \\"
+            }
+        }
+    }
+}

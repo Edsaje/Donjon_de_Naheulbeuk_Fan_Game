@@ -4,5 +4,8 @@
   "texturePath": "models/dungeon/naheulbeuk/texture.png",
   "floorModel": "models/dungeon/naheulbeuk/floor.obj",
   "wallModel": "models/dungeon/naheulbeuk/wall.obj",
+  "doorModel": "models/dungeon/naheulbeuk/door.obj",
+  "doorFrameModel": "models/dungeon/naheulbeuk/door_frame.obj",
   "wallOffset": [0.0, 0.0, 0.0]
 }
+

@@ -74,9 +74,10 @@ public abstract class Dungeon implements Serializable {
      * @param count  Nombre de groupes de monstres à générer
      * @param startX Coordonnée X à épargner (joueur)
      * @param startY Coordonnée Y à épargner (joueur)
+     * @param repository Le repository de monstres
      */
-    public void generateMonsters(int count, int startX, int startY) {
-        getGenerator().generateMonsters(this, count, startX, startY);
+    public void generateMonsters(int count, int startX, int startY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
+        getGenerator().generateMonsters(this, count, startX, startY, repository);
     }
 
     /**
@@ -202,10 +203,10 @@ public abstract class Dungeon implements Serializable {
      *
      * @param floorNumber Numéro de l'étage actuel
      * @param team La compagnie du joueur
-     * @param menu La vue pour afficher les messages scénarisés
+     * @param repository Le repository de monstres
      * @return true si l'expédition est terminée (ex: victoire finale sur un boss), false sinon
      */
-    public abstract boolean prepareFloor(int floorNumber, Team team);
+    public abstract boolean prepareFloor(int floorNumber, Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository);
 
     /**
      * Retourne les dialogues d'introduction d'un étage.

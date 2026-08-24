@@ -26,7 +26,8 @@ public class DesktopLauncher {
         
         InputManager inputManager = new InputManager();
         FileSaveManager saveManager = new FileSaveManager();
-        Game game = new Game(app, saveManager, inputManager);
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepo = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.JsonMonsterLoader();
+        Game game = new Game(app, saveManager, inputManager, monsterRepo);
         inputManager.setListener(game);
         app.setDependencies(inputManager, game);
 

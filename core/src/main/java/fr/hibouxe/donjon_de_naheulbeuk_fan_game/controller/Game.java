@@ -16,12 +16,14 @@ public class Game implements InputListener, GameContext {
     private Team team;
     private int currentSlot = 1;
     private ISaveManager saveManager;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepository;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider;
 
-    public Game(HD2DGameApp app, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider) {
+    public Game(HD2DGameApp app, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepository) {
         this.app = app;
         this.saveManager = saveManager;
         this.inputProvider = inputProvider;
+        this.monsterRepository = monsterRepository;
         initMainMenu();
     }
     
@@ -119,13 +121,17 @@ public class Game implements InputListener, GameContext {
         }
     }
 
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository getMonsterRepository() {
+        return monsterRepository;
+    }
+
     private void runTutorial() {
         this.team = new Team();
         this.team.getMembers().clear();
         this.team.getMembers().add(new Ranger());
 
         TutorialDungeon tutorialMaze = new TutorialDungeon();
-        tutorialMaze.prepareFloor(1, team);
+        tutorialMaze.prepareFloor(1, team, monsterRepository);
 
         ExplorationController ec = new ExplorationController(tutorialMaze, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), true, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
         app.setState(HD2DGameApp.GameState.EXPLORATION);
@@ -309,7 +315,7 @@ public class Game implements InputListener, GameContext {
         } else {
             maze = new NaheulbeukDungeon();
         }
-        maze.prepareFloor(1, team);
+        maze.prepareFloor(1, team, monsterRepository);
         ExplorationController ec = new ExplorationController(maze, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
         app.setState(HD2DGameApp.GameState.EXPLORATION);
         app.setMenuRequest(null, null);

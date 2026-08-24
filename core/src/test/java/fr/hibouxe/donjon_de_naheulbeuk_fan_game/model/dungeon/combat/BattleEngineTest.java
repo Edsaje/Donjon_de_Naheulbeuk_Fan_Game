@@ -3,7 +3,7 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Ranger;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.DataManager;
+
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.StandardCombatEngine;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ class BattleEngineTest {
         Character ranger = new Ranger();
         team.getMembers().add(ranger);
         
-        Character goblin = DataManager.createMonster("goblin");
+        Character goblin = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.JsonMonsterLoader().getMonsterData("goblin"));
         goblin.setHealthPoint(0); // Dead goblin
         
         engine.initRound(team, Arrays.asList(goblin));

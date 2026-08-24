@@ -9,7 +9,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 public class Thief extends Character {
     public Thief() {
         super("Le Voleur", "Voleur", 1, 5, 100, 3, 1, 5, 5, 16);
-        this.setResourceName("ÃƒÆ’Ã¢â‚¬Â°nergie");
+        this.setResourceName("Énergie");
         this.setMaxResource(100);
         this.setCurrentResource(100);
         this.skills.add(new Skill("Attaque Sournoise", 30, "Une attaque pernicieuse dans le dos.", false));

@@ -33,6 +33,8 @@ public class Cell implements Serializable {
     private Item item = null;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.ICellEvent event = null;
     private boolean stairs = false;
+    private boolean hasDoor = false;
+    private boolean doorOpen = false;
     /**
      * Initialise une cellule avec ses coordonnées (X, Y).
      * Par défaut, tous les murs sont fermés et la case est non visitée.
@@ -237,8 +239,13 @@ public class Cell implements Serializable {
     }
 
     public boolean isWalkable() {
-        return !wall;
+        if (wall) return false;
+        return true;
     }
+    public boolean hasDoor() { return hasDoor; }
+    public void setHasDoor(boolean b) { hasDoor = b; }
+    public boolean isDoorOpen() { return doorOpen; }
+    public void setDoorOpen(boolean b) { doorOpen = b; }
 
     public boolean isDiscovered() {
         return discovered;
@@ -256,3 +263,6 @@ public class Cell implements Serializable {
         this.roomId = roomId;
     }
 }
+
+
+

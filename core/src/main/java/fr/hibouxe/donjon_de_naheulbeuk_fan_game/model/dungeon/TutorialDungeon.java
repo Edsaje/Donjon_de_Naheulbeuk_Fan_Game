@@ -3,7 +3,6 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.DataManager;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Thief;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ public class TutorialDungeon extends Dungeon {
     }
 
     @Override
-    public boolean prepareFloor(int floorNumber, Team team) {
+    public boolean prepareFloor(int floorNumber, Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
         switch (floorNumber) {
             case 1:
                 return prepareFloor1(team);
@@ -26,7 +25,7 @@ public class TutorialDungeon extends Dungeon {
             case 4:
                 return prepareFloor4(team);
             case 5:
-                return prepareFloor5(team);
+                return prepareFloor5(team, repository);
             default:
                 return true;
         }
@@ -85,7 +84,7 @@ private boolean prepareFloor1(Team team) {
         for (int x = 0; x < 5; x++) {
             for (int y = 0; y < 5; y++) {
                 this.getGrid()[x][y] = new Cell(x, y);
-                this.getGrid()[x][y].setRoomId(1); // On met dans une mÃªme "salle" pour le brouillard de guerre
+                this.getGrid()[x][y].setRoomId(1); // On met dans une même "salle" pour le brouillard de guerre
             }
         }
 
@@ -103,7 +102,7 @@ private boolean prepareFloor1(Team team) {
         this.getGrid()[2][3].setWall(false);
         this.getGrid()[1][3].setWall(false);
 
-        // Retrait des murs sÃ©parateurs
+        // Retrait des murs séparateurs
         this.getGrid()[1][1].removeWallBetween(this.getGrid()[2][1]);
         this.getGrid()[2][1].removeWallBetween(this.getGrid()[3][1]);
         this.getGrid()[3][1].removeWallBetween(this.getGrid()[3][2]);
@@ -111,7 +110,7 @@ private boolean prepareFloor1(Team team) {
         this.getGrid()[3][3].removeWallBetween(this.getGrid()[2][3]);
         this.getGrid()[2][3].removeWallBetween(this.getGrid()[1][3]);
 
-        // 3. Placer l'Ã©quipe au dÃ©but
+        // 3. Placer l'équipe au début
         team.setX(1);
         team.setY(1);
         
@@ -153,7 +152,7 @@ private boolean prepareFloor1(Team team) {
         // Escalier tout en haut
         this.getGrid()[1][0].setStairs(true);
 
-        // Ajouter l'Ã©vÃ©nement de l'Elfe
+        // Ajouter l'événement de l'Elfe
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.WoundedElfEvent elfEvent = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.WoundedElfEvent();
         this.getGrid()[1][2].setEvent(elfEvent);
         
@@ -175,7 +174,7 @@ private boolean prepareFloor1(Team team) {
         }
         
         // Creuser un petit labyrinthe
-        // Ligne de dÃ©part
+        // Ligne de départ
         for (int x = 1; x < 6; x++) {
             this.getGrid()[x][1].setWall(false);
             if (x < 5) this.getGrid()[x][1].removeWallBetween(this.getGrid()[x+1][1]);
@@ -191,7 +190,7 @@ private boolean prepareFloor1(Team team) {
             if (x < 5) this.getGrid()[x][5].removeWallBetween(this.getGrid()[x+1][5]);
         }
 
-        // Joueur commence au dÃ©but (en bas Ã  gauche)
+        // Joueur commence au début (en bas à gauche)
         team.setX(1);
         team.setY(1);
         
@@ -204,7 +203,7 @@ private boolean prepareFloor1(Team team) {
             team.getMembers().add(new Thief());
         }
 
-        // Escalier Ã  la fin (en haut Ã  droite)
+        // Escalier à la fin (en haut à droite)
         this.getGrid()[5][5].setStairs(true);
 
         // L'Orque de patrouille devant l'escalier
@@ -254,7 +253,7 @@ private boolean prepareFloor1(Team team) {
         return false;
     }
 
-    private boolean prepareFloor5(Team team) {
+    private boolean prepareFloor5(Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
         // Couloir de la sortie
         this.setWidth(5);
         this.setHeight(5);
@@ -292,11 +291,11 @@ private boolean prepareFloor1(Team team) {
         Character boss = new Character("Chef Orque", "Boss", 1, 45, 0, 6, 0, 2, 2, 2);
         boss.setXp(800);
         guards.add(boss);
-        guards.add(DataManager.createMonster("goblin"));
-        guards.add(DataManager.createMonster("goblin"));
+        guards.add(new Monster(repository.getMonsterData("goblin")));
+        guards.add(new Monster(repository.getMonsterData("goblin")));
         this.getRoamingMonsters().add(new RoamingMonsterGroup(2, 3, guards, false));
 
-        // Escalier de sortie (LibertÃ© !)
+        // Escalier de sortie (Liberté !)
         this.getGrid()[2][4].setStairs(true);
 
         return false;
@@ -307,3 +306,4 @@ private boolean prepareFloor1(Team team) {
         return false;
     }
 }
+

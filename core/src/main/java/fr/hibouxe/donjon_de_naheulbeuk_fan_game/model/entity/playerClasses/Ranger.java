@@ -7,8 +7,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 
 /**
- * ReprÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©sente le Ranger (Le Leader) dans la Compagnie de Naheulbeuk.
- * Leader autoproclamÃƒÆ’Ã†â€™ÃƒÆ’Ã‚Â  ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©quilibrÃƒÆ’Ã†â€™ÃƒÆ’Ã‚Â  en attaque et en dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©fense.
+ * Représente le Ranger dans la Compagnie de Naheulbeuk.
+ * Chef d'équipe autoproclamé, polyvalent mais moyen partout.
  *
  * @author Hibouxe
  * @version 1.0
@@ -16,22 +16,22 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 public class Ranger extends Character {
 
     /**
-     * Initialise le Ranger avec ses statistiques de dÃƒÆ’Ã‚Â©part et sa ressource ÃƒÆ’Ã¢â‚¬Â°nergie.
+     * Initialise le Ranger avec ses statistiques de départ et sa ressource Énergie.
      */
     public Ranger() {
-        super("Le Ranger", "Ranger", 1, 10, 100, 5, 2, 10, 10, 14);
-        this.setResourceName("ÃƒÆ’Ã¢â‚¬Â°nergie");
+        super("Le Ranger", "Ranger", 1, 15, 0, 8, 4, 8, 6, 8);
+        this.setResourceName("Énergie");
         this.setMaxResource(100);
         this.setCurrentResource(100);
-        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Tir de PrÃƒÆ’Ã‚Â©cision", 30, "Un tir ajustÃƒÆ’Ã‚Â© qui inflige de lourds dÃƒÆ’Ã‚Â©gÃƒÆ’Ã‚Â¢ts.", false));
+        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Tir de Précision", 30, "Un tir ajusté qui inflige de lourds dégâts.", false));
     }
 
     /**
-     * ExÃƒÆ’Ã‚Â©cute le tir ÃƒÆ’Ã‚Â  l'arc ajustÃƒÆ’Ã‚Â© du Ranger en consommant 30 points d'ÃƒÆ’Ã¢â‚¬Â°nergie.
-     *
-     * @param skill   La compÃƒÆ’Ã‚Â©tence utilisÃƒÆ’Ã‚Â©e
+     * Exécute le tir à l'arc ajusté du Ranger en consommant 30 points d'Énergie.
+     * @param target La cible
+     * @param skill   La compétence utilisée
      * @param team    La compagnie de Naheulbeuk
-     * @param monster Le monstre ciblÃƒÆ’Ã‚Â©
+     * @param monster Le monstre ciblé
      */
     @Override
     public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult useSpecialSkill(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill skill, Team team, Character monster) {
