@@ -222,7 +222,7 @@ public class DungeonSceneRenderer implements Disposable {
 
 
 
-                    if (cell.hasItem() || cell.hasChest()) {
+                    if (cell.hasChest()) {
                         if (chestBaseModel != null && chestLidModel != null) {
                             ModelInstance base = chestBasePool.obtain();
                             base.transform.setToTranslation(posX + half, 0f, posZ + half);
@@ -230,18 +230,23 @@ public class DungeonSceneRenderer implements Disposable {
                             
                             ModelInstance lid = chestLidPool.obtain();
                             lid.transform.setToTranslation(posX + half, 0f, posZ + half);
-                            // Animation du couvercle: de 0 à -90 degrés autour de l'axe X
                             float angle = 90f * cell.getChestOpenProgress();
                             lid.transform.rotate(com.badlogic.gdx.math.Vector3.X, -angle);
                             instances.add(lid);
                         } else {
-                            // Fallback 2D
                             Decal chestSprite = decalPool.obtain();
                             chestSprite.setTextureRegion(chestRegion);
                             chestSprite.setDimensions(1.2f, 1.2f);
                             chestSprite.setPosition(posX + half, 0.7f, posZ + half);
                             entityBillboards.add(chestSprite);
                         }
+                    } else if (cell.hasItem()) {
+                        // Les objets normaux par terre utilisent le sprite 2D
+                        Decal itemSprite = decalPool.obtain();
+                        itemSprite.setTextureRegion(chestRegion); // TODO: Utiliser un sprite spécifique pour l'item
+                        itemSprite.setDimensions(0.5f, 0.5f); // Plus petit pour qu'on sache que c'est un loot au sol
+                        itemSprite.setPosition(posX + half, 0.3f, posZ + half);
+                        entityBillboards.add(itemSprite);
                     }
                     
                     if (cell.hasDoor() && doorFrameModel != null && doorModel != null) {
@@ -257,9 +262,20 @@ public class DungeonSceneRenderer implements Disposable {
                         instances.add(frame);
                         
                         ModelInstance door = doorPool.obtain();
+                        float hingeX = 0.493241f; // Coordonnée X de la charnière dans Blender
+                        
+                        // 1. Placement au centre de la case
                         door.transform.setToTranslation(posX + half, 0f, posZ + half);
+                        // 2. Alignement avec le couloir (Est/Ouest ou Nord/Sud)
+                        door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, baseAngle);
+                        // 3. Déplacement sur la charnière locale
+                        door.transform.translate(hingeX, 0f, 0f);
+                        // 4. Rotation d'ouverture de la porte
                         float doorAngle = 90f * cell.getDoorOpenProgress();
-                        door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, baseAngle + doorAngle);
+                        door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, doorAngle);
+                        // 5. Déplacement inverse pour ramener la géométrie de la porte
+                        door.transform.translate(-hingeX, 0f, 0f);
+                        
                         instances.add(door);
                     }
 
