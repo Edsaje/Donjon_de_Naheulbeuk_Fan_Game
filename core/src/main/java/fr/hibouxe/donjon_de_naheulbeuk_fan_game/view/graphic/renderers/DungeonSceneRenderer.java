@@ -245,14 +245,21 @@ public class DungeonSceneRenderer implements Disposable {
                     }
                     
                     if (cell.hasDoor() && doorFrameModel != null && doorModel != null) {
+                        boolean isDoorNS = false;
+                        if (x > 0 && grid[x-1][y].isWall()) isDoorNS = true;
+                        else if (x < dungeon.getWidth() - 1 && grid[x+1][y].isWall()) isDoorNS = true;
+                        
+                        float baseAngle = isDoorNS ? 0f : 90f;
+                        
                         ModelInstance frame = doorFramePool.obtain();
                         frame.transform.setToTranslation(posX + half, 0f, posZ + half);
+                        frame.transform.rotate(com.badlogic.gdx.math.Vector3.Y, baseAngle);
                         instances.add(frame);
                         
                         ModelInstance door = doorPool.obtain();
                         door.transform.setToTranslation(posX + half, 0f, posZ + half);
                         float doorAngle = 90f * cell.getDoorOpenProgress();
-                        door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, doorAngle);
+                        door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, baseAngle + doorAngle);
                         instances.add(door);
                     }
 

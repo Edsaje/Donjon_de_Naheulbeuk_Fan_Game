@@ -127,9 +127,11 @@ public class ExplorationEngine {
 
     /**
      * Met à jour les animations de la grille (portes, coffres)
+     * @return true si une animation est en cours et a modifié l'état
      */
-    public void updateAnimations(float deltaTime) {
+    public boolean updateAnimations(float deltaTime) {
         float animationSpeed = 2.0f; // 0.5 sec to open
+        boolean animated = false;
         
         for (int x = 0; x < maze.getWidth(); x++) {
             for (int y = 0; y < maze.getHeight(); y++) {
@@ -137,12 +139,15 @@ public class ExplorationEngine {
                 
                 if (cell.isDoorOpen() && cell.getDoorOpenProgress() < 1.0f) {
                     cell.setDoorOpenProgress(Math.min(1.0f, cell.getDoorOpenProgress() + deltaTime * animationSpeed));
+                    animated = true;
                 }
                 
                 if (cell.isChestOpen() && cell.getChestOpenProgress() < 1.0f) {
                     cell.setChestOpenProgress(Math.min(1.0f, cell.getChestOpenProgress() + deltaTime * animationSpeed));
+                    animated = true;
                 }
             }
         }
+        return animated;
     }
 }

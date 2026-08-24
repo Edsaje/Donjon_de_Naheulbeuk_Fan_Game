@@ -193,19 +193,23 @@ public class ExplorationController implements GameState {
 
 
         if (currentCell.hasItem()) {
-            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item item = currentCell.getItem();
-            boolean take = view.askPickupItem(item);
-
-            if (take) {
-                boolean added = team.addItem(item);
-                if (added) {
-                    menu.displayMessage(locManager.getString("ITEM_PICKUP", item.getName()));
-                    currentCell.setItem(null); 
-                } else {
-                    menu.displayMessage(locManager.getString("INVENTORY_FULL"));
-                }
+            if (currentCell.hasChest() && !currentCell.isChestOpen()) {
+                // If it's a closed chest, do not auto-pickup on walk over
             } else {
-                menu.displayMessage(locManager.getString("ITEM_LEAVE"));
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item item = currentCell.getItem();
+                boolean take = view.askPickupItem(item);
+    
+                if (take) {
+                    boolean added = team.addItem(item);
+                    if (added) {
+                        menu.displayMessage(locManager.getString("ITEM_PICKUP", item.getName()));
+                        currentCell.setItem(null); 
+                    } else {
+                        menu.displayMessage(locManager.getString("INVENTORY_FULL"));
+                    }
+                } else {
+                    menu.displayMessage(locManager.getString("ITEM_LEAVE"));
+                }
             }
         }
 
@@ -279,18 +283,23 @@ public class ExplorationController implements GameState {
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider input = gameContext.getInputProvider();
         if (input != null) {
             boolean gridChanged = engine.updatePhysics(deltaTime, input.isUpPressed(), input.isDownPressed(), input.isLeftPressed(), input.isRightPressed());
+            boolean animsChanged = engine.updateAnimations(deltaTime);
             
-            if (gridChanged) {
+            if (gridChanged || animsChanged) {
                 team.setX((int) team.getPlayerX());
                 team.setY((int) team.getPlayerZ());
-                handlePostMovement();
-                maze.updateFogOfWar((int) team.getPlayerX(), (int) team.getPlayerZ(), 3);
+                if (gridChanged) {
+                    handlePostMovement();
+                    maze.updateFogOfWar((int) team.getPlayerX(), (int) team.getPlayerZ(), 3);
+                }
+                view.display(maze, team, currentFloor);
+            }
+        } else {
+            // Update grid animations (doors, chests) even if input is null
+            if (engine.updateAnimations(deltaTime)) {
                 view.display(maze, team, currentFloor);
             }
         }
-
-        // Update grid animations (doors, chests)
-        engine.updateAnimations(deltaTime);
 
         // Delegate AI behavior to MonsterAIEngine
         if (aiEngine != null) {
