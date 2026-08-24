@@ -189,7 +189,7 @@ public class BattleArenaRenderer implements Disposable {
         }
 
         for (Decal sprite : battleBillboards) {
-            sprite.lookAt(camera.position, camera.up);
+            sprite.lookAt(new com.badlogic.gdx.math.Vector3(camera.position.x, sprite.getY(), camera.position.z), com.badlogic.gdx.math.Vector3.Y);
             decalBatch.add(sprite);
         }
         decalBatch.flush();

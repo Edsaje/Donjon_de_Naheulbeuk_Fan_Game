@@ -256,8 +256,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             if (cameraNeedsSnap) {
                 float startWorldX = team.getX() * tileSize + 0.5f;
                 float startWorldZ = team.getY() * tileSize + 0.5f;
-                camera.position.set(startWorldX, 7f, startWorldZ + 6f);
-                camera.lookAt(startWorldX, 0f, startWorldZ);
+                camera.position.set(startWorldX, 12f, startWorldZ + 9f);
+                camera.lookAt(startWorldX, 0.5f, startWorldZ);
                 camera.update();
                 cameraNeedsSnap = false;
             }
@@ -289,15 +289,15 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
             float logicX = playerX * tileSize + 0.5f;
             float logicZ = playerZ * tileSize + 0.5f;
-            float targetWorldX = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteX(logicX) : logicX;
-            float targetWorldZ = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteZ(logicZ) : logicZ;
+            float targetWorldX = logicX;
+            float targetWorldZ = logicZ;
 
             // Restauration fluide de la position et hauteur de camÃ©ra d'exploration (Y = 7.0m)
             float camSpeed = 12.0f * Gdx.graphics.getDeltaTime();
             camera.position.x += (targetWorldX - camera.position.x) * 0.1f;
-            camera.position.y += (7.0f - camera.position.y) * 0.1f;
-            camera.position.z += ((targetWorldZ + 6f) - camera.position.z) * 0.1f;
-            camera.lookAt(camera.position.x, 0.0f, camera.position.z - 6f);
+            camera.position.y += (12.0f - camera.position.y) * 0.1f;
+            camera.position.z += ((targetWorldZ + 9f) - camera.position.z) * 0.1f;
+            camera.lookAt(camera.position.x, 0.5f, camera.position.z - 9f);
             camera.update();
 
             // Update lighting for Dungeon
