@@ -37,6 +37,7 @@ public class ExplorationController implements GameState {
     private GameContext gameContext;
 
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.ExplorationEngine engine;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MonsterAIEngine aiEngine;
 
     public ExplorationController(Dungeon maze, Team team, IExplorationView view, IMenuView menu, ICombatView combatView, boolean isTutorial, GameContext gameContext, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager) {
         this(maze, team, view, menu, combatView, isTutorial, 1, gameContext, saveManager, locManager);
@@ -54,6 +55,7 @@ public class ExplorationController implements GameState {
         this.saveManager = saveManager;
         this.locManager = locManager;
         this.engine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.ExplorationEngine(maze, team);
+        this.aiEngine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MonsterAIEngine();
     }
 
     public void setCurrentFloor(int floor) {
@@ -238,8 +240,8 @@ public class ExplorationController implements GameState {
     }
 
     private void handleInteraction() {
-        int currentX = (int) this.playerX;
-        int currentY = (int) this.playerZ;
+        int currentX = (int) team.getPlayerX();
+        int currentY = (int) team.getPlayerZ();
         
         if (currentX >= 0 && currentX < maze.getWidth() && currentY >= 0 && currentY < maze.getHeight()) {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell currentCell = maze.getGrid()[currentX][currentY];
@@ -284,32 +286,14 @@ public class ExplorationController implements GameState {
             }
         }
 
+        // Delegate AI behavior to MonsterAIEngine
+        if (aiEngine != null) {
+            aiEngine.updateAll(deltaTime, maze, team);
+        }
+
         java.util.Iterator<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup> it = maze.getRoamingMonsters().iterator();
         while (it.hasNext()) {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup mg = it.next();
-            if (mg.isBoss()) {
-                mg.setState(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup.AIState.IDLE);
-            } else {
-                float dx = team.getPlayerX() - mg.getX();
-                float dz = team.getPlayerZ() - mg.getZ();
-                float dist = (float) Math.sqrt(dx * dx + dz * dz);
-                
-                if (dist < 4.0f) {
-                    mg.setState(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup.AIState.CHASE);
-                    float speed = 2.0f;
-                    float nx = mg.getX() + (dx / dist) * speed * deltaTime;
-                    float nz = mg.getZ() + (dz / dist) * speed * deltaTime;
-                    
-                    if (maze.getGrid()[Math.max(0, Math.min(maze.getWidth() - 1, (int)nx))][(int)mg.getZ()].isWalkable()) {
-                        mg.setX(nx);
-                    }
-                    if (maze.getGrid()[(int)mg.getX()][Math.max(0, Math.min(maze.getHeight() - 1, (int)nz))].isWalkable()) {
-                        mg.setZ(nz);
-                    }
-                } else {
-                    mg.setState(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup.AIState.PATROL);
-                }
-            }
             
             float mdx = team.getPlayerX() - mg.getX();
             float mdz = team.getPlayerZ() - mg.getZ();

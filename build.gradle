@@ -70,7 +70,7 @@ task fixEncoding {
             }
             if (changed) {
                 file.setText(content, 'UTF-8')
-                println \"Fixed: \\"
+                println "Fixed: \\"
             }
         }
     }

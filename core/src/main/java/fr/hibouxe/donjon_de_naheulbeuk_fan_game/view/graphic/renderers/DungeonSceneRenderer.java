@@ -333,13 +333,39 @@ public class DungeonSceneRenderer implements Disposable {
         for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup mg : roamingMonsters) {
             Decal mgSprite = decalPool.obtain();
             mgSprite.setTextureRegion(monsterRegion);
+            
+            // Set dimensions
             if (mg.isBoss()) {
-                mgSprite.setColor(Color.RED);
                 mgSprite.setDimensions(1.5f, 2.0f);
             } else {
-                mgSprite.setColor(Color.WHITE);
                 mgSprite.setDimensions(1.2f, 1.8f);
             }
+            
+            // Set colors based on AI State
+            if (mg.isBoss()) {
+                mgSprite.setColor(Color.RED);
+            } else {
+                switch (mg.getState()) {
+                    case SLEEPING:
+                        mgSprite.setColor(Color.ROYAL); // Blueish for sleeping
+                        break;
+                    case ALERT:
+                        mgSprite.setColor(Color.YELLOW);
+                        break;
+                    case CHASE:
+                        mgSprite.setColor(Color.ORANGE);
+                        break;
+                    case FLEE:
+                        mgSprite.setColor(Color.GREEN);
+                        break;
+                    case PATROL:
+                    case IDLE:
+                    default:
+                        mgSprite.setColor(Color.WHITE);
+                        break;
+                }
+            }
+            
             mgSprite.setPosition(mg.getX() * tileSize, 1.0f, mg.getZ() * tileSize);
             mgSprite.lookAt(camera.position, camera.up);
             decalBatch.add(mgSprite);
