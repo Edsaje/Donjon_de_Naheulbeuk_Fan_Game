@@ -16,27 +16,6 @@ import java.util.List;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.state.GameState;
 
 public class ExplorationController implements GameState {
-    private boolean isBlockedByDoor(float newX, float newZ, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell cell, boolean isNS) {
-        float lx = newX - (int)newX;
-        float lz = newZ - (int)newZ;
-        
-        if (isNS) {
-            // Door blocks Z. Plane is at lz = 0.5
-            // Pillars are at lx < 0.35 and lx > 0.65
-            if (lz > 0.35f && lz < 0.65f) {
-                if (!cell.isDoorOpen()) return true; // Hit closed door
-                if (lx < 0.35f || lx > 0.65f) return true; // Hit pillars of open door
-            }
-        } else {
-            // Door blocks X. Plane is at lx = 0.5
-            // Pillars are at lz < 0.35 and lz > 0.65
-            if (lx > 0.35f && lx < 0.65f) {
-                if (!cell.isDoorOpen()) return true; // Hit closed door
-                if (lz < 0.35f || lz > 0.65f) return true; // Hit pillars of open door
-            }
-        }
-        return false;
-    }
     private Dungeon maze;
     private Team team;
     private boolean running;
@@ -49,10 +28,6 @@ public class ExplorationController implements GameState {
     private boolean elfJoined = false;
     private enum SubState { EXPLORING, PAUSE_MENU, STATUS_MENU }
     private SubState subState = SubState.EXPLORING;
-
-    private float playerX = 0f;
-    private float playerZ = 0f;
-    private float moveSpeed = 1.5f;
 
     private ISaveManager saveManager;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager;
@@ -90,10 +65,11 @@ public class ExplorationController implements GameState {
     @Override
     public void enter() {
         this.running = true;
-        this.playerX = team.getX() + 0.5f; // start in the center of the tile
-        this.playerZ = team.getY() + 0.5f;
+        // Float position is now handled directly by the engine and the team
+        team.setPlayerX(team.getX() + 0.5f); // start in the center of the tile
+        team.setPlayerZ(team.getY() + 0.5f);
         
-        maze.updateFogOfWar((int)playerX, (int)playerZ, 3);
+        maze.updateFogOfWar((int)team.getPlayerX(), (int)team.getPlayerZ(), 3);
         view.display(maze, team, currentFloor);
         
         if (!floorIntroPlayed) {
@@ -297,81 +273,13 @@ public class ExplorationController implements GameState {
         
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider input = gameContext.getInputProvider();
         if (input != null) {
-            float nextX = playerX;
-            float nextZ = playerZ;
+            boolean gridChanged = engine.updatePhysics(deltaTime, input.isUpPressed(), input.isDownPressed(), input.isLeftPressed(), input.isRightPressed());
             
-            if (input.isUpPressed()) nextZ -= moveSpeed * deltaTime;
-            if (input.isDownPressed()) nextZ += moveSpeed * deltaTime;
-            if (input.isLeftPressed()) nextX -= moveSpeed * deltaTime;
-            if (input.isRightPressed()) nextX += moveSpeed * deltaTime;
-            
-            float radius = 0.25f; // Logical radius of the player's hitbox
-            
-            // Move X
-            float boundedNextX = Math.max(radius, Math.min(nextX, maze.getWidth() - radius));
-            int minZ = (int) (playerZ - radius);
-            int maxZ = (int) (playerZ + radius);
-            boolean canMoveX = true;
-            if (boundedNextX > playerX) {
-                int hitX = (int)(boundedNextX + radius);
-                if (!maze.getGrid()[hitX][minZ].isWalkable() || !maze.getGrid()[hitX][maxZ].isWalkable()) canMoveX = false;
-            } else if (boundedNextX < playerX) {
-                int hitX = (int)(boundedNextX - radius);
-                if (!maze.getGrid()[hitX][minZ].isWalkable() || !maze.getGrid()[hitX][maxZ].isWalkable()) canMoveX = false;
-            }
-            
-            int cx = (int)boundedNextX; int cz = (int)playerZ;
-            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell currentCellX = maze.getGrid()[cx][cz];
-            if (currentCellX.hasDoor()) {
-                boolean isDoorNS = false;
-                if (cx > 0 && maze.getGrid()[cx-1][cz].isWall()) isDoorNS = true;
-                else if (cx < maze.getWidth() - 1 && maze.getGrid()[cx+1][cz].isWall()) isDoorNS = true;
-                
-                if (isBlockedByDoor(boundedNextX, playerZ, currentCellX, isDoorNS)) canMoveX = false;
-            }
-
-            int oldGridX = (int) playerX;
-            if (canMoveX) playerX = boundedNextX;
-            
-            // Move Z
-            float boundedNextZ = Math.max(radius, Math.min(nextZ, maze.getHeight() - radius));
-            int minX = (int) (playerX - radius);
-            int maxX = (int) (playerX + radius);
-            boolean canMoveZ = true;
-            if (boundedNextZ > playerZ) {
-                int hitZ = (int)(boundedNextZ + radius);
-                if (!maze.getGrid()[minX][hitZ].isWalkable() || !maze.getGrid()[maxX][hitZ].isWalkable()) canMoveZ = false;
-            } else if (boundedNextZ < playerZ) {
-                int hitZ = (int)(boundedNextZ - radius);
-                if (!maze.getGrid()[minX][hitZ].isWalkable() || !maze.getGrid()[maxX][hitZ].isWalkable()) canMoveZ = false;
-            }
-            
-            cx = (int)playerX; cz = (int)boundedNextZ;
-            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell currentCellZ = maze.getGrid()[cx][cz];
-            if (currentCellZ.hasDoor()) {
-                boolean isDoorNS = false;
-                if (cx > 0 && maze.getGrid()[cx-1][cz].isWall()) isDoorNS = true;
-                else if (cx < maze.getWidth() - 1 && maze.getGrid()[cx+1][cz].isWall()) isDoorNS = true;
-                
-                if (isBlockedByDoor(playerX, boundedNextZ, currentCellZ, isDoorNS)) canMoveZ = false;
-            }
-
-            int oldGridZ = (int) playerZ;
-            if (canMoveZ) playerZ = boundedNextZ;
-
-            if (input.isUpPressed()) team.setFacingDirection(1);
-            else if (input.isDownPressed()) team.setFacingDirection(0);
-            else if (input.isLeftPressed()) team.setFacingDirection(2);
-            else if (input.isRightPressed()) team.setFacingDirection(3);
-
-            int newGridX = (int) playerX;
-            int newGridZ = (int) playerZ;
-            
-            if (newGridX != oldGridX || newGridZ != oldGridZ) {
-                team.setX(newGridX);
-                team.setY(newGridZ);
+            if (gridChanged) {
+                team.setX((int) team.getPlayerX());
+                team.setY((int) team.getPlayerZ());
                 handlePostMovement();
-                maze.updateFogOfWar(newGridX, newGridZ, 3);
+                maze.updateFogOfWar((int) team.getPlayerX(), (int) team.getPlayerZ(), 3);
                 view.display(maze, team, currentFloor);
             }
         }
@@ -382,8 +290,8 @@ public class ExplorationController implements GameState {
             if (mg.isBoss()) {
                 mg.setState(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup.AIState.IDLE);
             } else {
-                float dx = playerX - mg.getX();
-                float dz = playerZ - mg.getZ();
+                float dx = team.getPlayerX() - mg.getX();
+                float dz = team.getPlayerZ() - mg.getZ();
                 float dist = (float) Math.sqrt(dx * dx + dz * dz);
                 
                 if (dist < 4.0f) {
@@ -403,8 +311,8 @@ public class ExplorationController implements GameState {
                 }
             }
             
-            float mdx = playerX - mg.getX();
-            float mdz = playerZ - mg.getZ();
+            float mdx = team.getPlayerX() - mg.getX();
+            float mdz = team.getPlayerZ() - mg.getZ();
             if (Math.sqrt(mdx * mdx + mdz * mdz) < 0.8f) {
                 it.remove();
                 gameContext.triggerBattle(mg.getMonsters(), () -> {
@@ -432,8 +340,8 @@ public class ExplorationController implements GameState {
         this.running = false;
     }
     
-    public float getPlayerX() { return playerX; }
-    public float getPlayerZ() { return playerZ; }
+    public float getPlayerX() { return team.getPlayerX(); }
+    public float getPlayerZ() { return team.getPlayerZ(); }
 }
 
 
