@@ -229,9 +229,23 @@ public class DungeonSceneRenderer implements Disposable {
                             instances.add(base);
                             
                             ModelInstance lid = chestLidPool.obtain();
+                            
+                            // Paramètres de la charnière du coffre (coordonnées depuis Blender)
+                            // Dans Blender: Y est la profondeur, Z est la hauteur.
+                            // Dans LibGDX: Z est la profondeur, Y est la hauteur.
+                            float hingeZ = 0.14676f; // Inverse du Y de Blender (-0.14676 -> 0.14676)
+                            float hingeY = 0.5f;     // A MODIFIER: La hauteur (Z dans Blender) de ta charnière!
+                            
+                            // 1. Placement au centre
                             lid.transform.setToTranslation(posX + half, 0f, posZ + half);
+                            // 2. Déplacement sur la charnière
+                            lid.transform.translate(0f, hingeY, hingeZ);
+                            // 3. Rotation du couvercle
                             float angle = 90f * cell.getChestOpenProgress();
                             lid.transform.rotate(com.badlogic.gdx.math.Vector3.X, -angle);
+                            // 4. Déplacement inverse
+                            lid.transform.translate(0f, -hingeY, -hingeZ);
+                            
                             instances.add(lid);
                         } else {
                             Decal chestSprite = decalPool.obtain();
