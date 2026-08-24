@@ -35,7 +35,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 
 /**
  * Moteur principal LibGDX (ApplicationAdapter).
- * S'occupe du rendu 3D, de la boucle de jeu et de la gestion de la fenÃƒÂªtre.
+ * S'occupe du rendu 3D, de la boucle de jeu et de la gestion de la fenÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âªtre.
  *
  * @author Hibouxe
  * @version 2.0
@@ -117,7 +117,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                     if ("ZSQD".contains(action) || "UP".equals(action) || "DOWN".equals(action)) {
                         return true; // Bloquer les mouvements d'exploration
                     }
-                    return false; // Laisse le Controller gÃƒÂ©rer ENTER ou X
+                    return false; // Laisse le Controller gÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©rer ENTER ou X
                 }
                 return true;
             }
@@ -214,7 +214,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         if (this.maze != maze) {
             this.cameraNeedsSnap = true;
         }
-        this.sceneNeedsBuild = true; // Toujours reconstruire la scÃƒÂ¨ne pour mettre ÃƒÂ  jour les entitÃƒÂ©s (morts, coffres)
+        this.sceneNeedsBuild = true; // Toujours reconstruire la scÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨ne pour mettre ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  jour les entitÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©s (morts, coffres)
         this.maze = maze;
         this.team = team;
         this.currentFloor = currentFloor;
@@ -247,7 +247,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character leader = team.getActiveLeader();
                 if (leader != null) {
                     dungeonRenderer.setLeaderClass(leader.getClass().getSimpleName());
-                    sceneNeedsBuild = true; // Reconstruire la scÃƒÂ¨ne pour appliquer le sprite
+                    sceneNeedsBuild = true; // Reconstruire la scÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¨ne pour appliquer le sprite
                 }
             }
         }
@@ -256,7 +256,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             if (cameraNeedsSnap) {
                 float startWorldX = team.getX() * tileSize + 0.5f;
                 float startWorldZ = team.getY() * tileSize + 0.5f;
-                camera.position.set(startWorldX, 12f, startWorldZ + 9f);
+                camera.position.set(startWorldX, 10f, startWorldZ + 5f);
                 camera.lookAt(startWorldX, 0.5f, startWorldZ);
                 camera.update();
                 cameraNeedsSnap = false;
@@ -292,18 +292,19 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             float targetWorldX = logicX;
             float targetWorldZ = logicZ;
 
-            // Restauration fluide de la position et hauteur de camÃƒÂ©ra d'exploration (Y = 7.0m)
+            // Restauration fluide de la position et hauteur de camÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©ra d'exploration (Y = 7.0m)
             float camSpeed = 12.0f * Gdx.graphics.getDeltaTime();
             camera.position.x += (targetWorldX - camera.position.x) * 0.1f;
-            camera.position.y += (12.0f - camera.position.y) * 0.1f;
-            camera.position.z += ((targetWorldZ + 9f) - camera.position.z) * 0.1f;
-            camera.lookAt(camera.position.x, 0.5f, camera.position.z - 9f);
+            camera.position.y += (10.0f - camera.position.y) * 0.1f;
+            camera.position.z += ((targetWorldZ + 5f) - camera.position.z) * 0.1f;
+            camera.lookAt(camera.position.x, 0.5f, camera.position.z - 5f);
             camera.update();
 
             // Update lighting for Dungeon
             environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.05f, 0.05f, 0.1f, 1f));
             heroLight.intensity = 25f + (float)(Math.random() * 2f); // Flicker effect
-            heroLight.setPosition(camera.position.x, camera.position.y, camera.position.z);
+            heroLight.setPosition(logicX, 5f, logicZ);
+            heroLight.intensity = 50f + (float)(Math.random() * 5f);
 
             dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection(), maze != null ? maze.getRoamingMonsters() : new java.util.ArrayList<>());
         } else if (currentState == GameState.VILLAGE && game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) {
@@ -374,12 +375,12 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     @Override
     public void onAudioSettingsChanged() {
-        // Sera implÃƒÂ©mentÃƒÂ© avec le SoundManager plus tard
+        // Sera implÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©mentÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© avec le SoundManager plus tard
     }
 
     @Override
     public void onGameplaySettingsChanged() {
-        // Le Gameplay est lu directement par le contrÃƒÂ´leur (ExplorationController)
+        // Le Gameplay est lu directement par le contrÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â´leur (ExplorationController)
     }
 
     // --- IGameView Implementation ---
@@ -445,8 +446,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         }
     }
     public void displayVictory() { displayMessage("Victoire !"); }
-    public void displayDefeat() { displayMessage("DÃƒÂ©faite !"); }
-    public void displaySaveSuccess(int slot) { displayMessage("SauvegardÃƒÂ© !"); }
+    public void displayDefeat() { displayMessage("DÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©faite !"); }
+    public void displaySaveSuccess(int slot) { displayMessage("SauvegardÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© !"); }
     public void displaySaveError() { displayMessage("Erreur save"); }
 }
 
