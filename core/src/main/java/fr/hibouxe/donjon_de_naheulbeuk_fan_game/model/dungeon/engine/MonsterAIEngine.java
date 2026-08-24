@@ -96,8 +96,15 @@ public class MonsterAIEngine {
                     faceTowards(mg, dx, dz);
                     
                     if (mg.getAlertTimer() <= 0) {
+                        String mainMonster = mg.getMonsters().isEmpty() ? "" : mg.getMonsters().get(0).getClass().getSimpleName();
+                        
                         if (canIntimidate && Math.random() < 0.2) {
                             mg.setState(RoamingMonsterGroup.AIState.FLEE);
+                        } else if (mainMonster.equals("Mimic") || mainMonster.equals("Chest")) {
+                            mg.setState(RoamingMonsterGroup.AIState.FLEE);
+                        } else if (mainMonster.equals("Orc")) {
+                            mg.setState(RoamingMonsterGroup.AIState.CHARGE);
+                            mg.setStateTimer(1.5f); // Charge lasts 1.5s
                         } else {
                             mg.setState(RoamingMonsterGroup.AIState.CHASE);
                         }
@@ -109,19 +116,59 @@ public class MonsterAIEngine {
                         // Lost player
                         mg.setState(RoamingMonsterGroup.AIState.PATROL);
                     } else {
-                        // Chase player
+                        // Chase player, speed depends on monster type
+                        String mainMonster = mg.getMonsters().isEmpty() ? "" : mg.getMonsters().get(0).getClass().getSimpleName();
+                        float chaseSpeed = 1.3f; // Slightly slower than player (1.5f) to allow escape
+                        
+                        if (mainMonster.equals("Goblin")) {
+                            chaseSpeed = 1.6f; // Goblins are fast and annoying!
+                        } else if (mainMonster.equals("Specter") || mainMonster.equals("Vampire") || mainMonster.equals("Liche")) {
+                            chaseSpeed = 0.5f; // Very slow movement
+                            // Teleportation mechanic
+                            mg.setStateTimer(mg.getStateTimer() - deltaTime);
+                            if (mg.getStateTimer() <= 0) {
+                                // Find a valid teleport location near the player
+                                int tpX = (int)playerX + (int)(Math.random() * 6 - 3);
+                                int tpZ = (int)playerZ + (int)(Math.random() * 6 - 3);
+                                if (tpX > 0 && tpX < maze.getWidth() && tpZ > 0 && tpZ < maze.getHeight() 
+                                    && maze.getGrid()[tpX][tpZ].isWalkable()) {
+                                    mg.setX(tpX + 0.5f);
+                                    mg.setZ(tpZ + 0.5f);
+                                    mg.setStateTimer(3.0f + (float)Math.random() * 2.0f); // CD 3 to 5 secs
+                                }
+                            }
+                        }
+                        
                         faceTowards(mg, dx, dz);
-                        moveTowards(mg, dx, dz, dist, 2.5f * deltaTime, maze);
+                        moveTowards(mg, dx, dz, dist, chaseSpeed * deltaTime, maze);
+                    }
+                    break;
+                    
+                case CHARGE:
+                    // Orcs charge in a straight line blindly very fast
+                    mg.setStateTimer(mg.getStateTimer() - deltaTime);
+                    moveForward(mg, 3.5f * deltaTime, maze);
+                    if (mg.getStateTimer() <= 0) {
+                        mg.setState(RoamingMonsterGroup.AIState.STUNNED);
+                        mg.setStateTimer(2.0f); // Stunned for 2s after charge
+                    }
+                    break;
+                    
+                case STUNNED:
+                    mg.setStateTimer(mg.getStateTimer() - deltaTime);
+                    if (mg.getStateTimer() <= 0) {
+                        mg.setState(RoamingMonsterGroup.AIState.ALERT);
+                        mg.setAlertTimer(0.5f);
                     }
                     break;
                     
                 case FLEE:
-                    if (dist > 8.0f) {
+                    if (dist > 10.0f) {
                         mg.setState(RoamingMonsterGroup.AIState.PATROL);
                     } else {
-                        // Run away
+                        // Run away very fast
                         faceTowards(mg, -dx, -dz);
-                        moveTowards(mg, -dx, -dz, dist, 3.0f * deltaTime, maze);
+                        moveTowards(mg, -dx, -dz, dist, 2.8f * deltaTime, maze);
                     }
                     break;
 

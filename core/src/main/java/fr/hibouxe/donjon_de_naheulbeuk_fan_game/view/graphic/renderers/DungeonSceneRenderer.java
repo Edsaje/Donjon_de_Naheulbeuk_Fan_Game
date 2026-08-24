@@ -452,6 +452,12 @@ public class DungeonSceneRenderer implements Disposable {
                     case CHASE:
                         mgSprite.setColor(Color.ORANGE);
                         break;
+                    case CHARGE:
+                        mgSprite.setColor(Color.SCARLET); // Deep red for charging
+                        break;
+                    case STUNNED:
+                        mgSprite.setColor(Color.PURPLE); // Purple/dizzy
+                        break;
                     case FLEE:
                         mgSprite.setColor(Color.GREEN);
                         break;

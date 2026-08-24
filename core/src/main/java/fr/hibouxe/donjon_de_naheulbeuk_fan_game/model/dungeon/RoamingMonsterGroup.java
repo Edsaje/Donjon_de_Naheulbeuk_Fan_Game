@@ -7,7 +7,7 @@ import java.util.List;
 public class RoamingMonsterGroup implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public enum AIState { PATROL, CHASE, IDLE, SLEEPING, ALERT, FLEE }
+    public enum AIState { PATROL, CHASE, IDLE, SLEEPING, ALERT, FLEE, CHARGE, STUNNED }
 
     private float x;
     private float z;
