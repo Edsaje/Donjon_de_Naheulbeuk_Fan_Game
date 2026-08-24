@@ -1,4 +1,4 @@
-﻿package fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic;
+package fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
