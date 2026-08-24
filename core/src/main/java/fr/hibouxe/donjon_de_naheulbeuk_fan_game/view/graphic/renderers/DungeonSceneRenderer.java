@@ -22,8 +22,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 
 /**
- * Composant de rendu 3D spÃ©cialisÃ© pour la scÃ¨ne d'exploration du Donjon (SRP).
- * GÃ¨re la construction 3D des dalles, des murs massifs, des coffres et des escaliers.
+ * Composant de rendu 3D spÃƒÂ©cialisÃƒÂ© pour la scÃƒÂ¨ne d'exploration du Donjon (SRP).
+ * GÃƒÂ¨re la construction 3D des dalles, des murs massifs, des coffres et des escaliers.
  *
  * @author Hibouxe
  * @version 1.0
@@ -108,7 +108,7 @@ public class DungeonSceneRenderer implements Disposable {
         this.theme = json.fromJson(DungeonTheme.class, jsonStr);
 
         heroTexture = assetProvider.getHeroSprite("Ranger");
-        // DÃ©coupage automatique si l'image fait 256x256 (64x64 par frame)
+        // DÃƒÂ©coupage automatique si l'image fait 256x256 (64x64 par frame)
         if (heroTexture.getWidth() >= 256) {
             heroFrames = TextureRegion.split(heroTexture, 64, 64);
         } else {
@@ -179,7 +179,7 @@ public class DungeonSceneRenderer implements Disposable {
 
     public void setLeaderClass(String className) {
         if (heroTexture != null) {
-            heroTexture = null; // L'AssetProvider s'occupe de la gestion mÃ©moire
+            heroTexture = null; // L'AssetProvider s'occupe de la gestion mÃƒÂ©moire
         }
         heroTexture = assetProvider.getHeroSprite(className);
         if (heroTexture.getWidth() >= 256) {
@@ -203,7 +203,7 @@ public class DungeonSceneRenderer implements Disposable {
         instances.clear();
         entityBillboards.clear();
         
-        // (Ligne de tÃ©lÃ©portation supprimÃ©e ici pour permettre la fluiditÃ©)
+        // (Ligne de tÃƒÂ©lÃƒÂ©portation supprimÃƒÂ©e ici pour permettre la fluiditÃƒÂ©)
 
         Cell[][] grid = dungeon.getGrid();
 
@@ -230,20 +230,20 @@ public class DungeonSceneRenderer implements Disposable {
                             
                             ModelInstance lid = chestLidPool.obtain();
                             
-                            // ParamÃ¨tres de la charniÃ¨re du coffre (coordonnÃ©es depuis Blender)
+                            // ParamÃƒÂ¨tres de la charniÃƒÂ¨re du coffre (coordonnÃƒÂ©es depuis Blender)
                             // Dans Blender: Y est la profondeur, Z est la hauteur.
                             // Dans LibGDX: Z est la profondeur, Y est la hauteur.
                             float hingeZ = 0.14676f; // Inverse du Y de Blender (-0.14676 -> 0.14676)
-                            float hingeY = 0.5f;     // A MODIFIER: La hauteur (Z dans Blender) de ta charniÃ¨re!
+                            float hingeY = 0.5f;     // A MODIFIER: La hauteur (Z dans Blender) de ta charniÃƒÂ¨re!
                             
                             // 1. Placement au centre
                             lid.transform.setToTranslation(posX + half, 0f, posZ + half);
-                            // 2. DÃ©placement sur la charniÃ¨re
+                            // 2. DÃƒÂ©placement sur la charniÃƒÂ¨re
                             lid.transform.translate(0f, hingeY, hingeZ);
                             // 3. Rotation du couvercle
                             float angle = 90f * cell.getChestOpenProgress();
                             lid.transform.rotate(com.badlogic.gdx.math.Vector3.X, -angle);
-                            // 4. DÃ©placement inverse
+                            // 4. DÃƒÂ©placement inverse
                             lid.transform.translate(0f, -hingeY, -hingeZ);
                             
                             instances.add(lid);
@@ -257,7 +257,7 @@ public class DungeonSceneRenderer implements Disposable {
                     } else if (cell.hasItem()) {
                         // Les objets normaux par terre utilisent le sprite 2D
                         Decal itemSprite = decalPool.obtain();
-                        itemSprite.setTextureRegion(chestRegion); // TODO: Utiliser un sprite spÃ©cifique pour l'item
+                        itemSprite.setTextureRegion(chestRegion); // TODO: Utiliser un sprite spÃƒÂ©cifique pour l'item
                         itemSprite.setDimensions(0.5f, 0.5f); // Plus petit pour qu'on sache que c'est un loot au sol
                         itemSprite.setPosition(posX + half, 0.3f, posZ + half);
                         entityBillboards.add(itemSprite);
@@ -276,18 +276,18 @@ public class DungeonSceneRenderer implements Disposable {
                         instances.add(frame);
                         
                         ModelInstance door = doorPool.obtain();
-                        float hingeX = 0.493241f; // CoordonnÃ©e X de la charniÃ¨re dans Blender
+                        float hingeX = 0.493241f; // CoordonnÃƒÂ©e X de la charniÃƒÂ¨re dans Blender
                         
                         // 1. Placement au centre de la case
                         door.transform.setToTranslation(posX + half, 0f, posZ + half);
                         // 2. Alignement avec le couloir (Est/Ouest ou Nord/Sud)
                         door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, baseAngle);
-                        // 3. DÃ©placement sur la charniÃ¨re locale
+                        // 3. DÃƒÂ©placement sur la charniÃƒÂ¨re locale
                         door.transform.translate(hingeX, 0f, 0f);
                         // 4. Rotation d'ouverture de la porte
                         float doorAngle = 90f * cell.getDoorOpenProgress();
                         door.transform.rotate(com.badlogic.gdx.math.Vector3.Y, doorAngle);
-                        // 5. DÃ©placement inverse pour ramener la gÃ©omÃ©trie de la porte
+                        // 5. DÃƒÂ©placement inverse pour ramener la gÃƒÂ©omÃƒÂ©trie de la porte
                         door.transform.translate(-hingeX, 0f, 0f);
                         
                         instances.add(door);
@@ -301,7 +301,7 @@ public class DungeonSceneRenderer implements Disposable {
                         entityBillboards.add(stairsSprite);
                     }
                     
-                                // SCRIPT ELFE (Tutoriel - Ã©tage 2)
+                                // SCRIPT ELFE (Tutoriel - ÃƒÂ©tage 2)
                     if (currentFloor == 2 && x == 1 && y == 2) {
                         boolean elfSaved = false;
                         for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character m : team.getMembers()) {
@@ -362,7 +362,7 @@ public class DungeonSceneRenderer implements Disposable {
                 }
             }
         }
-        // --- Positionnement du Joueur (HÃ©ros) ---
+        // --- Positionnement du Joueur (HÃƒÂ©ros) ---
         float currentX = oldHeroX;
         float currentZ = oldHeroZ;
 
@@ -408,7 +408,7 @@ public class DungeonSceneRenderer implements Disposable {
             maxFrames = heroFrames[currentDirection].length;
         }
         
-        // Vitesse d'animation ajustÃ©e (8) proportionnellement au mouvement
+        // Vitesse d'animation ajustÃƒÂ©e (8) proportionnellement au mouvement
         int frameIndex = (int)(stateTime * 8) % maxFrames;
 
         if (heroFrames.length > currentDirection && heroFrames[currentDirection].length > frameIndex) {
@@ -422,7 +422,8 @@ public class DungeonSceneRenderer implements Disposable {
         modelBatch.end();
 
         for (Decal sprite : entityBillboards) {
-            sprite.lookAt(new com.badlogic.gdx.math.Vector3(camera.position.x, sprite.getY(), camera.position.z), com.badlogic.gdx.math.Vector3.Y);
+            com.badlogic.gdx.math.Vector3 camDir = new com.badlogic.gdx.math.Vector3(-camera.direction.x, 0, -camera.direction.z).nor();
+            sprite.setRotation(camDir, com.badlogic.gdx.math.Vector3.Y);
             decalBatch.add(sprite);
         }
         
@@ -470,7 +471,8 @@ public class DungeonSceneRenderer implements Disposable {
             }
             
             mgSprite.setPosition(mg.getX() * tileSize, 1.0f, mg.getZ() * tileSize);
-            mgSprite.lookAt(new com.badlogic.gdx.math.Vector3(camera.position.x, mgSprite.getY(), camera.position.z), com.badlogic.gdx.math.Vector3.Y);
+            com.badlogic.gdx.math.Vector3 mgCamDir = new com.badlogic.gdx.math.Vector3(-camera.direction.x, 0, -camera.direction.z).nor();
+            mgSprite.setRotation(mgCamDir, com.badlogic.gdx.math.Vector3.Y);
             decalBatch.add(mgSprite);
             tempDecals.add(mgSprite);
         }
@@ -494,7 +496,7 @@ public class DungeonSceneRenderer implements Disposable {
         if (floorModel != null) floorModel.dispose();
         if (wallModel != null) wallModel.dispose();
         if (dungeonTex != null) dungeonTex.dispose();
-        // Les textures heroTexture, monsterTexture, chestTexture, stairsTexture sont gÃ©rÃ©es par l'AssetProvider
+        // Les textures heroTexture, monsterTexture, chestTexture, stairsTexture sont gÃƒÂ©rÃƒÂ©es par l'AssetProvider
     }
 }
 

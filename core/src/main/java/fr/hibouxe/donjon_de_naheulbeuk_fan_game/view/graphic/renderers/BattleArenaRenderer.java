@@ -28,9 +28,9 @@ import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.Gdx;
 
 /**
- * Composant de rendu 3D spÃ©cialisÃ© pour la scÃ¨ne de combat HD-2D Dragon Quest (SRP).
- * GÃ¨re la disposition tactique des 7 HÃ©ros sur 3 lignes (Backline, Midline, Frontline)
- * et des Monstres au fond de l'arÃ¨ne de combat avec centrage dynamique.
+ * Composant de rendu 3D spÃƒÂ©cialisÃƒÂ© pour la scÃƒÂ¨ne de combat HD-2D Dragon Quest (SRP).
+ * GÃƒÂ¨re la disposition tactique des 7 HÃƒÂ©ros sur 3 lignes (Backline, Midline, Frontline)
+ * et des Monstres au fond de l'arÃƒÂ¨ne de combat avec centrage dynamique.
  *
  * @author Hibouxe
  * @version 2.0
@@ -72,29 +72,29 @@ public class BattleArenaRenderer implements Disposable {
     }
 
     /**
-     * Disposition par dÃ©faut des 7 HÃ©ros de la Compagnie de Naheulbeuk rÃ©partis sur 3 Lignes Tactiques en quinconce.
+     * Disposition par dÃƒÂ©faut des 7 HÃƒÂ©ros de la Compagnie de Naheulbeuk rÃƒÂ©partis sur 3 Lignes Tactiques en quinconce.
      */
     public void setupDefaultBattleArena() {
         decalPool.freeAll(battleBillboards);
         battleBillboards.clear();
 
-        // 1. Ligne ArriÃ¨re (Backline - Z = 3.0m) : Magicienne & Elfe (2 HÃ©ros Violet - Ã‰carter Ã  X = -2.8m et +2.8m)
+        // 1. Ligne ArriÃƒÂ¨re (Backline - Z = 3.0m) : Magicienne & Elfe (2 HÃƒÂ©ros Violet - Ãƒâ€°carter ÃƒÂ  X = -2.8m et +2.8m)
         placeRowCustom(2, 3.0f, 1.0f, mageRegion, 1.4f, 2.2f, 4.6f);
 
-        // 2. Ligne MÃ©diane (Midline - Z = 1.5m) : Le Ranger & La Voleuse (2 HÃ©ros Vert - IntercalÃ©s Ã  X = -1.6m et +1.6m)
+        // 2. Ligne MÃƒÂ©diane (Midline - Z = 1.5m) : Le Ranger & La Voleuse (2 HÃƒÂ©ros Vert - IntercalÃƒÂ©s ÃƒÂ  X = -1.6m et +1.6m)
         placeRowCustom(2, 1.5f, 1.0f, rangerRegion, 1.5f, 2.3f, 2.8f);
 
-        // 3. Ligne de Front (Frontline - Z = 0.0m) : Barbare, Nain, Ogre (3 HÃ©ros DorÃ© - Ã‰largis Ã  X = -3.2m, 0.0m, +3.2m)
+        // 3. Ligne de Front (Frontline - Z = 0.0m) : Barbare, Nain, Ogre (3 HÃƒÂ©ros DorÃƒÂ© - Ãƒâ€°largis ÃƒÂ  X = -3.2m, 0.0m, +3.2m)
         placeRowCustom(3, 0.0f, 1.0f, heroRegion, 1.6f, 2.4f, 3.2f);
 
-        // 4. Groupe d'Ennemis (Au fond de l'arÃ¨ne - Z = -10.0m) : 4 Monstres
+        // 4. Groupe d'Ennemis (Au fond de l'arÃƒÂ¨ne - Z = -10.0m) : 4 Monstres
         placeRowCustom(4, -10.0f, 1.2f, monsterRegion, 1.8f, 2.6f, 3.0f);
     }
 
     /**
-     * Disposition tactique personnalisÃ©e selon les membres vivants de l'Ã©quipe du joueur.
+     * Disposition tactique personnalisÃƒÂ©e selon les membres vivants de l'ÃƒÂ©quipe du joueur.
      *
-     * @param team Ã©quipe de hÃ©ros du joueur
+     * @param team ÃƒÂ©quipe de hÃƒÂ©ros du joueur
      */
     public void setupTeamBattleArena(Team team) {
         if (team == null || team.getMembers() == null || team.getMembers().isEmpty()) {
@@ -110,7 +110,7 @@ public class BattleArenaRenderer implements Disposable {
         List<Character> frontline = new ArrayList<>();
 
         for (Character member : team.getMembers()) {
-            if (member.getHealthPoint() <= 0) continue; // Ignorer les hÃ©ros KO
+            if (member.getHealthPoint() <= 0) continue; // Ignorer les hÃƒÂ©ros KO
 
             TacticalRow row = member.getPreferredTacticalRow();
             if (row == TacticalRow.BACKLINE) {
@@ -127,7 +127,7 @@ public class BattleArenaRenderer implements Disposable {
             return;
         }
 
-        // Placer les 3 lignes avec centrage dynamique et dÃ©calage en quinconce
+        // Placer les 3 lignes avec centrage dynamique et dÃƒÂ©calage en quinconce
         placeCharacterRowCustom(backline, 3.0f, 1.0f, mageRegion, 1.4f, 2.2f, 5.6f);
         placeCharacterRowCustom(midline, 1.5f, 1.0f, rangerRegion, 1.5f, 2.3f, 3.2f);
         placeCharacterRowCustom(frontline, 0.0f, 1.0f, heroRegion, 1.6f, 2.4f, 3.2f);
@@ -176,7 +176,7 @@ public class BattleArenaRenderer implements Disposable {
     }
 
     public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera) {
-        // CamÃ©ra de combat panoramique Ã  -25Ã  cadrant toute la formation tactique
+        // CamÃƒÂ©ra de combat panoramique ÃƒÂ  -25ÃƒÂ  cadrant toute la formation tactique
         camera.position.set(0.0f, 7.5f, 12.5f);
         camera.lookAt(0.0f, 0.5f, -4.0f);
         camera.position.y = 7.5f + (float)Math.sin((System.currentTimeMillis() % 10000)/1000.0f * 0.5f) * 0.5f;
@@ -189,7 +189,8 @@ public class BattleArenaRenderer implements Disposable {
         }
 
         for (Decal sprite : battleBillboards) {
-            sprite.lookAt(new com.badlogic.gdx.math.Vector3(camera.position.x, sprite.getY(), camera.position.z), com.badlogic.gdx.math.Vector3.Y);
+            com.badlogic.gdx.math.Vector3 camDir = new com.badlogic.gdx.math.Vector3(-camera.direction.x, 0, -camera.direction.z).nor();
+            sprite.setRotation(camDir, com.badlogic.gdx.math.Vector3.Y);
             decalBatch.add(sprite);
         }
         decalBatch.flush();

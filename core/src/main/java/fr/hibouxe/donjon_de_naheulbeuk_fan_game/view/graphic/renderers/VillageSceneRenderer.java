@@ -48,11 +48,11 @@ public class VillageSceneRenderer implements Disposable {
             com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters params = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters();
             params.flipV = true;
 
-            // La taverne (bÃ¢timent interactif)
+            // La taverne (bÃƒÂ¢timent interactif)
             tavernModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Inn_Stone_01.obj"), params);
             tavernModel.materials.get(0).set(TextureAttribute.createDiffuse(townTexture));
             
-            // Le dÃ©cor complet (Blender)
+            // Le dÃƒÂ©cor complet (Blender)
             try {
                 decorModel = objLoader.loadModel(com.badlogic.gdx.Gdx.files.internal("models/village/Campement_Decor.obj"), params);
                 // Si les textures ne se chargent pas toutes seules via le .mtl, on force la grassTexture pour l'instant
@@ -62,7 +62,7 @@ public class VillageSceneRenderer implements Disposable {
                     }
                 }
             } catch (Exception e) {
-                com.badlogic.gdx.Gdx.app.log("VillageSceneRenderer", "Campement_Decor.obj non trouvÃ©. Le campement sera vide en attendant.");
+                com.badlogic.gdx.Gdx.app.log("VillageSceneRenderer", "Campement_Decor.obj non trouvÃƒÂ©. Le campement sera vide en attendant.");
             }
             
         } catch (Exception e) {
@@ -73,7 +73,7 @@ public class VillageSceneRenderer implements Disposable {
     public void buildScene(Village village) {
         instances.clear();
 
-        // Placer le dÃ©cor de Blender
+        // Placer le dÃƒÂ©cor de Blender
         if (decorModel != null) {
             instances.add(new ModelInstance(decorModel));
         }
