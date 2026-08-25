@@ -525,49 +525,81 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
-    private void renderSettingsWindow() {
+        private void renderSettingsWindow() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        int menuWidth = 450;
-        int menuHeight = 60 + settingsOptions.length * 40;
+        int menuWidth = 550;
+        int menuHeight = 80 + settingsOptions.length * 40;
         int menuX = (1280 - menuWidth) / 2;
         int menuY = (720 - menuHeight) / 2;
 
-        // Fond Noir (95% opacitÃƒÂ©)
         shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
         shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
         
-        // Bordure blanche ÃƒÂ©paisse (3px)
-        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
         shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 3);
         shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX + menuWidth, menuY, menuX + menuWidth, menuY + menuHeight, 3);
 
-        // Curseur de sÃƒÂ©lection
         int cursorY = menuY + menuHeight - 75 - selectedSettingsOption * 40;
-        shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.4f, 0.6f));
+        shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.4f, 0.8f));
         shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 35);
+
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager config = this.settingsManager;
+        for (int i = 0; i < settingsOptions.length; i++) {
+            if (i >= 2 && i <= 4) {
+                int barX = menuX + 250;
+                int barY = menuY + menuHeight - 50 - (i * 40) - 15;
+                int barW = 200;
+                int barH = 10;
+                
+                shapeRenderer.setColor(Color.DARK_GRAY);
+                shapeRenderer.rect(barX, barY, barW, barH);
+                
+                float val = 0;
+                if (i == 2) val = config.getMasterVolume();
+                if (i == 3) val = config.getBgmVolume();
+                if (i == 4) val = config.getSfxVolume();
+                
+                shapeRenderer.setColor(new Color(0.2f, 0.8f, 0.2f, 1f));
+                shapeRenderer.rect(barX, barY, barW * val, barH);
+                
+                shapeRenderer.setColor(Color.WHITE);
+                shapeRenderer.rect(barX + (barW * val) - 2, barY - 2, 4, barH + 4);
+            }
+        }
 
         shapeRenderer.end();
         uiBatch.begin();
 
-        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager config = this.settingsManager;
-
-        // Titre
-        font.draw(uiBatch, "PARAMETRES", menuX + menuWidth / 2f - 70, menuY + menuHeight - 15);
+        font.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+        font.draw(uiBatch, "PARAMETRES", menuX + menuWidth / 2f - 70, menuY + menuHeight - 20);
+        font.setColor(Color.WHITE);
 
         for (int i = 0; i < settingsOptions.length; i++) {
             String text = settingsOptions[i];
+            String valueText = "";
             
-            // Ajouter la valeur dynamique
-            if (i == 0) text += (config.isFullscreen() ? "Oui" : "Non");
-            else if (i == 1) text += (config.isVsync() ? "Oui" : "Non");
-            else if (i == 2) text += (config.getMovementSpeed() > 1f ? "Rapide" : "Normal");
-            else if (i == 3) text += (config.getTextSpeed() == 3 ? "Instant" : (config.getTextSpeed() == 2 ? "Rapide" : "Normal"));
+            if (i == 0) valueText = config.isFullscreen() ? "Oui" : "Non";
+            else if (i == 1) valueText = config.isVsync() ? "Oui" : "Non";
+            else if (i == 2) valueText = Math.round(config.getMasterVolume() * 100) + "%";
+            else if (i == 3) valueText = Math.round(config.getBgmVolume() * 100) + "%";
+            else if (i == 4) valueText = Math.round(config.getSfxVolume() * 100) + "%";
+            else if (i == 5) valueText = config.getMovementSpeed() > 1f ? "Rapide" : "Normal";
+            else if (i == 6) valueText = config.getTextSpeed() == 3 ? "Instant" : (config.getTextSpeed() == 2 ? "Rapide" : "Normal");
             
             font.draw(uiBatch, text, menuX + 30, menuY + menuHeight - 50 - (i * 40));
+            
+            if (valueText.length() > 0 && (i < 2 || i > 4)) {
+                font.draw(uiBatch, "< " + valueText + " >", menuX + 250, menuY + menuHeight - 50 - (i * 40));
+            } else if (i >= 2 && i <= 4) {
+                font.draw(uiBatch, valueText, menuX + 250 + 210, menuY + menuHeight - 50 - (i * 40));
+            }
         }
+
+        font.setColor(Color.LIGHT_GRAY);
+        font.draw(uiBatch, "[Q/D]: Modifier   [ENTRÉE]: Valider", menuX + 60, menuY + 25);
 
         uiBatch.end();
     }
