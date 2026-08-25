@@ -50,6 +50,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         TRANSITION
     }
 
+    private IGameView.MenuRequest currentMenuRequest;
+    private boolean showDebugStats = false;
     private GameState currentState = GameState.EXPLORATION;
     private GameState pendingState = null;
     private long transitionStartTime = 0;
@@ -234,6 +236,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     @Override
     public void render() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F3) || Gdx.input.isKeyJustPressed(Input.Keys.GRAVE)) {
+            showDebugStats = !showDebugStats;
+        }
+
         if (inputManager != null) {
             inputManager.update();
         }
@@ -335,9 +341,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             hudRenderer.renderTransitionScreen(transitionFloor, transitionStartTime);
         }
         hudRenderer.renderHUD(maze, (team != null ? team.getX() : 0), (team != null ? team.getY() : 0), currentFloor, currentState, this.team, currentMessages, currentMenuTitle, currentMenuOptions, this);
-        if (hudRenderer.uiBatch != null && hudRenderer.font != null) {
+        if (showDebugStats && hudRenderer.uiBatch != null && hudRenderer.font != null) {
             hudRenderer.uiBatch.begin();
             hudRenderer.font.setColor(com.badlogic.gdx.graphics.Color.YELLOW);
+            hudRenderer.font.draw(hudRenderer.uiBatch, "DEBUG MODE (F3) - FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 710);
             hudRenderer.font.draw(hudRenderer.uiBatch, "DEBUG CAM: " + camera.position.toString(), 20, 680);
             hudRenderer.font.draw(hudRenderer.uiBatch, "DEBUG INSTANCES: " + (dungeonRenderer != null ? dungeonRenderer.getInstancesCount() : 0), 20, 650);
             hudRenderer.font.draw(hudRenderer.uiBatch, "DEBUG PLAYER: X=" + (team != null ? team.getX() : 0) + " Z=" + (team != null ? team.getY() : 0), 20, 620);
