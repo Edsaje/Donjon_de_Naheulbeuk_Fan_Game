@@ -154,6 +154,9 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         } else if (this.currentState == GameState.TRANSITION) {
             this.pendingState = state;
         } else {
+            if (this.currentState == GameState.BATTLE && state == GameState.EXPLORATION) {
+                cameraNeedsSnap = true;
+            }
             this.currentState = state;
         }
     }
@@ -270,15 +273,16 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             }
         }
 
+        if (cameraNeedsSnap && dungeonRenderer != null && team != null) {
+            float startWorldX = team.getX() * tileSize + (tileSize / 2f);
+            float startWorldZ = team.getY() * tileSize + (tileSize / 2f);
+            camera.position.set(startWorldX, 7f, startWorldZ + 6.0f);
+            camera.lookAt(startWorldX, 0.5f, startWorldZ);
+            camera.update();
+            cameraNeedsSnap = false;
+        }
+
         if (sceneNeedsBuild && dungeonRenderer != null && maze != null && team != null) {
-            if (cameraNeedsSnap) {
-                float startWorldX = team.getX() * tileSize + (tileSize / 2f);
-                float startWorldZ = team.getY() * tileSize + (tileSize / 2f);
-                camera.position.set(startWorldX, 7f, startWorldZ + 6.0f);
-                camera.lookAt(startWorldX, 0.5f, startWorldZ);
-                camera.update();
-                cameraNeedsSnap = false;
-            }
             dungeonRenderer.buildScene(maze, team, team.getX(), team.getY(), currentFloor);
             sceneNeedsBuild = false;
         }
@@ -289,6 +293,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             if (System.currentTimeMillis() - transitionStartTime > 1500) {
                 currentState = pendingState != null ? pendingState : GameState.EXPLORATION;
                 pendingState = null;
+                cameraNeedsSnap = true;
             }
         }
 
