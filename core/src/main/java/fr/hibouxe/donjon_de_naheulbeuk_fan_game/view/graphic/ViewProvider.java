@@ -55,7 +55,7 @@ public class ViewProvider {
             @Override
             public void displayBattleStatus(List<Character> monsters, Team team) {
                 app.setupBattle(team, monsters);
-                app.displayTransitionScreen(0); app.setState(HD2DGameApp.GameState.BATTLE);
+                app.displayTransitionScreen(app.getCurrentFloor()); app.setState(HD2DGameApp.GameState.BATTLE);
             }
             @Override
             public int askBattleAction(Character attacker) { return 1; }

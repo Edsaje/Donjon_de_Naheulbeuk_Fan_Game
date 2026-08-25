@@ -58,6 +58,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     public long getTransitionStartTime() { return transitionStartTime; }
 
+    public int getCurrentFloor() { return currentFloor; }
+
     public void setTransitionFloor(int floor) {
         this.transitionFloor = floor;
     }
