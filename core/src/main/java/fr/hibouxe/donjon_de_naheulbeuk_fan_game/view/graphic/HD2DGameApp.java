@@ -230,6 +230,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     public void setContext(Dungeon maze, Team team, int currentFloor) {
         if (this.maze != maze) {
             this.cameraNeedsSnap = true;
+            if (team != null) {
+                transitionPlayerX = team.getX() + 0.5f;
+                transitionPlayerZ = team.getY() + 0.5f;
+            }
         }
         this.sceneNeedsBuild = true; // Toujours reconstruire la scene
         this.maze = maze;
@@ -273,21 +277,14 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             }
         }
 
-        if (cameraNeedsSnap && dungeonRenderer != null && team != null) {
-            float startWorldX = team.getX() * tileSize + (tileSize / 2f);
-            float startWorldZ = team.getY() * tileSize + (tileSize / 2f);
-            camera.position.set(startWorldX, 7f, startWorldZ + 6.0f);
-            camera.lookAt(startWorldX, 0.5f, startWorldZ);
-            camera.update();
-            cameraNeedsSnap = false;
-        }
+
+
+        // handleInput(); // We removed the local handleInput since InputManager handles it now
 
         if (sceneNeedsBuild && dungeonRenderer != null && maze != null && team != null) {
             dungeonRenderer.buildScene(maze, team, team.getX(), team.getY(), currentFloor);
             sceneNeedsBuild = false;
         }
-
-        // handleInput(); // We removed the local handleInput since InputManager handles it now
 
         if (currentState == GameState.TRANSITION) {
             if (System.currentTimeMillis() - transitionStartTime > 1500) {
@@ -317,6 +314,15 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
             
             
+            if (cameraNeedsSnap && dungeonRenderer != null && team != null) {
+                float startWorldX = team.getX() * tileSize + (tileSize / 2f);
+                float startWorldZ = team.getY() * tileSize + (tileSize / 2f);
+                camera.position.set(startWorldX, 7f, startWorldZ + 6.0f);
+                camera.lookAt(startWorldX, 0.5f, startWorldZ);
+                camera.update();
+                cameraNeedsSnap = false;
+            }
+
             float targetWorldX = playerX * tileSize;
             float targetWorldZ = playerZ * tileSize;
 
