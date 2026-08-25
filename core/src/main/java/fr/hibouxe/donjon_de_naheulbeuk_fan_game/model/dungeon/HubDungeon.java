@@ -36,11 +36,8 @@ public class HubDungeon extends Dungeon {
             }
         }
 
-        java.util.List<Room> prefabs = new ArrayList<>();
-        Room campRoom = new Room(startX, startY, 10, 10);
-        campRoom.prefabModel = "models/village/Campement_Decor.obj";
-        prefabs.add(campRoom);
-        this.setPrefabRooms(prefabs);
+        // Aucun decor 3D instancie pour l'instant (evite le crash de l'ancien obj)
+        this.setPrefabRooms(new ArrayList<>());
 
         this.getGrid()[10][14].setEvent(t -> {
             EventResult res = new EventResult(true);
