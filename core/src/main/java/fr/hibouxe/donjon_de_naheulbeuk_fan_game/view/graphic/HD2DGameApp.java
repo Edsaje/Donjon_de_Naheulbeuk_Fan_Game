@@ -50,7 +50,6 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         TRANSITION
     }
 
-    private IGameView.MenuRequest currentMenuRequest;
     private boolean showDebugStats = false;
     private GameState currentState = GameState.EXPLORATION;
     private GameState pendingState = null;
