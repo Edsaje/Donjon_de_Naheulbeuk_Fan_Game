@@ -55,8 +55,16 @@ public class DungeonGenerator {
             }
         }
 
-        List<Room> rooms = new ArrayList<>();
+                List<Room> rooms = new ArrayList<>();
         int targetRooms = random.nextInt(5) + 8; // 8 à 12 salles
+
+        int spawnSize = 3;
+        int spawnRx = random.nextInt(width - spawnSize - 2) + 1;
+        int spawnRy = random.nextInt(height - spawnSize - 2) + 1;
+        Room spawnRoom = new Room(spawnRx, spawnRy, spawnSize, spawnSize);
+        spawnRoom.prefabModel = "models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj";
+        carveRoom(grid, spawnRoom, rooms.size() + 1);
+        rooms.add(spawnRoom);
 
         for (int i = 0; i < targetRooms * 3; i++) {
             if (rooms.size() >= targetRooms) break;
