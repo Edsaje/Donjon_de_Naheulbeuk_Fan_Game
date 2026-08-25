@@ -222,6 +222,11 @@ public class ExplorationController implements GameState {
                     this.maze = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.TutorialDungeon();
                     this.maze.prepareFloor(currentFloor, team, gameContext.getMonsterRepository());
                     this.engine.setDungeon(this.maze);
+                    
+                    team.setPlayerX(team.getX() + 0.5f);
+                    team.setPlayerZ(team.getY() + 0.5f);
+                    this.engine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.ExplorationEngine(this.maze, this.team);
+                    
                     this.floorIntroPlayed = true;
                     playFloorIntro(currentFloor);
                 } else {
@@ -235,6 +240,11 @@ public class ExplorationController implements GameState {
                 this.maze = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.NaheulbeukDungeon();
                 this.maze.prepareFloor(currentFloor, team, gameContext.getMonsterRepository());
                 this.engine.setDungeon(this.maze);
+                
+                team.setPlayerX(team.getX() + 0.5f);
+                team.setPlayerZ(team.getY() + 0.5f);
+                this.engine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.ExplorationEngine(this.maze, this.team);
+                
                 this.floorIntroPlayed = true;
                 playFloorIntro(currentFloor);
             }
