@@ -1,4 +1,4 @@
-package fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic;
+﻿package fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -35,7 +35,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 
 /**
  * Moteur principal LibGDX (ApplicationAdapter).
- * S'occupe du rendu 3D, de la boucle de jeu et de la gestion de la fenetre.
+ * S'occupe du rendu 3D, de la boucle de jeu et de la gestion de la fen├¬tre.
  *
  * @author Hibouxe
  * @version 2.0
@@ -50,13 +50,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         TRANSITION
     }
 
-    private boolean showDebugStats = false;
     private GameState currentState = GameState.EXPLORATION;
     private GameState pendingState = null;
     private long transitionStartTime = 0;
     private int transitionFloor = 1;
-
-    public long getTransitionStartTime() { return transitionStartTime; }
 
     public void setTransitionFloor(int floor) {
         this.transitionFloor = floor;
@@ -79,7 +76,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     private Game game;
     private Dungeon maze;
     private Team team;
-    private float tileSize = 5.0f; // TODO: fetch from theme
+    private float tileSize = 1.0f;
     private KeyboardLayout activeKeyboardLayout = KeyboardLayout.detectSystemLayout();
 
     private GameSettingsManager settingsManager;
@@ -118,7 +115,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                     if ("ZSQD".contains(action) || "UP".equals(action) || "DOWN".equals(action)) {
                         return true; // Bloquer les mouvements d'exploration
                     }
-                    return false; // Laisse le Controller gerer
+                    return false; // Laisse le Controller g├®rer ENTER ou X
                 }
                 return true;
             }
@@ -193,8 +190,6 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     public void setupBattle(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) {
         if (battleRenderer != null) {
             battleRenderer.setupTeamBattleArena(team);
-            battleRenderer.setDungeonTheme("naheulbeuk");
-            if (maze != null) battleRenderer.setDungeonTheme("naheulbeuk");
         }
     }
 
@@ -215,7 +210,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         if (this.maze != maze) {
             this.cameraNeedsSnap = true;
         }
-        this.sceneNeedsBuild = true; // Toujours reconstruire la scene
+        this.sceneNeedsBuild = true; // Toujours reconstruire la sc├¿ne pour mettre ├á jour les entit├®s (morts, coffres)
         this.maze = maze;
         this.team = team;
         this.currentFloor = currentFloor;
@@ -235,10 +230,6 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     @Override
     public void render() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.F3) || Gdx.input.isKeyJustPressed(Input.Keys.GRAVE)) {
-            showDebugStats = !showDebugStats;
-        }
-
         if (inputManager != null) {
             inputManager.update();
         }
@@ -252,17 +243,17 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character leader = team.getActiveLeader();
                 if (leader != null) {
                     dungeonRenderer.setLeaderClass(leader.getClass().getSimpleName());
-                    sceneNeedsBuild = true; // Reconstruire la scene
+                    sceneNeedsBuild = true; // Reconstruire la sc├¿ne pour appliquer le sprite
                 }
             }
         }
 
         if (sceneNeedsBuild && dungeonRenderer != null && maze != null && team != null) {
             if (cameraNeedsSnap) {
-                float startWorldX = team.getX() * tileSize + (tileSize / 2f);
-                float startWorldZ = team.getY() * tileSize + (tileSize / 2f);
-                camera.position.set(startWorldX, 7f, startWorldZ + 6.0f);
-                camera.lookAt(startWorldX, 0.5f, startWorldZ);
+                float startWorldX = team.getX() * tileSize + 0.5f;
+                float startWorldZ = team.getY() * tileSize + 0.5f;
+                camera.position.set(startWorldX, 7f, startWorldZ + 6f);
+                camera.lookAt(startWorldX, 0f, startWorldZ);
                 camera.update();
                 cameraNeedsSnap = false;
             }
@@ -276,6 +267,14 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             if (System.currentTimeMillis() - transitionStartTime > 1500) {
                 currentState = pendingState != null ? pendingState : GameState.EXPLORATION;
                 pendingState = null;
+            } else {
+                Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                Gdx.gl.glClearColor(0, 0, 0, 1f);
+                Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+                if (hudRenderer != null) {
+                    hudRenderer.renderTransitionScreen(transitionFloor);
+                }
+                return;
             }
         }
 
@@ -283,7 +282,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.08f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if ((currentState == GameState.EXPLORATION || currentState == GameState.TRANSITION) && team != null) {
+        if (currentState == GameState.EXPLORATION && team != null) {
             float playerX = team.getX();
             float playerZ = team.getY();
             if (game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) {
@@ -292,21 +291,21 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                 playerZ = ec.getPlayerZ();
             }
 
-            
-            
-            float targetWorldX = playerX * tileSize;
-            float targetWorldZ = playerZ * tileSize;
+            float logicX = playerX * tileSize + 0.5f;
+            float logicZ = playerZ * tileSize + 0.5f;
+            float targetWorldX = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteX(logicX) : logicX;
+            float targetWorldZ = dungeonRenderer != null ? dungeonRenderer.getHeroSpriteZ(logicZ) : logicZ;
 
-            // Restauration fluide de la position et hauteur de camera
+            // Restauration fluide de la position et hauteur de cam├®ra d'exploration (Y = 7.0m)
             float camSpeed = 12.0f * Gdx.graphics.getDeltaTime();
             camera.position.x += (targetWorldX - camera.position.x) * 0.1f;
-            camera.position.y += (7f - camera.position.y) * 0.1f;
-            camera.position.z += ((targetWorldZ + 6.0f) - camera.position.z) * 0.1f;
-            camera.lookAt(camera.position.x, 0.0f, camera.position.z - 6.0f);
+            camera.position.y += (7.0f - camera.position.y) * 0.1f;
+            camera.position.z += ((targetWorldZ + 6f) - camera.position.z) * 0.1f;
+            camera.lookAt(camera.position.x, 0.0f, camera.position.z - 6f);
             camera.update();
 
             // Update lighting for Dungeon
-            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.05f, 0.05f, 0.08f, 1f));
+            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.05f, 0.05f, 0.1f, 1f));
             heroLight.intensity = 25f + (float)(Math.random() * 2f); // Flicker effect
             heroLight.setPosition(camera.position.x, camera.position.y, camera.position.z);
 
@@ -336,19 +335,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         }
 
         // Rendu 2D de l'Interface HUD & Minimap en superposition
-        if (currentState == GameState.TRANSITION && hudRenderer != null) {
-            hudRenderer.renderTransitionScreen(transitionFloor, transitionStartTime);
-        }
         hudRenderer.renderHUD(maze, (team != null ? team.getX() : 0), (team != null ? team.getY() : 0), currentFloor, currentState, this.team, currentMessages, currentMenuTitle, currentMenuOptions, this);
-        if (showDebugStats && hudRenderer.uiBatch != null && hudRenderer.font != null) {
-            hudRenderer.uiBatch.begin();
-            hudRenderer.font.setColor(com.badlogic.gdx.graphics.Color.YELLOW);
-            hudRenderer.font.draw(hudRenderer.uiBatch, "DEBUG MODE (F3) - FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 710);
-            hudRenderer.font.draw(hudRenderer.uiBatch, "DEBUG CAM: " + camera.position.toString(), 20, 680);
-            hudRenderer.font.draw(hudRenderer.uiBatch, "DEBUG INSTANCES: " + (dungeonRenderer != null ? dungeonRenderer.getInstancesCount() : 0), 20, 650);
-            hudRenderer.font.draw(hudRenderer.uiBatch, "DEBUG PLAYER: X=" + (team != null ? team.getX() : 0) + " Z=" + (team != null ? team.getY() : 0), 20, 620);
-            hudRenderer.uiBatch.end();
-        }
     }
 
     // handleInput removed as InputManager handles it
@@ -388,12 +375,12 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     @Override
     public void onAudioSettingsChanged() {
-        // Sera implemente
+        // Sera impl├®ment├® avec le SoundManager plus tard
     }
 
     @Override
     public void onGameplaySettingsChanged() {
-        // Le Gameplay est lu directement par le controleur
+        // Le Gameplay est lu directement par le contr├┤leur (ExplorationController)
     }
 
     // --- IGameView Implementation ---
@@ -459,7 +446,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         }
     }
     public void displayVictory() { displayMessage("Victoire !"); }
-    public void displayDefeat() { displayMessage("Defaite !"); }
-    public void displaySaveSuccess(int slot) { displayMessage("Sauvegarde effectuee sur le slot " + slot); }
+    public void displayDefeat() { displayMessage("D├®faite !"); }
+    public void displaySaveSuccess(int slot) { displayMessage("Sauvegard├® !"); }
     public void displaySaveError() { displayMessage("Erreur save"); }
 }
+

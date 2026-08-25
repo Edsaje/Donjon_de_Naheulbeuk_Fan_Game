@@ -185,8 +185,8 @@ public class DungeonSceneRenderer implements Disposable {
 
     public void buildScene(Dungeon dungeon, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, float playerX, float playerZ, int currentFloor) {
         
-        float oldHeroX = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getX() : (playerX * tileSize + (tileSize / 2f));
-        float oldHeroZ = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getZ() : (playerZ * tileSize + (tileSize / 2f));
+        float oldHeroX = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getX() : (playerX * tileSize);
+        float oldHeroZ = (heroSprite != null && lastFloor == currentFloor) ? heroSprite.getZ() : (playerZ * tileSize);
 
         for (ModelInstance instance : instances) {
             if (instance.model == floorModel) floorPool.free(instance);
@@ -374,8 +374,8 @@ public class DungeonSceneRenderer implements Disposable {
 
     public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera, float playerX, float playerZ, int playerDirection, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup> roamingMonsters) {
         this.currentDirection = playerDirection;
-        this.targetSpriteX = playerX * tileSize + (tileSize / 2f);
-        this.targetSpriteZ = playerZ * tileSize + (tileSize / 2f);
+        this.targetSpriteX = playerX * tileSize;
+        this.targetSpriteZ = playerZ * tileSize;
 
         float currentSpriteX = heroSprite.getX();
         float currentSpriteZ = heroSprite.getZ();
@@ -464,7 +464,7 @@ public class DungeonSceneRenderer implements Disposable {
                 }
             }
             
-            mgSprite.setPosition(mg.getX() * tileSize + (tileSize / 2f), 1.0f, mg.getZ() * tileSize + (tileSize / 2f));
+            mgSprite.setPosition(mg.getX() * tileSize, 1.0f, mg.getZ() * tileSize);
             com.badlogic.gdx.math.Vector3 mgCamDir = new com.badlogic.gdx.math.Vector3(-camera.direction.x, 0, -camera.direction.z).nor();
             mgSprite.setRotation(mgCamDir, com.badlogic.gdx.math.Vector3.Y);
             decalBatch.add(mgSprite);
@@ -493,4 +493,3 @@ public class DungeonSceneRenderer implements Disposable {
         // Les textures heroTexture, monsterTexture, chestTexture, stairsTexture sont gÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©rÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©es par l'AssetProvider
     }
 }
-
