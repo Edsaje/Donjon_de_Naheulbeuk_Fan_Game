@@ -403,12 +403,7 @@ public class DungeonSceneRenderer implements Disposable {
         heroSprite = decalPool.obtain();
         heroSprite.setTextureRegion(initialFrame);
         heroSprite.setDimensions(1.4f, 2.0f);
-                Decal heroShadow = decalPool.obtain();
-        heroShadow.setTextureRegion(shadowRegion);
-        heroShadow.setDimensions(1.8f, 1.8f);
-        heroShadow.setPosition(currentX, 0.05f, currentZ);
-        heroShadow.setRotationX(90); // Flat on floor
-        entityBillboards.add(heroShadow);
+        
         heroSprite.setPosition(currentX, 1.0f, currentZ);
         entityBillboards.add(heroSprite);
     }
@@ -505,12 +500,7 @@ public class DungeonSceneRenderer implements Disposable {
                 }
             }
             
-                        Decal mgShadow = decalPool.obtain();
-            mgShadow.setTextureRegion(shadowRegion);
-            mgShadow.setDimensions(1.8f, 1.8f);
-            mgShadow.setPosition(mg.getX() * tileSize, 0.05f, mg.getZ() * tileSize);
-            mgShadow.setRotationX(90); // Flat on floor
-            decalBatch.add(mgShadow);
+            
             mgSprite.setPosition(mg.getX() * tileSize, 1.0f, mg.getZ() * tileSize);
             com.badlogic.gdx.math.Vector3 mgCamDir = new com.badlogic.gdx.math.Vector3(-camera.direction.x, 0, -camera.direction.z).nor();
             mgSprite.setRotation(mgCamDir, com.badlogic.gdx.math.Vector3.Y);
