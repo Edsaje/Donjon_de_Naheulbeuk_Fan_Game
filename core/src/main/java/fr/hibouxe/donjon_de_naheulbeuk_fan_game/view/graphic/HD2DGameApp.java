@@ -96,8 +96,15 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     public HD2DGameApp(GameSettingsManager settingsManager) {
         this.settingsManager = settingsManager;
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().setSettingsManager(settingsManager);
     }
 
+    public boolean isAnyMenuOpen() {
+        if (hudRenderer != null) {
+            return hudRenderer.isMenuOpen() || hudRenderer.isSettingsMenuOpen();
+        }
+        return false;
+    }
     public void pushInput(String input) {
         if (game != null) game.onInput(input);
     }
@@ -136,10 +143,21 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     public void resetMenuSelection() { if (hudRenderer != null) hudRenderer.resetContextMenuSelection(); }
 
     
+    private float transitionPlayerX;
+    private float transitionPlayerZ;
+
     public void setState(GameState state) {
         if (state == GameState.TRANSITION) {
             this.currentState = state;
             this.transitionStartTime = System.currentTimeMillis();
+            if (game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController ec = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) game.getCurrentState();
+                transitionPlayerX = ec.getPlayerX();
+                transitionPlayerZ = ec.getPlayerZ();
+            } else if (team != null) {
+                transitionPlayerX = team.getX();
+                transitionPlayerZ = team.getY();
+            }
         } else if (this.currentState == GameState.TRANSITION) {
             this.pendingState = state;
         } else {
@@ -288,7 +306,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         if ((currentState == GameState.EXPLORATION || currentState == GameState.TRANSITION) && team != null) {
             float playerX = team.getX();
             float playerZ = team.getY();
-            if (game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) {
+            if (currentState == GameState.TRANSITION) {
+                playerX = transitionPlayerX;
+                playerZ = transitionPlayerZ;
+            } else if (game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) {
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController ec = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) game.getCurrentState();
                 playerX = ec.getPlayerX();
                 playerZ = ec.getPlayerZ();

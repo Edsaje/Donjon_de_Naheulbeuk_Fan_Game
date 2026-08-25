@@ -67,6 +67,7 @@ public class HUDRenderer implements Disposable {
         shapeRenderer.setProjectionMatrix(uiViewport.getCamera().combined);
     }
 
+    public boolean isSettingsMenuOpen() { return isSettingsMenuOpen; }
     public boolean isMenuOpen() {
         return isMenuOpen;
     }
