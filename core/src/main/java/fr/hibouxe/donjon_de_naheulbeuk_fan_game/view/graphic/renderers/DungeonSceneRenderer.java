@@ -225,7 +225,7 @@ public class DungeonSceneRenderer implements Disposable {
                     }
                     Model m = prefabModels.get(room.prefabModel);
                     ModelInstance mi = new ModelInstance(m);
-                    mi.transform.setToTranslation(room.getCenterX() * tileSize, 0, room.getCenterY() * tileSize);
+                    mi.transform.setToTranslation((room.x + room.width / 2.0f) * tileSize, 0, (room.y + room.height / 2.0f) * tileSize);
                     instances.add(mi);
                 }
             }
