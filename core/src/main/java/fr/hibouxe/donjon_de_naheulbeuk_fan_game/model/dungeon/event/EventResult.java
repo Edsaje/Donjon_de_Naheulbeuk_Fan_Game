@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class EventResult {
     private boolean blockMovement;
     private List<String> dialogsToDisplay;
+    private String actionTrigger;
 
     public EventResult(boolean blockMovement, List<String> dialogsToDisplay) {
         this.blockMovement = blockMovement;
@@ -26,6 +27,14 @@ public class EventResult {
 
     public List<String> getDialogsToDisplay() {
         return dialogsToDisplay;
+    }
+
+    public String getActionTrigger() {
+        return actionTrigger;
+    }
+
+    public void setActionTrigger(String actionTrigger) {
+        this.actionTrigger = actionTrigger;
     }
 
     public void setDialogsToDisplay(List<String> dialogsToDisplay) {

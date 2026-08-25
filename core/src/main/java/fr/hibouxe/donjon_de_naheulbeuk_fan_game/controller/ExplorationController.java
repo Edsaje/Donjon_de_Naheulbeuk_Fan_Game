@@ -26,7 +26,7 @@ public class ExplorationController implements GameState {
     private boolean isTutorial;
     private int activeSlot = 1;
     private boolean elfJoined = false;
-    private enum SubState { EXPLORING, PAUSE_MENU, STATUS_MENU }
+    private enum SubState { EXPLORING, PAUSE_MENU, STATUS_MENU, TAVERN_MENU }
     private SubState subState = SubState.EXPLORING;
 
     private ISaveManager saveManager;

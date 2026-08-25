@@ -109,10 +109,7 @@ public class Game implements InputListener, GameContext {
             SaveData data = saveManager.loadHubSave(slot);
             if (data != null) {
                 this.team = data.getTeam();
-                VillageController vc = new VillageController(team, data.getVillage(), app.getViewProvider().getMenuView(), currentSlot, saveManager, this);
-                app.setState(HD2DGameApp.GameState.VILLAGE);
-                app.setMenuRequest(null, null);
-                changeState(vc);
+                goToVillage();
             } else {
                 changeState(new MainMenuState());
             }
@@ -160,12 +157,12 @@ public class Game implements InputListener, GameContext {
 
     @Override
     public void goToVillage() {
-        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.Village village = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.Village();
-        // Optionnel : Sauvegarder la nouvelle progression
-        VillageController vc = new VillageController(team, village, app.getViewProvider().getMenuView(), currentSlot, saveManager, this);
-        app.setState(HD2DGameApp.GameState.VILLAGE);
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.HubDungeon hub = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.HubDungeon();
+        hub.prepareFloor(0, team, monsterRepository);
+        ExplorationController ec = new ExplorationController(hub, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+        app.displayTransitionScreen(0);
         app.setMenuRequest(null, null);
-        changeState(vc);
+        changeState(ec);
     }
 
     @Override

@@ -75,7 +75,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     private DungeonSceneRenderer dungeonRenderer;
     private BattleArenaRenderer battleRenderer;
     private HUDRenderer hudRenderer;
-    private VillageSceneRenderer villageRenderer;
+    
 
     private InputManager inputManager;
     private Game game;
@@ -194,7 +194,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         dungeonRenderer = new DungeonSceneRenderer(assetProvider, "data/themes/theme_naheulbeuk.json");
         battleRenderer = new BattleArenaRenderer(this.assetProvider);
         hudRenderer = new HUDRenderer(this.settingsManager);
-        villageRenderer = new VillageSceneRenderer(this.assetProvider);
+        
     }
 
     private boolean sceneNeedsBuild = false;
@@ -360,23 +360,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             heroLight.setPosition(camera.position.x, camera.position.y, camera.position.z);
 
             dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection(), maze != null ? maze.getRoamingMonsters() : new java.util.ArrayList<>());
-        } else if (currentState == GameState.VILLAGE && game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) {
-            // Update lighting for Village (brighter)
-            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f));
-            heroLight.intensity = 0f; // Turn off hero light
-
-            fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController vc = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) game.getCurrentState();
-            float vX = vc.getPlayerX();
-            float vZ = vc.getPlayerZ();
-            
-            camera.position.x += (vX - camera.position.x) * 0.1f;
-            camera.position.y += (14.0f - camera.position.y) * 0.1f;
-            camera.position.z += ((vZ + 12f) - camera.position.z) * 0.1f;
-            camera.lookAt(camera.position.x, 0.0f, camera.position.z - 12f);
-            camera.update();
-            
-            villageRenderer.render(modelBatch, decalBatch, environment, camera, vX, vZ);
-        } else {
+        } else if (currentState == GameState.BATTLE) {
             // Update lighting for Battle (brighter)
             environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f));
             heroLight.intensity = 0f;
