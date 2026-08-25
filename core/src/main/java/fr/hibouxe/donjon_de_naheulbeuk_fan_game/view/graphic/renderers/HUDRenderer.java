@@ -115,7 +115,7 @@ public class HUDRenderer implements Disposable {
      * @param playerY Position Y du joueur
      * @param currentFloor Ãƒâ€°tage actuel
      * */
-    public void renderHUD(Dungeon dungeon, int playerX, int playerY, int currentFloor, HD2DGameApp.GameState state, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, String menuTitle, String[] menuOptions, HD2DGameApp gameApp) {
+    public void renderHUD(Dungeon dungeon, float playerX, float playerY, int currentFloor, HD2DGameApp.GameState state, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, String menuTitle, String[] menuOptions, HD2DGameApp gameApp) {
 
 
 
@@ -365,7 +365,7 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
-    private void renderExplorationHUD(Dungeon dungeon, int playerX, int playerY, int currentFloor, HD2DGameApp.GameState state) {
+    private void renderExplorationHUD(Dungeon dungeon, float playerX, float playerY, int currentFloor, HD2DGameApp.GameState state) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         if (state == HD2DGameApp.GameState.EXPLORATION && dungeon != null) {
@@ -571,7 +571,7 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
-    private void renderDragonQuestWindow(Dungeon dungeon, int playerX, int playerY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team) {
+    private void renderDragonQuestWindow(Dungeon dungeon, float playerX, float playerY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         // 1. FenÃƒÂªtre du Menu Principal (Top-Left)
@@ -624,56 +624,77 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
-    private void renderMinimap(Dungeon dungeon, int playerX, int playerY) {
-        int miniCellSize = 6;
-        int originX = 1100;
-        int originY = 550;
+        private void renderMinimap(Dungeon dungeon, float playerX, float playerY) {
+        int miniCellSize = 8;
+        int mapWidth = 200;
+        int mapHeight = 200;
+        float centerX = 1280 - mapWidth / 2f - 30; // 30px padding from right
+        float centerY = 720 - mapHeight / 2f - 30; // 30px padding from top
 
-        Cell[][] grid = dungeon.getGrid();
+        shapeRenderer.flush();
 
-        // Fond sombre translucide de la minimap
-        shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.6f));
-        shapeRenderer.rect(originX - 10, originY - 10, dungeon.getWidth() * miniCellSize + 20, dungeon.getHeight() * miniCellSize + 20);
+        com.badlogic.gdx.math.Rectangle scissors = new com.badlogic.gdx.math.Rectangle();
+        com.badlogic.gdx.math.Rectangle clipBounds = new com.badlogic.gdx.math.Rectangle(centerX - mapWidth/2f, centerY - mapHeight/2f, mapWidth, mapHeight);
+        com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.calculateScissors(uiViewport.getCamera(), shapeRenderer.getTransformMatrix(), clipBounds, scissors);
+        com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.pushScissors(scissors);
 
-        for (int x = 0; x < dungeon.getWidth(); x++) {
-            for (int y = 0; y < dungeon.getHeight(); y++) {
-                Cell cell = grid[x][y];
-                int drawX = originX + x * miniCellSize;
-                int drawY = originY + (dungeon.getHeight() - 1 - y) * miniCellSize;
+        // Fond sombre
+        shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.7f));
+        shapeRenderer.rect(centerX - mapWidth/2f, centerY - mapHeight/2f, mapWidth, mapHeight);
 
-                if (cell.isDiscovered()) {
-                    if (cell.isWalkable()) {
-                        shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.35f, 0.8f));
-                        shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell[][] grid = dungeon.getGrid();
+        int range = (mapWidth / miniCellSize) / 2 + 2;
+        int startX = Math.max(0, (int)playerX - range);
+        int endX = Math.min(dungeon.getWidth() - 1, (int)playerX + range);
+        int startY_grid = Math.max(0, (int)playerY - range);
+        int endY_grid = Math.min(dungeon.getHeight() - 1, (int)playerY + range);
 
-                        if (cell.hasItem()) {
-                            shapeRenderer.setColor(Color.CYAN);
-                            shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
-                        } else if (cell.hasStairs()) {
-                            shapeRenderer.setColor(Color.WHITE);
-                            shapeRenderer.rect(drawX, drawY, miniCellSize - 1, miniCellSize - 1);
-                        }
+        for (int x = startX; x <= endX; x++) {
+            for (int y = startY_grid; y <= endY_grid; y++) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell cell = grid[x][y];
+                float drawX = centerX + (x - playerX) * miniCellSize;
+                float drawY = centerY - (y - playerY) * miniCellSize; // Z is inverted visually for map
+
+                if (cell.isDiscovered() && cell.isWalkable()) {
+                    shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.45f, 0.9f));
+                    shapeRenderer.rect(drawX - miniCellSize/2f, drawY - miniCellSize/2f, miniCellSize, miniCellSize);
+
+                    if (cell.hasItem()) {
+                        shapeRenderer.setColor(Color.CYAN);
+                        shapeRenderer.rect(drawX - miniCellSize/2f + 1, drawY - miniCellSize/2f + 1, miniCellSize - 2, miniCellSize - 2);
+                    } else if (cell.hasStairs()) {
+                        shapeRenderer.setColor(Color.WHITE);
+                        shapeRenderer.rect(drawX - miniCellSize/2f, drawY - miniCellSize/2f, miniCellSize, miniCellSize);
                     }
                 }
             }
         }
-        
-        // Marqueur Joueur en DorÃƒÂ©
-        int playerDrawX = originX + playerX * miniCellSize;
-        int playerDrawY = originY + (dungeon.getHeight() - 1 - playerY) * miniCellSize;
-        shapeRenderer.setColor(Color.GOLD);
-        shapeRenderer.rect(playerDrawX - 1, playerDrawY - 1, miniCellSize + 1, miniCellSize + 1);
 
         for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup mg : dungeon.getRoamingMonsters()) {
             if (dungeon.getGrid()[(int)mg.getX()][(int)mg.getZ()].isDiscovered()) {
-                int mDrawX = originX + (int)mg.getX() * miniCellSize;
-                int mDrawY = originY + (dungeon.getHeight() - 1 - (int)mg.getZ()) * miniCellSize;
+                float mDrawX = centerX + (mg.getX() - playerX) * miniCellSize;
+                float mDrawY = centerY - (mg.getZ() - playerY) * miniCellSize;
                 shapeRenderer.setColor(Color.RED);
-                shapeRenderer.rect(mDrawX, mDrawY, miniCellSize - 1, miniCellSize - 1);
+                shapeRenderer.rect(mDrawX - miniCellSize/2f + 1, mDrawY - miniCellSize/2f + 1, miniCellSize - 2, miniCellSize - 2);
             }
         }
-    }
 
+        shapeRenderer.setColor(Color.GOLD);
+        shapeRenderer.rect(centerX - miniCellSize/2f, centerY - miniCellSize/2f, miniCellSize, miniCellSize);
+
+        shapeRenderer.flush();
+        com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.popScissors();
+
+        shapeRenderer.end();
+        shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+        com.badlogic.gdx.Gdx.gl.glLineWidth(3f);
+        shapeRenderer.rect(centerX - mapWidth/2f, centerY - mapHeight/2f, mapWidth, mapHeight);
+        shapeRenderer.end();
+        com.badlogic.gdx.Gdx.gl.glLineWidth(1f);
+        shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled);
+    }
+    
     @Override
     public void dispose() {
         if (shapeRenderer != null) shapeRenderer.dispose();
