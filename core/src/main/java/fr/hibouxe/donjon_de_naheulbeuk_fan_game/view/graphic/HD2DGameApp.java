@@ -338,10 +338,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         }
 
         // Rendu 2D de l'Interface HUD & Minimap en superposition
+        hudRenderer.renderHUD(maze, (team != null ? team.getX() : 0), (team != null ? team.getY() : 0), currentFloor, currentState, this.team, currentMessages, currentMenuTitle, currentMenuOptions, this);
         if (currentState == GameState.TRANSITION && hudRenderer != null) {
             hudRenderer.renderTransitionScreen(transitionFloor, transitionStartTime);
         }
-        hudRenderer.renderHUD(maze, (team != null ? team.getX() : 0), (team != null ? team.getY() : 0), currentFloor, currentState, this.team, currentMessages, currentMenuTitle, currentMenuOptions, this);
         if (showDebugStats && hudRenderer.uiBatch != null && hudRenderer.font != null) {
             hudRenderer.uiBatch.begin();
             hudRenderer.font.setColor(com.badlogic.gdx.graphics.Color.YELLOW);

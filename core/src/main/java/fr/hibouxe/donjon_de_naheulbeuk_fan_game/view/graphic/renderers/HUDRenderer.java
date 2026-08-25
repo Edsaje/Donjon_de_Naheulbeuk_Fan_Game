@@ -134,7 +134,7 @@ public class HUDRenderer implements Disposable {
         }
 
         // Toujours dessiner le menu contextuel s'il existe et n'est pas un menu de pause (dialogue)
-        if (menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0])) {
+        if (menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0]) && state != HD2DGameApp.GameState.TRANSITION) {
             if ("STATISTIQUES".equals(menuTitle) && team != null) {
                 renderContextualMenu(menuTitle, menuOptions, state);
                 renderStatusScreen(team, contextMenuSelection);
