@@ -11,6 +11,7 @@ public class HubDungeon extends Dungeon {
 
     public HubDungeon() {
         super(20, 20);
+        this.setDrawWalls(false);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class HubDungeon extends Dungeon {
             res.setActionTrigger("ENTER_DUNGEON");
             return res;
         });
-        this.getGrid()[10][5].setStairs(true);
+        // this.getGrid()[10][5].setStairs(true); // Retiré pour ne pas afficher le sprite 3D
 
         team.setX(10);
         team.setY(9);

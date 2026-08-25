@@ -197,9 +197,18 @@ public class Game implements InputListener, GameContext {
                 else if (choice == 1) changeState(new LoadMenuState());
                 else if (choice == 2) changeState(new ManageSavesMenuState());
                 else if (choice == 3) {
-                    team = new Team();
-                    team.getMembers().add(new Ranger());
-                    goToVillage();
+                    try {
+                        team = new Team();
+                        team.getMembers().add(new Ranger());
+                        goToVillage();
+                    } catch (Exception e) {
+                        try {
+                            java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("crash.log"));
+                            e.printStackTrace(pw);
+                            pw.close();
+                        } catch (Exception ex) {}
+                        throw e;
+                    }
                 }
                 else if (choice == 4) com.badlogic.gdx.Gdx.app.exit();
             }
