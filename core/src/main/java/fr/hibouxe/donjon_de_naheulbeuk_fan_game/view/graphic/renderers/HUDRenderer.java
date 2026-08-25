@@ -135,7 +135,7 @@ public class HUDRenderer implements Disposable {
         }
 
         // Toujours dessiner le menu contextuel s'il existe et n'est pas un menu de pause (dialogue)
-        if (menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0]) && state != HD2DGameApp.GameState.TRANSITION) {
+        if (!isSettingsMenuOpen && menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0]) && state != HD2DGameApp.GameState.TRANSITION) {
             if ("STATISTIQUES".equals(menuTitle) && team != null) {
                 renderContextualMenu(menuTitle, menuOptions, state);
                 renderStatusScreen(team, contextMenuSelection);
@@ -146,8 +146,8 @@ public class HUDRenderer implements Disposable {
                     renderDragonQuestTeamStatus(team, contextX, 720 - (60 + menuOptions.length * 40) - 50);
                 }
             }
-        } else if (isMenuOpen && team != null) {
-            // Dessiner le statut de l'ÃƒÂ©quipe sous le menu principal s'il n'y a pas de menu contextuel
+        } else if (!isSettingsMenuOpen && isMenuOpen && team != null) {
+            // Dessiner le statut de l'équipe sous le menu principal s'il n'y a pas de menu contextuel
             int menuHeight = 60 + 7 * 40; // 7 options dans le menu principal
             renderDragonQuestTeamStatus(team, 50, 720 - menuHeight - 50);
         }
@@ -793,11 +793,41 @@ public class HUDRenderer implements Disposable {
         }
 
         if (isSettingsMenuOpen) {
-            if ("Z".equals(action) || "Q".equals(action) || "UP".equals(action)) {
+            if ("Z".equals(action) || "UP".equals(action)) {
                 selectedSettingsOption = (selectedSettingsOption - 1 + settingsOptions.length) % settingsOptions.length;
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
                 return true;
-            } else if ("S".equals(action) || "D".equals(action) || "DOWN".equals(action)) {
+            } else if ("S".equals(action) || "DOWN".equals(action)) {
                 selectedSettingsOption = (selectedSettingsOption + 1) % settingsOptions.length;
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                return true;
+            } else if ("Q".equals(action) || "LEFT".equals(action)) {
+                if (selectedSettingsOption == 2) {
+                    settingsManager.setMasterVolume(Math.max(0f, settingsManager.getMasterVolume() - 0.1f));
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().updateMusicVolume();
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                } else if (selectedSettingsOption == 3) {
+                    settingsManager.setBgmVolume(Math.max(0f, settingsManager.getBgmVolume() - 0.1f));
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().updateMusicVolume();
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                } else if (selectedSettingsOption == 4) {
+                    settingsManager.setSfxVolume(Math.max(0f, settingsManager.getSfxVolume() - 0.1f));
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                }
+                return true;
+            } else if ("D".equals(action) || "RIGHT".equals(action)) {
+                if (selectedSettingsOption == 2) {
+                    settingsManager.setMasterVolume(Math.min(1.0f, settingsManager.getMasterVolume() + 0.1f));
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().updateMusicVolume();
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                } else if (selectedSettingsOption == 3) {
+                    settingsManager.setBgmVolume(Math.min(1.0f, settingsManager.getBgmVolume() + 0.1f));
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().updateMusicVolume();
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                } else if (selectedSettingsOption == 4) {
+                    settingsManager.setSfxVolume(Math.min(1.0f, settingsManager.getSfxVolume() + 0.1f));
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                }
                 return true;
             } else if ("ENTER".equals(action) || "SPACE".equals(action)) {
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIAccept();
@@ -805,15 +835,16 @@ public class HUDRenderer implements Disposable {
                     settingsManager.setFullscreen(!settingsManager.isFullscreen());
                 } else if (selectedSettingsOption == 1) {
                     settingsManager.setVsync(!settingsManager.isVsync());
-                } else if (selectedSettingsOption == 2) {
+                } else if (selectedSettingsOption == 5) {
                     settingsManager.setMovementSpeed(settingsManager.getMovementSpeed() > 1.0f ? 1.0f : 1.5f);
-                } else if (selectedSettingsOption == 3) {
+                } else if (selectedSettingsOption == 6) {
                     int nextSpeed = settingsManager.getTextSpeed() + 1;
                     if (nextSpeed > 3) nextSpeed = 1;
                     settingsManager.setTextSpeed(nextSpeed);
-                } else if (selectedSettingsOption == 4) {
+                } else if (selectedSettingsOption == 7) {
                     isSettingsMenuOpen = false;
                     settingsManager.saveSettings();
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
                     isMenuOpen = true;
                 }
                 return true;
