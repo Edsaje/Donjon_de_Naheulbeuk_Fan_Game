@@ -269,6 +269,19 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     @Override
     public void render() {
+        try {
+            doRender();
+        } catch (Exception e) {
+            try {
+                java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("crash_render.log"));
+                e.printStackTrace(pw);
+                pw.close();
+            } catch (Exception ex) {}
+            throw e; // still throw so the game exits, but log is saved
+        }
+    }
+    
+    private void doRender() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.F3) || Gdx.input.isKeyJustPressed(Input.Keys.GRAVE)) {
             showDebugStats = !showDebugStats;
         }
