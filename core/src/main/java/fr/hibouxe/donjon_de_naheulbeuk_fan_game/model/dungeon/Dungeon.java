@@ -189,7 +189,7 @@ public abstract class Dungeon implements Serializable {
      *
      * @return Tableau [X, Y] de la case navigable
      */
-    public int[] getFirstWalkablePosition() {
+        public int[] getFirstWalkablePosition() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (grid[x][y].isWalkable()) {
@@ -198,6 +198,26 @@ public abstract class Dungeon implements Serializable {
             }
         }
         return new int[]{1, 1};
+    }
+
+    /**
+     * Recherche et renvoie le point de spawn ideal (au centre de la premiere salle).
+     * Evite de spawner dans un coin de prefab (ce qui cause parfois des "voids").
+     */
+    public int[] getSpawnPosition() {
+        if (prefabRooms != null && !prefabRooms.isEmpty()) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.DungeonGenerator.Room firstRoom = prefabRooms.get(0);
+            return new int[]{firstRoom.getCenterX(), firstRoom.getCenterY()};
+        }
+        return getFirstWalkablePosition();
+    }
+
+    public int[] getBossSpawnPosition() {
+        if (prefabRooms != null && !prefabRooms.isEmpty()) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.DungeonGenerator.Room lastRoom = prefabRooms.get(prefabRooms.size() - 1);
+            return new int[]{lastRoom.getCenterX(), lastRoom.getCenterY()};
+        }
+        return getFirstWalkablePosition();
     }
 
     /**

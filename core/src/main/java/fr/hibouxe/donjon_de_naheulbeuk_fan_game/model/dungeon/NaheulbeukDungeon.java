@@ -60,13 +60,13 @@ public class NaheulbeukDungeon extends Dungeon {
         this.generateHybridDungeon();
 
         // 3. Placer l'équipe
-        int[] startPos = getFirstWalkablePosition();
+        int[] startPos = getSpawnPosition();
         team.setX(startPos[0]);
         team.setY(startPos[1]);
 
         // 4. Peuplement depuis le blueprint
         if ("Golem".equals(bp.getBossType())) {
-            int[] bossPos = getFirstWalkablePosition(); 
+            int[] bossPos = getBossSpawnPosition(); 
             List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> bossList = new ArrayList<>();
             bossList.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem());
             this.getRoamingMonsters().add(new RoamingMonsterGroup(bossPos[0], bossPos[1], bossList, true));
