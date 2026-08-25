@@ -201,7 +201,7 @@ public class Game implements InputListener, GameContext {
                         team = new Team();
                         team.getMembers().add(new Ranger());
                         goToVillage();
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         try {
                             java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("crash.log"));
                             e.printStackTrace(pw);

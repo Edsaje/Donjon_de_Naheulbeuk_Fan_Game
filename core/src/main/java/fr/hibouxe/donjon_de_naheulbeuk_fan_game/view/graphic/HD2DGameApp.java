@@ -271,7 +271,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     public void render() {
         try {
             doRender();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             try {
                 java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("crash_render.log"));
                 e.printStackTrace(pw);
