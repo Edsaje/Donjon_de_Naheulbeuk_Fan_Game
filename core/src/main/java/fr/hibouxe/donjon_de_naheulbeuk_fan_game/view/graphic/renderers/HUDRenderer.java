@@ -94,7 +94,8 @@ public class HUDRenderer implements Disposable {
         }
         shapeRenderer.end();
 
-        uiBatch.begin();
+        if (floor > 0) {
+            uiBatch.begin();
         font.getData().setScale(2.5f);
         font.setColor(Color.WHITE);
         String text = "Ãƒâ€°TAGE " + floor;
@@ -102,7 +103,8 @@ public class HUDRenderer implements Disposable {
         float y = (720 / 2f);
         font.draw(uiBatch, text, x, y);
         font.getData().setScale(1.2f);
-        uiBatch.end();
+            uiBatch.end();
+        }
     }
 
     /**
