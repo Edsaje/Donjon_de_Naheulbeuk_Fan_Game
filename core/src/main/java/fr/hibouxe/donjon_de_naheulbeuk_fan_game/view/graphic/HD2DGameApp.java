@@ -308,11 +308,6 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
         // handleInput(); // We removed the local handleInput since InputManager handles it now
 
-        if (sceneNeedsBuild && dungeonRenderer != null && maze != null && team != null) {
-            dungeonRenderer.buildScene(maze, team, team.getX(), team.getY(), currentFloor);
-            sceneNeedsBuild = false;
-        }
-
         if (currentState == GameState.TRANSITION) {
             if (pendingMaze != null && System.currentTimeMillis() - transitionStartTime >= 1000) {
                 applyContext(pendingMaze, pendingTeam, pendingFloor);
@@ -325,6 +320,11 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                 pendingState = null;
                 cameraNeedsSnap = true;
             }
+        }
+
+        if (sceneNeedsBuild && dungeonRenderer != null && maze != null && team != null) {
+            dungeonRenderer.buildScene(maze, team, team.getX(), team.getY(), currentFloor);
+            sceneNeedsBuild = false;
         }
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
