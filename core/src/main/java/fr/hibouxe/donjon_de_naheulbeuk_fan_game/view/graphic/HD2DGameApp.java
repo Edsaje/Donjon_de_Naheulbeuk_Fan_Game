@@ -227,7 +227,21 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     private int currentFloor = 1;
 
+    private Dungeon pendingMaze;
+    private Team pendingTeam;
+    private int pendingFloor = -1;
+
     public void setContext(Dungeon maze, Team team, int currentFloor) {
+        if (this.currentState == GameState.TRANSITION && System.currentTimeMillis() - transitionStartTime < 1000) {
+            this.pendingMaze = maze;
+            this.pendingTeam = team;
+            this.pendingFloor = currentFloor;
+        } else {
+            applyContext(maze, team, currentFloor);
+        }
+    }
+
+    private void applyContext(Dungeon maze, Team team, int currentFloor) {
         if (this.maze != maze) {
             this.cameraNeedsSnap = true;
             if (team != null) {
@@ -287,6 +301,12 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         }
 
         if (currentState == GameState.TRANSITION) {
+            if (pendingMaze != null && System.currentTimeMillis() - transitionStartTime >= 1000) {
+                applyContext(pendingMaze, pendingTeam, pendingFloor);
+                pendingMaze = null;
+                pendingTeam = null;
+            }
+
             if (System.currentTimeMillis() - transitionStartTime > 1500) {
                 currentState = pendingState != null ? pendingState : GameState.EXPLORATION;
                 pendingState = null;
