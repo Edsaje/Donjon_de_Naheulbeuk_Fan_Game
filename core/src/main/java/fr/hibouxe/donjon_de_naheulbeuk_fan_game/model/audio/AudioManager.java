@@ -55,10 +55,10 @@ public class AudioManager {
         sounds.get(path).play(getSfxVolume());
     }
     
-    public void playUIHover() { playSound("audio/ui/cursor.wav"); }
-    public void playUIAccept() { playSound("audio/ui/accept.wav"); }
-    public void playUIOpen() { playSound("audio/ui/open.wav"); }
-    public void playUIClose() { playSound("audio/ui/close.wav"); }
+    public void playUIHover() { playSound("audio/ui/cursor.ogg"); }
+    public void playUIAccept() { playSound("audio/ui/accept.ogg"); }
+    public void playUIOpen() { playSound("audio/ui/open.ogg"); }
+    public void playUIClose() { playSound("audio/ui/close.ogg"); }
 
     public void playMusic(String path, boolean loop) {
         if (currentMusicPath != null && currentMusicPath.equals(path)) {
