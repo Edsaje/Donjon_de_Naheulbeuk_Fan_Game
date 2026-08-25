@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager;
 import com.badlogic.gdx.utils.Disposable;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell;
@@ -711,10 +712,10 @@ public class HUDRenderer implements Disposable {
         if (gameApp != null && gameApp.currentMenuTitle != null && gameApp.currentMenuOptions != null) {
             String[] options = gameApp.currentMenuOptions;
             if ("Z".equals(action) || "Q".equals(action) || "UP".equals(action)) {
-                contextMenuSelection = (contextMenuSelection - 1 + options.length) % options.length;
+                contextMenuSelection = (contextMenuSelection - 1 + options.length) % options.length; AudioManager.getInstance().playUIHover();
                 return true;
             } else if ("S".equals(action) || "D".equals(action) || "DOWN".equals(action)) {
-                contextMenuSelection = (contextMenuSelection + 1) % options.length;
+                contextMenuSelection = (contextMenuSelection + 1) % options.length; AudioManager.getInstance().playUIHover();
                 return true;
             }
             if ("INVENTAIRE".equals(gameApp.currentMenuTitle) || "CIBLE_OBJET".equals(gameApp.currentMenuTitle) || "CATEGORIES".equals(gameApp.currentMenuTitle) || "OBJETS".equals(gameApp.currentMenuTitle) || "PAUSE".equals(gameApp.currentMenuTitle) || "CHOISIR UN OBJET".equals(gameApp.currentMenuTitle) || "CIBLE".equals(gameApp.currentMenuTitle) || "EMPLACEMENT".equals(gameApp.currentMenuTitle)) {
@@ -725,13 +726,16 @@ public class HUDRenderer implements Disposable {
             }
             if ("STATISTIQUES".equals(gameApp.currentMenuTitle)) {
                 if ("X".equals(action) || ("ENTER".equals(action) && "Retour".equals(options[contextMenuSelection]))) {
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
                     gameApp.setMenuRequest(null, null);
                     isMenuOpen = true; 
                     return true;
                 }
             } else if ("X".equals(action) || ("ENTER".equals(action) && "Retour".equals(options[contextMenuSelection]))) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
                 return false;
             } else if ("ENTER".equals(action) || "SPACE".equals(action)) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIAccept();
                 return false;
             } else if (action.matches("[1-9]")) {
                 int index = Integer.parseInt(action);
@@ -747,8 +751,11 @@ public class HUDRenderer implements Disposable {
             if (isSettingsMenuOpen) {
                 isSettingsMenuOpen = false;
                 settingsManager.saveSettings();
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
             } else {
                 isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIOpen();
+                else fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
             }
             return true;
         }
@@ -761,6 +768,7 @@ public class HUDRenderer implements Disposable {
                 selectedSettingsOption = (selectedSettingsOption + 1) % settingsOptions.length;
                 return true;
             } else if ("ENTER".equals(action) || "SPACE".equals(action)) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIAccept();
                 if (selectedSettingsOption == 0) {
                     settingsManager.setFullscreen(!settingsManager.isFullscreen());
                 } else if (selectedSettingsOption == 1) {
@@ -783,12 +791,13 @@ public class HUDRenderer implements Disposable {
 
         if (isMenuOpen) {
             if ("Z".equals(action) || "Q".equals(action) || "UP".equals(action)) {
-                selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
+                selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length; AudioManager.getInstance().playUIHover();
                 return true;
             } else if ("S".equals(action) || "D".equals(action) || "DOWN".equals(action)) {
-                selectedOption = (selectedOption + 1) % menuOptions.length;
+                selectedOption = (selectedOption + 1) % menuOptions.length; AudioManager.getInstance().playUIHover();
                 return true;
             } else if ("ENTER".equals(action) || "SPACE".equals(action)) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIAccept();
                 if (selectedOption == 0) {
                     gameApp.pushInput("MENU_STATUS");
                 } else if (selectedOption == 1) {

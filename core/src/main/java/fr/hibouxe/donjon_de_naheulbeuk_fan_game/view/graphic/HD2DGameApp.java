@@ -369,6 +369,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         if (dungeonRenderer != null) dungeonRenderer.dispose();
         if (battleRenderer != null) battleRenderer.dispose();
         if (hudRenderer != null) hudRenderer.dispose();
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().dispose();
         if (assetProvider != null) assetProvider.dispose();
         
         Gdx.app.exit(); // Fermeture propre de LibGDX (au lieu de System.exit(0))
