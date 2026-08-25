@@ -45,7 +45,7 @@ public class HUDRenderer implements Disposable {
     private boolean isSettingsMenuOpen = false;
     private int selectedSettingsOption = 0;
     private String[] settingsOptions = {
-            "Plein Ecran : ", "V-Sync : ", "Vitesse Marche : ", "Vitesse Texte : ", "Retour"
+            "Plein Ecran : ", "V-Sync : ", "Volume General : ", "Volume Musique : ", "Volume SFX : ", "Vitesse Marche : ", "Vitesse Texte : ", "Retour"
     };
 
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager settingsManager;

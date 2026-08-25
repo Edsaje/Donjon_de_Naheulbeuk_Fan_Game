@@ -361,7 +361,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         // Rendu 2D de l'Interface HUD & Minimap en superposition
         float hudPX = team != null ? team.getX() : 0;
         float hudPZ = team != null ? team.getY() : 0;
-        if (game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) {
+        if (currentState == GameState.TRANSITION) {
+            hudPX = transitionPlayerX;
+            hudPZ = transitionPlayerZ;
+        } else if (game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) {
             fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController ec = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) game.getCurrentState();
             hudPX = ec.getPlayerX();
             hudPZ = ec.getPlayerZ();

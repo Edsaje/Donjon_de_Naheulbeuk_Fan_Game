@@ -281,8 +281,17 @@ public class ExplorationController implements GameState {
         if (!running || subState != SubState.EXPLORING) return;
         
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider input = gameContext.getInputProvider();
+        
+        boolean blockInput = false;
+        if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
+            blockInput = ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).isAnyMenuOpen();
+        }
+
         if (input != null) {
-            boolean gridChanged = engine.updatePhysics(deltaTime, input.isUpPressed(), input.isDownPressed(), input.isLeftPressed(), input.isRightPressed());
+            boolean gridChanged = false;
+            if (!blockInput) {
+                gridChanged = engine.updatePhysics(deltaTime, input.isUpPressed(), input.isDownPressed(), input.isLeftPressed(), input.isRightPressed());
+            }
             boolean animsChanged = engine.updateAnimations(deltaTime);
             
             if (gridChanged || animsChanged) {
