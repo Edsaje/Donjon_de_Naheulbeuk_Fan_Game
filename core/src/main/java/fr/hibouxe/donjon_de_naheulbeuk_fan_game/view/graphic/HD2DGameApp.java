@@ -300,9 +300,9 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             // Restauration fluide de la position et hauteur de camera
             float camSpeed = 12.0f * Gdx.graphics.getDeltaTime();
             camera.position.x += (targetWorldX - camera.position.x) * 0.1f;
-            camera.position.y += (7f - camera.position.y) * 0.1f;
-            camera.position.z += ((targetWorldZ + 6.0f) - camera.position.z) * 0.1f;
-            camera.lookAt(camera.position.x, 0.0f, camera.position.z - 6.0f);
+            camera.position.y += (10f - camera.position.y) * 0.1f;
+            camera.position.z += ((targetWorldZ + 9.0f) - camera.position.z) * 0.1f;
+            camera.lookAt(camera.position.x, 0.0f, camera.position.z - 9.0f);
             camera.update();
 
             // Update lighting for Dungeon

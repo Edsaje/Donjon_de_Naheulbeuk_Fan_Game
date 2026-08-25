@@ -22,6 +22,9 @@ public abstract class Dungeon implements Serializable {
     private transient DungeonGenerator generator = new DungeonGenerator();
     private transient MonsterAI monsterAI = new MonsterAI();
     private java.util.List<RoamingMonsterGroup> roamingMonsters = new java.util.ArrayList<>();
+    private java.util.List<DungeonGenerator.Room> prefabRooms = new java.util.ArrayList<>();
+    public java.util.List<DungeonGenerator.Room> getPrefabRooms() { return prefabRooms; }
+    public void setPrefabRooms(java.util.List<DungeonGenerator.Room> rooms) { this.prefabRooms = rooms; }
 
     public java.util.List<RoamingMonsterGroup> getRoamingMonsters() {
         return roamingMonsters;

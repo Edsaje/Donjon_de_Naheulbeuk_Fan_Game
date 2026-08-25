@@ -255,7 +255,7 @@ public class MonsterAIEngine {
         return dot > 0.5f; // ~120 degree FOV (cos 60 = 0.5)
     }
 
-    private boolean hasLineOfSight(Dungeon maze, float x1, float z1, float x2, float z2) {
+    public static boolean hasLineOfSight(Dungeon maze, float x1, float z1, float x2, float z2) {
         // Bresenham's Line Algorithm
         int x = (int)x1;
         int y = (int)z1;

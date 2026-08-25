@@ -20,6 +20,7 @@ public class DungeonGenerator {
 
     public static class Room {
         public int x, y, width, height;
+        public String prefabModel = null;
 
         public Room(int x, int y, int width, int height) {
             this.x = x;
@@ -60,8 +61,10 @@ public class DungeonGenerator {
         for (int i = 0; i < targetRooms * 3; i++) {
             if (rooms.size() >= targetRooms) break;
 
-            int rw = random.nextInt(6) + 5; // 5 à 10
-            int rh = random.nextInt(6) + 5; // 5 à 10
+            int[] sizes = {5, 7, 9};
+            int size = sizes[random.nextInt(sizes.length)];
+            int rw = size;
+            int rh = size;
             
             if (width - rw - 2 <= 0 || height - rh - 2 <= 0) continue;
             
@@ -69,6 +72,7 @@ public class DungeonGenerator {
             int ry = random.nextInt(height - rh - 2) + 1;
 
             Room newRoom = new Room(rx, ry, rw, rh);
+            newRoom.prefabModel = "models/dungeon/naheulbeuk/rooms/test_room_" + size + "x" + size + ".obj";
             boolean failed = false;
             for (Room otherRoom : rooms) {
                 if (newRoom.intersects(otherRoom)) {
@@ -110,6 +114,7 @@ public class DungeonGenerator {
                 }
             }
         }
+        dungeon.setPrefabRooms(rooms);
     }
 
     private void carveRoom(Cell[][] grid, Room room, int roomId) {
@@ -256,5 +261,3 @@ public class DungeonGenerator {
         };
     }
 }
-
-

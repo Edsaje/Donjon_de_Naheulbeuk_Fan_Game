@@ -43,6 +43,7 @@ public class DungeonSceneRenderer implements Disposable {
     private com.badlogic.gdx.utils.Pool<ModelInstance> doorPool;
 
     private Array<ModelInstance> instances = new Array<>();
+    private java.util.Map<String, Model> prefabModels = new java.util.HashMap<>();
     private Array<Decal> entityBillboards = new Array<>();
     private Decal heroSprite;
 
@@ -54,6 +55,8 @@ public class DungeonSceneRenderer implements Disposable {
     private int lastPlayerY = -1;
     private float targetSpriteX = 0f;
     private float targetSpriteZ = 0f;
+    private Texture shadowTex;
+    private TextureRegion shadowRegion;
     private boolean isAnimating = false;
     public boolean isAnimating() { return isAnimating; }
 
@@ -166,7 +169,22 @@ public class DungeonSceneRenderer implements Disposable {
         };
 
         usingObjModels = true;
+        Pixmap pixmap = new Pixmap(64, 64, Pixmap.Format.RGBA8888);
+        pixmap.setColor(0f, 0f, 0f, 0.5f);
+        pixmap.fillCircle(32, 32, 24); // A simple round shadow
+        shadowTex = new Texture(pixmap);
+        shadowRegion = new TextureRegion(shadowTex);
+        pixmap.dispose();
         
+    }
+
+    private boolean isPrefabCell(Dungeon dungeon, int x, int y) {
+        if (x < 0 || x >= dungeon.getWidth() || y < 0 || y >= dungeon.getHeight()) return false;
+        Cell cell = dungeon.getGrid()[x][y];
+        if (cell.getRoomId() > 0 && dungeon.getPrefabRooms() != null && dungeon.getPrefabRooms().size() >= cell.getRoomId()) {
+            return dungeon.getPrefabRooms().get(cell.getRoomId() - 1).prefabModel != null;
+        }
+        return false;
     }
 
     public int getInstancesCount() { return instances.size; }
@@ -199,6 +217,20 @@ public class DungeonSceneRenderer implements Disposable {
         
         // (Ligne de tÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©lÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©portation supprimÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©e ici pour permettre la fluiditÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©)
 
+                if (dungeon.getPrefabRooms() != null) {
+            for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.DungeonGenerator.Room room : dungeon.getPrefabRooms()) {
+                if (room.prefabModel != null) {
+                    if (!prefabModels.containsKey(room.prefabModel)) {
+                        prefabModels.put(room.prefabModel, new com.badlogic.gdx.graphics.g3d.loader.ObjLoader().loadModel(com.badlogic.gdx.Gdx.files.internal(room.prefabModel)));
+                    }
+                    Model m = prefabModels.get(room.prefabModel);
+                    ModelInstance mi = new ModelInstance(m);
+                    mi.transform.setToTranslation(room.getCenterX() * tileSize, 0, room.getCenterY() * tileSize);
+                    instances.add(mi);
+                }
+            }
+        }
+
         Cell[][] grid = dungeon.getGrid();
 
         for (int x = 0; x < dungeon.getWidth(); x++) {
@@ -208,11 +240,14 @@ public class DungeonSceneRenderer implements Disposable {
                 float posZ = y * tileSize;
 
                 float half = tileSize / 2f;
+                boolean inPrefab = isPrefabCell(dungeon, x, y);
                 if (cell.isWalkable()) {
-                    ModelInstance floor = floorPool.obtain();
-                    floor.transform.setToTranslation(posX + half, 0f, posZ + half);
-                    floor.transform.rotate(com.badlogic.gdx.math.Vector3.Y, 0f);
-                    instances.add(floor);
+                    if (!inPrefab) {
+                        ModelInstance floor = floorPool.obtain();
+                        floor.transform.setToTranslation(posX + half, 0f, posZ + half);
+                        floor.transform.rotate(com.badlogic.gdx.math.Vector3.Y, 0f);
+                        instances.add(floor);
+                    }
 
 
 
@@ -321,10 +356,10 @@ public class DungeonSceneRenderer implements Disposable {
                         continue;
                     }
 
-                    boolean floorN = !n;
-                    boolean floorS = !s;
-                    boolean floorE = !e;
-                    boolean floorW = !w;
+                    boolean floorN = !n && !isPrefabCell(dungeon, x, y-1);
+                    boolean floorS = !s && !isPrefabCell(dungeon, x, y+1);
+                    boolean floorE = !e && !isPrefabCell(dungeon, x+1, y);
+                    boolean floorW = !w && !isPrefabCell(dungeon, x-1, y);
                       if (floorN) {
                           ModelInstance wallN = wallPool.obtain();
                           wallN.transform.setToTranslation(posX + half, theme.getWallOffset()[1], posZ + half);
@@ -368,6 +403,12 @@ public class DungeonSceneRenderer implements Disposable {
         heroSprite = decalPool.obtain();
         heroSprite.setTextureRegion(initialFrame);
         heroSprite.setDimensions(1.4f, 2.0f);
+                Decal heroShadow = decalPool.obtain();
+        heroShadow.setTextureRegion(shadowRegion);
+        heroShadow.setDimensions(1.8f, 1.8f);
+        heroShadow.setPosition(currentX, 0.05f, currentZ);
+        heroShadow.setRotationX(90); // Flat on floor
+        entityBillboards.add(heroShadow);
         heroSprite.setPosition(currentX, 1.0f, currentZ);
         entityBillboards.add(heroSprite);
     }
@@ -464,6 +505,12 @@ public class DungeonSceneRenderer implements Disposable {
                 }
             }
             
+                        Decal mgShadow = decalPool.obtain();
+            mgShadow.setTextureRegion(shadowRegion);
+            mgShadow.setDimensions(1.8f, 1.8f);
+            mgShadow.setPosition(mg.getX() * tileSize, 0.05f, mg.getZ() * tileSize);
+            mgShadow.setRotationX(90); // Flat on floor
+            decalBatch.add(mgShadow);
             mgSprite.setPosition(mg.getX() * tileSize, 1.0f, mg.getZ() * tileSize);
             com.badlogic.gdx.math.Vector3 mgCamDir = new com.badlogic.gdx.math.Vector3(-camera.direction.x, 0, -camera.direction.z).nor();
             mgSprite.setRotation(mgCamDir, com.badlogic.gdx.math.Vector3.Y);
@@ -490,6 +537,7 @@ public class DungeonSceneRenderer implements Disposable {
         if (floorModel != null) floorModel.dispose();
         if (wallModel != null) wallModel.dispose();
         if (dungeonTex != null) dungeonTex.dispose();
+        if (shadowTex != null) shadowTex.dispose();
         // Les textures heroTexture, monsterTexture, chestTexture, stairsTexture sont gÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©rÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©es par l'AssetProvider
     }
 }

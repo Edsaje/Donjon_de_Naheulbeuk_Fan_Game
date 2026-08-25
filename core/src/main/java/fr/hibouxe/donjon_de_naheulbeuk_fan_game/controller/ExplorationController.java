@@ -312,7 +312,7 @@ public class ExplorationController implements GameState {
             
             float mdx = team.getPlayerX() - mg.getX();
             float mdz = team.getPlayerZ() - mg.getZ();
-            if (Math.sqrt(mdx * mdx + mdz * mdz) < 0.8f) {
+            if (Math.sqrt(mdx * mdx + mdz * mdz) < 0.8f && fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MonsterAIEngine.hasLineOfSight(maze, team.getPlayerX(), team.getPlayerZ(), mg.getX(), mg.getZ())) {
                 it.remove();
                 gameContext.triggerBattle(mg.getMonsters(), () -> {
                     view.displayDungeon(maze, team, currentFloor);
