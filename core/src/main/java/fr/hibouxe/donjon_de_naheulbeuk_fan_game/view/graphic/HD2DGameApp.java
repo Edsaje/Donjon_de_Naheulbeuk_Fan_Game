@@ -280,7 +280,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         }
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        Gdx.gl.glClearColor(1.0f, 0.0f, 0.0f, 1f);
+        Gdx.gl.glClearColor(13/255f, 14/255f, 21/255f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         if ((currentState == GameState.EXPLORATION || currentState == GameState.TRANSITION) && team != null) {
@@ -306,9 +306,9 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             camera.update();
 
             // Update lighting for Dungeon
-            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 1.0f, 1.0f, 1.0f, 1f));
+            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.05f, 0.05f, 0.08f, 1f));
             heroLight.intensity = 25f + (float)(Math.random() * 2f); // Flicker effect
-            heroLight.setPosition(camera.position.x, camera.position.y, camera.position.z);
+            heroLight.setPosition(logicX, 2f, logicZ);
 
             dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection(), maze != null ? maze.getRoamingMonsters() : new java.util.ArrayList<>());
         } else if (currentState == GameState.VILLAGE && game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.VillageController) {
