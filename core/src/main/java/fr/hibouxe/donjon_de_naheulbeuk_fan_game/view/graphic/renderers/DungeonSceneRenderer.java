@@ -221,7 +221,14 @@ public class DungeonSceneRenderer implements Disposable {
             for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.DungeonGenerator.Room room : dungeon.getPrefabRooms()) {
                 if (room.prefabModel != null) {
                     if (!prefabModels.containsKey(room.prefabModel)) {
-                        prefabModels.put(room.prefabModel, new com.badlogic.gdx.graphics.g3d.loader.ObjLoader().loadModel(com.badlogic.gdx.Gdx.files.internal(room.prefabModel)));
+                        try {
+                            com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters param2 = new com.badlogic.gdx.graphics.g3d.loader.ObjLoader.ObjLoaderParameters();
+                            param2.flipV = true; // Added flipV just in case!
+                            prefabModels.put(room.prefabModel, new com.badlogic.gdx.graphics.g3d.loader.ObjLoader().loadModel(com.badlogic.gdx.Gdx.files.internal(room.prefabModel), param2));
+                        } catch (Exception e) {
+                            com.badlogic.gdx.Gdx.app.error("DungeonRenderer", "Failed to load prefab: " + room.prefabModel, e);
+                            continue;
+                        }
                     }
                     Model m = prefabModels.get(room.prefabModel);
                     ModelInstance mi = new ModelInstance(m);
