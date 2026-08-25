@@ -150,14 +150,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         if (state == GameState.TRANSITION) {
             this.currentState = state;
             this.transitionStartTime = System.currentTimeMillis();
-            if (game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController ec = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) game.getCurrentState();
-                transitionPlayerX = ec.getPlayerX();
-                transitionPlayerZ = ec.getPlayerZ();
-            } else if (team != null) {
-                transitionPlayerX = team.getX();
-                transitionPlayerZ = team.getY();
-            }
+            // transitionPlayerX and transitionPlayerZ are already kept continuously updated by the render loop when exploring
         } else if (this.currentState == GameState.TRANSITION) {
             this.pendingState = state;
         } else {
@@ -313,6 +306,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController ec = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) game.getCurrentState();
                 playerX = ec.getPlayerX();
                 playerZ = ec.getPlayerZ();
+                transitionPlayerX = playerX; // Cache float coordinates smoothly every frame
+                transitionPlayerZ = playerZ;
             }
 
             
