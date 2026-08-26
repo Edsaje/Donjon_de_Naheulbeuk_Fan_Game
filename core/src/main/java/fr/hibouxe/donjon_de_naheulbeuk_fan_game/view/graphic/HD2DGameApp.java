@@ -100,6 +100,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     }
 
     public boolean isAnyMenuOpen() {
+        if (currentMenuTitle != null) return true;
+        if (currentMessages != null && !currentMessages.isEmpty()) return true;
         if (hudRenderer != null) {
             return hudRenderer.isMenuOpen() || hudRenderer.isSettingsMenuOpen();
         }

@@ -193,11 +193,11 @@ public class HUDRenderer implements Disposable {
             shapeRenderer.rect(x, y, menuWidth, menuHeight);
             
             // Bordure grise sobre
-            shapeRenderer.setColor(new Color(0.8f, 0.8f, 0.8f, 1f));
-            shapeRenderer.rectLine(x, y, x + menuWidth, y, 2);
-            shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 2);
-            shapeRenderer.rectLine(x, y, x, y + menuHeight, 2);
-            shapeRenderer.rectLine(x + menuWidth, y, x + menuWidth, y + menuHeight, 2);
+            shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+            shapeRenderer.rectLine(x, y, x + menuWidth, y, 3);
+            shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 3);
+            shapeRenderer.rectLine(x, y, x, y + menuHeight, 3);
+            shapeRenderer.rectLine(x + menuWidth, y, x + menuWidth, y + menuHeight, 3);
 
             // Curseur gris foncÃƒÂ©
             if (contextMenuSelection < options.length) {
@@ -238,7 +238,7 @@ public class HUDRenderer implements Disposable {
             shapeRenderer.rect(x, y, menuWidth, menuHeight);
             
             // Bordure blanche ÃƒÂ©paisse (3px)
-            shapeRenderer.setColor(Color.WHITE);
+            shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
             shapeRenderer.rectLine(x, y, x + menuWidth, y, 3);
             shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 3);
             shapeRenderer.rectLine(x, y, x, y + menuHeight, 3);
@@ -304,7 +304,7 @@ public class HUDRenderer implements Disposable {
         shapeRenderer.rect(x, y, statusWidth, statusHeight);
         
         // Bordure blanche ÃƒÂ©paisse (3px)
-        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
         shapeRenderer.rectLine(x, y, x + statusWidth, y, 3);
         shapeRenderer.rectLine(x, y + statusHeight, x + statusWidth, y + statusHeight, 3);
         shapeRenderer.rectLine(x, y, x, y + statusHeight, 3);
@@ -619,7 +619,7 @@ public class HUDRenderer implements Disposable {
         shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
         
         // Bordure blanche ÃƒÂ©paisse (3px)
-        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
         shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 3);
         shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 3);
@@ -686,8 +686,8 @@ public class HUDRenderer implements Disposable {
         for (int x = startX; x <= endX; x++) {
             for (int y = startY_grid; y <= endY_grid; y++) {
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell cell = grid[x][y];
-                float drawX = centerX + (x - playerX) * miniCellSize;
-                float drawY = centerY - (y - playerY) * miniCellSize; // Z is inverted visually for map
+                float drawX = centerX + (x + 0.5f - playerX) * miniCellSize;
+                float drawY = centerY - (y + 0.5f - playerY) * miniCellSize; // Z is inverted visually for map
 
                 if (cell.isDiscovered() && cell.isWalkable()) {
                     shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.45f, 0.9f));
@@ -706,8 +706,8 @@ public class HUDRenderer implements Disposable {
 
         for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup mg : dungeon.getRoamingMonsters()) {
             if (dungeon.getGrid()[(int)mg.getX()][(int)mg.getZ()].isDiscovered()) {
-                float mDrawX = centerX + (mg.getX() - playerX) * miniCellSize;
-                float mDrawY = centerY - (mg.getZ() - playerY) * miniCellSize;
+                float mDrawX = centerX + (mg.getX() + 0.5f - playerX) * miniCellSize;
+                float mDrawY = centerY - (mg.getZ() + 0.5f - playerY) * miniCellSize;
                 shapeRenderer.setColor(Color.RED);
                 shapeRenderer.rect(mDrawX - miniCellSize/2f + 1, mDrawY - miniCellSize/2f + 1, miniCellSize - 2, miniCellSize - 2);
             }
@@ -898,7 +898,7 @@ public class HUDRenderer implements Disposable {
         shapeRenderer.setColor(new com.badlogic.gdx.graphics.Color(0.05f, 0.05f, 0.05f, 0.95f));
         shapeRenderer.rect(statusX, statusY, statusWidth, statusHeight);
         
-        shapeRenderer.setColor(com.badlogic.gdx.graphics.Color.WHITE);
+        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
         shapeRenderer.rectLine(statusX, statusY, statusX + statusWidth, statusY, 3);
         shapeRenderer.rectLine(statusX, statusY + statusHeight, statusX + statusWidth, statusY + statusHeight, 3);
         shapeRenderer.rectLine(statusX, statusY, statusX, statusY + statusHeight, 3);
