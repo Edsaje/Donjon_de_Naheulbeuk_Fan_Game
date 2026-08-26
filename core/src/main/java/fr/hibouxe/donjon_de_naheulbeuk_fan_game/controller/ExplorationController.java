@@ -190,6 +190,15 @@ public class ExplorationController implements GameState {
                     menu.displayDialogue(locManager.getString(d));
                 }
             }
+            if (result != null && result.getActionTrigger() != null) {
+                String action = result.getActionTrigger();
+                if ("ENTER_DUNGEON".equals(action)) {
+                    gameContext.startDungeon("NAHEULBEUK");
+                } else if ("OPEN_TAVERN".equals(action)) {
+                    gameContext.pushState(new HubController(team, menu, activeSlot, saveManager, gameContext));
+                }
+                return true; // Stop processing further events on this cell
+            }
         }
         
 
