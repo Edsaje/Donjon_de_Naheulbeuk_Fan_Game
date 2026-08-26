@@ -36,7 +36,6 @@ public class HubDungeon extends Dungeon {
             }
         }
 
-        // Aucun decor 3D instancie pour l'instant (evite le crash de l'ancien obj)
         this.setPrefabRooms(new ArrayList<>());
 
         this.getGrid()[10][14].setEvent(t -> {
@@ -44,13 +43,14 @@ public class HubDungeon extends Dungeon {
             res.setActionTrigger("OPEN_TAVERN");
             return res;
         });
+        this.getGrid()[10][14].setStairs(true);
 
         this.getGrid()[10][5].setEvent(t -> {
             EventResult res = new EventResult(true);
             res.setActionTrigger("ENTER_DUNGEON");
             return res;
         });
-        // this.getGrid()[10][5].setStairs(true); // Retiré pour ne pas afficher le sprite 3D
+        this.getGrid()[10][5].setStairs(true);
 
         team.setX(10);
         team.setY(9);
