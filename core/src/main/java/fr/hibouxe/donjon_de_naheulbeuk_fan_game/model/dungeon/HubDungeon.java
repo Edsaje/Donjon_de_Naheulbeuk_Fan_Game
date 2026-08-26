@@ -60,7 +60,9 @@ public class HubDungeon extends Dungeon {
 
     @Override
     public java.util.List<String> getFloorIntroDialogues(int floorNumber) {
-        return new ArrayList<>();
+        java.util.List<String> list = new ArrayList<>();
+        list.add("HUB_INTRO");
+        return list;
     }
 
     @Override

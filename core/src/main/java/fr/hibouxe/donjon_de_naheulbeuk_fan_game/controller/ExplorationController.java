@@ -33,6 +33,8 @@ public class ExplorationController implements GameState {
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager;
     private float moveTimer = 0.5f;
     private final float moveCooldown = 0.5f;
+    private float transitionDelay = 1.5f;
+    private boolean pendingFloorIntro = true;
 
     private GameContext gameContext;
 
@@ -75,7 +77,7 @@ public class ExplorationController implements GameState {
         view.display(maze, team, currentFloor);
         
         if (!floorIntroPlayed) {
-            playFloorIntro(currentFloor);
+            // playFloorIntro(currentFloor); -> Moved to update delay
             floorIntroPlayed = true;
         }
     }
@@ -228,9 +230,10 @@ public class ExplorationController implements GameState {
                     this.engine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.ExplorationEngine(this.maze, this.team);
                     
                     this.floorIntroPlayed = true;
-                    playFloorIntro(currentFloor);
+                    transitionDelay = 1.5f;
+                    pendingFloorIntro = true;
                 } else {
-                    menu.displayMessage("\nL'air frais ! Vous avez survécu et établi un petit campement !");
+                    
                     gameContext.goToVillage();
                 }
             } else {
@@ -289,6 +292,14 @@ public class ExplorationController implements GameState {
     @Override
     public void update(float deltaTime) {
         if (!running || subState != SubState.EXPLORING) return;
+        if (transitionDelay > 0) {
+            transitionDelay -= deltaTime;
+            if (transitionDelay <= 0 && pendingFloorIntro) {
+                pendingFloorIntro = false;
+                playFloorIntro(currentFloor);
+            }
+            return;
+        }
         
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider input = gameContext.getInputProvider();
         
