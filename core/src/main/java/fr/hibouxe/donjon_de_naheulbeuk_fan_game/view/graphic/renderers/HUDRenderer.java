@@ -76,7 +76,14 @@ public class HUDRenderer implements Disposable {
         Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
         Gdx.gl.glBlendFunc(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
 
-        float progress = Math.min(1.0f, (System.currentTimeMillis() - startTime) / 1000.0f);
+        long elapsed = System.currentTimeMillis() - startTime;
+        float progress;
+        if (elapsed <= 1000) {
+            progress = elapsed / 1000.0f;
+        } else {
+            progress = 1.0f - ((elapsed - 1000) / 500.0f);
+        }
+        progress = Math.max(0f, Math.min(1.0f, progress));
 
         uiViewport.apply();
         shapeRenderer.setProjectionMatrix(uiViewport.getCamera().combined);
