@@ -250,6 +250,19 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                 transitionPlayerX = team.getX() + 0.5f;
                 transitionPlayerZ = team.getY() + 0.5f;
             }
+            
+            // Changer le theme dynamiquement en fonction du donjon
+            String themePath = "data/themes/theme_naheulbeuk.json";
+            if (maze instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.HubDungeon) {
+                themePath = "data/themes/theme_hub.json";
+            } else if (maze instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.TutorialDungeon) {
+                themePath = "data/themes/theme_naheulbeuk.json"; // Le tuto utilise Naheulbeuk pour l'instant
+            }
+            
+            if (dungeonRenderer != null) {
+                dungeonRenderer.dispose();
+                dungeonRenderer = new DungeonSceneRenderer(assetProvider, themePath);
+            }
         }
         this.sceneNeedsBuild = true; // Toujours reconstruire la scene
         this.maze = maze;

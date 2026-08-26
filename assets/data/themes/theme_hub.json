@@ -1,0 +1,10 @@
+{
+  "name": "Hub",
+  "tileSize": 5.0,
+  "texturePath": "models/dungeon/hub/Bricks_01_Diffuse.png",
+  "floorModel": "models/dungeon/hub/floor.obj",
+  "wallModel": "models/dungeon/hub/wall.obj",
+  "doorModel": "models/dungeon/hub/door.obj",
+  "doorFrameModel": "models/dungeon/hub/door_frame.obj",
+  "wallOffset": [0.0, 0.0, 0.0]
+}
