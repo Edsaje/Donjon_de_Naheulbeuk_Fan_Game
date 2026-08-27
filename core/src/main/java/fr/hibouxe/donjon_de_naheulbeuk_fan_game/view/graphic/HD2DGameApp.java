@@ -364,6 +364,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
                 playerZ = ec.getPlayerZ();
                 transitionPlayerX = playerX; // Cache float coordinates smoothly every frame
                 transitionPlayerZ = playerZ;
+            } else {
+                // If in a menu (DungeonSelectionController, HubController), use the cached float coordinates to prevent grid-snapping teleportation
+                playerX = transitionPlayerX;
+                playerZ = transitionPlayerZ;
             }
 
             
