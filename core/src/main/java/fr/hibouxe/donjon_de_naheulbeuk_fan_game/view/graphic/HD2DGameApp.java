@@ -355,7 +355,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         if ((currentState == GameState.EXPLORATION || currentState == GameState.TRANSITION) && team != null) {
             float playerX = team.getX();
             float playerZ = team.getY();
-            if (currentState == GameState.TRANSITION) {
+            
+            if (currentState == GameState.TRANSITION && System.currentTimeMillis() - transitionStartTime < 1000) {
                 playerX = transitionPlayerX;
                 playerZ = transitionPlayerZ;
             } else if (game != null && game.getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.ExplorationController) {
