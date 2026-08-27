@@ -352,8 +352,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         if ((currentState == GameState.EXPLORATION || currentState == GameState.TRANSITION) && team != null) {
-            float playerX = team.getX();
-            float playerZ = team.getY();
+            float playerX = team.getX() + 0.5f;
+            float playerZ = team.getY() + 0.5f;
             
             if (currentState == GameState.TRANSITION && System.currentTimeMillis() - transitionStartTime < 1000) {
                 playerX = transitionPlayerX;

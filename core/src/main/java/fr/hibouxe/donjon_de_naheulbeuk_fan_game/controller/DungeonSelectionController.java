@@ -16,7 +16,7 @@ public class DungeonSelectionController implements GameState {
     public void enter() {
         menu.setMenuRequest("Quel donjon explorer ?", new String[]{
             "Tutoriel (Cave du Tavernier)", 
-            "Gouffre de Naheulbeuk", 
+            "Donjon de Naheulbeuk", 
             "Foret", 
             "Grotte", 
             "Annuler"
