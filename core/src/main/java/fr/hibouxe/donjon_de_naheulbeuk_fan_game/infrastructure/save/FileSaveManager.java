@@ -1,4 +1,4 @@
-package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save;
+package fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.save;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
@@ -18,6 +18,10 @@ import java.io.ObjectOutputStream;
  * @author Hibouxe
  * @version 2.0
  */
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.ISaveManager;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.SaveData;
+
+
 public class FileSaveManager implements ISaveManager {
 
     /**

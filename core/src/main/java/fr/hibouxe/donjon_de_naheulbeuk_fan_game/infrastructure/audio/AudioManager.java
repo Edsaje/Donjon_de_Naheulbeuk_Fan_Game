@@ -1,4 +1,4 @@
-package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio;
+package fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -9,22 +9,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AudioManager {
-    private static AudioManager instance;
     private GameSettingsManager settingsManager;
 
     private Map<String, Sound> sounds;
     private Music currentMusic;
     private String currentMusicPath;
 
-    private AudioManager() {
+    public AudioManager() {
         sounds = new HashMap<>();
-    }
-
-    public static AudioManager getInstance() {
-        if (instance == null) {
-            instance = new AudioManager();
-        }
-        return instance;
     }
 
     public void setSettingsManager(GameSettingsManager settingsManager) {

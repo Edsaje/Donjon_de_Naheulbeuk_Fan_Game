@@ -17,6 +17,9 @@ ew Vector3(), etc.) à l'intérieur d'une boucle ender() (Vue) ou update() (Mot
 - **Contrôleur (controller/) :** Se limite à lire les entrées utilisateurs (inputs), construire une intention de jeu (moveIntent), la déléguer au Moteur/Modèle, et mettre à jour la Vue si besoin.
 - **Moteur/Modèle (model/) :** Contient 100% de la logique métier : calculs mathématiques (Pythagore, AABB), collisions, gestion des coordonnées flottantes (playerX, playerZ), et logique d'Intelligence Artificielle. Le Contrôleur ne doit pas faire de physique.
 - **Vue (iew/) :** Se limite à dessiner les coordonnées fournies par le Modèle. Ne prend aucune décision logique.
+## 4. Système de Déplacement (Libre vs Grille)
+- **Règle :** L'exploration n'est PAS en case par case (style Pokémon Donjon Mystère). Le jeu utilise un déplacement libre et continu (façon Octopath Traveler / Dragon Quest classique).
+- **Solution :** La logique de déplacement, de hitboxes et de collisions dans le Modèle doit se faire via des coordonnées flottantes continues (float x, y, z) et non par un système d'index de grille (Grid-based).
 
 
 ## ATTENTION AGENT:

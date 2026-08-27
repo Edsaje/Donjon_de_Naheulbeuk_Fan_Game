@@ -340,20 +340,12 @@ public class ExplorationController implements GameState {
         }
 
         if (!blockInput) {
-            // Delegate AI behavior to MonsterAIEngine
+            // Delegate AI behavior and collision to MonsterAIEngine
             if (aiEngine != null) {
-                aiEngine.updateAll(deltaTime, maze, team);
-            }
-
-            java.util.Iterator<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup> it = maze.getRoamingMonsters().iterator();
-            while (it.hasNext()) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.RoamingMonsterGroup mg = it.next();
+                java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent> encounters = aiEngine.updateAll(deltaTime, maze, team);
                 
-                float mdx = team.getPlayerX() - mg.getX();
-                float mdz = team.getPlayerZ() - mg.getZ();
-                if (Math.sqrt(mdx * mdx + mdz * mdz) < 0.8f && fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MonsterAIEngine.hasLineOfSight(maze, team.getPlayerX(), team.getPlayerZ(), mg.getX(), mg.getZ())) {
-                    it.remove();
-                    gameContext.triggerBattle(mg.getMonsters(), () -> {
+                for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent encounter : encounters) {
+                    gameContext.triggerBattle(encounter.getMonsters(), () -> {
                         view.displayDungeon(maze, team, currentFloor);
                         if (isTutorial && currentFloor == 5) {
                             menu.displayDialogue(locManager.getString("TUTO_FLOOR_5_POST_NAIN_1"));
@@ -368,7 +360,7 @@ public class ExplorationController implements GameState {
                     }, () -> {
                         view.displayDungeon(maze, team, currentFloor);
                     });
-                    break; 
+                    break; // Only trigger one battle at a time
                 }
             }
         }

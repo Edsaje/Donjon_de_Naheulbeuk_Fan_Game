@@ -10,7 +10,8 @@ import java.util.Iterator;
 
 public class MonsterAIEngine {
 
-    public void updateAll(float deltaTime, Dungeon maze, Team team) {
+    public java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent> updateAll(float deltaTime, Dungeon maze, Team team) {
+        java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent> encounters = new java.util.ArrayList<>();
         float playerX = team.getPlayerX();
         float playerZ = team.getPlayerZ();
 
@@ -38,145 +39,121 @@ public class MonsterAIEngine {
 
             if (mg.isBoss()) {
                 mg.setState(RoamingMonsterGroup.AIState.IDLE);
-                continue;
-            }
+            } else if (!mg.isDefeated()) {
+                float dx = playerX - mg.getX();
+                float dz = playerZ - mg.getZ();
+                float dist = (float) Math.sqrt(dx * dx + dz * dz);
 
-            if (mg.isDefeated()) {
-                continue; // Should be removed by controller anyway
-            }
+                boolean canSee = false;
+                boolean canHear = (dist <= noiseRadius);
 
-            float dx = playerX - mg.getX();
-            float dz = playerZ - mg.getZ();
-            float dist = (float) Math.sqrt(dx * dx + dz * dz);
-
-            boolean canSee = false;
-            boolean canHear = (dist <= noiseRadius);
-
-            if (dist < 6.0f * visionMultiplier) {
-                // Check FOV
-                if (isPlayerInFOV(mg, dx, dz)) {
-                    // Check Line of Sight
-                    if (hasLineOfSight(maze, mg.getX(), mg.getZ(), playerX, playerZ)) {
-                        canSee = true;
+                if (dist < 6.0f * visionMultiplier) {
+                    if (isPlayerInFOV(mg, dx, dz)) {
+                        if (hasLineOfSight(maze, mg.getX(), mg.getZ(), playerX, playerZ)) {
+                            canSee = true;
+                        }
                     }
+                }
+
+                switch (mg.getState()) {
+                    case SLEEPING:
+                        if (canHear || (canSee && dist < 2.0f)) {
+                            mg.setState(RoamingMonsterGroup.AIState.ALERT);
+                            mg.setAlertTimer(1.0f);
+                        }
+                        break;
+                    case PATROL:
+                        if (canSee || canHear) {
+                            mg.setState(RoamingMonsterGroup.AIState.ALERT);
+                            mg.setAlertTimer(0.5f);
+                        } else {
+                            mg.setStateTimer(mg.getStateTimer() - deltaTime);
+                            if (mg.getStateTimer() <= 0) {
+                                mg.setFacingDirection((int)(Math.random() * 4));
+                                mg.setStateTimer(1.0f + (float)Math.random() * 2.0f);
+                            }
+                            moveForward(mg, 0.8f * deltaTime, maze);
+                        }
+                        break;
+                    case ALERT:
+                        mg.setAlertTimer(mg.getAlertTimer() - deltaTime);
+                        faceTowards(mg, dx, dz);
+                        if (mg.getAlertTimer() <= 0) {
+                            String mainMonster = mg.getMonsters().isEmpty() ? "" : mg.getMonsters().get(0).getClass().getSimpleName();
+                            if (canIntimidate && Math.random() < 0.2) {
+                                mg.setState(RoamingMonsterGroup.AIState.FLEE);
+                            } else if (mainMonster.equals("Mimic") || mainMonster.equals("Chest")) {
+                                mg.setState(RoamingMonsterGroup.AIState.FLEE);
+                            } else if (mainMonster.equals("Orc")) {
+                                mg.setState(RoamingMonsterGroup.AIState.CHARGE);
+                                mg.setStateTimer(1.5f);
+                            } else {
+                                mg.setState(RoamingMonsterGroup.AIState.CHASE);
+                            }
+                        }
+                        break;
+                    case CHASE:
+                        if (!canSee && !canHear && dist > 7.0f) {
+                            mg.setState(RoamingMonsterGroup.AIState.PATROL);
+                        } else {
+                            String mainMonster = mg.getMonsters().isEmpty() ? "" : mg.getMonsters().get(0).getClass().getSimpleName();
+                            float chaseSpeed = 1.3f;
+                            if (mainMonster.equals("Goblin")) chaseSpeed = 1.6f;
+                            else if (mainMonster.equals("Specter") || mainMonster.equals("Vampire") || mainMonster.equals("Liche")) {
+                                chaseSpeed = 0.5f;
+                                mg.setStateTimer(mg.getStateTimer() - deltaTime);
+                                if (mg.getStateTimer() <= 0) {
+                                    int tpX = (int)playerX + (int)(Math.random() * 6 - 3);
+                                    int tpZ = (int)playerZ + (int)(Math.random() * 6 - 3);
+                                    if (tpX > 0 && tpX < maze.getWidth() && tpZ > 0 && tpZ < maze.getHeight() 
+                                        && maze.getGrid()[tpX][tpZ].isWalkable()) {
+                                        mg.setX(tpX + 0.5f);
+                                        mg.setZ(tpZ + 0.5f);
+                                        mg.setStateTimer(3.0f + (float)Math.random() * 2.0f);
+                                    }
+                                }
+                            }
+                            faceTowards(mg, dx, dz);
+                            moveTowards(mg, dx, dz, dist, chaseSpeed * deltaTime, maze);
+                        }
+                        break;
+                    case CHARGE:
+                        mg.setStateTimer(mg.getStateTimer() - deltaTime);
+                        moveForward(mg, 3.5f * deltaTime, maze);
+                        if (mg.getStateTimer() <= 0) {
+                            mg.setState(RoamingMonsterGroup.AIState.STUNNED);
+                            mg.setStateTimer(2.0f);
+                        }
+                        break;
+                    case STUNNED:
+                        mg.setStateTimer(mg.getStateTimer() - deltaTime);
+                        if (mg.getStateTimer() <= 0) {
+                            mg.setState(RoamingMonsterGroup.AIState.ALERT);
+                            mg.setAlertTimer(0.5f);
+                        }
+                        break;
+                    case FLEE:
+                        if (dist > 10.0f) mg.setState(RoamingMonsterGroup.AIState.PATROL);
+                        else {
+                            faceTowards(mg, -dx, -dz);
+                            moveTowards(mg, -dx, -dz, dist, 2.8f * deltaTime, maze);
+                        }
+                        break;
+                    case IDLE:
+                    default:
+                        break;
                 }
             }
 
-            // State Machine
-            switch (mg.getState()) {
-                case SLEEPING:
-                    if (canHear || (canSee && dist < 2.0f)) {
-                        mg.setState(RoamingMonsterGroup.AIState.ALERT);
-                        mg.setAlertTimer(1.0f); // Wake up confused for 1s
-                    }
-                    break;
-
-                case PATROL:
-                    if (canSee || canHear) {
-                        mg.setState(RoamingMonsterGroup.AIState.ALERT);
-                        mg.setAlertTimer(0.5f); // "!" state for 0.5s
-                    } else {
-                        // Wander logic
-                        mg.setStateTimer(mg.getStateTimer() - deltaTime);
-                        if (mg.getStateTimer() <= 0) {
-                            // Pick new random direction and time
-                            mg.setFacingDirection((int)(Math.random() * 4));
-                            mg.setStateTimer(1.0f + (float)Math.random() * 2.0f);
-                        }
-                        
-                        // Move forward slowly
-                        moveForward(mg, 0.8f * deltaTime, maze);
-                    }
-                    break;
-
-                case ALERT:
-                    mg.setAlertTimer(mg.getAlertTimer() - deltaTime);
-                    
-                    // Turn towards player immediately
-                    faceTowards(mg, dx, dz);
-                    
-                    if (mg.getAlertTimer() <= 0) {
-                        String mainMonster = mg.getMonsters().isEmpty() ? "" : mg.getMonsters().get(0).getClass().getSimpleName();
-                        
-                        if (canIntimidate && Math.random() < 0.2) {
-                            mg.setState(RoamingMonsterGroup.AIState.FLEE);
-                        } else if (mainMonster.equals("Mimic") || mainMonster.equals("Chest")) {
-                            mg.setState(RoamingMonsterGroup.AIState.FLEE);
-                        } else if (mainMonster.equals("Orc")) {
-                            mg.setState(RoamingMonsterGroup.AIState.CHARGE);
-                            mg.setStateTimer(1.5f); // Charge lasts 1.5s
-                        } else {
-                            mg.setState(RoamingMonsterGroup.AIState.CHASE);
-                        }
-                    }
-                    break;
-
-                case CHASE:
-                    if (!canSee && !canHear && dist > 7.0f) {
-                        // Lost player
-                        mg.setState(RoamingMonsterGroup.AIState.PATROL);
-                    } else {
-                        // Chase player, speed depends on monster type
-                        String mainMonster = mg.getMonsters().isEmpty() ? "" : mg.getMonsters().get(0).getClass().getSimpleName();
-                        float chaseSpeed = 1.3f; // Slightly slower than player (1.5f) to allow escape
-                        
-                        if (mainMonster.equals("Goblin")) {
-                            chaseSpeed = 1.6f; // Goblins are fast and annoying!
-                        } else if (mainMonster.equals("Specter") || mainMonster.equals("Vampire") || mainMonster.equals("Liche")) {
-                            chaseSpeed = 0.5f; // Very slow movement
-                            // Teleportation mechanic
-                            mg.setStateTimer(mg.getStateTimer() - deltaTime);
-                            if (mg.getStateTimer() <= 0) {
-                                // Find a valid teleport location near the player
-                                int tpX = (int)playerX + (int)(Math.random() * 6 - 3);
-                                int tpZ = (int)playerZ + (int)(Math.random() * 6 - 3);
-                                if (tpX > 0 && tpX < maze.getWidth() && tpZ > 0 && tpZ < maze.getHeight() 
-                                    && maze.getGrid()[tpX][tpZ].isWalkable()) {
-                                    mg.setX(tpX + 0.5f);
-                                    mg.setZ(tpZ + 0.5f);
-                                    mg.setStateTimer(3.0f + (float)Math.random() * 2.0f); // CD 3 to 5 secs
-                                }
-                            }
-                        }
-                        
-                        faceTowards(mg, dx, dz);
-                        moveTowards(mg, dx, dz, dist, chaseSpeed * deltaTime, maze);
-                    }
-                    break;
-                    
-                case CHARGE:
-                    // Orcs charge in a straight line blindly very fast
-                    mg.setStateTimer(mg.getStateTimer() - deltaTime);
-                    moveForward(mg, 3.5f * deltaTime, maze);
-                    if (mg.getStateTimer() <= 0) {
-                        mg.setState(RoamingMonsterGroup.AIState.STUNNED);
-                        mg.setStateTimer(2.0f); // Stunned for 2s after charge
-                    }
-                    break;
-                    
-                case STUNNED:
-                    mg.setStateTimer(mg.getStateTimer() - deltaTime);
-                    if (mg.getStateTimer() <= 0) {
-                        mg.setState(RoamingMonsterGroup.AIState.ALERT);
-                        mg.setAlertTimer(0.5f);
-                    }
-                    break;
-                    
-                case FLEE:
-                    if (dist > 10.0f) {
-                        mg.setState(RoamingMonsterGroup.AIState.PATROL);
-                    } else {
-                        // Run away very fast
-                        faceTowards(mg, -dx, -dz);
-                        moveTowards(mg, -dx, -dz, dist, 2.8f * deltaTime, maze);
-                    }
-                    break;
-
-                case IDLE:
-                default:
-                    break;
+            // Check collision for encounter
+            float checkDx = playerX - mg.getX();
+            float checkDz = playerZ - mg.getZ();
+            if (Math.sqrt(checkDx * checkDx + checkDz * checkDz) < 0.8f && hasLineOfSight(maze, playerX, playerZ, mg.getX(), mg.getZ())) {
+                encounters.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent(mg.getMonsters(), mg));
+                it.remove();
             }
         }
+        return encounters;
     }
 
     private void faceTowards(RoamingMonsterGroup mg, float dx, float dz) {

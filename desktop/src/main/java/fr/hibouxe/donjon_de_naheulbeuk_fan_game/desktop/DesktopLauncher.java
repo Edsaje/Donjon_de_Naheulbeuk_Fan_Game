@@ -5,7 +5,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.InputManager;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.Game;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.FileSaveManager;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.save.FileSaveManager;
 
 public class DesktopLauncher {
     public static void main(String[] args) {
@@ -26,7 +26,8 @@ public class DesktopLauncher {
         
         InputManager inputManager = new InputManager();
         FileSaveManager saveManager = new FileSaveManager();
-        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepo = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.JsonMonsterLoader();
+        String path = new java.io.File("assets/data/monsters.json").exists() ? "assets/data/monsters.json" : "../assets/data/monsters.json";
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepo = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.JsonMonsterLoader(path);
         Game game = new Game(app, saveManager, inputManager, monsterRepo);
         inputManager.setListener(game);
         app.setDependencies(inputManager, game);

@@ -19,7 +19,7 @@ class BattleEngineTest {
         Character ranger = new Ranger();
         team.getMembers().add(ranger);
         
-        Character goblin = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.JsonMonsterLoader().getMonsterData("goblin"));
+        Character goblin = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.JsonMonsterLoader("../assets/data/monsters.json").getMonsterData("goblin"));
         goblin.setHealthPoint(0); // Dead goblin
         
         engine.initRound(team, Arrays.asList(goblin));

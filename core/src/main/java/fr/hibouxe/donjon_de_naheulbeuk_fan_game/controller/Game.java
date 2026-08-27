@@ -8,18 +8,18 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.*;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.SaveData;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.ISaveManager;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView;
 
 public class Game implements InputListener, GameContext {
     private GameState currentState;
-    private HD2DGameApp app;
+    private IGameView app;
     private Team team;
     private int currentSlot = 1;
     private ISaveManager saveManager;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepository;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider;
 
-    public Game(HD2DGameApp app, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepository) {
+    public Game(IGameView app, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepository) {
         this.app = app;
         this.saveManager = saveManager;
         this.inputProvider = inputProvider;
@@ -98,8 +98,8 @@ public class Game implements InputListener, GameContext {
             SaveData data = saveManager.loadQuickSave(slot);
             if (data != null) {
                 this.team = data.getTeam();
-                ExplorationController ec = new ExplorationController(data.getDungeon(), team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
-                app.setState(HD2DGameApp.GameState.EXPLORATION);
+                ExplorationController ec = new ExplorationController(data.getDungeon(), team, app.getExplorationView(), app.getMenuView(), app.getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+                app.switchToExplorationView();
                 app.setMenuRequest(null, null);
                 changeState(ec);
             } else {
@@ -131,7 +131,7 @@ public class Game implements InputListener, GameContext {
         TutorialDungeon tutorialMaze = new TutorialDungeon();
         tutorialMaze.prepareFloor(1, team, monsterRepository);
 
-        ExplorationController ec = new ExplorationController(tutorialMaze, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), true, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+        ExplorationController ec = new ExplorationController(tutorialMaze, team, app.getExplorationView(), app.getMenuView(), app.getCombatView(), true, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
         app.displayTransitionScreen(1);
         app.setMenuRequest(null, null);
         changeState(ec);
@@ -143,7 +143,7 @@ public class Game implements InputListener, GameContext {
     public void resumeExploration() {
         if (suspendedExplorationState != null) {
             changeState(suspendedExplorationState);
-            app.setState(HD2DGameApp.GameState.EXPLORATION);
+            app.switchToExplorationView();
             app.setMenuRequest(null, null);
             suspendedExplorationState = null;
         } else {
@@ -160,7 +160,7 @@ public class Game implements InputListener, GameContext {
     public void goToVillage() {
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.HubDungeon hub = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.HubDungeon();
         hub.prepareFloor(0, team, monsterRepository);
-        ExplorationController ec = new ExplorationController(hub, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+        ExplorationController ec = new ExplorationController(hub, team, app.getExplorationView(), app.getMenuView(), app.getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
         app.displayTransitionScreen(0);
         app.setMenuRequest(null, null);
         changeState(ec);
@@ -176,7 +176,8 @@ public class Game implements InputListener, GameContext {
         if (currentState instanceof ExplorationController) {
             suspendedExplorationState = currentState;
         }
-        BattleController bc = new BattleController(team, monsters, app.getViewProvider().getCombatView());
+        app.displayTransitionScreen(-1); // Combat transition without floor text
+        BattleController bc = new BattleController(team, monsters, app.getCombatView());
         bc.setCallbacks(
             () -> { if (onVictory != null) onVictory.run(); resumeExploration(); },
             () -> { if (onDefeat != null) onDefeat.run(); resumeExploration(); },
@@ -186,7 +187,7 @@ public class Game implements InputListener, GameContext {
     }// --- Inner States ---
     private class MainMenuState implements GameState {
         @Override public void enter() {
-            app.setState(HD2DGameApp.GameState.HUB);
+            app.switchToHubView();
             app.setMenuRequest("Menu Principal", new String[]{"Nouvelle Partie", "Charger Partie", "Gérer Sauvegardes", "[TEST] Campement", "Quitter"});
         }
         @Override public void update(float deltaTime) {}
@@ -296,7 +297,7 @@ public class Game implements InputListener, GameContext {
 
     private class QuickSavePromptState implements GameState {
         @Override public void enter() {
-            app.setState(HD2DGameApp.GameState.HUB);
+            app.switchToHubView();
             app.setMenuRequest("Reprendre la partie rapide ?", new String[]{"Oui", "Non"});
         }
         @Override public void update(float deltaTime) {}
@@ -324,7 +325,7 @@ public class Game implements InputListener, GameContext {
         }
         maze.prepareFloor(1, team, monsterRepository);
         boolean isTuto = "TUTORIAL".equals(dungeonId);
-        ExplorationController ec = new ExplorationController(maze, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), isTuto, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+        ExplorationController ec = new ExplorationController(maze, team, app.getExplorationView(), app.getMenuView(), app.getCombatView(), isTuto, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
         app.displayTransitionScreen(1);
         app.setMenuRequest(null, null);
         changeState(ec);

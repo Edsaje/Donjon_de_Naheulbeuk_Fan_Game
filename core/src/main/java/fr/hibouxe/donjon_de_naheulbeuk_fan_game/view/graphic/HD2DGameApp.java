@@ -23,7 +23,7 @@ import java.util.List;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.InputManager;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.Game;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.FileSaveManager;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.save.FileSaveManager;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item;
@@ -40,7 +40,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
  * @author Hibouxe
  * @version 2.0
  */
-public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsManager.SettingsListener {
+public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsManager.SettingsListener, fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IGameView {
 
     public enum GameState {
         EXPLORATION,
@@ -85,6 +85,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     private KeyboardLayout activeKeyboardLayout = KeyboardLayout.detectSystemLayout();
 
     private GameSettingsManager settingsManager;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.audio.AudioManager audioManager;
+
     private ViewProvider viewProvider;
 
     public ViewProvider getViewProvider() {
@@ -96,7 +98,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     public HD2DGameApp(GameSettingsManager settingsManager) {
         this.settingsManager = settingsManager;
-        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().setSettingsManager(settingsManager);
+        audioManager = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.audio.AudioManager();
+        audioManager.setSettingsManager(settingsManager);
     }
 
     public boolean isAnyMenuOpen() {
@@ -195,7 +198,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         assetProvider = new AssetProvider();
         dungeonRenderer = new DungeonSceneRenderer(assetProvider, "data/themes/theme_naheulbeuk.json");
         battleRenderer = new BattleArenaRenderer(this.assetProvider);
-        hudRenderer = new HUDRenderer(this.settingsManager);
+        hudRenderer = new HUDRenderer(this.settingsManager, this.audioManager);
         
     }
 
@@ -351,7 +354,12 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.08f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if ((currentState == GameState.EXPLORATION || currentState == GameState.TRANSITION) && team != null) {
+        GameState renderState = currentState;
+        if (currentState == GameState.TRANSITION && System.currentTimeMillis() - transitionStartTime >= 1000 && pendingState != null) {
+            renderState = pendingState;
+        }
+
+        if ((renderState == GameState.EXPLORATION || renderState == GameState.TRANSITION) && team != null) {
             float playerX = team.getX() + 0.5f;
             float playerZ = team.getY() + 0.5f;
             
@@ -398,7 +406,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             heroLight.setPosition(camera.position.x, camera.position.y, camera.position.z);
 
             dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection(), maze != null ? maze.getRoamingMonsters() : java.util.Collections.emptyList());
-        } else if (currentState == GameState.BATTLE) {
+        } else if (renderState == GameState.BATTLE) {
             // Update lighting for Battle (brighter)
             if (!environment.has(ColorAttribute.AmbientLight)) environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f)); else { ColorAttribute attr = (ColorAttribute)environment.get(ColorAttribute.AmbientLight); attr.color.set(0.4f, 0.4f, 0.5f, 1f); }
             heroLight.intensity = 0f;
@@ -441,7 +449,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         if (dungeonRenderer != null) dungeonRenderer.dispose();
         if (battleRenderer != null) battleRenderer.dispose();
         if (hudRenderer != null) hudRenderer.dispose();
-        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().dispose();
+        if (audioManager != null) audioManager.dispose();
         if (assetProvider != null) assetProvider.dispose();
         
         Gdx.app.exit(); // Fermeture propre de LibGDX (au lieu de System.exit(0))
@@ -544,4 +552,10 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     public void displayDefeat() { displayMessage("Defaite !"); }
     public void displaySaveSuccess(int slot) { displayMessage("Sauvegarde effectuee sur le slot " + slot); }
     public void displaySaveError() { displayMessage("Erreur save"); }
+
+    @Override public void switchToHubView() { setState(GameState.HUB); }
+    @Override public void switchToExplorationView() { setState(GameState.EXPLORATION); }
+    @Override public fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IExplorationView getExplorationView() { return getViewProvider().getExplorationView(); }
+    @Override public fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IMenuView getMenuView() { return getViewProvider().getMenuView(); }
+    @Override public fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.ICombatView getCombatView() { return getViewProvider().getCombatView(); }
 }

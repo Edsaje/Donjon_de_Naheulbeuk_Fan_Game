@@ -1,40 +1,29 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.MonsterDef;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class JsonMonsterLoader implements IMonsterRepository {
     private final Map<String, MonsterDef> monsterCache = new HashMap<>();
 
-    private static JsonMonsterLoader instance;
-    public static JsonMonsterLoader getInstance() { if (instance == null) instance = new JsonMonsterLoader(); return instance; }
-    public JsonMonsterLoader() {
-        loadMonsters();
+    public JsonMonsterLoader(String jsonFilePath) {
+        loadMonsters(jsonFilePath);
     }
 
-    private void loadMonsters() {
+    private void loadMonsters(String filePath) {
         JsonReader reader = new JsonReader();
         JsonValue root;
-        try {
-            if (Gdx.files != null) {
-                root = reader.parse(Gdx.files.internal("data/monsters.json"));
-            } else {
-                if (new java.io.File("../assets/data/monsters.json").exists()) {
-                    root = reader.parse(new java.io.FileReader("../assets/data/monsters.json"));
-                } else if (new java.io.File("assets/data/monsters.json").exists()) {
-                    root = reader.parse(new java.io.FileReader("assets/data/monsters.json"));
-                } else {
-                    throw new RuntimeException("Could not find monsters.json");
-                }
-            }
+        try (InputStream is = new FileInputStream(filePath)) {
+            root = reader.parse(is);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to load monsters.json", e);
+            throw new RuntimeException("Failed to load monsters.json at " + filePath, e);
         }
         JsonValue monsters = root.get("monsters");
         for (JsonValue monster : monsters) {

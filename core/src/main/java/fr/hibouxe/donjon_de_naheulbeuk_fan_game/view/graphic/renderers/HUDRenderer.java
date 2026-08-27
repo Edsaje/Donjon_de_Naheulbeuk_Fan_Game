@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.audio.AudioManager;
 import com.badlogic.gdx.utils.Disposable;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell;
@@ -66,8 +66,11 @@ public class HUDRenderer implements Disposable {
 
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager settingsManager;
 
-    public HUDRenderer(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager settingsManager) {
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.audio.AudioManager audioManager;
+    
+    public HUDRenderer(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager settingsManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.audio.AudioManager audioManager) {
         this.settingsManager = settingsManager;
+        this.audioManager = audioManager;
         uiBatch = new SpriteBatch();
         font = new BitmapFont();
         font.getData().setScale(1.2f);
@@ -119,7 +122,7 @@ public class HUDRenderer implements Disposable {
         }
         shapeRenderer.end();
 
-        if (floor > 0) {
+        if (floor >= 0 && font != null) {
             uiBatch.begin();
             font.getData().setScale(2.5f);
             font.setColor(Color.WHITE);
@@ -127,8 +130,8 @@ public class HUDRenderer implements Disposable {
             float x = (1280 / 2f) - (text.length() * 15f);
             float y = (720 / 2f);
             font.draw(uiBatch, text, x, y);
-            font.getData().setScale(1.2f);
             uiBatch.end();
+            font.getData().setScale(1.0f);
         } else if (progress >= 0.8f) {
             uiBatch.begin();
             font.getData().setScale(2.0f);
@@ -778,10 +781,10 @@ public class HUDRenderer implements Disposable {
         if (gameApp != null && gameApp.currentMenuTitle != null && gameApp.currentMenuOptions != null) {
             String[] options = gameApp.currentMenuOptions;
             if ("Z".equals(action) || "Q".equals(action) || "UP".equals(action)) {
-                contextMenuSelection = (contextMenuSelection - 1 + options.length) % options.length; AudioManager.getInstance().playUIHover();
+                contextMenuSelection = (contextMenuSelection - 1 + options.length) % options.length; audioManager.playUIHover();
                 return true;
             } else if ("S".equals(action) || "D".equals(action) || "DOWN".equals(action)) {
-                contextMenuSelection = (contextMenuSelection + 1) % options.length; AudioManager.getInstance().playUIHover();
+                contextMenuSelection = (contextMenuSelection + 1) % options.length; audioManager.playUIHover();
                 return true;
             }
             if ("INVENTAIRE".equals(gameApp.currentMenuTitle) || "CIBLE_OBJET".equals(gameApp.currentMenuTitle) || "CATEGORIES".equals(gameApp.currentMenuTitle) || "OBJETS".equals(gameApp.currentMenuTitle) || "PAUSE".equals(gameApp.currentMenuTitle) || "CHOISIR UN OBJET".equals(gameApp.currentMenuTitle) || "CIBLE".equals(gameApp.currentMenuTitle) || "EMPLACEMENT".equals(gameApp.currentMenuTitle)) {
@@ -792,16 +795,16 @@ public class HUDRenderer implements Disposable {
             }
             if ("STATISTIQUES".equals(gameApp.currentMenuTitle)) {
                 if ("X".equals(action) || ("ENTER".equals(action) && "Retour".equals(options[contextMenuSelection]))) {
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
+                    audioManager.playUIClose();
                     gameApp.setMenuRequest(null, null);
                     isMenuOpen = true; 
                     return true;
                 }
             } else if ("X".equals(action) || ("ENTER".equals(action) && "Retour".equals(options[contextMenuSelection]))) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
+                audioManager.playUIClose();
                 return false;
             } else if ("ENTER".equals(action) || "SPACE".equals(action)) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIAccept();
+                audioManager.playUIAccept();
                 return false;
             } else if (action.matches("[1-9]")) {
                 int index = Integer.parseInt(action);
@@ -817,11 +820,11 @@ public class HUDRenderer implements Disposable {
             if (isSettingsMenuOpen) {
                 isSettingsMenuOpen = false;
                 settingsManager.saveSettings();
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
+                audioManager.playUIClose();
             } else {
                 isMenuOpen = !isMenuOpen;
-                if (isMenuOpen) fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIOpen();
-                else fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
+                if (isMenuOpen) audioManager.playUIOpen();
+                else audioManager.playUIClose();
             }
             return true;
         }
@@ -829,42 +832,42 @@ public class HUDRenderer implements Disposable {
         if (isSettingsMenuOpen) {
             if ("Z".equals(action) || "UP".equals(action)) {
                 selectedSettingsOption = (selectedSettingsOption - 1 + settingsOptions.length) % settingsOptions.length;
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                audioManager.playUIHover();
                 return true;
             } else if ("S".equals(action) || "DOWN".equals(action)) {
                 selectedSettingsOption = (selectedSettingsOption + 1) % settingsOptions.length;
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                audioManager.playUIHover();
                 return true;
             } else if ("Q".equals(action) || "LEFT".equals(action)) {
                 if (selectedSettingsOption == 2) {
                     settingsManager.setMasterVolume(Math.max(0f, settingsManager.getMasterVolume() - 0.1f));
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().updateMusicVolume();
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                    audioManager.updateMusicVolume();
+                    audioManager.playUIHover();
                 } else if (selectedSettingsOption == 3) {
                     settingsManager.setBgmVolume(Math.max(0f, settingsManager.getBgmVolume() - 0.1f));
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().updateMusicVolume();
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                    audioManager.updateMusicVolume();
+                    audioManager.playUIHover();
                 } else if (selectedSettingsOption == 4) {
                     settingsManager.setSfxVolume(Math.max(0f, settingsManager.getSfxVolume() - 0.1f));
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                    audioManager.playUIHover();
                 }
                 return true;
             } else if ("D".equals(action) || "RIGHT".equals(action)) {
                 if (selectedSettingsOption == 2) {
                     settingsManager.setMasterVolume(Math.min(1.0f, settingsManager.getMasterVolume() + 0.1f));
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().updateMusicVolume();
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                    audioManager.updateMusicVolume();
+                    audioManager.playUIHover();
                 } else if (selectedSettingsOption == 3) {
                     settingsManager.setBgmVolume(Math.min(1.0f, settingsManager.getBgmVolume() + 0.1f));
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().updateMusicVolume();
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                    audioManager.updateMusicVolume();
+                    audioManager.playUIHover();
                 } else if (selectedSettingsOption == 4) {
                     settingsManager.setSfxVolume(Math.min(1.0f, settingsManager.getSfxVolume() + 0.1f));
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIHover();
+                    audioManager.playUIHover();
                 }
                 return true;
             } else if ("ENTER".equals(action) || "SPACE".equals(action)) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIAccept();
+                audioManager.playUIAccept();
                 if (selectedSettingsOption == 0) {
                     settingsManager.setFullscreen(!settingsManager.isFullscreen());
                 } else if (selectedSettingsOption == 1) {
@@ -878,7 +881,7 @@ public class HUDRenderer implements Disposable {
                 } else if (selectedSettingsOption == 7) {
                     isSettingsMenuOpen = false;
                     settingsManager.saveSettings();
-                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIClose();
+                    audioManager.playUIClose();
                     isMenuOpen = true;
                 }
                 return true;
@@ -888,13 +891,13 @@ public class HUDRenderer implements Disposable {
 
         if (isMenuOpen) {
             if ("Z".equals(action) || "Q".equals(action) || "UP".equals(action)) {
-                selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length; AudioManager.getInstance().playUIHover();
+                selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length; audioManager.playUIHover();
                 return true;
             } else if ("S".equals(action) || "D".equals(action) || "DOWN".equals(action)) {
-                selectedOption = (selectedOption + 1) % menuOptions.length; AudioManager.getInstance().playUIHover();
+                selectedOption = (selectedOption + 1) % menuOptions.length; audioManager.playUIHover();
                 return true;
             } else if ("ENTER".equals(action) || "SPACE".equals(action)) {
-                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.audio.AudioManager.getInstance().playUIAccept();
+                audioManager.playUIAccept();
                 if (selectedOption == 0) {
                     gameApp.pushInput("MENU_STATUS");
                 } else if (selectedOption == 1) {
