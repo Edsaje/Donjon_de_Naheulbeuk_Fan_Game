@@ -131,7 +131,7 @@ public class Game implements InputListener, GameContext {
         tutorialMaze.prepareFloor(1, team, monsterRepository);
 
         ExplorationController ec = new ExplorationController(tutorialMaze, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), true, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
-        app.setState(HD2DGameApp.GameState.EXPLORATION);
+        app.displayTransitionScreen(1);
         app.setMenuRequest(null, null);
         changeState(ec);
     }
@@ -322,8 +322,9 @@ public class Game implements InputListener, GameContext {
             maze = new NaheulbeukDungeon();
         }
         maze.prepareFloor(1, team, monsterRepository);
-        ExplorationController ec = new ExplorationController(maze, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
-        app.setState(HD2DGameApp.GameState.EXPLORATION);
+        boolean isTuto = "TUTORIAL".equals(dungeonId);
+        ExplorationController ec = new ExplorationController(maze, team, app.getViewProvider().getExplorationView(), app.getViewProvider().getMenuView(), app.getViewProvider().getCombatView(), isTuto, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+        app.displayTransitionScreen(1);
         app.setMenuRequest(null, null);
         changeState(ec);
     }
