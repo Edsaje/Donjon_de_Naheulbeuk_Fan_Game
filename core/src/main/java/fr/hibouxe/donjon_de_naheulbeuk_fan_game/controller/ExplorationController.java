@@ -314,10 +314,7 @@ public class ExplorationController implements GameState {
         
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider input = gameContext.getInputProvider();
         
-        boolean blockInput = false;
-        if (menu instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp) {
-            blockInput = ((fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.HD2DGameApp)menu).isAnyMenuOpen();
-        }
+        boolean blockInput = gameContext.isInputBlocked();
 
         if (input != null) {
             boolean gridChanged = false;

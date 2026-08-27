@@ -121,6 +121,7 @@ public class Game implements InputListener, GameContext {
     public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository getMonsterRepository() {
         return monsterRepository;
     }
+    @Override public boolean isInputBlocked() { return app != null && app.isAnyMenuOpen(); }
 
     private void runTutorial() {
         this.team = new Team();
