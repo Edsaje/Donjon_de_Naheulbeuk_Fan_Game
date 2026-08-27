@@ -23,6 +23,22 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManag
  * @version 2.0
  */
 public class HUDRenderer implements Disposable {
+    private static final com.badlogic.gdx.graphics.Color COLOR_FLOAT_BG = new com.badlogic.gdx.graphics.Color(0.1f, 0.1f, 0.1f, 0.95f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_GOLD_BORDER = new com.badlogic.gdx.graphics.Color(0.8f, 0.7f, 0.4f, 1f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_CURSOR_FLOAT = new com.badlogic.gdx.graphics.Color(0.3f, 0.3f, 0.3f, 0.8f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_MENU_BG = new com.badlogic.gdx.graphics.Color(0.05f, 0.05f, 0.05f, 0.95f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_MENU_CURSOR = new com.badlogic.gdx.graphics.Color(0.4f, 0.4f, 0.4f, 0.6f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_TEXT_BLUE = new com.badlogic.gdx.graphics.Color(0.7f, 0.9f, 1f, 1f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_HP = new com.badlogic.gdx.graphics.Color(0.2f, 0.8f, 0.2f, 1f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_MP = new com.badlogic.gdx.graphics.Color(0.2f, 0.6f, 0.9f, 1f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_PORTRAIT_BG = new com.badlogic.gdx.graphics.Color(0.2f, 0.2f, 0.2f, 1f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_CURSOR_HL = new com.badlogic.gdx.graphics.Color(0.3f, 0.3f, 0.4f, 0.8f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_MAP_BG = new com.badlogic.gdx.graphics.Color(0f, 0f, 0f, 0.7f);
+    private static final com.badlogic.gdx.graphics.Color COLOR_MINI_CELL = new com.badlogic.gdx.graphics.Color(0.4f, 0.4f, 0.45f, 0.9f);
+    
+    private final com.badlogic.gdx.math.Rectangle cachedScissors = new com.badlogic.gdx.math.Rectangle();
+    private final com.badlogic.gdx.math.Rectangle cachedClipBounds = new com.badlogic.gdx.math.Rectangle();
+
     public SpriteBatch uiBatch;
     public BitmapFont font;
     private ShapeRenderer shapeRenderer;
@@ -206,11 +222,11 @@ public class HUDRenderer implements Disposable {
             
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             // FenÃ¢â€Å“Ã‚Â¬tre Noire semi-transparente
-            shapeRenderer.setColor(new Color(0.1f, 0.1f, 0.1f, 0.95f));
+            shapeRenderer.setColor(COLOR_FLOAT_BG);
             shapeRenderer.rect(x, y, menuWidth, menuHeight);
             
             // Bordure grise sobre
-            shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+            shapeRenderer.setColor(COLOR_GOLD_BORDER);
             shapeRenderer.rectLine(x, y, x + menuWidth, y, 3);
             shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 3);
             shapeRenderer.rectLine(x, y, x, y + menuHeight, 3);
@@ -219,7 +235,7 @@ public class HUDRenderer implements Disposable {
             // Curseur gris foncÃƒÂ©
             if (contextMenuSelection < options.length) {
                 int cursorY = y + menuHeight - 80 - contextMenuSelection * 40;
-                shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.3f, 0.8f));
+                shapeRenderer.setColor(COLOR_CURSOR_FLOAT);
                 shapeRenderer.rect(x + 10, cursorY - 5, menuWidth - 20, 30);
             }
             shapeRenderer.end();
@@ -251,11 +267,11 @@ public class HUDRenderer implements Disposable {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             
             // FenÃƒÂªtre noire (95% opacitÃƒÂ©)
-            shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+            shapeRenderer.setColor(COLOR_MENU_BG);
             shapeRenderer.rect(x, y, menuWidth, menuHeight);
             
             // Bordure blanche ÃƒÂ©paisse (3px)
-            shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+            shapeRenderer.setColor(COLOR_GOLD_BORDER);
             shapeRenderer.rectLine(x, y, x + menuWidth, y, 3);
             shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 3);
             shapeRenderer.rectLine(x, y, x, y + menuHeight, 3);
@@ -270,14 +286,14 @@ public class HUDRenderer implements Disposable {
                 int cursorX = x + 10 + col * itemWidth;
                 int cursorY = y + menuHeight - 75 - row * 40;
                 
-                shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.4f, 0.6f));
+                shapeRenderer.setColor(COLOR_MENU_CURSOR);
                 shapeRenderer.rect(cursorX, cursorY, highlightWidth, 35);
             }
             shapeRenderer.end();
 
             uiBatch.begin();
             // Titre alignÃƒÂ© ÃƒÂ  gauche
-            font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+            font.setColor(COLOR_TEXT_BLUE);
             font.draw(uiBatch, title, x + 25, y + menuHeight - 15);
 
             for (int i = 0; i < options.length; i++) {
@@ -317,11 +333,11 @@ public class HUDRenderer implements Disposable {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
         // FenÃƒÂªtre Noire (95% opacitÃƒÂ©)
-        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.setColor(COLOR_MENU_BG);
         shapeRenderer.rect(x, y, statusWidth, statusHeight);
         
         // Bordure blanche ÃƒÂ©paisse (3px)
-        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+        shapeRenderer.setColor(COLOR_GOLD_BORDER);
         shapeRenderer.rectLine(x, y, x + statusWidth, y, 3);
         shapeRenderer.rectLine(x, y + statusHeight, x + statusWidth, y + statusHeight, 3);
         shapeRenderer.rectLine(x, y, x, y + statusHeight, 3);
@@ -332,7 +348,7 @@ public class HUDRenderer implements Disposable {
         uiBatch.begin();
         
         // Titre
-        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+        font.setColor(COLOR_TEXT_BLUE);
         font.draw(uiBatch, "Fiche de " + hero.getName() + " (" + hero.getType() + ") - Niveau " + hero.getLevel(), x + 25, y + statusHeight - 15);
         
         font.setColor(Color.WHITE);
@@ -346,7 +362,7 @@ public class HUDRenderer implements Disposable {
         currentY -= 50;
         
         // Attributs
-        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+        font.setColor(COLOR_TEXT_BLUE);
         font.draw(uiBatch, "Attributs de combat", x + 25, currentY);
         font.setColor(Color.WHITE);
         currentY -= 35;
@@ -360,7 +376,7 @@ public class HUDRenderer implements Disposable {
         currentY -= 50;
         
         //ÃƒÂ©quipements
-        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+        font.setColor(COLOR_TEXT_BLUE);
         font.draw(uiBatch, "Ã¢â€Å“ÃƒÂ«quipement actuel", x + 25, currentY);
         font.setColor(Color.WHITE);
         currentY -= 35;
@@ -434,7 +450,7 @@ public class HUDRenderer implements Disposable {
             
             // Barre PV (Vert clair)
             float hpPercent = Math.max(0, (float) member.getHealthPoint() / member.getMaxHealthPoint());
-            shapeRenderer.setColor(new Color(0.2f, 0.8f, 0.2f, 1f));
+            shapeRenderer.setColor(COLOR_HP);
             shapeRenderer.rect(startX + 30, currentY - 25, barWidth * hpPercent, barHeight);
             
             // Fond sombre pour la barre PM/Ressource
@@ -443,7 +459,7 @@ public class HUDRenderer implements Disposable {
             
             // Barre PM/Ressource (Bleu cyan)
             float mpPercent = Math.max(0, (float) member.getCurrentResource() / member.getMaxResource());
-            shapeRenderer.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
+            shapeRenderer.setColor(COLOR_MP);
             shapeRenderer.rect(startX + 30, currentY - 45, barWidth * mpPercent, barHeight);
             
             shapeRenderer.end();
@@ -457,10 +473,10 @@ public class HUDRenderer implements Disposable {
             font.draw(uiBatch, member.getName(), startX + 110 - (member.getName().length() * 4), currentY); // CentrÃ¢â€Å“Ã‚Â® approximativement
             
             // Textes "PV" et "PM" (Vert et Bleu)
-            font.setColor(new Color(0.2f, 0.8f, 0.2f, 1f));
+            font.setColor(COLOR_HP);
             font.draw(uiBatch, "PV", startX, currentY - 18);
             
-            font.setColor(new Color(0.2f, 0.6f, 0.9f, 1f));
+            font.setColor(COLOR_MP);
             font.draw(uiBatch, member.getResourceName().substring(0, 1) + "M", startX, currentY - 38);
             
             // Valeurs numÃƒÂ©riques sur le cÃƒÂ´tÃƒÂ© droit des barres
@@ -525,11 +541,11 @@ public class HUDRenderer implements Disposable {
         int boxHeight = 180;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.setColor(COLOR_MENU_BG);
         shapeRenderer.rect(boxX, boxY, boxWidth, boxHeight);
 
         if (speakerName != null) {
-            shapeRenderer.setColor(new Color(0.2f, 0.2f, 0.2f, 1f));
+            shapeRenderer.setColor(COLOR_PORTRAIT_BG);
             shapeRenderer.rect(boxX + 20, boxY + boxHeight - 10, 200, 40);
         }
         shapeRenderer.end();
@@ -551,17 +567,17 @@ public class HUDRenderer implements Disposable {
         int menuX = (1280 - menuWidth) / 2;
         int menuY = (720 - menuHeight) / 2;
 
-        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.setColor(COLOR_MENU_BG);
         shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
         
-        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+        shapeRenderer.setColor(COLOR_GOLD_BORDER);
         shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 3);
         shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX + menuWidth, menuY, menuX + menuWidth, menuY + menuHeight, 3);
 
         int cursorY = menuY + menuHeight - 75 - selectedSettingsOption * 40;
-        shapeRenderer.setColor(new Color(0.3f, 0.3f, 0.4f, 0.8f));
+        shapeRenderer.setColor(COLOR_CURSOR_HL);
         shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 35);
 
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager config = this.settingsManager;
@@ -580,7 +596,7 @@ public class HUDRenderer implements Disposable {
                 if (i == 3) val = config.getBgmVolume();
                 if (i == 4) val = config.getSfxVolume();
                 
-                shapeRenderer.setColor(new Color(0.2f, 0.8f, 0.2f, 1f));
+                shapeRenderer.setColor(COLOR_HP);
                 shapeRenderer.rect(barX, barY, barW * val, barH);
                 
                 shapeRenderer.setColor(Color.WHITE);
@@ -591,7 +607,7 @@ public class HUDRenderer implements Disposable {
         shapeRenderer.end();
         uiBatch.begin();
 
-        font.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+        font.setColor(COLOR_GOLD_BORDER);
         font.draw(uiBatch, "PARAMETRES", menuX + menuWidth / 2f - 70, menuY + menuHeight - 20);
         font.setColor(Color.WHITE);
 
@@ -632,11 +648,11 @@ public class HUDRenderer implements Disposable {
         int menuY = 720 - menuHeight - 50;
 
         // Fond Noir (95% opacitÃƒÂ©)
-        shapeRenderer.setColor(new Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.setColor(COLOR_MENU_BG);
         shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
         
         // Bordure blanche ÃƒÂ©paisse (3px)
-        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+        shapeRenderer.setColor(COLOR_GOLD_BORDER);
         shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 3);
         shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 3);
@@ -644,7 +660,7 @@ public class HUDRenderer implements Disposable {
 
         // Curseur de sÃƒÂ©lection (fond de ligne gris transparent)
         int cursorY = menuY + menuHeight - 75 - selectedOption * 40;
-        shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.4f, 0.6f));
+        shapeRenderer.setColor(COLOR_MENU_CURSOR);
         shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 35);
 
         shapeRenderer.end();
@@ -653,7 +669,7 @@ public class HUDRenderer implements Disposable {
         uiBatch.begin();
         
         // Options du menu principal
-        font.setColor(new Color(0.7f, 0.9f, 1f, 1f));
+        font.setColor(COLOR_TEXT_BLUE);
         font.draw(uiBatch, "Menu", menuX + 25, menuY + menuHeight - 15);
 
         for (int i = 0; i < menuOptions.length; i++) {
@@ -684,13 +700,13 @@ public class HUDRenderer implements Disposable {
 
         shapeRenderer.flush();
 
-        com.badlogic.gdx.math.Rectangle scissors = new com.badlogic.gdx.math.Rectangle();
-        com.badlogic.gdx.math.Rectangle clipBounds = new com.badlogic.gdx.math.Rectangle(centerX - mapWidth/2f, centerY - mapHeight/2f, mapWidth, mapHeight);
+        com.badlogic.gdx.math.Rectangle scissors = cachedScissors;
+        com.badlogic.gdx.math.Rectangle clipBounds = cachedClipBounds.set(centerX - mapWidth/2f, centerY - mapHeight/2f, mapWidth, mapHeight);
         com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.calculateScissors(uiViewport.getCamera(), shapeRenderer.getTransformMatrix(), clipBounds, scissors);
         com.badlogic.gdx.scenes.scene2d.utils.ScissorStack.pushScissors(scissors);
 
         // Fond sombre
-        shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.7f));
+        shapeRenderer.setColor(COLOR_MAP_BG);
         shapeRenderer.rect(centerX - mapWidth/2f, centerY - mapHeight/2f, mapWidth, mapHeight);
 
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Cell[][] grid = dungeon.getGrid();
@@ -707,7 +723,7 @@ public class HUDRenderer implements Disposable {
                 float drawY = centerY - (y + 0.5f - playerY) * miniCellSize; // Z is inverted visually for map
 
                 if (cell.isDiscovered() && cell.isWalkable()) {
-                    shapeRenderer.setColor(new Color(0.4f, 0.4f, 0.45f, 0.9f));
+                    shapeRenderer.setColor(COLOR_MINI_CELL);
                     shapeRenderer.rect(drawX - miniCellSize/2f, drawY - miniCellSize/2f, miniCellSize, miniCellSize);
 
                     if (cell.hasItem()) {
@@ -738,7 +754,7 @@ public class HUDRenderer implements Disposable {
 
         shapeRenderer.end();
         shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+        shapeRenderer.setColor(COLOR_GOLD_BORDER);
         com.badlogic.gdx.Gdx.gl.glLineWidth(3f);
         shapeRenderer.rect(centerX - mapWidth/2f, centerY - mapHeight/2f, mapWidth, mapHeight);
         shapeRenderer.end();
@@ -912,10 +928,10 @@ public class HUDRenderer implements Disposable {
         int statusHeight = 60 + team.getMembers().size() * 50;
         int statusY = menuY - statusHeight - 30;
 
-        shapeRenderer.setColor(new com.badlogic.gdx.graphics.Color(0.05f, 0.05f, 0.05f, 0.95f));
+        shapeRenderer.setColor(COLOR_MENU_BG);
         shapeRenderer.rect(statusX, statusY, statusWidth, statusHeight);
         
-        shapeRenderer.setColor(new Color(0.8f, 0.7f, 0.4f, 1f));
+        shapeRenderer.setColor(COLOR_GOLD_BORDER);
         shapeRenderer.rectLine(statusX, statusY, statusX + statusWidth, statusY, 3);
         shapeRenderer.rectLine(statusX, statusY + statusHeight, statusX + statusWidth, statusY + statusHeight, 3);
         shapeRenderer.rectLine(statusX, statusY, statusX, statusY + statusHeight, 3);

@@ -181,7 +181,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
         environment = new Environment();
         // Ambient light is updated per-state in render()
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f));
+        if (!environment.has(ColorAttribute.AmbientLight)) environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f)); else { ColorAttribute attr = (ColorAttribute)environment.get(ColorAttribute.AmbientLight); attr.color.set(0.4f, 0.4f, 0.5f, 1f); }
         
         // A global directional light (moonlight/sunlight)
         environment.add(new DirectionalLight().set(0.15f, 0.15f, 0.2f, -1f, -0.8f, -0.5f));
@@ -393,14 +393,14 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             camera.update();
 
             // Update lighting for Dungeon
-            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.05f, 0.05f, 0.08f, 1f));
+            if (!environment.has(ColorAttribute.AmbientLight)) environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.05f, 0.05f, 0.08f, 1f)); else { ColorAttribute attr = (ColorAttribute)environment.get(ColorAttribute.AmbientLight); attr.color.set(0.05f, 0.05f, 0.08f, 1f); }
             heroLight.intensity = 25f + (float)(Math.random() * 2f); // Flicker effect
             heroLight.setPosition(camera.position.x, camera.position.y, camera.position.z);
 
-            dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection(), maze != null ? maze.getRoamingMonsters() : new java.util.ArrayList<>());
+            dungeonRenderer.render(modelBatch, decalBatch, environment, camera, playerX, playerZ, team.getFacingDirection(), maze != null ? maze.getRoamingMonsters() : java.util.Collections.emptyList());
         } else if (currentState == GameState.BATTLE) {
             // Update lighting for Battle (brighter)
-            environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f));
+            if (!environment.has(ColorAttribute.AmbientLight)) environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.5f, 1f)); else { ColorAttribute attr = (ColorAttribute)environment.get(ColorAttribute.AmbientLight); attr.color.set(0.4f, 0.4f, 0.5f, 1f); }
             heroLight.intensity = 0f;
 
             battleRenderer.render(modelBatch, decalBatch, environment, camera);
