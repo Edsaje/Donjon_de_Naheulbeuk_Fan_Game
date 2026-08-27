@@ -105,13 +105,23 @@ public class HUDRenderer implements Disposable {
 
         if (floor > 0) {
             uiBatch.begin();
-        font.getData().setScale(2.5f);
-        font.setColor(Color.WHITE);
-        String text = "Ãƒâ€°TAGE " + floor;
-        float x = (1280 / 2f) - (text.length() * 15f);
-        float y = (720 / 2f);
-        font.draw(uiBatch, text, x, y);
-        font.getData().setScale(1.2f);
+            font.getData().setScale(2.5f);
+            font.setColor(Color.WHITE);
+            String text = "ETAGE " + floor;
+            float x = (1280 / 2f) - (text.length() * 15f);
+            float y = (720 / 2f);
+            font.draw(uiBatch, text, x, y);
+            font.getData().setScale(1.2f);
+            uiBatch.end();
+        } else if (progress >= 0.8f) {
+            uiBatch.begin();
+            font.getData().setScale(2.0f);
+            font.setColor(Color.WHITE);
+            String text = "Chargement...";
+            float x = (1280 / 2f) - (text.length() * 12f);
+            float y = (720 / 2f);
+            font.draw(uiBatch, text, x, y);
+            font.getData().setScale(1.2f);
             uiBatch.end();
         }
     }

@@ -232,6 +232,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
     private Dungeon pendingMaze;
     private Team pendingTeam;
     private int pendingFloor = -1;
+    private boolean hasRenderedBlackScreen = false;
 
     public void setContext(Dungeon maze, Team team, int currentFloor) {
         if (this.currentState == GameState.TRANSITION && System.currentTimeMillis() - transitionStartTime < 1000) {
@@ -325,9 +326,14 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
         if (currentState == GameState.TRANSITION) {
             if (pendingMaze != null && System.currentTimeMillis() - transitionStartTime >= 1000) {
-                applyContext(pendingMaze, pendingTeam, pendingFloor);
-                pendingMaze = null;
-                pendingTeam = null;
+                if (!hasRenderedBlackScreen) {
+                    hasRenderedBlackScreen = true;
+                } else {
+                    applyContext(pendingMaze, pendingTeam, pendingFloor);
+                    pendingMaze = null;
+                    pendingTeam = null;
+                    hasRenderedBlackScreen = false;
+                }
             }
 
             if (System.currentTimeMillis() - transitionStartTime > 1500) {
