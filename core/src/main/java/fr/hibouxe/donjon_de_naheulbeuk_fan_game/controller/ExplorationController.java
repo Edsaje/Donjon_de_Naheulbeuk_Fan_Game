@@ -58,6 +58,8 @@ public class ExplorationController implements GameState {
         this.locManager = locManager;
         this.engine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.ExplorationEngine(maze, team);
         this.aiEngine = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MonsterAIEngine();
+        this.transitionDelay = 1.5f; // Prevent movement during the 1.5s transition
+        this.pendingFloorIntro = true;
     }
 
     public void setCurrentFloor(int floor) {
@@ -193,7 +195,7 @@ public class ExplorationController implements GameState {
             if (result != null && result.getActionTrigger() != null) {
                 String action = result.getActionTrigger();
                 if ("ENTER_DUNGEON".equals(action)) {
-                    gameContext.startDungeon("NAHEULBEUK");
+                    gameContext.pushState(new DungeonSelectionController(menu, gameContext));
                 } else if ("OPEN_TAVERN".equals(action)) {
                     gameContext.pushState(new HubController(team, menu, activeSlot, saveManager, gameContext));
                 }
