@@ -339,7 +339,6 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             if (System.currentTimeMillis() - transitionStartTime > 1500) {
                 currentState = pendingState != null ? pendingState : GameState.EXPLORATION;
                 pendingState = null;
-                cameraNeedsSnap = true;
             }
         }
 
