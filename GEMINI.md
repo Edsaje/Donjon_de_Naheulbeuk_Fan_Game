@@ -24,3 +24,11 @@ ew Vector3(), etc.) à l'intérieur d'une boucle ender() (Vue) ou update() (Mot
 
 ## ATTENTION AGENT:
 Tu dois **toujours** respecter ces règles dans tes propositions de code. Aucune allocation dans les boucles de rendu, et maintient le MVC pur !
+## 5. Infrastructure I/O & Injection de Dpendance
+- **Rgle :** Toutes les classes effectuant des entres/sorties natives (lecture de fichiers, audio, sauvegarde) doivent tre isoles dans le package infrastructure/.
+- **Solution :** Ne pas utiliser de Singletons (getInstance()) pour les managers techniques. Ils doivent tre instancis  la racine (DesktopLauncher / HD2DGameApp) et injects via le constructeur.
+
+## 6. Chemins de Fichiers & DesktopLauncher
+- **Rgle :** LibGDX sur desktop est sensible au Working Directory. Un lancement via gradlew desktop:run s'excute dans desktop/ (les assets sont dans ../assets/), tandis qu'un lancement via IntelliJ s'excute souvent  la racine (les assets sont dans assets/).
+- **Solution :** Toujours vrifier l'existence du fichier avant l'injection : new java.io.File("assets/...").exists() ? "assets/..." : "../assets/..."
+
