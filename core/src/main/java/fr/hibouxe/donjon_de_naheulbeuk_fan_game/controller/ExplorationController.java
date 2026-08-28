@@ -207,36 +207,16 @@ public class ExplorationController implements GameState {
                     gameContext.pushState(new HubController(team, menu, activeSlot, saveManager, gameContext)); // L'Auberge remplace le feu de camp
                 } else if (action.startsWith("BUILD_")) {
                     String buildingId = action.substring(6);
-                    String bName = buildingId;
-                    java.util.Map<String, Integer> costs = new java.util.HashMap<>();
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.BuildingBlueprint blueprint = gameContext.getHubRegistry().getBlueprintForNextLevel(buildingId, team);
                     
-                    if (buildingId.equals("TAVERNE")) { 
-                        if (team.getHubUpgradeLevel("TAVERNE") == 0) {
-                            bName = "le Bivouac (Tente)"; 
-                            costs.put("Bois", 2);
-                        } else {
-                            bName = "la Taverne du Ponceau"; 
-                            costs.put("Bois", 5); 
-                            costs.put("Pierre", 3); 
-                        }
-                    } else if (buildingId.equals("MARCHAND")) { 
-                        bName = "le Bazar de Gobzog"; 
-                        costs.put("Bois", 3); 
-                    } else if (buildingId.equals("BANQUE")) { 
-                        bName = "le Comptoir des Nains"; 
-                        costs.put("Bois", 4); 
-                        costs.put("Pierre", 5); 
-                        costs.put("Granite", 2); 
-                    } else if (buildingId.equals("FORGE")) { 
-                        bName = "la Forge d'Argent"; 
-                        costs.put("Bois", 2); 
-                        costs.put("Pierre", 5); 
+                    if (blueprint != null) {
+                        gameContext.pushState(new BuildPromptController(team, menu, gameContext, buildingId, blueprint.getName(), blueprint.getCosts(), () -> {
+                            // Rebuild scene after construction
+                            gameContext.goToVillage();
+                        }));
+                    } else {
+                        menu.displayMessage("Niveau max atteint pour ce batiment !");
                     }
-                    
-                    gameContext.pushState(new BuildPromptController(team, menu, gameContext, buildingId, bName, costs, () -> {
-                        // Rebuild scene after construction
-                        gameContext.goToVillage();
-                    }));
                 }
                 return true; // Stop processing further events on this cell
             }

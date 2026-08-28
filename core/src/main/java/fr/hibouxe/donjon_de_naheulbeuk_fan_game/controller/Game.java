@@ -18,12 +18,44 @@ public class Game implements InputListener, GameContext {
     private ISaveManager saveManager;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepository;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider;
+    private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.HubBuildingRegistry hubRegistry;
 
     public Game(IGameView app, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.input.IInputProvider inputProvider, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository monsterRepository) {
         this.app = app;
         this.saveManager = saveManager;
         this.inputProvider = inputProvider;
         this.monsterRepository = monsterRepository;
+        
+        this.hubRegistry = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.HubBuildingRegistry();
+        
+        // TAVERNE
+        java.util.Map<String, Integer> tLevel1 = new java.util.HashMap<>();
+        tLevel1.put("Bois", 2);
+        this.hubRegistry.register("TAVERNE", 1, "le Bivouac (Tente)", tLevel1);
+        
+        java.util.Map<String, Integer> tLevel2 = new java.util.HashMap<>();
+        tLevel2.put("Bois", 5);
+        tLevel2.put("Pierre", 3);
+        this.hubRegistry.register("TAVERNE", 2, "la Taverne du Ponceau", tLevel2);
+        
+        // MARCHAND
+        java.util.Map<String, Integer> mLevel1 = new java.util.HashMap<>();
+        mLevel1.put("Bois", 3);
+        mLevel1.put("Pierre", 1);
+        this.hubRegistry.register("MARCHAND", 1, "le Bazar de Gobzog", mLevel1);
+
+        // BANQUE
+        java.util.Map<String, Integer> bLevel1 = new java.util.HashMap<>();
+        bLevel1.put("Bois", 2);
+        bLevel1.put("Pierre", 5);
+        this.hubRegistry.register("BANQUE", 1, "le Comptoir des Nains", bLevel1);
+
+        // FORGE
+        java.util.Map<String, Integer> fLevel1 = new java.util.HashMap<>();
+        fLevel1.put("Bois", 5);
+        fLevel1.put("Granite", 5);
+        this.hubRegistry.register("FORGE", 1, "la Forge d'Argent", fLevel1);
+        
         initMainMenu();
     }
     
@@ -121,6 +153,12 @@ public class Game implements InputListener, GameContext {
     public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository getMonsterRepository() {
         return monsterRepository;
     }
+    
+    @Override
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.hub.HubBuildingRegistry getHubRegistry() {
+        return hubRegistry;
+    }
+
     @Override public boolean isInputBlocked() { return app != null && app.isAnyMenuOpen(); }
 
     private void runTutorial() {

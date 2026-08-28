@@ -15,6 +15,24 @@ public class RoamingMonsterGroup implements Serializable {
     private boolean isBoss;
     private AIState state = AIState.PATROL;
     
+    private transient fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.IRoamingBehavior behavior;
+
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.IRoamingBehavior getBehavior() {
+        if (behavior == null) {
+            String mainMonster = monsters.isEmpty() ? "" : monsters.get(0).getClass().getSimpleName();
+            if ("Orc".equals(mainMonster)) {
+                behavior = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.OrcBehavior();
+            } else if ("Goblin".equals(mainMonster)) {
+                behavior = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.GoblinBehavior();
+            } else if ("Specter".equals(mainMonster) || "Vampire".equals(mainMonster) || "Liche".equals(mainMonster)) {
+                behavior = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.UndeadBehavior();
+            } else {
+                behavior = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.combat.DefaultBehavior();
+            }
+        }
+        return behavior;
+    }
+    
     // AI Parameters
     private int facingDirection = 0; // 0=Sud, 1=Nord, 2=Ouest, 3=Est
     private float alertTimer = 0f;

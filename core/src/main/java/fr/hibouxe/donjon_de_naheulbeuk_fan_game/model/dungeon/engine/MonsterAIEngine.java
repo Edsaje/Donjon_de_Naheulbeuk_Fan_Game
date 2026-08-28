@@ -87,11 +87,8 @@ public class MonsterAIEngine {
                                 mg.setState(RoamingMonsterGroup.AIState.FLEE);
                             } else if (mainMonster.equals("Mimic") || mainMonster.equals("Chest")) {
                                 mg.setState(RoamingMonsterGroup.AIState.FLEE);
-                            } else if (mainMonster.equals("Orc")) {
-                                mg.setState(RoamingMonsterGroup.AIState.CHARGE);
-                                mg.setStateTimer(1.5f);
                             } else {
-                                mg.setState(RoamingMonsterGroup.AIState.CHASE);
+                                mg.getBehavior().onAlert(mg);
                             }
                         }
                         break;
@@ -99,11 +96,12 @@ public class MonsterAIEngine {
                         if (!canSee && !canHear && dist > 7.0f) {
                             mg.setState(RoamingMonsterGroup.AIState.PATROL);
                         } else {
-                            String mainMonster = mg.getMonsters().isEmpty() ? "" : mg.getMonsters().get(0).getClass().getSimpleName();
-                            float chaseSpeed = 1.3f;
-                            if (mainMonster.equals("Goblin")) chaseSpeed = 1.6f;
-                            else if (mainMonster.equals("Specter") || mainMonster.equals("Vampire") || mainMonster.equals("Liche")) {
-                                chaseSpeed = 0.5f;
+                            float chaseSpeed = mg.getBehavior().getChaseSpeed();
+                            
+                            // Specific logic for undead teleportation can be moved to UndeadBehavior later if needed,
+                            // or handled generically if chaseSpeed is very low. 
+                            // For now, keep the teleport logic here but rely on chaseSpeed.
+                            if (chaseSpeed < 1.0f) { // e.g. Undead
                                 mg.setStateTimer(mg.getStateTimer() - deltaTime);
                                 if (mg.getStateTimer() <= 0) {
                                     int tpX = (int)playerX + (int)(Math.random() * 6 - 3);
