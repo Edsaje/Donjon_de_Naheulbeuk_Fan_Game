@@ -55,7 +55,7 @@ public class HUDRenderer implements Disposable {
     private boolean isMenuOpen = false;
     private int selectedOption = 0;
     private String[] menuOptions = {
-            "Status", "Sac", "Équipement", "Magie", "Sauvegarder", "Paramètres", "Fermer"
+            "Status", "Sac", "Equipement", "Magie", "Sauvegarder", "Parametres", "Fermer"
     };
     
     // --- Settings Menu State ---
@@ -535,10 +535,10 @@ public class HUDRenderer implements Disposable {
         int currentY = y + statusHeight - 60;
         
         // Section SantÃƒÆ’Ã‚Â© & Prog
-        font.draw(uiBatch, "SantÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â® : " + hero.getHealthPoint() + " / " + hero.getMaxHealthPoint(), x + 30, currentY);
+        font.draw(uiBatch, "Sante : " + hero.getHealthPoint() + " / " + hero.getMaxHealthPoint(), x + 30, currentY);
         font.draw(uiBatch, hero.getResourceName() + " : " + hero.getCurrentResource() + " / " + hero.getMaxResource(), x + 300, currentY);
         currentY -= 35;
-        font.draw(uiBatch, "ExpÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â®rience : " + hero.getXp() + " / " + hero.getXpToNextLevel(), x + 30, currentY);
+        font.draw(uiBatch, "Experience : " + hero.getXp() + " / " + hero.getXpToNextLevel(), x + 30, currentY);
         currentY -= 50;
         
         // Attributs
@@ -547,17 +547,17 @@ public class HUDRenderer implements Disposable {
         font.setColor(Color.WHITE);
         currentY -= 35;
         font.draw(uiBatch, "Attaque : " + hero.getAttack(), x + 30, currentY);
-        font.draw(uiBatch, "DÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â®fense : " + hero.getDefense(), x + 300, currentY);
+        font.Defense : " + hero.getDefense(), x + 300, currentY);
         currentY -= 35;
         font.draw(uiBatch, "Attaque Mag. : " + hero.getMagicAttack(), x + 30, currentY);
-        font.draw(uiBatch, "DÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â®fense Mag. : " + hero.getMagicDefense(), x + 300, currentY);
+        font.Defense Mag. : " + hero.getMagicDefense(), x + 300, currentY);
         currentY -= 35;
         font.draw(uiBatch, "Vitesse : " + hero.getSpeed(), x + 30, currentY);
         currentY -= 50;
         
         //ÃƒÆ’Ã‚Â©quipements
         font.setColor(COLOR_TEXT_BLUE);
-        font.draw(uiBatch, "ÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒÆ’Ã‚Â«quipement actuel", x + 25, currentY);
+Equipement actuel", x + 25, currentY);
         font.setColor(Color.WHITE);
         currentY -= 35;
         
@@ -592,7 +592,7 @@ public class HUDRenderer implements Disposable {
         uiBatch.begin();
         font.setColor(Color.WHITE);
         if (state == HD2DGameApp.GameState.EXPLORATION) {
-            font.draw(uiBatch, "ÃƒÆ’Ã¢â‚¬Â°TAGE " + currentFloor, 20, 720 - 20);
+            font.draw(uiBatch, "ÃƒÆ’Ã¢â‚¬Â°ETAGE " + currentFloor, 20, 720 - 20);
         } else if (state == HD2DGameApp.GameState.VILLAGE) {
             font.draw(uiBatch, "CAMPEMENT", 20, 720 - 20);
         }
@@ -813,7 +813,7 @@ public class HUDRenderer implements Disposable {
         }
 
         font.setColor(Color.LIGHT_GRAY);
-        font.draw(uiBatch, "[Q/D]: Modifier   [ENTRÃ‰E]: Valider", menuX + 60, menuY + 25);
+        font.draw(uiBatch, "[Q/D]: Modifier   [ENTREE]: Valider", menuX + 60, menuY + 25);
 
         uiBatch.end();
     }
@@ -1222,7 +1222,7 @@ public class HUDRenderer implements Disposable {
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment eq = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) item;
                 font.setColor(Color.CYAN);
                 font.draw(uiBatch, "Attaque : +" + eq.getAttackBonus(), 790, 450);
-                font.draw(uiBatch, "Defense : +" + eq.getDefenseBonus(), 790, 410);
+                font.Defense : +" + eq.getDefenseBonus(), 790, 410);
             } else if (item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion) {
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion p = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion) item;
                 font.setColor(Color.GREEN);
