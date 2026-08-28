@@ -82,8 +82,8 @@ public abstract class Dungeon implements Serializable {
      * @param startY Coordonnée Y à épargner (joueur)
      * @param repository Le repository de monstres
      */
-    public void generateMonsters(int count, int startX, int startY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
-        getGenerator().generateMonsters(this, count, startX, startY, repository);
+    public void generateMonsters(int count, int startX, int startY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository, int floorNumber) {
+        getGenerator().generateMonsters(this, count, startX, startY, repository, floorNumber);
     }
 
     /**
@@ -248,4 +248,9 @@ public abstract class Dungeon implements Serializable {
      * @return true si l'expédition doit prendre fin avec succès
      */
     public abstract boolean isExpeditionComplete(int floorNumber);
+
+    /**
+     * Choisit un monstre aléatoire selon la table de spawn de ce donjon pour cet étage.
+     */
+    public abstract fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character getRandomMonster(int floorNumber, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider random, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository);
 }

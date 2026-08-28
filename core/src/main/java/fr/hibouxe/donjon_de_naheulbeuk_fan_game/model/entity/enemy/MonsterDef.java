@@ -11,4 +11,11 @@ public class MonsterDef {
     public int xpYield;
     public String spriteName;
     public String aiTactics;
+    public int goldYield;
+    public java.util.List<DropDef> lootDrops;
+
+    public static class DropDef {
+        public String itemId;
+        public float chance; // 0.0 to 1.0
+    }
 }

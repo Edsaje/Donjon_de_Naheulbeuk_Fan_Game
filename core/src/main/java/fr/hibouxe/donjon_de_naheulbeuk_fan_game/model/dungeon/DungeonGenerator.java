@@ -164,13 +164,15 @@ public class DungeonGenerator {
         }
     }
 
-    public void generateMonsters(Dungeon dungeon, int count, int startX, int startY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
+    public void generateMonsters(Dungeon dungeon, int count, int startX, int startY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository, int floorNumber) {
         int width = dungeon.getWidth();
         int height = dungeon.getHeight();
         Cell[][] grid = dungeon.getGrid();
 
         int placed = 0;
         int attempts = 0;
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider randomProvider = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.DefaultRandomProvider();
+        
         while (placed < count && attempts < 1000) {
             attempts++;
             int x = random.nextInt(width);
@@ -186,11 +188,11 @@ public class DungeonGenerator {
                     }
                 }
                 if (!taken) {
-                    List<Character> enemyGroup = new ArrayList<>();
+                    java.util.List<Character> enemyGroup = new java.util.ArrayList<>();
                     int groupSize = random.nextInt(3) + 1;
 
                     for (int j = 0; j < groupSize; j++) {
-                        enemyGroup.add(getRandomMonster(repository));
+                        enemyGroup.add(dungeon.getRandomMonster(floorNumber, randomProvider, repository));
                     }
 
                     dungeon.getRoamingMonsters().add(new RoamingMonsterGroup(x, y, enemyGroup, false));
@@ -260,12 +262,4 @@ public class DungeonGenerator {
         }
     }
 
-    private Character getRandomMonster(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
-        int roll = random.nextInt(3);
-        return switch (roll) {
-            case 0 -> new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(repository.getMonsterData("orc"));
-            case 1 -> new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(repository.getMonsterData("skeleton"));
-            default -> new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(repository.getMonsterData("goblin"));
-        };
-    }
 }

@@ -11,6 +11,10 @@
       "defense": 2,
       "speed": 6,
       "xpYield": 10,
+      "goldYield": 5,
+      "lootDrops": [
+        {"itemId": "dent_gobelin", "chance": 0.4}
+      ],
       "aiTactics": "CowardTactics",
       "spriteName": "goblin_sprite"
     },
@@ -25,6 +29,11 @@
       "defense": 5,
       "speed": 4,
       "xpYield": 15,
+      "goldYield": 0,
+      "lootDrops": [
+        {"itemId": "os_pourri", "chance": 0.5},
+        {"itemId": "epee_rouillee", "chance": 0.1}
+      ],
       "aiTactics": "WarriorTactics",
       "spriteName": "skeleton_sprite"
     },
@@ -39,8 +48,180 @@
       "defense": 8,
       "speed": 3,
       "xpYield": 50,
+      "goldYield": 20,
+      "lootDrops": [
+        {"itemId": "viande_orque", "chance": 0.6},
+        {"itemId": "cuir_orque", "chance": 0.3}
+      ],
       "aiTactics": "WarriorTactics",
       "spriteName": "orc_sprite"
+    },
+    {
+      "id": "giant_spider",
+      "name": "Araignée Géante",
+      "hp": 30,
+      "maxHp": 30,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 12,
+      "defense": 3,
+      "speed": 8,
+      "xpYield": 20,
+      "goldYield": 0,
+      "lootDrops": [
+        {"itemId": "fil_araignee", "chance": 0.7},
+        {"itemId": "crochet_venimeux", "chance": 0.25}
+      ],
+      "aiTactics": "AggressiveTactics",
+      "spriteName": "spider_sprite"
+    },
+    {
+      "id": "troll",
+      "name": "Troll des Souterrains",
+      "hp": 200,
+      "maxHp": 200,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 25,
+      "defense": 10,
+      "speed": 2,
+      "xpYield": 150,
+      "goldYield": 0,
+      "lootDrops": [
+        {"itemId": "cuir_troll", "chance": 1.0},
+        {"itemId": "massue_lourde", "chance": 0.15}
+      ],
+      "aiTactics": "WarriorTactics",
+      "spriteName": "troll_sprite"
+    },
+    {
+      "id": "sorcerer",
+      "name": "Sorcier Sombre",
+      "hp": 35,
+      "maxHp": 35,
+      "mp": 100,
+      "maxMp": 100,
+      "attack": 4,
+      "defense": 2,
+      "speed": 5,
+      "xpYield": 40,
+      "goldYield": 50,
+      "lootDrops": [
+        {"itemId": "potion_mineure", "chance": 0.4},
+        {"itemId": "parchemin_mystique", "chance": 0.2}
+      ],
+      "aiTactics": "MageTactics",
+      "spriteName": "sorcerer_sprite"
+    },
+    {
+      "id": "cursed_warrior",
+      "name": "Guerrier Maudit",
+      "hp": 60,
+      "maxHp": 60,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 18,
+      "defense": 12,
+      "speed": 4,
+      "xpYield": 60,
+      "goldYield": 15,
+      "lootDrops": [
+        {"itemId": "morceau_armure", "chance": 0.5},
+        {"itemId": "epee_maudite", "chance": 0.05}
+      ],
+      "aiTactics": "WarriorTactics",
+      "spriteName": "cursed_warrior_sprite"
+    },
+    {
+      "id": "mutant_rat",
+      "name": "Rat Mutant",
+      "hp": 15,
+      "maxHp": 15,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 6,
+      "defense": 1,
+      "speed": 9,
+      "xpYield": 5,
+      "goldYield": 0,
+      "lootDrops": [
+        {"itemId": "queue_rat", "chance": 0.8},
+        {"itemId": "viande_douteuse", "chance": 0.3}
+      ],
+      "aiTactics": "CowardTactics",
+      "spriteName": "rat_sprite"
+    },
+    {
+      "id": "zombie",
+      "name": "Mort-Vivant",
+      "hp": 50,
+      "maxHp": 50,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 10,
+      "defense": 3,
+      "speed": 2,
+      "xpYield": 15,
+      "goldYield": 2,
+      "lootDrops": [
+        {"itemId": "tissu_dechire", "chance": 0.6}
+      ],
+      "aiTactics": "AggressiveTactics",
+      "spriteName": "zombie_sprite"
+    },
+    {
+      "id": "easter_egg_tp",
+      "name": "Rouleau de PQ Maudit",
+      "hp": 500,
+      "maxHp": 500,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 1,
+      "defense": 50,
+      "speed": 1,
+      "xpYield": 500,
+      "goldYield": 0,
+      "lootDrops": [
+        {"itemId": "papier_toilette_legendaire", "chance": 1.0}
+      ],
+      "aiTactics": "CowardTactics",
+      "spriteName": "tp_sprite"
+    },
+    {
+      "id": "easter_egg_sponge",
+      "name": "L'Éponge Carnivore",
+      "hp": 100,
+      "maxHp": 100,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 25,
+      "defense": 5,
+      "speed": 2,
+      "xpYield": 300,
+      "goldYield": 100,
+      "lootDrops": [
+        {"itemId": "eponge_magique", "chance": 0.5}
+      ],
+      "aiTactics": "WarriorTactics",
+      "spriteName": "sponge_sprite"
+    },
+    {
+      "id": "easter_egg_ravioli",
+      "name": "Boîte de Raviolis Mutante",
+      "hp": 250,
+      "maxHp": 250,
+      "mp": 0,
+      "maxMp": 0,
+      "attack": 30,
+      "defense": 20,
+      "speed": 3,
+      "xpYield": 600,
+      "goldYield": 0,
+      "lootDrops": [
+        {"itemId": "raviolis_divins", "chance": 1.0}
+      ],
+      "aiTactics": "AggressiveTactics",
+      "spriteName": "ravioli_sprite"
     }
   ]
 }

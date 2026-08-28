@@ -67,7 +67,9 @@ public class ViewProvider {
             @Override
             public void displayTurn(String characterName) {}
             @Override
-            public void displayVictory() { app.displayMessage("Victoire !"); }
+            public void displayVictory(int xp, int gold, java.util.List<String> loots) {
+                app.displayVictoryUI(xp, gold, loots);
+            }
             @Override
             public void displayDefeat() { app.displayMessage("Défaite !"); }
             @Override

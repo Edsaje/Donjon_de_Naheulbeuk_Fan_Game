@@ -85,10 +85,27 @@ public class BattleController implements GameState {
     
     private void handleBattleEnd() {
         if (engine.isVictory()) {
-            menu.displayVictory();
-            if (onVictory != null) onVictory.run();
+            int totalXp = 0;
+            int totalGold = 0;
+            java.util.List<String> loots = new java.util.ArrayList<>();
+            
+            for (Character m : monsters) {
+                if (m instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster) {
+                    fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster monster = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster) m;
+                    totalXp += monster.getXp();
+                    totalGold += monster.getGoldYield();
+                    loots.addAll(monster.rollLoot());
+                }
+            }
+            
+            team.setGold(team.getGold() + totalGold);
+            for (Character p : team.getMembers()) {
+                p.gainXp(totalXp);
+            }
+            
+            menu.displayVictory(totalXp, totalGold, loots);
         } else {
-            if (onDefeat != null) onDefeat.run();
+            menu.displayDefeat();
         }
     }
 
@@ -110,6 +127,15 @@ public class BattleController implements GameState {
     @Override
     public void onInput(String action) {
         if ("ENTER".equals(action)) {
+            if (engine.getState() == BattleState.END) {
+                menu.setMenuRequest(null, null);
+                if (engine.isVictory()) {
+                    if (onVictory != null) onVictory.run();
+                } else {
+                    if (onDefeat != null) onDefeat.run();
+                }
+                return;
+            }
             int selection = menu.getMenuSelection();
             menu.setMenuRequest(null, null);
             onActionSelected(selection);

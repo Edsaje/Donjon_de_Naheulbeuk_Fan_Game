@@ -27,6 +27,7 @@ public class Team implements Serializable {
     private List<Character> members = new ArrayList<>();
     private List<Item> inventory = new ArrayList<>();
     private int maxCapacity = 10;
+    private int gold = 0;
 
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider randomProvider;
 
@@ -140,9 +141,10 @@ public class Team implements Serializable {
         return facingDirection;
     }
 
-    public void setFacingDirection(int facingDirection) {
-        this.facingDirection = facingDirection;
-    }
+    public void setFacingDirection(int dir) { this.facingDirection = dir; }
+    
+    public int getGold() { return this.gold; }
+    public void setGold(int gold) { this.gold = gold; }
 
     public int getActiveLeaderIndex() {
         return activeLeaderIndex;

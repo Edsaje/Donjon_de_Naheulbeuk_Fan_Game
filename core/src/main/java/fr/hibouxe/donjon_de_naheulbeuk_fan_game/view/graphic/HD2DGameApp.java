@@ -575,7 +575,15 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             hudRenderer.showFloatingMessage("Tour de " + characterName + " !", 1.5f);
         }
     }
-    public void displayVictory() { displayMessage("Victoire !"); }
+    public void displayVictoryUI(int xp, int gold, java.util.List<String> loots) { 
+        StringBuilder sb = new StringBuilder("VICTOIRE !\n");
+        sb.append(xp).append(" XP, ").append(gold).append(" Or");
+        if (!loots.isEmpty()) {
+            sb.append("\nButin: ");
+            for (String l : loots) sb.append(l).append(" ");
+        }
+        setMenuRequest(sb.toString(), new String[]{"Continuer"});
+    }
     public void displayDefeat() { displayMessage("Defaite !"); }
     public void displaySaveSuccess(int slot) { displayMessage("Sauvegarde effectuee sur le slot " + slot); }
     public void displaySaveError() { displayMessage("Erreur save"); }

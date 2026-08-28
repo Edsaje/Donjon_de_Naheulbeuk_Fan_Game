@@ -33,11 +33,20 @@ public class JsonMonsterLoader implements IMonsterRepository {
             def.hp = monster.getInt("hp", 10);
             def.mp = monster.getInt("mp", 0);
             def.attack = monster.getInt("attack", 0);
-            def.defense = monster.getInt("defense", 0);
             def.speed = monster.getInt("speed", 0);
             def.xpYield = monster.getInt("xpYield", 0);
             def.spriteName = monster.getString("spriteName", "");
             def.aiTactics = monster.getString("aiTactics", "WarriorTactics");
+            def.goldYield = monster.getInt("goldYield", 0);
+            def.lootDrops = new java.util.ArrayList<>();
+            if (monster.has("lootDrops")) {
+                for (JsonValue drop : monster.get("lootDrops")) {
+                    MonsterDef.DropDef dropDef = new MonsterDef.DropDef();
+                    dropDef.itemId = drop.getString("itemId");
+                    dropDef.chance = drop.getFloat("chance");
+                    def.lootDrops.add(dropDef);
+                }
+            }
             monsterCache.put(def.id, def);
         }
     }

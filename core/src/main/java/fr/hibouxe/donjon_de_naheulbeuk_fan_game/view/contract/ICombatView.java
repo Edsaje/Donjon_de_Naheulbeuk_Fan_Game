@@ -11,7 +11,7 @@ public interface ICombatView {
     Skill askSkill(Character attacker, List<Character> monsters);
     Character askMonsterTarget(List<Character> monsters);
     void displayTurn(String characterName);
-    void displayVictory();
+    void displayVictory(int xp, int gold, List<String> loots);
     void displayDefeat();
     void displayMessage(String message);
     void displayInventory(Team team);

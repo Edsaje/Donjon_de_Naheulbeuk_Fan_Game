@@ -15,6 +15,11 @@ public class HubDungeon extends Dungeon {
     }
 
     @Override
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character getRandomMonster(int floorNumber, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider random, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
+        return null; // Pas de monstres dans le Hub
+    }
+
+    @Override
     public boolean prepareFloor(int floorNumber, Team team, IMonsterRepository repository) {
         this.setWidth(20);
         this.setHeight(20);

@@ -43,6 +43,37 @@ public class NaheulbeukDungeon extends Dungeon {
     }
 
     @Override
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character getRandomMonster(int floorNumber, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider random, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
+        String monsterId;
+        double roll = random.nextDouble();
+        
+        // Spawn tables based on floor
+        if (floorNumber <= 2) {
+            // Étages 1-2 : Gobelins très communs, un peu de rats et araignées
+            if (roll < 0.60) monsterId = "goblin";
+            else if (roll < 0.80) monsterId = "mutant_rat";
+            else if (roll < 0.95) monsterId = "giant_spider";
+            else monsterId = "orc"; // 5% chance Orc
+        } else if (floorNumber <= 4) {
+            // Étages 3-4 : Orques, Morts-vivants, Squelettes
+            if (roll < 0.35) monsterId = "orc";
+            else if (roll < 0.60) monsterId = "skeleton";
+            else if (roll < 0.85) monsterId = "zombie";
+            else if (roll < 0.95) monsterId = "giant_spider";
+            else monsterId = "easter_egg_tp"; // 5% chance Rouleau PQ
+        } else {
+            // Étages 5+ (Post-game ou fin) : Trolls, Sorciers, Guerriers maudits
+            if (roll < 0.30) monsterId = "troll";
+            else if (roll < 0.60) monsterId = "cursed_warrior";
+            else if (roll < 0.90) monsterId = "sorcerer";
+            else if (roll < 0.98) monsterId = "easter_egg_sponge";
+            else monsterId = "easter_egg_ravioli"; // 2% Ravioli
+        }
+
+        return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(repository.getMonsterData(monsterId));
+    }
+
+    @Override
     public boolean prepareFloor(int floorNumber, Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
         FloorBlueprint bp = getBlueprintForFloor(floorNumber);
 
@@ -71,7 +102,7 @@ public class NaheulbeukDungeon extends Dungeon {
             bossList.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem());
             this.getRoamingMonsters().add(new RoamingMonsterGroup(bossPos[0], bossPos[1], bossList, true));
         } else {
-            generateMonsters(bp.getNumMonsters(), team.getX(), team.getY(), repository);
+            generateMonsters(bp.getNumMonsters(), team.getX(), team.getY(), repository, floorNumber);
         }
         generateItems(bp.getNumItems());
         generateStairs(bp.getNumStairs());

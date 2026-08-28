@@ -5,6 +5,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.ai.*;
 
 public class Monster extends Character {
     private String spriteName;
+    private int goldYield;
+    private java.util.List<MonsterDef.DropDef> lootDrops;
 
     public Monster(MonsterDef data) {
         super(
@@ -30,6 +32,23 @@ public class Monster extends Character {
         } else {
             this.tactics = new WarriorTactics();
         }
+        this.goldYield = data.goldYield;
+        this.lootDrops = data.lootDrops != null ? new java.util.ArrayList<>(data.lootDrops) : new java.util.ArrayList<>();
+    }
+
+    public int getGoldYield() { return goldYield; }
+    
+    /**
+     * Calcule aléatoirement le butin lâché par ce monstre.
+     */
+    public java.util.List<String> rollLoot() {
+        java.util.List<String> dropped = new java.util.ArrayList<>();
+        for (MonsterDef.DropDef drop : lootDrops) {
+            if (this.randomProvider.nextDouble() <= drop.chance) {
+                dropped.add(drop.itemId);
+            }
+        }
+        return dropped;
     }
 
     public String getSpriteName() {

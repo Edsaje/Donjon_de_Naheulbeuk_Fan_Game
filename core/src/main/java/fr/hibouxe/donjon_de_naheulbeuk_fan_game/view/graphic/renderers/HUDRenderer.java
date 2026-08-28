@@ -286,13 +286,15 @@ public class HUDRenderer implements Disposable {
     private void renderContextualMenu(String title, String[] options, HD2DGameApp.GameState state) {
         if (state == HD2DGameApp.GameState.BATTLE) {
             // === MENU DE COMBAT (Style DQ3 HD-2D) ===
+            int titleLines = title.split("\n").length;
+            int titleHeight = titleLines * 30;
             int menuWidth = 350;
-            int menuHeight = 60 + options.length * 40;
-            int x = 30; // AlignÃƒÂ© ÃƒÂ  gauche, plus bas
+            int menuHeight = 30 + titleHeight + options.length * 40;
+            int x = 30; // Align  gauche, plus bas
             int y = 50;
             
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            // FenÃ¢â€Å“Ã‚Â¬tre Noire semi-transparente
+            // Fentre Noire semi-transparente
             shapeRenderer.setColor(COLOR_FLOAT_BG);
             shapeRenderer.rect(x, y, menuWidth, menuHeight);
             
@@ -303,9 +305,9 @@ public class HUDRenderer implements Disposable {
             shapeRenderer.rectLine(x, y, x, y + menuHeight, 3);
             shapeRenderer.rectLine(x + menuWidth, y, x + menuWidth, y + menuHeight, 3);
 
-            // Curseur gris foncÃƒÂ©
+            // Curseur gris fonc
             if (contextMenuSelection < options.length) {
-                int cursorY = y + menuHeight - 80 - contextMenuSelection * 40;
+                int cursorY = y + options.length * 40 - 20 - contextMenuSelection * 40;
                 shapeRenderer.setColor(COLOR_CURSOR_FLOAT);
                 shapeRenderer.rect(x + 10, cursorY - 5, menuWidth - 20, 30);
             }
@@ -318,7 +320,7 @@ public class HUDRenderer implements Disposable {
             font.setColor(Color.WHITE);
             for (int i = 0; i < options.length; i++) {
                 String prefix = (i == contextMenuSelection) ? "> " : "  ";
-                font.draw(uiBatch, prefix + options[i], x + 35, y + menuHeight - 60 - i * 40);
+                font.draw(uiBatch, prefix + options[i], x + 35, y + options.length * 40 - i * 40);
             }
             uiBatch.end();
 

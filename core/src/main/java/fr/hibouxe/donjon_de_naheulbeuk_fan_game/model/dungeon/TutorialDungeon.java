@@ -14,6 +14,12 @@ public class TutorialDungeon extends Dungeon {
     }
 
     @Override
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character getRandomMonster(int floorNumber, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider random, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
+        // Le tutoriel n'a pas de monstres générés aléatoirement
+        return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster(repository.getMonsterData("goblin"));
+    }
+
+    @Override
     public boolean prepareFloor(int floorNumber, Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
         switch (floorNumber) {
             case 1:
