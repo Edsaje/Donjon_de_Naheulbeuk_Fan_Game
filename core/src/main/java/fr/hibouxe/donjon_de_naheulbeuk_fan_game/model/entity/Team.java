@@ -49,6 +49,15 @@ public class Team implements Serializable {
         members.add(new Ogre());
         members.add(new Thief());
         
+        // Equipement de depart selon le lore
+        members.get(0).equip((fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.ItemFactory.createItem("epee_base"));
+        members.get(1).equip((fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.ItemFactory.createItem("hache_deux_mains"));
+        members.get(2).equip((fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.ItemFactory.createItem("arc_bois"));
+        members.get(3).equip((fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.ItemFactory.createItem("grosse_epee"));
+        members.get(4).equip((fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.ItemFactory.createItem("baton_magique"));
+        // L'Ogre (index 5) n'a pas d'arme
+        members.get(6).equip((fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.ItemFactory.createItem("dague_emoussee"));
+        
         for (Character c : members) {
             c.setRandomProvider(randomProvider);
         }

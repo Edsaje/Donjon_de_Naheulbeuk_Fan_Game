@@ -94,7 +94,15 @@ public class BattleController implements GameState {
                     fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster monster = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.enemy.Monster) m;
                     totalXp += monster.getXp();
                     totalGold += monster.getGoldYield();
-                    loots.addAll(monster.rollLoot());
+                    
+                    for (String itemId : monster.rollLoot()) {
+                        fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item item = fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.ItemFactory.createItem(itemId);
+                        if (team.addItem(item)) {
+                            loots.add(item.getName());
+                        } else {
+                            loots.add(item.getName() + " (Jete, inventaire plein)");
+                        }
+                    }
                 }
             }
             

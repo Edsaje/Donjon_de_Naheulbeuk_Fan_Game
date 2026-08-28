@@ -145,7 +145,7 @@ public class HUDRenderer implements Disposable {
             float y = (720 / 2f);
             font.draw(uiBatch, text, x, y);
             uiBatch.end();
-            font.getData().setScale(1.0f);
+            font.getData().setScale(1.2f);
         } else if (progress >= 0.8f) {
             uiBatch.begin();
             font.getData().setScale(2.0f);
@@ -216,7 +216,7 @@ public class HUDRenderer implements Disposable {
             font.draw(uiBatch, floatingMessage, cx + 2, cy - 2);
             font.setColor(1, 1, 0, 1);
             font.draw(uiBatch, floatingMessage, cx, cy);
-            font.getData().setScale(1.5f);
+            font.getData().setScale(1.2f);
             uiBatch.end();
         } else {
             floatingMessage = null;
@@ -410,9 +410,8 @@ public class HUDRenderer implements Disposable {
         // [2] Forêt de Schlipak : Centre
         // [3] Ruines : Sud-Est (Désert)
         // [4] Annuler : Hors de l'écran
-        float[] pinX = { 200f, 250f, 650f, 850f, -100f }; 
-        float[] pinY = { 250f, 400f, 350f, 200f, -100f }; 
-        
+        float[] pinX = { 200f, 225f, 550f, 850f, -100f }; 
+        float[] pinY = { 250f, 280f, 400f, 200f, -100f };
         Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
