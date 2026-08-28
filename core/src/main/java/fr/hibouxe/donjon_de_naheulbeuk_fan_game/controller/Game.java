@@ -158,6 +158,19 @@ public class Game implements InputListener, GameContext {
 
     @Override
     public void goToVillage() {
+        // Transferer automatiquement les ressources dans le coffre du HUB
+        java.util.Iterator<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item> it = team.getInventory().iterator();
+        while (it.hasNext()) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item item = it.next();
+            if (item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Material) {
+                String name = item.getName();
+                if (name.equals("Bois") || name.equals("Pierre") || name.equals("Granite") || name.equals("Foin")) {
+                    team.getHubChest().put(name, team.getHubChest().getOrDefault(name, 0) + 1);
+                    it.remove();
+                }
+            }
+        }
+    
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.HubDungeon hub = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.HubDungeon();
         hub.prepareFloor(0, team, monsterRepository);
         ExplorationController ec = new ExplorationController(hub, team, app.getExplorationView(), app.getMenuView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());

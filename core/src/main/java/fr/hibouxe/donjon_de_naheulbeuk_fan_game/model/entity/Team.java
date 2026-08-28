@@ -29,6 +29,7 @@ public class Team implements Serializable {
     private int maxCapacity = 10;
     private int gold = 0;
     private java.util.Map<String, Integer> hubUpgrades = new java.util.HashMap<>();
+    private java.util.Map<String, Integer> hubChest = new java.util.HashMap<>();
 
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider randomProvider;
 
@@ -160,6 +161,9 @@ public class Team implements Serializable {
     public void setHubUpgrades(java.util.Map<String, Integer> upgrades) { this.hubUpgrades = upgrades; }
     public int getHubUpgradeLevel(String key) { return hubUpgrades.getOrDefault(key, 0); }
     public void setHubUpgradeLevel(String key, int level) { hubUpgrades.put(key, level); }
+    
+    public java.util.Map<String, Integer> getHubChest() { return hubChest; }
+    public void setHubChest(java.util.Map<String, Integer> chest) { this.hubChest = chest; }
 
     public int getActiveLeaderIndex() {
         return activeLeaderIndex;

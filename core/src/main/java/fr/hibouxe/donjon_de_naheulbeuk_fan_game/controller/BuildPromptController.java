@@ -35,12 +35,8 @@ public class BuildPromptController implements GameState {
     }
 
     private boolean hasMaterials() {
-        Map<String, Integer> currentCounts = new HashMap<>();
-        for (Item item : team.getInventory()) {
-            currentCounts.put(item.getName(), currentCounts.getOrDefault(item.getName(), 0) + 1);
-        }
         for (Map.Entry<String, Integer> req : costs.entrySet()) {
-            if (currentCounts.getOrDefault(req.getKey(), 0) < req.getValue()) {
+            if (team.getHubChest().getOrDefault(req.getKey(), 0) < req.getValue()) {
                 return false;
             }
         }
@@ -49,15 +45,8 @@ public class BuildPromptController implements GameState {
 
     private void consumeMaterials() {
         for (Map.Entry<String, Integer> req : costs.entrySet()) {
-            int toRemove = req.getValue();
-            java.util.Iterator<Item> it = team.getInventory().iterator();
-            while (it.hasNext() && toRemove > 0) {
-                Item item = it.next();
-                if (item.getName().equals(req.getKey())) {
-                    it.remove();
-                    toRemove--;
-                }
-            }
+            int current = team.getHubChest().getOrDefault(req.getKey(), 0);
+            team.getHubChest().put(req.getKey(), current - req.getValue());
         }
     }
 
