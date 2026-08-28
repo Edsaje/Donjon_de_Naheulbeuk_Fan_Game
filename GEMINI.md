@@ -36,3 +36,7 @@ Tu dois **toujours** respecter ces règles dans tes propositions de code. Aucune
 ## 7. Rigueur Architecturale (Zéro "Vite Fait")
 - **Règle :** Il est strictement interdit d'implémenter des fonctionnalités de manière précipitée ("quick and dirty") ou de court-circuiter l'architecture pour gagner du temps. Pas de "Magic Strings" dans la logique métier, pas de logique de craft/économie dans les contrôleurs de vue, et pas de switch géants (utiliser le pattern Strategy).
 - **Solution :** Si une fonctionnalité demande de violer le SRP ou l'OCP (SOLID) pour être intégrée, le design DOIT être refactoré d'abord. Chaque nouvelle entité (bâtiment, monstre, objet) doit être ajoutée via un registre de données (Registry/Factory) ou un pattern dédié, sans jamais altérer le moteur central (Core Engine).
+
+## 8. Zéro Accent (Contournement Encodage)
+- **Règle :** Jusqu'à nouvel ordre, il est strictement interdit d'utiliser des caractères accentués (é, è, à, ê, î, etc.) ou spéciaux dans les chaînes de caractères affichées à l'écran (UI) ou dans le code source. 
+- **Solution :** Utiliser systématiquement les équivalents non-accentués (ex: "Sante" au lieu de "Santé", "Parametres" au lieu de "Paramètres", "Etage" au lieu de "Étage"). Le français reste la langue du jeu, mais en ASCII pur pour éviter toute corruption.
