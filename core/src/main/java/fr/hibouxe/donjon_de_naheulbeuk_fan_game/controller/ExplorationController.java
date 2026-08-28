@@ -202,12 +202,22 @@ public class ExplorationController implements GameState {
                 } else if (action.startsWith("BUILD_")) {
                     String buildingId = action.substring(6);
                     String bName = buildingId;
-                    int cost = 500;
-                    if (buildingId.equals("TAVERNE")) { bName = "la Taverne"; cost = 800; }
-                    else if (buildingId.equals("MARCHAND")) { bName = "le Stand du Marchand"; cost = 300; }
-                    else if (buildingId.equals("AUBERGE")) { bName = "l'Auberge"; cost = 500; }
+                    java.util.Map<String, Integer> costs = new java.util.HashMap<>();
                     
-                    gameContext.pushState(new BuildPromptController(team, menu, gameContext, buildingId, bName, cost, () -> {
+                    if (buildingId.equals("TAVERNE")) { 
+                        bName = "la Taverne"; 
+                        costs.put("Bois", 5); 
+                        costs.put("Pierre", 3); 
+                    } else if (buildingId.equals("MARCHAND")) { 
+                        bName = "le Stand du Marchand"; 
+                        costs.put("Bois", 3); 
+                    } else if (buildingId.equals("AUBERGE")) { 
+                        bName = "l'Auberge"; 
+                        costs.put("Bois", 4); 
+                        costs.put("Pierre", 2); 
+                    }
+                    
+                    gameContext.pushState(new BuildPromptController(team, menu, gameContext, buildingId, bName, costs, () -> {
                         // Rebuild scene after construction
                         gameContext.goToVillage();
                     }));

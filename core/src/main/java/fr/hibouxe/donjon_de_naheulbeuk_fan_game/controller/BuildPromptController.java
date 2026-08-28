@@ -1,31 +1,69 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller;
 
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.contract.IMenuView;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.state.GameState;
+import java.util.Map;
+import java.util.HashMap;
 
 public class BuildPromptController implements GameState {
     private Team team;
     private IMenuView menu;
     private GameContext gameContext;
     private String buildingId;
-    private int costGold;
     private String buildingName;
+    private Map<String, Integer> costs;
     private Runnable onBuildSuccess;
 
-    public BuildPromptController(Team team, IMenuView menu, GameContext gameContext, String buildingId, String buildingName, int costGold, Runnable onBuildSuccess) {
+    public BuildPromptController(Team team, IMenuView menu, GameContext gameContext, String buildingId, String buildingName, Map<String, Integer> costs, Runnable onBuildSuccess) {
         this.team = team;
         this.menu = menu;
         this.gameContext = gameContext;
         this.buildingId = buildingId;
         this.buildingName = buildingName;
-        this.costGold = costGold;
+        this.costs = costs;
         this.onBuildSuccess = onBuildSuccess;
+    }
+
+    private String getCostString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : costs.entrySet()) {
+            sb.append(entry.getValue()).append(" ").append(entry.getKey()).append(" ");
+        }
+        return sb.toString().trim();
+    }
+
+    private boolean hasMaterials() {
+        Map<String, Integer> currentCounts = new HashMap<>();
+        for (Item item : team.getInventory()) {
+            currentCounts.put(item.getName(), currentCounts.getOrDefault(item.getName(), 0) + 1);
+        }
+        for (Map.Entry<String, Integer> req : costs.entrySet()) {
+            if (currentCounts.getOrDefault(req.getKey(), 0) < req.getValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void consumeMaterials() {
+        for (Map.Entry<String, Integer> req : costs.entrySet()) {
+            int toRemove = req.getValue();
+            java.util.Iterator<Item> it = team.getInventory().iterator();
+            while (it.hasNext() && toRemove > 0) {
+                Item item = it.next();
+                if (item.getName().equals(req.getKey())) {
+                    it.remove();
+                    toRemove--;
+                }
+            }
+        }
     }
 
     @Override
     public void enter() {
-        menu.setMenuRequest("Construire " + buildingName + " ?", new String[]{"Oui (" + costGold + " Or)", "Non"});
+        menu.setMenuRequest("Construire " + buildingName + " ?", new String[]{"Oui (" + getCostString() + ")", "Non"});
     }
 
     @Override
@@ -41,13 +79,13 @@ public class BuildPromptController implements GameState {
             int choice = menu.getMenuSelection();
             menu.resetMenuSelection();
             if (choice == 0) { // Oui
-                if (team.getGold() >= costGold) {
-                    team.setGold(team.getGold() - costGold);
+                if (hasMaterials()) {
+                    consumeMaterials();
                     team.setHubUpgradeLevel(buildingId, 1);
                     menu.displayMessage("Vous avez construit : " + buildingName + " !");
                     if (onBuildSuccess != null) onBuildSuccess.run();
                 } else {
-                    menu.displayMessage("Pas assez d'or ! Il vous manque " + (costGold - team.getGold()) + " Or.");
+                    menu.displayMessage("Ressources manquantes ! Il vous faut : " + getCostString());
                 }
             }
             gameContext.popState();

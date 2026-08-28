@@ -17,6 +17,13 @@ public class ItemFactory {
             case "grosse_epee": return new OffensiveEquipment("Grosse Epee", "Tres grande epee.", EquipmentCategory.HEAVY_WEAPON, 2, 0);
             
             case "potion_mineure": return new Potion("Potion Mineure", "Restaure 20 PV.", 20);
+            
+            // Ressources de base pour le HUB
+            case "bois": return new Material("Bois", "Morceau de bois pour la construction.");
+            case "pierre": return new Material("Pierre", "Un bloc de pierre solide.");
+            case "granite": return new Material("Granite", "Pierre de haute qualite.");
+            case "foin": return new Material("Foin", "De la paille seche.");
+            
             case "dent_gobelin": return new Material("Dent de Gobelin", "Une dent sale.");
             case "os_pourri": return new Material("Os Pourri", "Un vieil os.");
             case "epee_rouillee": return new OffensiveEquipment("Epee Rouillee", "Une epee usee.", EquipmentCategory.LIGHT_WEAPON, 2, 0);
