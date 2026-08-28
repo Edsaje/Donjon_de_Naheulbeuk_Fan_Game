@@ -28,39 +28,34 @@ public class Elf extends Character {
         this.setResourceName("Mana");
         this.setMaxResource(100);
         this.setCurrentResource(100);
-        this.skills.add(new Skill("Soin Magique", 15, "Rend 15 PV à un allié.", true));
-        this.skills.add(new Skill("Tir Précis (ou presque)", 15, "Un tir à l'arc ajusté. Risque élevé de toucher un coéquipier !", false));
-    }
-
-    /**
-     * Exécute les compétences spéciales de l'Elfe (Soin Magique ou Tir Précis).
-     *
-     * @param skill  La compétence utilisée
-     * @param team   La compagnie de héros
-     * @param target Le monstre affronté
-     * @return Message de résultat
-     */
-    @Override
-    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult useSpecialSkill(Skill skill, Team team, Character target) {
-        if (skill.getName().contains("Soin")) {
-            if (this.getCurrentResource() >= skill.getCost()) {
-                this.setCurrentResource(this.getCurrentResource() - skill.getCost());
-                if (target != null) {
-                    target.setHealthPoint(target.getHealthPoint() + 15);
-                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, 15, "HEAL");
+        this.skills.add(new Skill("Soin Magique", 15, "Rend 15 PV à un allié.", true) {
+            @Override
+            public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character target) {
+                if (user.getCurrentResource() >= getCost()) {
+                    user.setCurrentResource(user.getCurrentResource() - getCost());
+                    if (target != null) {
+                        target.setHealthPoint(target.getHealthPoint() + 15);
+                        return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, 15, "HEAL");
+                    }
                 }
+                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
             }
-        } else {
-            if (this.getCurrentResource() >= skill.getCost()) {
-                this.setCurrentResource(this.getCurrentResource() - skill.getCost());
-                if (target != null) {
-                    int damage = this.getAttack() + 10;
-                    target.setHealthPoint(target.getHealthPoint() - damage);
-                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
+        });
+        
+        this.skills.add(new Skill("Tir Précis (ou presque)", 15, "Un tir à l'arc ajusté. Risque élevé de toucher un coéquipier !", false) {
+            @Override
+            public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character target) {
+                if (user.getCurrentResource() >= getCost()) {
+                    user.setCurrentResource(user.getCurrentResource() - getCost());
+                    if (target != null) {
+                        int damage = user.getAttack() + 10;
+                        target.setHealthPoint(target.getHealthPoint() - damage);
+                        return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
+                    }
                 }
+                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
             }
-        }
-        return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+        });
     }
 
     @Override

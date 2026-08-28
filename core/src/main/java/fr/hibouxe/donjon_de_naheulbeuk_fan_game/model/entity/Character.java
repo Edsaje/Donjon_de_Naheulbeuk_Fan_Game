@@ -80,7 +80,7 @@ public class Character implements Serializable {
      * Cette méthode est destinée à être redéfinie dans les sous-classes.
      */
     public SkillResult useSpecialSkill(Skill skill, Team team, Character monster) {
-        return new SkillResult(false, 0, "ERROR");
+        return skill.execute(this, team, monster);
     }
 
     public List<Skill> getSkills() {

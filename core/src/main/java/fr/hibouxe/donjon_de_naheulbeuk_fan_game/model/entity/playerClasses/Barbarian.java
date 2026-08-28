@@ -23,30 +23,20 @@ public class Barbarian extends Character {
         this.setResourceName("Rage");
         this.setMaxResource(100);
         this.setCurrentResource(0);
-        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Hurlement Barbare", 30, "Une attaque d'une violence inouïe.", false));
-    }
-
-    /**
-     * Exécute l'attaque dévastatrice du Barbare en consommant 20 points de Rage.
-     *
-     * @param skill   La compétence utilisée
-     * @param team    La compagnie de Naheulbeuk
-     * @param monster Le monstre ciblé
-     */
-    @Override
-    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult useSpecialSkill(Skill skill, Team team, Character monster) {
-        if (skill.getName().equals("Hurlement Barbare")) {
-            int cost = skill.getCost();
-            if (this.getCurrentResource() >= cost) {
-                this.setCurrentResource(this.getCurrentResource() - cost);
-                int damage = Math.max(1, (int)(this.getAttack() * 2.5) - monster.getDefense());
-                monster.setHealthPoint(monster.getHealthPoint() - damage);
-                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
-            } else {
-                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Hurlement Barbare", 30, "Une attaque d'une violence inouïe.", false) {
+            @Override
+            public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character monster) {
+                int cost = getCost();
+                if (user.getCurrentResource() >= cost) {
+                    user.setCurrentResource(user.getCurrentResource() - cost);
+                    int damage = Math.max(1, (int)(user.getAttack() * 2.5) - monster.getDefense());
+                    monster.setHealthPoint(monster.getHealthPoint() - damage);
+                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
+                } else {
+                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+                }
             }
-        }
-        return super.useSpecialSkill(skill, team, monster);
+        });
     }
     @Override
     public int levelUp() {

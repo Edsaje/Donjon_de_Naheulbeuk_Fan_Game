@@ -19,23 +19,20 @@ public class Ogre extends Character {
         this.setResourceName("Rage");
         this.setMaxResource(100);
         this.setCurrentResource(0);
-        this.skills.add(new Skill("Écrasement Massif", 30, "Ignore la défense de la cible.", false));
-    }
-
-    @Override
-    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult useSpecialSkill(Skill skill, Team team, Character monster) {
-        if (skill.getName().equals("Écrasement Massif") || skill.getName().contains("crasement")) {
-            int cost = skill.getCost();
-            if (this.getCurrentResource() >= cost) {
-                this.setCurrentResource(this.getCurrentResource() - cost);
-                int damage = Math.max(1, (int)(this.getAttack() * 1.5) + 5);
-                monster.setHealthPoint(monster.getHealthPoint() - damage);
-                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
-            } else {
-                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+        this.skills.add(new Skill("Écrasement Massif", 30, "Ignore la défense de la cible.", false) {
+            @Override
+            public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character monster) {
+                int cost = getCost();
+                if (user.getCurrentResource() >= cost) {
+                    user.setCurrentResource(user.getCurrentResource() - cost);
+                    int damage = Math.max(1, (int)(user.getAttack() * 1.5) + 5);
+                    monster.setHealthPoint(monster.getHealthPoint() - damage);
+                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
+                } else {
+                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+                }
             }
-        }
-        return super.useSpecialSkill(skill, team, monster);
+        });
     }
     
     @Override

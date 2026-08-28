@@ -11,7 +11,4 @@ public interface IGameView {
     ICombatView getCombatView();
 
     boolean onInput(String action);
-    void setMenuRequest(String title, String[] options);
-    int getMenuSelection();
-    void resetMenuSelection();
 }

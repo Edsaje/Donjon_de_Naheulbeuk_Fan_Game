@@ -22,17 +22,13 @@ public class ExplorationController implements GameState {
     private int currentFloor = 1;
     private IExplorationView view;
     private IMenuView menu;
-    private ICombatView combatView;
     private boolean isTutorial;
     private int activeSlot = 1;
-    private boolean elfJoined = false;
     private enum SubState { EXPLORING, PAUSE_MENU, STATUS_MENU, TAVERN_MENU }
     private SubState subState = SubState.EXPLORING;
 
     private ISaveManager saveManager;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager;
-    private float moveTimer = 0.5f;
-    private final float moveCooldown = 0.5f;
     private float transitionDelay = 1.5f;
     private boolean pendingFloorIntro = true;
 
@@ -41,16 +37,15 @@ public class ExplorationController implements GameState {
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.ExplorationEngine engine;
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.engine.MonsterAIEngine aiEngine;
 
-    public ExplorationController(Dungeon maze, Team team, IExplorationView view, IMenuView menu, ICombatView combatView, boolean isTutorial, GameContext gameContext, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager) {
-        this(maze, team, view, menu, combatView, isTutorial, 1, gameContext, saveManager, locManager);
+    public ExplorationController(Dungeon maze, Team team, IExplorationView view, IMenuView menu, boolean isTutorial, GameContext gameContext, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager) {
+        this(maze, team, view, menu, isTutorial, 1, gameContext, saveManager, locManager);
     }
 
-    public ExplorationController(Dungeon maze, Team team, IExplorationView view, IMenuView menu, ICombatView combatView, boolean isTutorial, int activeSlot, GameContext gameContext, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager) {
+    public ExplorationController(Dungeon maze, Team team, IExplorationView view, IMenuView menu, boolean isTutorial, int activeSlot, GameContext gameContext, ISaveManager saveManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager locManager) {
         this.maze = maze;
         this.team = team;
         this.view = view;
         this.menu = menu;
-        this.combatView = combatView;
         this.isTutorial = isTutorial;
         this.activeSlot = activeSlot;
         this.gameContext = gameContext;

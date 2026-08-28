@@ -24,13 +24,21 @@ build/
 ### Fichiers de l'OS ###
 .DS_Store
 Thumbs.db
+Desktop.ini
 *.tmp
 
 ### Packages ###
 *.jar
 !lib/*.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.war
 *.ear
+
+### Fichiers poubelles Art & Design ###
+*.blend1
+*.blend2
+*.crash.blend
+*.psb
 
 ### Scripts ###
 *.py

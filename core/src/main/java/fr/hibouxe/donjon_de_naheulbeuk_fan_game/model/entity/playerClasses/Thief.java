@@ -12,23 +12,20 @@ public class Thief extends Character {
         this.setResourceName("Énergie");
         this.setMaxResource(100);
         this.setCurrentResource(100);
-        this.skills.add(new Skill("Attaque Sournoise", 30, "Une attaque pernicieuse dans le dos.", false));
-    }
-
-    @Override
-    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult useSpecialSkill(Skill skill, Team team, Character monster) {
-        if (skill.getName().equals("Attaque Sournoise")) {
-            int cost = skill.getCost();
-            if (this.getCurrentResource() >= cost) {
-                this.setCurrentResource(this.getCurrentResource() - cost);
-                int damage = Math.max(1, (this.getAttack() * 2) - (monster.getDefense() / 2));
-                monster.setHealthPoint(monster.getHealthPoint() - damage);
-                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
-            } else {
-                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+        this.skills.add(new Skill("Attaque Sournoise", 30, "Une attaque pernicieuse dans le dos.", false) {
+            @Override
+            public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character monster) {
+                int cost = getCost();
+                if (user.getCurrentResource() >= cost) {
+                    user.setCurrentResource(user.getCurrentResource() - cost);
+                    int damage = Math.max(1, (user.getAttack() * 2) - (monster.getDefense() / 2));
+                    monster.setHealthPoint(monster.getHealthPoint() - damage);
+                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
+                } else {
+                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+                }
             }
-        }
-        return super.useSpecialSkill(skill, team, monster);
+        });
     }
     
     @Override

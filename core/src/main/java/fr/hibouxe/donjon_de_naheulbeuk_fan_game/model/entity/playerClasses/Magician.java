@@ -12,30 +12,20 @@ public class Magician extends Character {
         this.setResourceName("Mana");
         this.setMaxResource(100);
         this.setCurrentResource(100);
-        this.skills.add(new Skill("Boule de Feu", 30, "Une attaque magique classique.", false));
-    }
-
-    @Override
-    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult useSpecialSkill(Skill skill, Team team, Character target) {
-        if (skill.getName().contains("Soin")) {
-            if (this.getCurrentResource() >= skill.getCost()) {
-                this.setCurrentResource(this.getCurrentResource() - skill.getCost());
-                if (target != null) {
-                    target.setHealthPoint(target.getHealthPoint() + 15);
-                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, 15, "HEAL");
+        this.skills.add(new Skill("Boule de Feu", 30, "Une attaque magique classique.", false) {
+            @Override
+            public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character target) {
+                if (user.getCurrentResource() >= getCost()) {
+                    user.setCurrentResource(user.getCurrentResource() - getCost());
+                    if (target != null) {
+                        int damage = user.getAttack() + 10;
+                        target.setHealthPoint(target.getHealthPoint() - damage);
+                        return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
+                    }
                 }
+                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
             }
-        } else {
-            if (this.getCurrentResource() >= skill.getCost()) {
-                this.setCurrentResource(this.getCurrentResource() - skill.getCost());
-                if (target != null) {
-                    int damage = this.getAttack() + 10;
-                    target.setHealthPoint(target.getHealthPoint() - damage);
-                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
-                }
-            }
-        }
-        return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+        });
     }
     
     @Override

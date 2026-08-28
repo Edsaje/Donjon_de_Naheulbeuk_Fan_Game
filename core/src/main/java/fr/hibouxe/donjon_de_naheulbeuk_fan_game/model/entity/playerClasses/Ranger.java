@@ -23,30 +23,20 @@ public class Ranger extends Character {
         this.setResourceName("Énergie");
         this.setMaxResource(100);
         this.setCurrentResource(100);
-        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Tir de Précision", 30, "Un tir ajusté qui inflige de lourds dégâts.", false));
-    }
-
-    /**
-     * Exécute le tir à l'arc ajusté du Ranger en consommant 30 points d'Énergie.
-     * @param target La cible
-     * @param skill   La compétence utilisée
-     * @param team    La compagnie de Naheulbeuk
-     * @param monster Le monstre ciblé
-     */
-    @Override
-    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult useSpecialSkill(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill skill, Team team, Character monster) {
-        if (skill.getName().contains("cision") || skill.getName().equals("Tir de Précision")) {
-            int cost = skill.getCost();
-            if (this.getCurrentResource() >= cost) {
-                this.setCurrentResource(this.getCurrentResource() - cost);
-                int damage = Math.max(1, (this.getAttack() * 2) - monster.getDefense());
-                monster.setHealthPoint(monster.getHealthPoint() - damage);
-                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
-            } else {
-                return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Tir de Précision", 30, "Un tir ajusté qui inflige de lourds dégâts.", false) {
+            @Override
+            public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character monster) {
+                int cost = getCost();
+                if (user.getCurrentResource() >= cost) {
+                    user.setCurrentResource(user.getCurrentResource() - cost);
+                    int damage = Math.max(1, (user.getAttack() * 2) - monster.getDefense());
+                    monster.setHealthPoint(monster.getHealthPoint() - damage);
+                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(true, damage, "DAMAGE");
+                } else {
+                    return new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult(false, 0, "ERROR");
+                }
             }
-        }
-        return super.useSpecialSkill(skill, team, monster);
+        });
     }
     @Override
     public int levelUp() {

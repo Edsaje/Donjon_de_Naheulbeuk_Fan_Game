@@ -98,9 +98,9 @@ public class Game implements InputListener, GameContext {
             SaveData data = saveManager.loadQuickSave(slot);
             if (data != null) {
                 this.team = data.getTeam();
-                ExplorationController ec = new ExplorationController(data.getDungeon(), team, app.getExplorationView(), app.getMenuView(), app.getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+                ExplorationController ec = new ExplorationController(data.getDungeon(), team, app.getExplorationView(), app.getMenuView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
                 app.switchToExplorationView();
-                app.setMenuRequest(null, null);
+                app.getMenuView().setMenuRequest(null, null);
                 changeState(ec);
             } else {
                 changeState(new MainMenuState());
@@ -131,9 +131,9 @@ public class Game implements InputListener, GameContext {
         TutorialDungeon tutorialMaze = new TutorialDungeon();
         tutorialMaze.prepareFloor(1, team, monsterRepository);
 
-        ExplorationController ec = new ExplorationController(tutorialMaze, team, app.getExplorationView(), app.getMenuView(), app.getCombatView(), true, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+        ExplorationController ec = new ExplorationController(tutorialMaze, team, app.getExplorationView(), app.getMenuView(), true, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
         app.displayTransitionScreen(1);
-        app.setMenuRequest(null, null);
+        app.getMenuView().setMenuRequest(null, null);
         changeState(ec);
     }
 
@@ -144,7 +144,7 @@ public class Game implements InputListener, GameContext {
         if (suspendedExplorationState != null) {
             changeState(suspendedExplorationState);
             app.switchToExplorationView();
-            app.setMenuRequest(null, null);
+            app.getMenuView().setMenuRequest(null, null);
             suspendedExplorationState = null;
         } else {
             changeState(new MainMenuState());
@@ -160,9 +160,9 @@ public class Game implements InputListener, GameContext {
     public void goToVillage() {
         fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.HubDungeon hub = new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.HubDungeon();
         hub.prepareFloor(0, team, monsterRepository);
-        ExplorationController ec = new ExplorationController(hub, team, app.getExplorationView(), app.getMenuView(), app.getCombatView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+        ExplorationController ec = new ExplorationController(hub, team, app.getExplorationView(), app.getMenuView(), false, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
         app.displayTransitionScreen(0);
-        app.setMenuRequest(null, null);
+        app.getMenuView().setMenuRequest(null, null);
         changeState(ec);
     }
 
@@ -188,13 +188,13 @@ public class Game implements InputListener, GameContext {
     private class MainMenuState implements GameState {
         @Override public void enter() {
             app.switchToHubView();
-            app.setMenuRequest("Menu Principal", new String[]{"Nouvelle Partie", "Charger Partie", "Gérer Sauvegardes", "[TEST] Campement", "Quitter"});
+            app.getMenuView().setMenuRequest("Menu Principal", new String[]{"Nouvelle Partie", "Charger Partie", "Gérer Sauvegardes", "[TEST] Campement", "Quitter"});
         }
         @Override public void update(float deltaTime) {}
         @Override public void onInput(String action) {
             if ("ENTER".equals(action)) {
-                int choice = app.getMenuSelection();
-                app.resetMenuSelection();
+                int choice = app.getMenuView().getMenuSelection();
+                app.getMenuView().resetMenuSelection();
                 if (choice == 0) changeState(new NewGameMenuState());
                 else if (choice == 1) changeState(new LoadMenuState());
                 else if (choice == 2) changeState(new ManageSavesMenuState());
@@ -225,13 +225,13 @@ public class Game implements InputListener, GameContext {
                 options[i-1] = saveManager.getSlotSummary(i);
             }
             options[3] = "Retour";
-            app.setMenuRequest("Choisir un Slot", options);
+            app.getMenuView().setMenuRequest("Choisir un Slot", options);
         }
         @Override public void update(float deltaTime) {}
         @Override public void onInput(String action) {
             if ("ENTER".equals(action)) {
-                int choice = app.getMenuSelection();
-                app.resetMenuSelection();
+                int choice = app.getMenuView().getMenuSelection();
+                app.getMenuView().resetMenuSelection();
                 if (choice >= 0 && choice < 3) {
                     currentSlot = choice + 1;
                     saveManager.deleteSlot(currentSlot);
@@ -251,13 +251,13 @@ public class Game implements InputListener, GameContext {
                 options[i-1] = saveManager.getSlotSummary(i);
             }
             options[3] = "Retour";
-            app.setMenuRequest("Charger Partie", options);
+            app.getMenuView().setMenuRequest("Charger Partie", options);
         }
         @Override public void update(float deltaTime) {}
         @Override public void onInput(String action) {
             if ("ENTER".equals(action)) {
-                int choice = app.getMenuSelection();
-                app.resetMenuSelection();
+                int choice = app.getMenuView().getMenuSelection();
+                app.getMenuView().resetMenuSelection();
                 if (choice >= 0 && choice < 3) {
                     int slot = choice + 1;
                     loadGame(slot);
@@ -276,13 +276,13 @@ public class Game implements InputListener, GameContext {
                 options[i-1] = saveManager.getSlotSummary(i);
             }
             options[3] = "Retour";
-            app.setMenuRequest("Gérer Sauvegardes", options);
+            app.getMenuView().setMenuRequest("Gérer Sauvegardes", options);
         }
         @Override public void update(float deltaTime) {}
         @Override public void onInput(String action) {
             if ("ENTER".equals(action)) {
-                int choice = app.getMenuSelection();
-                app.resetMenuSelection();
+                int choice = app.getMenuView().getMenuSelection();
+                app.getMenuView().resetMenuSelection();
                 if (choice >= 0 && choice < 3) {
                     int slot = choice + 1;
                     saveManager.deleteSlot(slot);
@@ -298,13 +298,13 @@ public class Game implements InputListener, GameContext {
     private class QuickSavePromptState implements GameState {
         @Override public void enter() {
             app.switchToHubView();
-            app.setMenuRequest("Reprendre la partie rapide ?", new String[]{"Oui", "Non"});
+            app.getMenuView().setMenuRequest("Reprendre la partie rapide ?", new String[]{"Oui", "Non"});
         }
         @Override public void update(float deltaTime) {}
         @Override public void onInput(String action) {
             if ("ENTER".equals(action)) {
-                int choice = app.getMenuSelection();
-                app.resetMenuSelection();
+                int choice = app.getMenuView().getMenuSelection();
+                app.getMenuView().resetMenuSelection();
                 if (choice == 0) {
                     loadGame(currentSlot);
                 } else {
@@ -325,9 +325,9 @@ public class Game implements InputListener, GameContext {
         }
         maze.prepareFloor(1, team, monsterRepository);
         boolean isTuto = "TUTORIAL".equals(dungeonId);
-        ExplorationController ec = new ExplorationController(maze, team, app.getExplorationView(), app.getMenuView(), app.getCombatView(), isTuto, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
+        ExplorationController ec = new ExplorationController(maze, team, app.getExplorationView(), app.getMenuView(), isTuto, currentSlot, this, saveManager, new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.lang.LocalizationManager());
         app.displayTransitionScreen(1);
-        app.setMenuRequest(null, null);
+        app.getMenuView().setMenuRequest(null, null);
         changeState(ec);
     }
 }
