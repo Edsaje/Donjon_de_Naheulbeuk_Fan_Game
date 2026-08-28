@@ -5,6 +5,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.StatType;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.offensiveEquipment.OffensiveEquipment;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory;
 
 /**
  * Représente le Barbare dans la Compagnie de Naheulbeuk.
@@ -20,6 +22,7 @@ public class Barbarian extends Character {
      */
     public Barbarian() {
         super("Le Barbare", "Barbare", 1, 12, 0, 10, 0, 3, 3, 11);
+        this.equip(new OffensiveEquipment("Grosse �p�e", "Une �norme lame �mouss�e.", EquipmentCategory.HEAVY_WEAPON, 0, 0));
         this.setResourceName("Rage");
         this.setMaxResource(100);
         this.setCurrentResource(0);
@@ -50,6 +53,9 @@ public class Barbarian extends Character {
         return levels;
     }
 }
+
+
+
 
 
 

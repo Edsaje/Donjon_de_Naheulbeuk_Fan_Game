@@ -5,6 +5,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.StatType;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.offensiveEquipment.OffensiveEquipment;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory;
 
 /**
  * Représente le Ranger dans la Compagnie de Naheulbeuk.
@@ -20,6 +22,7 @@ public class Ranger extends Character {
      */
     public Ranger() {
         super("Le Ranger", "Ranger", 1, 15, 0, 8, 4, 8, 6, 8);
+        this.equip(new OffensiveEquipment("�p�e en fer", "Une arme basique mais fiable.", EquipmentCategory.LIGHT_WEAPON, 0, 0));
         this.setResourceName("Énergie");
         this.setMaxResource(100);
         this.setCurrentResource(100);
@@ -50,6 +53,9 @@ public class Ranger extends Character {
         return levels;
     }
 }
+
+
+
 
 
 

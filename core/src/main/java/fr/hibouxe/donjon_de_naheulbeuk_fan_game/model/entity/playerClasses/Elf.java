@@ -5,6 +5,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.StatType;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.offensiveEquipment.OffensiveEquipment;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem;
 
 import java.util.Random;
@@ -25,6 +27,7 @@ public class Elf extends Character {
      */
     public Elf() {
         super("L'Elfe", "Elfe", 1, 6, 100, 6, 3, 5, 5, 20);
+        this.equip(new OffensiveEquipment("Arc de chasse", "Pour tirer de loin, tr�s loin.", EquipmentCategory.RANGE_WEAPON, 0, 0));
         this.setResourceName("Mana");
         this.setMaxResource(100);
         this.setCurrentResource(100);
@@ -70,6 +73,9 @@ public class Elf extends Character {
         return levels;
     }
 }
+
+
+
 
 
 

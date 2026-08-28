@@ -5,10 +5,13 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.StatType;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.offensiveEquipment.OffensiveEquipment;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory;
 
 public class Thief extends Character {
     public Thief() {
         super("Le Voleur", "Voleur", 1, 5, 100, 3, 1, 5, 5, 16);
+        this.equip(new OffensiveEquipment("Dague rouill�e", "Un outil discret pour les coups en tra�tre.", EquipmentCategory.LIGHT_WEAPON, 0, 0));
         this.setResourceName("Énergie");
         this.setMaxResource(100);
         this.setCurrentResource(100);
@@ -40,6 +43,9 @@ public class Thief extends Character {
         return levels;
     }
 }
+
+
+
 
 
 

@@ -21,4 +21,5 @@ public interface ICombatView {
     void clearMessages();
     int getMenuSelection();
     void setMenuRequest(String title, String[] options);
+    void playHitAnimation(Character target, int damage, String vfxType, String sfxPath);
 }

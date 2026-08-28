@@ -141,6 +141,18 @@ public class BattleController implements GameState {
             if (target != null) {
                 menu.displayMessage(currentCombatant.getName() + " attaque " + target.getName() + " !");
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.combat.CombatResult result = this.combatEngine.executeAttack(currentCombatant, target, false);
+                
+                String sfxName = "attack_fist";
+                String vfxType = "SCRATCH";
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment weapon = currentCombatant.getEquipments().get(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot.WEAPON);
+                if (weapon != null) {
+                    vfxType = "SLASH";
+                    if (weapon.getCategory() == fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory.HEAVY_WEAPON) sfxName = "attack_heavy";
+                    else if (weapon.getCategory() == fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory.LIGHT_WEAPON) sfxName = "attack_light";
+                    else if (weapon.getCategory() == fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory.RANGE_WEAPON) sfxName = "attack_range";
+                }
+                
+                menu.playHitAnimation(target, result.getDamage(), vfxType, "audio/sfx/" + sfxName + ".wav");
             }
             engine.setState(BattleState.NEXT_COMBATANT);
         } else if (index == 1) {

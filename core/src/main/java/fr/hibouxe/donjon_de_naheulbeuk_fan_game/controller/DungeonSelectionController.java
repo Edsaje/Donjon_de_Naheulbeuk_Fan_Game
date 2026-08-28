@@ -14,11 +14,11 @@ public class DungeonSelectionController implements GameState {
 
     @Override
     public void enter() {
-        menu.setMenuRequest("Quel donjon explorer ?", new String[]{
+        menu.setMenuRequest("SELECTION_DONJON", new String[]{
             "Tutoriel (Cave du Tavernier)", 
             "Donjon de Naheulbeuk", 
-            "Foret", 
-            "Grotte", 
+            "Forêt de Schlipak", 
+            "Ruines", 
             "Annuler"
         });
     }

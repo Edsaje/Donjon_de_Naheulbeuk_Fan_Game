@@ -32,6 +32,16 @@ public class DesktopLauncher {
         inputManager.setListener(game);
         app.setDependencies(inputManager, game);
 
-        new Lwjgl3Application(app, config);
+        try {
+            new Lwjgl3Application(app, config);
+        } catch (Throwable t) {
+            try {
+                java.io.PrintWriter pw = new java.io.PrintWriter("crash_debug.log");
+                t.printStackTrace(pw);
+                pw.flush();
+                pw.close();
+            } catch (Exception e) {}
+            throw t;
+        }
     }
 }

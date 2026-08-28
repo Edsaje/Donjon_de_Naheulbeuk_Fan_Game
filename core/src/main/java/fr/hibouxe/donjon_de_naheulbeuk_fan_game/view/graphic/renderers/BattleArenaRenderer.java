@@ -37,6 +37,29 @@ import com.badlogic.gdx.Gdx;
  */
 public class BattleArenaRenderer implements Disposable {
     private Array<Decal> battleBillboards = new Array<>();
+    private java.util.Map<Character, Decal> characterDecals = new java.util.HashMap<>();
+    
+    public class ActiveVFX {
+        public Character target;
+        public String type;
+        public float timer;
+        public float maxTimer;
+        public int damage;
+        public com.badlogic.gdx.math.Vector3 originalPos;
+        
+        ActiveVFX(Character target, String type, int damage, com.badlogic.gdx.math.Vector3 originalPos) {
+            this.target = target;
+            this.type = type;
+            this.damage = damage;
+            this.timer = 0f;
+            this.maxTimer = 1.0f; // 1 sec d'effet
+            this.originalPos = originalPos;
+        }
+    }
+    
+    private List<ActiveVFX> activeVFXs = new java.util.concurrent.CopyOnWriteArrayList<>();
+    public List<ActiveVFX> getActiveVFXs() { return activeVFXs; }
+
     private Texture heroTexture;
     private Texture mageTexture;
     private Texture rangerTexture;
@@ -96,21 +119,23 @@ public class BattleArenaRenderer implements Disposable {
      *
      * @param team ÃƒÂ©quipe de hÃƒÂ©ros du joueur
      */
-    public void setupTeamBattleArena(Team team) {
+    public void setupTeamBattleArena(Team team, List<Character> monsters) {
+        characterDecals.clear();
+        decalPool.freeAll(battleBillboards);
+        battleBillboards.clear();
+        activeVFXs.clear();
+
         if (team == null || team.getMembers() == null || team.getMembers().isEmpty()) {
             setupDefaultBattleArena();
             return;
         }
-
-        decalPool.freeAll(battleBillboards);
-        battleBillboards.clear();
 
         List<Character> backline = new ArrayList<>();
         List<Character> midline = new ArrayList<>();
         List<Character> frontline = new ArrayList<>();
 
         for (Character member : team.getMembers()) {
-            if (member.getHealthPoint() <= 0) continue; // Ignorer les hÃƒÂ©ros KO
+            if (member.getHealthPoint() <= 0) continue; // Ignorer les héros KO
 
             TacticalRow row = member.getPreferredTacticalRow();
             if (row == TacticalRow.BACKLINE) {
@@ -127,13 +152,15 @@ public class BattleArenaRenderer implements Disposable {
             return;
         }
 
-        // Placer les 3 lignes avec centrage dynamique et dÃƒÂ©calage en quinconce
+        // Placer les 3 lignes avec centrage dynamique et décalage en quinconce
         placeCharacterRowCustom(backline, 3.0f, 1.0f, mageRegion, 1.4f, 2.2f, 5.6f);
         placeCharacterRowCustom(midline, 1.5f, 1.0f, rangerRegion, 1.5f, 2.3f, 3.2f);
         placeCharacterRowCustom(frontline, 0.0f, 1.0f, heroRegion, 1.6f, 2.4f, 3.2f);
 
         // Groupe d'Ennemis au fond
-        placeRowCustom(3, -10.0f, 1.2f, monsterRegion, 1.8f, 2.6f, 3.0f);
+        if (monsters != null) {
+            placeCharacterRowCustom(monsters, -10.0f, 1.2f, monsterRegion, 1.8f, 2.6f, 3.0f);
+        }
     }
 
     private void placeRowCustom(int count, float posZ, float posY, TextureRegion region, float width, float height, float stepX) {
@@ -159,6 +186,7 @@ public class BattleArenaRenderer implements Disposable {
             decal.setTextureRegion(region);
             decal.setDimensions(width, height);
             decal.setPosition(startX + i * stepX, posY, posZ);
+            characterDecals.put(list.get(i), decal);
             battleBillboards.add(decal);
         }
     }
@@ -175,8 +203,15 @@ public class BattleArenaRenderer implements Disposable {
         } catch(Exception e) { arenaInstance = null; }
     }
 
+    public void playHitAnimation(Character target, int damage, String vfxType) {
+        if (characterDecals.containsKey(target)) {
+            Decal d = characterDecals.get(target);
+            activeVFXs.add(new ActiveVFX(target, vfxType, damage, new com.badlogic.gdx.math.Vector3(d.getX(), d.getY(), d.getZ())));
+        }
+    }
+
     public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment, PerspectiveCamera camera) {
-        // CamÃƒÂ©ra de combat panoramique ÃƒÂ  -25ÃƒÂ  cadrant toute la formation tactique
+        // Caméra de combat panoramique à -25° cadrant toute la formation tactique
         camera.position.set(0.0f, 7.5f, 12.5f);
         camera.lookAt(0.0f, 0.5f, -4.0f);
         camera.position.y = 7.5f + (float)Math.sin((System.currentTimeMillis() % 10000)/1000.0f * 0.5f) * 0.5f;
@@ -187,6 +222,35 @@ public class BattleArenaRenderer implements Disposable {
             modelBatch.render(arenaInstance, environment);
             modelBatch.end();
         }
+
+        float delta = Gdx.graphics.getDeltaTime();
+        
+        // Update VFX (Shake effects)
+        java.util.List<ActiveVFX> toRemove = new java.util.ArrayList<>();
+        for (ActiveVFX vfx : activeVFXs) {
+            vfx.timer += delta;
+            
+            if (characterDecals.containsKey(vfx.target)) {
+                Decal d = characterDecals.get(vfx.target);
+                if (vfx.timer < vfx.maxTimer) {
+                    // Shake
+                    float shake = (float)Math.sin(vfx.timer * 40f) * 0.2f; // Tremblement rapide sur l'axe X
+                    d.setX(vfx.originalPos.x + shake);
+                    
+                    // TODO: Tinting (Color flashing) can be added here if we modify the shader
+                    // For now, we simulate hit by scaling slightly or just shaking violently
+                    d.setScale(1.0f - (vfx.timer * 0.1f)); 
+                } else {
+                    // Restore
+                    d.setX(vfx.originalPos.x);
+                    d.setScale(1.0f);
+                    toRemove.add(vfx);
+                }
+            } else {
+                toRemove.add(vfx); // Target decal was removed
+            }
+        }
+        activeVFXs.removeAll(toRemove);
 
         for (Decal sprite : battleBillboards) {
             com.badlogic.gdx.math.Vector3 camDir = new com.badlogic.gdx.math.Vector3(-camera.direction.x, 0, -camera.direction.z).nor();

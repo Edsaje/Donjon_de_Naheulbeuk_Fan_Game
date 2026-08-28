@@ -42,6 +42,7 @@ public class HUDRenderer implements Disposable {
     public SpriteBatch uiBatch;
     public BitmapFont font;
     private ShapeRenderer shapeRenderer;
+    private com.badlogic.gdx.graphics.Texture mapTexture;
 
     private String floatingMessage = null;
     private float floatingMessageTimer = 0f;
@@ -67,18 +68,31 @@ public class HUDRenderer implements Disposable {
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager settingsManager;
 
     private fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.audio.AudioManager audioManager;
-    
-    public HUDRenderer(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager settingsManager, fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.audio.AudioManager audioManager) {
+    private com.badlogic.gdx.graphics.Texture vfxSlash, vfxScratch;
+
+    public HUDRenderer(GameSettingsManager settingsManager, AudioManager audioManager) {
         this.settingsManager = settingsManager;
         this.audioManager = audioManager;
         uiBatch = new SpriteBatch();
-        font = new BitmapFont();
-        font.getData().setScale(1.2f);
         shapeRenderer = new ShapeRenderer();
+        font = new BitmapFont(); 
+        font.getData().setScale(1.2f);
         uiViewport = new com.badlogic.gdx.utils.viewport.FitViewport(1280, 720);
+        
+        try {
+            if (Gdx.files.internal("gui/map_fangh.jpg").exists()) {
+                mapTexture = new com.badlogic.gdx.graphics.Texture(Gdx.files.internal("gui/map_fangh.jpg"));
+            }
+            if (Gdx.files.internal("vfx/slash_01.png").exists()) {
+                vfxSlash = new com.badlogic.gdx.graphics.Texture(Gdx.files.internal("vfx/slash_01.png"));
+            }
+            if (Gdx.files.internal("vfx/scratch_01.png").exists()) {
+                vfxScratch = new com.badlogic.gdx.graphics.Texture(Gdx.files.internal("vfx/scratch_01.png"));
+            }
+        } catch (Exception e) {}
     }
     
-    private com.badlogic.gdx.utils.viewport.Viewport uiViewport;
+    public com.badlogic.gdx.utils.viewport.Viewport uiViewport;
 
     public void resize(int width, int height) {
         uiViewport.update(width, height, true);
@@ -173,7 +187,9 @@ public class HUDRenderer implements Disposable {
 
         // Toujours dessiner le menu contextuel s'il existe et n'est pas un menu de pause (dialogue)
         if (!isSettingsMenuOpen && menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0]) && state != HD2DGameApp.GameState.TRANSITION) {
-            if ("STATISTIQUES".equals(menuTitle) && team != null) {
+            if ("SELECTION_DONJON".equals(menuTitle)) {
+                renderWorldMapSelection(menuOptions);
+            } else if ("STATISTIQUES".equals(menuTitle) && team != null) {
                 renderContextualMenu(menuTitle, menuOptions, state);
                 renderStatusScreen(team, contextMenuSelection);
             } else {
@@ -209,6 +225,58 @@ public class HUDRenderer implements Disposable {
         if (messages != null && !messages.isEmpty()) {
             renderMinimalistWindow(team, messages, state);
         }
+    }
+
+    public void renderCombatVFX(java.util.List<Float> xList, java.util.List<Float> yList, java.util.List<String> texts, java.util.List<Float> timers, java.util.List<String> types) {
+        if (xList.isEmpty()) return;
+        uiBatch.begin();
+        font.getData().setScale(2.0f);
+        for (int i = 0; i < xList.size(); i++) {
+            float x = xList.get(i);
+            float y = yList.get(i);
+            String text = texts.get(i);
+            float timer = timers.get(i);
+            String type = types.get(i);
+            
+            // Draw Sprite
+            float spriteAlpha = 1.0f;
+            if (timer < 0.2f) spriteAlpha = timer * 5f; // Fade in
+            else if (timer > 0.8f) spriteAlpha = 1.0f - ((timer - 0.8f) * 5f); // Fade out
+            spriteAlpha = Math.max(0.0f, Math.min(1.0f, spriteAlpha));
+            
+            uiBatch.setColor(1.0f, 1.0f, 1.0f, spriteAlpha);
+            float scale = 1.0f + (timer * 2.0f); // Grow over time
+            float width = 64 * scale;
+            float height = 64 * scale;
+            if (vfxSlash != null && type.equals("SLASH")) {
+                uiBatch.draw(vfxSlash, x - width/2f, y - height/2f, width, height);
+            } else if (vfxScratch != null && type.equals("SCRATCH")) {
+                uiBatch.draw(vfxScratch, x - width/2f, y - height/2f, width, height);
+            }
+            uiBatch.setColor(1.0f, 1.0f, 1.0f, 1.0f); // Reset
+            
+            // L'opacité diminue vers la fin
+            float alpha = 1.0f;
+            if (timer > 0.5f) {
+                alpha = 1.0f - ((timer - 0.5f) * 2.0f);
+            }
+            alpha = Math.max(0.0f, Math.min(1.0f, alpha));
+            
+            // Monte doucement
+            float offsetY = timer * 100f;
+            
+            // Ombre portée pour lisibilité
+            font.setColor(new Color(0.0f, 0.0f, 0.0f, alpha));
+            font.draw(uiBatch, text, x + 3, y + offsetY - 3);
+            
+            // Texte rouge pour les dégâts, ou vert pour les soins
+            if (text.startsWith("+")) font.setColor(new Color(0.2f, 1.0f, 0.2f, alpha));
+            else font.setColor(new Color(1.0f, 0.2f, 0.2f, alpha));
+            
+            font.draw(uiBatch, text, x, y + offsetY);
+        }
+        font.getData().setScale(1.2f);
+        uiBatch.end();
     }
 
     private int contextMenuSelection = 0;
@@ -321,6 +389,110 @@ public class HUDRenderer implements Disposable {
 
 
 
+
+    private void renderWorldMapSelection(String[] options) {
+        uiBatch.begin();
+        if (mapTexture != null) {
+            // Dessiner la carte en plein écran ou presque
+            uiBatch.draw(mapTexture, 0, 0, 1280, 720);
+        } else {
+            font.setColor(Color.RED);
+            font.draw(uiBatch, "CARTE INTROUVABLE (assets/gui/map_fangh.jpg)", 400, 360);
+        }
+        uiBatch.end();
+
+        // 1. Dessiner les "Pins" sur la carte selon le donjon
+        // Coordonnées ajustées pour la résolution 1280x720 (0,0 en bas à gauche)
+        // [0] Tutoriel (Valtordu) : Sud-Ouest
+        // [1] Donjon de Naheulbeuk : Ouest (gauche)
+        // [2] Forêt de Schlipak : Centre
+        // [3] Ruines : Sud-Est (Désert)
+        // [4] Annuler : Hors de l'écran
+        float[] pinX = { 200f, 250f, 650f, 850f, -100f }; 
+        float[] pinY = { 250f, 400f, 350f, 200f, -100f }; 
+        
+        Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        
+        // Assombrir le reste de la carte légèrement
+        shapeRenderer.setColor(new Color(0, 0, 0, 0.4f));
+        shapeRenderer.rect(0, 0, 1280, 720);
+
+        for (int i = 0; i < options.length; i++) {
+            if (options[i].equals("Annuler")) continue;
+            
+            float cx = pinX[i % pinX.length];
+            float cy = pinY[i % pinY.length];
+            
+            if (i == contextMenuSelection) {
+                // Pin sélectionné : gros cercle rouge avec bordure dorée (animé)
+                float pulse = 5f * (float)Math.sin(System.currentTimeMillis() / 200.0);
+                shapeRenderer.setColor(Color.GOLD);
+                shapeRenderer.circle(cx, cy, 20 + pulse);
+                shapeRenderer.setColor(Color.RED);
+                shapeRenderer.circle(cx, cy, 15 + pulse);
+            } else {
+                // Pin non sélectionné : petit cercle gris
+                shapeRenderer.setColor(Color.DARK_GRAY);
+                shapeRenderer.circle(cx, cy, 12);
+                shapeRenderer.setColor(Color.LIGHT_GRAY);
+                shapeRenderer.circle(cx, cy, 8);
+            }
+        }
+
+        // 2. Dessiner le menu de liste façon PMD (à droite)
+        int menuWidth = 380;
+        int menuHeight = 60 + options.length * 50;
+        int menuX = 1280 - menuWidth - 40;
+        int menuY = (720 - menuHeight) / 2; // Centré verticalement
+
+        shapeRenderer.setColor(COLOR_MENU_BG);
+        shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
+        
+        shapeRenderer.setColor(COLOR_GOLD_BORDER);
+        shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 4);
+        shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 4);
+        shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 4);
+        shapeRenderer.rectLine(menuX + menuWidth, menuY, menuX + menuWidth, menuY + menuHeight, 4);
+        
+        // Curseur de séléction
+        int cursorY = menuY + menuHeight - 90 - contextMenuSelection * 50;
+        shapeRenderer.setColor(COLOR_MENU_CURSOR);
+        shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 45);
+        
+        shapeRenderer.end();
+
+        // 3. Dessiner le texte
+        uiBatch.begin();
+        font.getData().setScale(1.5f);
+        font.setColor(Color.GOLD);
+        font.draw(uiBatch, "Destinations", menuX + 30, menuY + menuHeight - 20);
+        
+        font.getData().setScale(1.2f);
+        for (int i = 0; i < options.length; i++) {
+            int textX = menuX + 60;
+            int textY = menuY + menuHeight - 60 - i * 50;
+            
+            if (i == contextMenuSelection) {
+                font.setColor(Color.WHITE);
+                font.draw(uiBatch, "->", textX - 35, textY);
+            } else {
+                font.setColor(Color.LIGHT_GRAY);
+            }
+            font.draw(uiBatch, options[i], textX, textY);
+        }
+        
+        // Petit encart descriptif en bas
+        font.setColor(Color.WHITE);
+        String desc = "";
+        if (contextMenuSelection == 0) desc = "Idéal pour apprendre les bases du combat.";
+        else if (contextMenuSelection == 1) desc = "Le terrible Donjon de Naheulbeuk !";
+        else if (contextMenuSelection == 2) desc = "Gare aux bandits et aux araignées...";
+        else if (contextMenuSelection == 3) desc = "Un lieu sombre et effrayant.";
+        font.draw(uiBatch, desc, menuX + 20, menuY - 20);
+        
+        uiBatch.end();
+    }
 
     private void renderStatusScreen(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, int selection) {
         if (selection < 0 || selection >= team.getMembers().size()) return; // Si on est sur "Retour", on n'affiche rien
@@ -770,6 +942,7 @@ public class HUDRenderer implements Disposable {
         if (shapeRenderer != null) shapeRenderer.dispose();
         if (uiBatch != null) uiBatch.dispose();
         if (font != null) font.dispose();
+        if (mapTexture != null) mapTexture.dispose();
     }
     public int getContextMenuSelection() { return contextMenuSelection; }
     public void resetContextMenuSelection() { this.contextMenuSelection = 0; }
@@ -787,7 +960,7 @@ public class HUDRenderer implements Disposable {
                 contextMenuSelection = (contextMenuSelection + 1) % options.length; audioManager.playUIHover();
                 return true;
             }
-            if ("INVENTAIRE".equals(gameApp.currentMenuTitle) || "CIBLE_OBJET".equals(gameApp.currentMenuTitle) || "CATEGORIES".equals(gameApp.currentMenuTitle) || "OBJETS".equals(gameApp.currentMenuTitle) || "PAUSE".equals(gameApp.currentMenuTitle) || "CHOISIR UN OBJET".equals(gameApp.currentMenuTitle) || "CIBLE".equals(gameApp.currentMenuTitle) || "EMPLACEMENT".equals(gameApp.currentMenuTitle)) {
+            if ("SELECTION_DONJON".equals(gameApp.currentMenuTitle) || "INVENTAIRE".equals(gameApp.currentMenuTitle) || "CIBLE_OBJET".equals(gameApp.currentMenuTitle) || "CATEGORIES".equals(gameApp.currentMenuTitle) || "OBJETS".equals(gameApp.currentMenuTitle) || "PAUSE".equals(gameApp.currentMenuTitle) || "CHOISIR UN OBJET".equals(gameApp.currentMenuTitle) || "CIBLE".equals(gameApp.currentMenuTitle) || "EMPLACEMENT".equals(gameApp.currentMenuTitle)) {
                 if ("ENTER".equals(action) || "SPACE".equals(action) || "X".equals(action)) {
                     return false;
                 }

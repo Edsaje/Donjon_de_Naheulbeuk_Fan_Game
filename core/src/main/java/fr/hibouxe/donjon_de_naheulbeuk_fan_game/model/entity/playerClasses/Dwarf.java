@@ -5,6 +5,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.StatType;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.offensiveEquipment.OffensiveEquipment;
+import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory;
 
 /**
  * Modèle de classe du héros Nain.
@@ -19,6 +21,7 @@ public class Dwarf extends Character {
      */
     public Dwarf() {
         super("Le Nain", "Nain", 1, 12, 0, 7, 0, 6, 6, 5);
+        this.equip(new OffensiveEquipment("Hache de b�cheron", "Lourde et contondante.", EquipmentCategory.HEAVY_WEAPON, 0, 0));
         this.setResourceName("Rage");
         this.setMaxResource(100);
         this.setCurrentResource(0);
@@ -50,6 +53,9 @@ public class Dwarf extends Character {
         return levels;
     }
 }
+
+
+
 
 
 

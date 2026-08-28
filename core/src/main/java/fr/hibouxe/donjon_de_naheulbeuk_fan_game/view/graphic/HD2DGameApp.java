@@ -91,10 +91,14 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     public ViewProvider getViewProvider() {
         if (viewProvider == null) {
-            viewProvider = new ViewProvider(this, hudRenderer, battleRenderer);
+            viewProvider = new ViewProvider(this);
         }
         return viewProvider;
     }
+
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers.BattleArenaRenderer getBattleRenderer() { return battleRenderer; }
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers.HUDRenderer getHudRenderer() { return hudRenderer; }
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.infrastructure.audio.AudioManager getAudioManager() { return audioManager; }
 
     public HD2DGameApp(GameSettingsManager settingsManager) {
         this.settingsManager = settingsManager;
@@ -124,7 +128,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         }
 
         if (currentMenuTitle != null && ("PAUSE".equals(currentMenuTitle) || "STATISTIQUES".equals(currentMenuTitle) 
-|| "INVENTAIRE".equals(currentMenuTitle) || "CIBLE_OBJET".equals(currentMenuTitle) || 
+|| "INVENTAIRE".equals(currentMenuTitle) || "SELECTION_DONJON".equals(currentMenuTitle) || "CIBLE_OBJET".equals(currentMenuTitle) || 
 "CATEGORIES".equals(currentMenuTitle) || "OBJETS".equals(currentMenuTitle))) {
             if (hudRenderer != null) {
                 boolean consumed = hudRenderer.onInput(action, this);
@@ -213,7 +217,7 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
 
     public void setupBattle(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character> monsters) {
         if (battleRenderer != null) {
-            battleRenderer.setupTeamBattleArena(team);
+            battleRenderer.setupTeamBattleArena(team, monsters);
             battleRenderer.setDungeonTheme("naheulbeuk");
             if (maze != null) battleRenderer.setDungeonTheme("naheulbeuk");
         }
@@ -426,6 +430,29 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
             hudPZ = ec.getPlayerZ();
         }
         hudRenderer.renderHUD(maze, hudPX, hudPZ, currentFloor, currentState, this.team, currentMessages, currentMenuTitle, currentMenuOptions, this);
+        
+        if (renderState == GameState.BATTLE && battleRenderer != null) {
+            java.util.List<Float> vx = new java.util.ArrayList<>();
+            java.util.List<Float> vy = new java.util.ArrayList<>();
+            java.util.List<String> vt = new java.util.ArrayList<>();
+            java.util.List<Float> vtimer = new java.util.ArrayList<>();
+            java.util.List<String> vtype = new java.util.ArrayList<>();
+            
+            for (fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic.renderers.BattleArenaRenderer.ActiveVFX vfx : battleRenderer.getActiveVFXs()) {
+                com.badlogic.gdx.math.Vector3 screenPos = camera.project(new com.badlogic.gdx.math.Vector3(vfx.originalPos.x, vfx.originalPos.y + 1.5f, vfx.originalPos.z));
+                // camera.project uses bottom-left as origin. unproject uses top-left.
+                screenPos.y = Gdx.graphics.getHeight() - screenPos.y;
+                hudRenderer.uiViewport.unproject(screenPos);
+                
+                vx.add(screenPos.x);
+                vy.add(screenPos.y);
+                vt.add("-" + vfx.damage);
+                vtimer.add(vfx.timer);
+                vtype.add(vfx.type);
+            }
+            hudRenderer.renderCombatVFX(vx, vy, vt, vtimer, vtype);
+        }
+
         if (currentState == GameState.TRANSITION && hudRenderer != null) {
             hudRenderer.renderTransitionScreen(transitionFloor, transitionStartTime);
         }

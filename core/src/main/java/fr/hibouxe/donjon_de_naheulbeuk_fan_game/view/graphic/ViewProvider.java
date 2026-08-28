@@ -15,13 +15,8 @@ import java.util.List;
 
 public class ViewProvider {
     private HD2DGameApp app;
-    private HUDRenderer hudRenderer;
-    private BattleArenaRenderer battleRenderer;
-
-    public ViewProvider(HD2DGameApp app, HUDRenderer hudRenderer, BattleArenaRenderer battleRenderer) {
+    public ViewProvider(HD2DGameApp app) {
         this.app = app;
-        this.hudRenderer = hudRenderer;
-        this.battleRenderer = battleRenderer;
     }
 
     public IExplorationView getExplorationView() {
@@ -103,6 +98,15 @@ public class ViewProvider {
             public void resetMenuSelection() { app.resetMenuSelection(); }
             @Override
             public void setMenuRequest(String title, String[] options) { app.setMenuRequest(title, options); }
+            @Override
+            public void playHitAnimation(Character target, int damage, String vfxType, String sfxPath) {
+                if (app.getBattleRenderer() != null) {
+                    app.getBattleRenderer().playHitAnimation(target, damage, vfxType);
+                }
+                if (app.getAudioManager() != null && sfxPath != null && !sfxPath.isEmpty()) {
+                    app.getAudioManager().playSound(sfxPath);
+                }
+            }
         };
     }
 
