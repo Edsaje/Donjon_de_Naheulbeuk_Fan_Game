@@ -76,7 +76,7 @@ public class HUDRenderer implements Disposable {
         uiBatch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         font = new BitmapFont(); 
-        font.getData().setScale(1.2f);
+        font.getData().setScale(1.0f);
         uiViewport = new com.badlogic.gdx.utils.viewport.FitViewport(1280, 720);
         
         try {
@@ -138,14 +138,14 @@ public class HUDRenderer implements Disposable {
 
         if (floor >= 0 && font != null) {
             uiBatch.begin();
-            font.getData().setScale(2.5f);
+            font.getData().setScale(3.0f);
             font.setColor(Color.WHITE);
             String text = "ETAGE " + floor;
             float x = (1280 / 2f) - (text.length() * 15f);
             float y = (720 / 2f);
             font.draw(uiBatch, text, x, y);
             uiBatch.end();
-            font.getData().setScale(1.2f);
+            font.getData().setScale(1.0f);
         } else if (progress >= 0.8f) {
             uiBatch.begin();
             font.getData().setScale(2.0f);
@@ -154,7 +154,7 @@ public class HUDRenderer implements Disposable {
             float x = (1280 / 2f) - (text.length() * 12f);
             float y = (720 / 2f);
             font.draw(uiBatch, text, x, y);
-            font.getData().setScale(1.2f);
+            font.getData().setScale(1.0f);
             uiBatch.end();
         }
     }
@@ -208,7 +208,7 @@ public class HUDRenderer implements Disposable {
         if (floatingMessage != null && floatingMessageTimer > 0) {
             floatingMessageTimer -= Gdx.graphics.getDeltaTime();
             uiBatch.begin();
-            font.getData().setScale(2.5f);
+            font.getData().setScale(3.0f);
             com.badlogic.gdx.graphics.g2d.GlyphLayout layout = new com.badlogic.gdx.graphics.g2d.GlyphLayout(font, floatingMessage);
             float cx = (1280 - layout.width) / 2;
             float cy = (720 + layout.height) / 2 + 150;
@@ -216,7 +216,7 @@ public class HUDRenderer implements Disposable {
             font.draw(uiBatch, floatingMessage, cx + 2, cy - 2);
             font.setColor(1, 1, 0, 1);
             font.draw(uiBatch, floatingMessage, cx, cy);
-            font.getData().setScale(1.2f);
+            font.getData().setScale(1.0f);
             uiBatch.end();
         } else {
             floatingMessage = null;
@@ -275,7 +275,7 @@ public class HUDRenderer implements Disposable {
             
             font.draw(uiBatch, text, x, y + offsetY);
         }
-        font.getData().setScale(1.2f);
+        font.getData().setScale(1.0f);
         uiBatch.end();
     }
 
@@ -465,11 +465,11 @@ public class HUDRenderer implements Disposable {
 
         // 3. Dessiner le texte
         uiBatch.begin();
-        font.getData().setScale(1.5f);
+        font.getData().setScale(2.0f);
         font.setColor(Color.GOLD);
         font.draw(uiBatch, "Destinations", menuX + 30, menuY + menuHeight - 20);
         
-        font.getData().setScale(1.2f);
+        font.getData().setScale(1.0f);
         for (int i = 0; i < options.length; i++) {
             int textX = menuX + 60;
             int textY = menuY + menuHeight - 60 - i * 50;
