@@ -84,7 +84,7 @@ public class HubDungeon extends Dungeon {
         this.getGrid()[12][10].setStairs(true);
         // Ajout visuel du tableau
         Room boardRoom = new Room(11, 9, 3, 3);
-        boardRoom.prefabModel = "assets/models/dungeon/naheulbeuk/wall.obj"; // Placeholder
+        boardRoom.prefabModel = "models/dungeon/naheulbeuk/wall.obj"; // Placeholder
         this.getPrefabRooms().add(boardRoom);
 
         // 1. TAVERNE / BIVOUAC (Nord-Ouest) [10][8]
@@ -99,7 +99,7 @@ public class HubDungeon extends Dungeon {
             this.getGrid()[10][8].setStairs(true);
         } else if (tavernLevel == 1) {
             Room tentRoom = new Room(8, 8, 5, 5);
-            tentRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj"; // Tente
+            tentRoom.prefabModel = "models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj"; // Tente
             this.getPrefabRooms().add(tentRoom);
             
             this.getGrid()[10][8].setEvent(t -> {
@@ -110,7 +110,7 @@ public class HubDungeon extends Dungeon {
             this.getGrid()[10][8].setStairs(true);
         } else {
             Room tavernRoom = new Room(8, 8, 5, 5);
-            tavernRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj"; // Taverne
+            tavernRoom.prefabModel = "models/dungeon/naheulbeuk/rooms/test_room_5x5.obj"; // Taverne
             this.getPrefabRooms().add(tavernRoom);
             
             this.getGrid()[10][8].setEvent(t -> {
@@ -125,7 +125,7 @@ public class HubDungeon extends Dungeon {
         int merchantLevel = team.getHubUpgradeLevel("MARCHAND");
         if (merchantLevel == 0) {
             Room cartRoom = new Room(19, 8, 3, 3);
-            cartRoom.prefabModel = "assets/models/dungeon/naheulbeuk/wall.obj"; // Chariot casse
+            cartRoom.prefabModel = "models/dungeon/naheulbeuk/wall.obj"; // Chariot casse
             this.getPrefabRooms().add(cartRoom);
 
             this.getGrid()[20][8].setEvent(t -> {
@@ -136,7 +136,7 @@ public class HubDungeon extends Dungeon {
             this.getGrid()[20][8].setStairs(true);
         } else {
             Room marchantRoom = new Room(19, 8, 3, 3);
-            marchantRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj"; // Bazar
+            marchantRoom.prefabModel = "models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj"; // Bazar
             this.getPrefabRooms().add(marchantRoom);
             
             this.getGrid()[20][8].setEvent(t -> {
@@ -151,7 +151,7 @@ public class HubDungeon extends Dungeon {
         int bankLevel = team.getHubUpgradeLevel("BANQUE");
         if (bankLevel == 0) {
             Room chestRoom = new Room(20, 22, 5, 5);
-            chestRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj"; // Coffre
+            chestRoom.prefabModel = "models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj"; // Coffre
             this.getPrefabRooms().add(chestRoom);
 
             this.getGrid()[22][22].setEvent(t -> {
@@ -162,7 +162,7 @@ public class HubDungeon extends Dungeon {
             this.getGrid()[22][22].setStairs(true);
         } else {
             Room bankRoom = new Room(20, 22, 5, 5);
-            bankRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj"; // Comptoir
+            bankRoom.prefabModel = "models/dungeon/naheulbeuk/rooms/test_room_5x5.obj"; // Comptoir
             this.getPrefabRooms().add(bankRoom);
             
             this.getGrid()[22][22].setEvent(t -> {
@@ -177,7 +177,7 @@ public class HubDungeon extends Dungeon {
         int forgeLevel = team.getHubUpgradeLevel("FORGE");
         if (forgeLevel == 0) {
             Room boxesRoom = new Room(6, 22, 5, 5);
-            boxesRoom.prefabModel = "assets/models/dungeon/naheulbeuk/wall.obj"; // Caisses
+            boxesRoom.prefabModel = "models/dungeon/naheulbeuk/wall.obj"; // Caisses
             this.getPrefabRooms().add(boxesRoom);
 
             this.getGrid()[8][22].setEvent(t -> {
@@ -188,7 +188,7 @@ public class HubDungeon extends Dungeon {
             this.getGrid()[8][22].setStairs(true);
         } else {
             Room forgeRoom = new Room(6, 22, 5, 5);
-            forgeRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj"; // Forge
+            forgeRoom.prefabModel = "models/dungeon/naheulbeuk/rooms/test_room_5x5.obj"; // Forge
             this.getPrefabRooms().add(forgeRoom);
             
             this.getGrid()[8][22].setEvent(t -> {
