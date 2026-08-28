@@ -1,5 +1,6 @@
 package fr.hibouxe.donjon_de_naheulbeuk_fan_game.view.graphic;
 
+
 import com.badlogic.gdx.ScreenAdapter;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.BattleController;
 
