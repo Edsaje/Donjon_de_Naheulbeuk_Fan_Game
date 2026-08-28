@@ -87,13 +87,21 @@ public class HubDungeon extends Dungeon {
         boardRoom.prefabModel = "assets/models/dungeon/naheulbeuk/wall.obj"; // Placeholder
         this.getPrefabRooms().add(boardRoom);
 
-        // 1. TAVERNE (Nord-Ouest) [10][20]
+        // 1. TAVERNE / BIVOUAC (Nord-Ouest) [10][20]
         int tavernLevel = team.getHubUpgradeLevel("TAVERNE");
         if (tavernLevel == 0) {
+            // Pas de modele, espace vide pour le tuto
+            this.getGrid()[10][20].setEvent(t -> {
+                EventResult res = new EventResult(true);
+                res.setActionTrigger("BUILD_TAVERNE");
+                return res;
+            });
+            this.getGrid()[10][20].setStairs(true);
+        } else if (tavernLevel == 1) {
             Room tentRoom = new Room(8, 20, 5, 5);
             tentRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj"; // Tente
             this.getPrefabRooms().add(tentRoom);
-
+            
             this.getGrid()[10][20].setEvent(t -> {
                 EventResult res = new EventResult(true);
                 res.setActionTrigger("BUILD_TAVERNE");

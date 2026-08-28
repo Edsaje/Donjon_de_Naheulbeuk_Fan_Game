@@ -211,9 +211,14 @@ public class ExplorationController implements GameState {
                     java.util.Map<String, Integer> costs = new java.util.HashMap<>();
                     
                     if (buildingId.equals("TAVERNE")) { 
-                        bName = "la Taverne du Ponceau"; 
-                        costs.put("Bois", 5); 
-                        costs.put("Pierre", 3); 
+                        if (team.getHubUpgradeLevel("TAVERNE") == 0) {
+                            bName = "le Bivouac (Tente)"; 
+                            costs.put("Bois", 2);
+                        } else {
+                            bName = "la Taverne du Ponceau"; 
+                            costs.put("Bois", 5); 
+                            costs.put("Pierre", 3); 
+                        }
                     } else if (buildingId.equals("MARCHAND")) { 
                         bName = "le Bazar de Gobzog"; 
                         costs.put("Bois", 3); 

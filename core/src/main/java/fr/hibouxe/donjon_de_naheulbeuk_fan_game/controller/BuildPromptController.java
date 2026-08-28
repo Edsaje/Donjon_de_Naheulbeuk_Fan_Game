@@ -70,7 +70,8 @@ public class BuildPromptController implements GameState {
             if (choice == 0) { // Oui
                 if (hasMaterials()) {
                     consumeMaterials();
-                    team.setHubUpgradeLevel(buildingId, 1);
+                    int currentLvl = team.getHubUpgradeLevel(buildingId);
+                    team.setHubUpgradeLevel(buildingId, currentLvl + 1);
                     menu.displayMessage("Vous avez construit : " + buildingName + " !");
                     if (onBuildSuccess != null) onBuildSuccess.run();
                 } else {
