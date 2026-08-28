@@ -12,14 +12,19 @@ class ExplorationEngineTest {
     @Test
     void testProcessPlayerMove() {
         Team team = new Team();
-        team.setX(1);
-        team.setY(1);
+        team.setPlayerX(1.5f);
+        team.setPlayerZ(1.5f);
         Dungeon maze = new TutorialDungeon();
+        maze.prepareFloor(1, team, null); // initialize grid
+        // Remove wall at 1,2 so player can move UP (Z decreases in 3D usually, but physics handles up/down)
+        maze.getGrid()[1][2].setWall(false);
         
         ExplorationEngine engine = new ExplorationEngine(maze, team);
         
-        MoveResult result = engine.processPlayerMove(0, 1); // move Y+1
+        // Simuler 1 seconde de deplacement vers le HAUT (Z diminue)
+        boolean hasEncounter = engine.updatePhysics(1.0f, true, false, false, false);
         
-        assertNotNull(result, "MoveResult should not be null");
+        // Le joueur s'est deplace, donc sa position doit avoir change
+        assertTrue(team.getPlayerZ() != 1.5f || team.getPlayerX() != 1.5f, "Player should have moved");
     }
 }
