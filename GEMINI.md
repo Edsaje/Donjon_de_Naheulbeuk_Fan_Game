@@ -32,3 +32,7 @@ Tu dois **toujours** respecter ces règles dans tes propositions de code. Aucune
 - **Rgle :** LibGDX sur desktop est sensible au Working Directory. Un lancement via gradlew desktop:run s'excute dans desktop/ (les assets sont dans ../assets/), tandis qu'un lancement via IntelliJ s'excute souvent  la racine (les assets sont dans assets/).
 - **Solution :** Toujours vrifier l'existence du fichier avant l'injection : new java.io.File("assets/...").exists() ? "assets/..." : "../assets/..."
 
+
+## 7. Rigueur Architecturale (Zéro "Vite Fait")
+- **Règle :** Il est strictement interdit d'implémenter des fonctionnalités de manière précipitée ("quick and dirty") ou de court-circuiter l'architecture pour gagner du temps. Pas de "Magic Strings" dans la logique métier, pas de logique de craft/économie dans les contrôleurs de vue, et pas de switch géants (utiliser le pattern Strategy).
+- **Solution :** Si une fonctionnalité demande de violer le SRP ou l'OCP (SOLID) pour être intégrée, le design DOIT être refactoré d'abord. Chaque nouvelle entité (bâtiment, monstre, objet) doit être ajoutée via un registre de données (Registry/Factory) ou un pattern dédié, sans jamais altérer le moteur central (Core Engine).

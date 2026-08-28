@@ -9,9 +9,12 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.playerClasses.Ogre;
 import java.util.Iterator;
 
 public class MonsterAIEngine {
+    
+    // Pool de liste pour eviter l'allocation a chaque frame (Zero-Allocation)
+    private final java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent> frameEncounters = new java.util.ArrayList<>(10);
 
     public java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent> updateAll(float deltaTime, Dungeon maze, Team team) {
-        java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent> encounters = new java.util.ArrayList<>();
+        frameEncounters.clear(); // 0 allocation, reutilisation du cache
         float playerX = team.getPlayerX();
         float playerZ = team.getPlayerZ();
 
@@ -148,12 +151,13 @@ public class MonsterAIEngine {
             // Check collision for encounter
             float checkDx = playerX - mg.getX();
             float checkDz = playerZ - mg.getZ();
-            if (Math.sqrt(checkDx * checkDx + checkDz * checkDz) < 0.8f && hasLineOfSight(maze, playerX, playerZ, mg.getX(), mg.getZ())) {
-                encounters.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent(mg.getMonsters(), mg));
+            boolean collision = Math.sqrt(checkDx * checkDx + checkDz * checkDz) < 0.8f && hasLineOfSight(maze, playerX, playerZ, mg.getX(), mg.getZ());
+            if (collision) {
+                frameEncounters.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EncounterEvent(mg.getMonsters(), mg));
                 it.remove();
             }
         }
-        return encounters;
+        return frameEncounters;
     }
 
     private void faceTowards(RoamingMonsterGroup mg, float dx, float dz) {

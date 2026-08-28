@@ -46,8 +46,13 @@ public class BattleEngine {
         }
     }
 
+    private final java.util.List<Character> turnOrderListWrapper = new java.util.AbstractList<Character>() {
+        @Override public Character get(int index) { return turnOrderCache[index]; }
+        @Override public int size() { return turnOrderSize; }
+    };
+
     public Iterable<Character> getTurnOrderCache() {
-        return java.util.Arrays.asList(java.util.Arrays.copyOf(turnOrderCache, turnOrderSize));
+        return turnOrderListWrapper;
     }
     
     public Character getCombatant(int index) {
