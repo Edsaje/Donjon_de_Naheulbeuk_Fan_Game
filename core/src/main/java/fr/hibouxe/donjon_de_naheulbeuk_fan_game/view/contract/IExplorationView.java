@@ -8,7 +8,7 @@ public interface IExplorationView {
     void display(Dungeon maze, Team team, int currentFloor);
     void displayDungeon(Dungeon maze, Team team, int currentFloor);
     String askPlayerMovement();
-    boolean askPickupItem(Item item);
+    void promptPickup(Item item, java.util.function.Consumer<Boolean> callback);
     void displaySaveSuccess(int slot);
     void displaySaveError();
 }

@@ -37,7 +37,9 @@ public class ViewProvider {
             @Override
             public String askPlayerMovement() { return ""; }
             @Override
-            public boolean askPickupItem(Item item) { return true; }
+            public void promptPickup(Item item, java.util.function.Consumer<Boolean> callback) { 
+                callback.accept(true); 
+            }
             @Override
             public void displaySaveSuccess(int slot) { app.displaySaveSuccess(slot); }
             @Override

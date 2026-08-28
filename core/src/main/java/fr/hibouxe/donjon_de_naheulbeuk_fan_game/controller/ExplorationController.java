@@ -24,7 +24,7 @@ public class ExplorationController implements GameState {
     private IMenuView menu;
     private boolean isTutorial;
     private int activeSlot = 1;
-    private enum SubState { EXPLORING, PAUSE_MENU, STATUS_MENU, TAVERN_MENU }
+    private enum SubState { EXPLORING, PAUSE_MENU, STATUS_MENU, TAVERN_MENU, WAITING_FOR_UI }
     private SubState subState = SubState.EXPLORING;
 
     private ISaveManager saveManager;
@@ -229,19 +229,20 @@ public class ExplorationController implements GameState {
                 // If it's a closed chest, do not auto-pickup on walk over
             } else {
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item item = currentCell.getItem();
-                boolean take = view.askPickupItem(item);
-    
-                if (take) {
-                    boolean added = team.addItem(item);
-                    if (added) {
-                        menu.displayMessage(locManager.getString("ITEM_PICKUP", item.getName()));
-                        currentCell.setItem(null); 
-                    } else {
-                        menu.displayMessage(locManager.getString("INVENTORY_FULL"));
+                this.subState = SubState.WAITING_FOR_UI;
+                
+                view.promptPickup(item, (Boolean take) -> {
+                    if (take) {
+                        boolean added = team.addItem(item);
+                        if (added) {
+                            menu.displayMessage(locManager.getString("ITEM_PICKUP", item.getName()));
+                            currentCell.setItem(null); 
+                        } else {
+                            menu.displayMessage(locManager.getString("INVENTORY_FULL"));
+                        }
                     }
-                } else {
-                    menu.displayMessage(locManager.getString("ITEM_LEAVE"));
-                }
+                    this.subState = SubState.EXPLORING;
+                });
             }
         }
 
