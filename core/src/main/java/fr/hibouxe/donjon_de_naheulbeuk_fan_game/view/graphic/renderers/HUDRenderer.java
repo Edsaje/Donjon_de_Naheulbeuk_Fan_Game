@@ -1154,7 +1154,7 @@ public class HUDRenderer implements Disposable {
         
         // Borders
         shapeRenderer.set(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(COLOR_MENU_BORDER);
+        shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.rect(50, 600, 1180, 70);
         shapeRenderer.rect(50, 50, 700, 530);
         shapeRenderer.rect(770, 300, 460, 280);
