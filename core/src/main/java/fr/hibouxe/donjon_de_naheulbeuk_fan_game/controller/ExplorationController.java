@@ -193,6 +193,24 @@ public class ExplorationController implements GameState {
                     gameContext.pushState(new DungeonSelectionController(menu, gameContext));
                 } else if ("OPEN_TAVERN".equals(action)) {
                     gameContext.pushState(new HubController(team, menu, activeSlot, saveManager, gameContext));
+                } else if ("ENTER_TAVERNE".equals(action)) {
+                    menu.displayMessage("La Taverne est ouverte ! (Menu a venir)");
+                } else if ("OPEN_SHOP".equals(action)) {
+                    menu.displayMessage("Bienvenue a la boutique ! (Menu a venir)");
+                } else if ("OPEN_INN".equals(action)) {
+                    gameContext.pushState(new HubController(team, menu, activeSlot, saveManager, gameContext)); // L'Auberge remplace le feu de camp
+                } else if (action.startsWith("BUILD_")) {
+                    String buildingId = action.substring(6);
+                    String bName = buildingId;
+                    int cost = 500;
+                    if (buildingId.equals("TAVERNE")) { bName = "la Taverne"; cost = 800; }
+                    else if (buildingId.equals("MARCHAND")) { bName = "le Stand du Marchand"; cost = 300; }
+                    else if (buildingId.equals("AUBERGE")) { bName = "l'Auberge"; cost = 500; }
+                    
+                    gameContext.pushState(new BuildPromptController(team, menu, gameContext, buildingId, bName, cost, () -> {
+                        // Rebuild scene after construction
+                        gameContext.goToVillage();
+                    }));
                 }
                 return true; // Stop processing further events on this cell
             }
