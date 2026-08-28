@@ -21,8 +21,8 @@ class ExplorationEngineTest {
         
         ExplorationEngine engine = new ExplorationEngine(maze, team);
         
-        // Simuler 1 seconde de deplacement vers le HAUT (Z diminue)
-        boolean hasEncounter = engine.updatePhysics(1.0f, true, false, false, false);
+        // Simuler 1 seconde de deplacement vers le BAS (Z augmente vers 2)
+        boolean hasEncounter = engine.updatePhysics(1.0f, false, true, false, false);
         
         // Le joueur s'est deplace, donc sa position doit avoir change
         assertTrue(team.getPlayerZ() != 1.5f || team.getPlayerX() != 1.5f, "Player should have moved");
