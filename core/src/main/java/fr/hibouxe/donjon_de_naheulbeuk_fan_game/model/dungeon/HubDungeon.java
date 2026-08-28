@@ -3,7 +3,6 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.DungeonGenerator.Room;
-import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.ICellEvent;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.event.EventResult;
 import java.util.ArrayList;
 
@@ -44,8 +43,9 @@ public class HubDungeon extends Dungeon {
             }
         }
 
+        // Zone eclaircie
         for (int x = 5; x < 25; x++) {
-            for (int y = 5; y < 25; y++) {
+            for (int y = 5; y < 27; y++) {
                 this.getGrid()[x][y].setWall(false);
                 this.getGrid()[x][y].setRoomId(1);
             }
@@ -53,93 +53,123 @@ public class HubDungeon extends Dungeon {
         
         this.setPrefabRooms(new ArrayList<>());
 
-        // Point de depart vers les donjons (en bas)
-        this.getGrid()[15][5].setEvent(t -> {
+        // Point de depart du joueur (Sud)
+        team.setX(15);
+        team.setY(5);
+        team.setPlayerX(15f);
+        team.setPlayerZ(5f);
+
+        // ENTREE DU DONJON (Nord) [15][24]
+        this.getGrid()[15][24].setEvent(t -> {
             EventResult res = new EventResult(true);
             res.setActionTrigger("ENTER_DUNGEON");
             return res;
         });
-        this.getGrid()[15][5].setStairs(true);
+        this.getGrid()[15][24].setStairs(true);
 
-        // Feu de camp (Base) au centre [15][15]
+        // FEU CENTRAL / STATUE (Centre) [15][15]
         this.getGrid()[15][15].setEvent(t -> {
             EventResult res = new EventResult(true);
-            res.setActionTrigger("OPEN_TAVERN"); // Ancien menu
+            res.setActionTrigger("OPEN_TAVERN"); // Sert pour sauvegarder/se reposer
             return res;
         });
-        this.getGrid()[15][15].setStairs(true); // Indique visuellement qu'il y a un truc
+        this.getGrid()[15][15].setStairs(true);
 
-        // 1. TAVERNE (En Haut - [15][20])
+        // TABLEAU DE QUETES (Fixe, entre l'entree et la taverne) [12][22]
+        this.getGrid()[12][22].setEvent(t -> {
+            EventResult res = new EventResult(true);
+            res.setActionTrigger("OPEN_QUEST_BOARD");
+            return res;
+        });
+        this.getGrid()[12][22].setStairs(true);
+
+        // 1. TAVERNE (Nord-Ouest) [10][20]
         int tavernLevel = team.getHubUpgradeLevel("TAVERNE");
         if (tavernLevel == 0) {
-            this.getGrid()[15][20].setEvent(t -> {
+            this.getGrid()[10][20].setEvent(t -> {
                 EventResult res = new EventResult(true);
                 res.setActionTrigger("BUILD_TAVERNE");
                 return res;
             });
-            this.getGrid()[15][20].setStairs(true);
+            this.getGrid()[10][20].setStairs(true);
         } else {
-            Room tavernRoom = new Room(13, 20, 5, 5);
+            Room tavernRoom = new Room(8, 20, 5, 5);
             tavernRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj"; 
             this.getPrefabRooms().add(tavernRoom);
             
-            this.getGrid()[15][20].setEvent(t -> {
+            this.getGrid()[10][20].setEvent(t -> {
                 EventResult res = new EventResult(true);
                 res.setActionTrigger("ENTER_TAVERNE");
                 return res;
             });
-            this.getGrid()[15][20].setStairs(true);
+            this.getGrid()[10][20].setStairs(true);
         }
 
-        // 2. MARCHAND (A Gauche - [10][15])
+        // 2. MARCHAND (Nord-Est) [20][20]
         int merchantLevel = team.getHubUpgradeLevel("MARCHAND");
         if (merchantLevel == 0) {
-            this.getGrid()[10][15].setEvent(t -> {
+            this.getGrid()[20][20].setEvent(t -> {
                 EventResult res = new EventResult(true);
                 res.setActionTrigger("BUILD_MARCHAND");
                 return res;
             });
-            this.getGrid()[10][15].setStairs(true);
+            this.getGrid()[20][20].setStairs(true);
         } else {
-            Room marchantRoom = new Room(9, 14, 3, 3);
+            Room marchantRoom = new Room(19, 19, 3, 3);
             marchantRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj";
             this.getPrefabRooms().add(marchantRoom);
             
-            this.getGrid()[10][15].setEvent(t -> {
+            this.getGrid()[20][20].setEvent(t -> {
                 EventResult res = new EventResult(true);
                 res.setActionTrigger("OPEN_SHOP");
                 return res;
             });
-            this.getGrid()[10][15].setStairs(true);
+            this.getGrid()[20][20].setStairs(true);
         }
 
-        // 3. AUBERGE (A Droite - [20][15])
-        int innLevel = team.getHubUpgradeLevel("AUBERGE");
-        if (innLevel == 0) {
-            this.getGrid()[20][15].setEvent(t -> {
+        // 3. BANQUE / COMPTOIR DES NAINS (Sud-Est) [22][10]
+        int bankLevel = team.getHubUpgradeLevel("BANQUE");
+        if (bankLevel == 0) {
+            this.getGrid()[22][10].setEvent(t -> {
                 EventResult res = new EventResult(true);
-                res.setActionTrigger("BUILD_AUBERGE");
+                res.setActionTrigger("BUILD_BANQUE");
                 return res;
             });
-            this.getGrid()[20][15].setStairs(true);
+            this.getGrid()[22][10].setStairs(true);
         } else {
-            Room innRoom = new Room(18, 13, 5, 5);
-            innRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj";
-            this.getPrefabRooms().add(innRoom);
+            Room bankRoom = new Room(20, 9, 5, 5);
+            bankRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj";
+            this.getPrefabRooms().add(bankRoom);
             
-            this.getGrid()[20][15].setEvent(t -> {
+            this.getGrid()[22][10].setEvent(t -> {
                 EventResult res = new EventResult(true);
-                res.setActionTrigger("OPEN_INN");
+                res.setActionTrigger("OPEN_BANK");
                 return res;
             });
-            this.getGrid()[20][15].setStairs(true);
+            this.getGrid()[22][10].setStairs(true);
         }
 
-        // IMPORTANT : Fixer le point de spawn de l'equipe !
-        team.setX(15);
-        team.setY(10);
-        team.setPlayerX(15f);
-        team.setPlayerZ(10f);
+        // 4. FORGE D'ARGENT (Sud-Ouest) [8][10]
+        int forgeLevel = team.getHubUpgradeLevel("FORGE");
+        if (forgeLevel == 0) {
+            this.getGrid()[8][10].setEvent(t -> {
+                EventResult res = new EventResult(true);
+                res.setActionTrigger("BUILD_FORGE");
+                return res;
+            });
+            this.getGrid()[8][10].setStairs(true);
+        } else {
+            Room forgeRoom = new Room(6, 9, 5, 5);
+            forgeRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj";
+            this.getPrefabRooms().add(forgeRoom);
+            
+            this.getGrid()[8][10].setEvent(t -> {
+                EventResult res = new EventResult(true);
+                res.setActionTrigger("OPEN_FORGE");
+                return res;
+            });
+            this.getGrid()[8][10].setStairs(true);
+        }
 
         return true;
     }

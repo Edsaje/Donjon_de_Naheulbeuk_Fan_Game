@@ -197,6 +197,12 @@ public class ExplorationController implements GameState {
                     menu.displayMessage("La Taverne est ouverte ! (Menu a venir)");
                 } else if ("OPEN_SHOP".equals(action)) {
                     menu.displayMessage("Bienvenue a la boutique ! (Menu a venir)");
+                } else if ("OPEN_BANK".equals(action)) {
+                    menu.displayMessage("Bienvenue a la banque Naine ! (Menu a venir)");
+                } else if ("OPEN_FORGE".equals(action)) {
+                    menu.displayMessage("Forge d'Argent ! (Menu a venir)");
+                } else if ("OPEN_QUEST_BOARD".equals(action)) {
+                    menu.displayMessage("Tableau des Quetes (Bientot disponible)");
                 } else if ("OPEN_INN".equals(action)) {
                     gameContext.pushState(new HubController(team, menu, activeSlot, saveManager, gameContext)); // L'Auberge remplace le feu de camp
                 } else if (action.startsWith("BUILD_")) {
@@ -205,16 +211,21 @@ public class ExplorationController implements GameState {
                     java.util.Map<String, Integer> costs = new java.util.HashMap<>();
                     
                     if (buildingId.equals("TAVERNE")) { 
-                        bName = "la Taverne"; 
+                        bName = "la Taverne du Ponceau"; 
                         costs.put("Bois", 5); 
                         costs.put("Pierre", 3); 
                     } else if (buildingId.equals("MARCHAND")) { 
-                        bName = "le Stand du Marchand"; 
+                        bName = "le Bazar de Gobzog"; 
                         costs.put("Bois", 3); 
-                    } else if (buildingId.equals("AUBERGE")) { 
-                        bName = "l'Auberge"; 
+                    } else if (buildingId.equals("BANQUE")) { 
+                        bName = "le Comptoir des Nains"; 
                         costs.put("Bois", 4); 
-                        costs.put("Pierre", 2); 
+                        costs.put("Pierre", 5); 
+                        costs.put("Granite", 2); 
+                    } else if (buildingId.equals("FORGE")) { 
+                        bName = "la Forge d'Argent"; 
+                        costs.put("Bois", 2); 
+                        costs.put("Pierre", 5); 
                     }
                     
                     gameContext.pushState(new BuildPromptController(team, menu, gameContext, buildingId, bName, costs, () -> {

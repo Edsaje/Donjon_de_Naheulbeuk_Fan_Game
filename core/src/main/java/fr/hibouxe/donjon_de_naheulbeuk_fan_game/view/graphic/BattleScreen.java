@@ -18,4 +18,3 @@ public class BattleScreen extends ScreenAdapter {
         }
     }
 }
-
