@@ -16,8 +16,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.dungeon.Dungeon;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.settings.GameSettingsManager;
 
 /**
- * Composant de rendu 2D spÃƒÂ©cialisÃƒÂ© pour l'Interface Utilisateur (HUD) et le ConsoleMenu Interactif Dragon Quest (SRP).
- * Ouvre une fenÃƒÂªtre bleue ÃƒÂ  bordure dorÃƒÂ©e (Sac, Sorts, Ãƒâ€°quipement, Carte, Sauvegarde) ÃƒÂ  la pression de 'M' ou 'ECHAP'.
+ * Composant de rendu 2D spÃƒÆ’Ã‚Â©cialisÃƒÆ’Ã‚Â© pour l'Interface Utilisateur (HUD) et le ConsoleMenu Interactif Dragon Quest (SRP).
+ * Ouvre une fenÃƒÆ’Ã‚Âªtre bleue ÃƒÆ’Ã‚Â  bordure dorÃƒÆ’Ã‚Â©e (Sac, Sorts, ÃƒÆ’Ã¢â‚¬Â°quipement, Carte, Sauvegarde) ÃƒÆ’Ã‚Â  la pression de 'M' ou 'ECHAP'.
  *
  * @author Hibouxe
  * @version 2.0
@@ -55,7 +55,7 @@ public class HUDRenderer implements Disposable {
     private boolean isMenuOpen = false;
     private int selectedOption = 0;
     private String[] menuOptions = {
-            "Status", "Sac", "Ãƒâ€°quipement", "Magie", "Sauvegarder", "ParamÃƒÂ¨tres", "Fermer"
+            "Status", "Sac", "ÃƒÆ’Ã¢â‚¬Â°quipement", "Magie", "Sauvegarder", "ParamÃƒÆ’Ã‚Â¨tres", "Fermer"
     };
     
     // --- Settings Menu State ---
@@ -165,7 +165,7 @@ public class HUDRenderer implements Disposable {
      * @param dungeon Donjon actuel
      * @param playerX Position X du joueur
      * @param playerY Position Y du joueur
-     * @param currentFloor Ãƒâ€°tage actuel
+     * @param currentFloor ÃƒÆ’Ã¢â‚¬Â°tage actuel
      * */
     public void renderHUD(Dungeon dungeon, float playerX, float playerY, int currentFloor, HD2DGameApp.GameState state, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, String menuTitle, String[] menuOptions, HD2DGameApp gameApp) {
 
@@ -186,7 +186,11 @@ public class HUDRenderer implements Disposable {
         }
 
         // Toujours dessiner le menu contextuel s'il existe et n'est pas un menu de pause (dialogue)
-        if (!isSettingsMenuOpen && menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0]) && state != HD2DGameApp.GameState.TRANSITION) {
+        if ("INVENTORY_UI".equals(menuTitle)) {
+            if (gameApp != null && gameApp.getGame() != null && gameApp.getGame().getCurrentState() instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.InventoryController) {
+                renderInventoryUI((fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.InventoryController) gameApp.getGame().getCurrentState());
+            }
+        } else if (!isSettingsMenuOpen && menuTitle != null && menuOptions != null && !"[Continuer]".equals(menuOptions[0]) && state != HD2DGameApp.GameState.TRANSITION) {
             if ("SELECTION_DONJON".equals(menuTitle)) {
                 renderWorldMapSelection(menuOptions);
             } else if ("STATISTIQUES".equals(menuTitle) && team != null) {
@@ -200,7 +204,7 @@ public class HUDRenderer implements Disposable {
                 }
             }
         } else if (!isSettingsMenuOpen && isMenuOpen && team != null) {
-            // Dessiner le statut de l'équipe sous le menu principal s'il n'y a pas de menu contextuel
+            // Dessiner le statut de l'Ã©quipe sous le menu principal s'il n'y a pas de menu contextuel
             int menuHeight = 60 + 7 * 40; // 7 options dans le menu principal
             renderDragonQuestTeamStatus(team, 50, 720 - menuHeight - 50);
         }
@@ -255,7 +259,7 @@ public class HUDRenderer implements Disposable {
             }
             uiBatch.setColor(1.0f, 1.0f, 1.0f, 1.0f); // Reset
             
-            // L'opacité diminue vers la fin
+            // L'opacitÃ© diminue vers la fin
             float alpha = 1.0f;
             if (timer > 0.5f) {
                 alpha = 1.0f - ((timer - 0.5f) * 2.0f);
@@ -265,11 +269,11 @@ public class HUDRenderer implements Disposable {
             // Monte doucement
             float offsetY = timer * 100f;
             
-            // Ombre portée pour lisibilité
+            // Ombre portÃ©e pour lisibilitÃ©
             font.setColor(new Color(0.0f, 0.0f, 0.0f, alpha));
             font.draw(uiBatch, text, x + 3, y + offsetY - 3);
             
-            // Texte rouge pour les dégâts, ou vert pour les soins
+            // Texte rouge pour les dÃ©gÃ¢ts, ou vert pour les soins
             if (text.startsWith("+")) font.setColor(new Color(0.2f, 1.0f, 0.2f, alpha));
             else font.setColor(new Color(1.0f, 0.2f, 0.2f, alpha));
             
@@ -333,24 +337,24 @@ public class HUDRenderer implements Disposable {
             int menuWidth = Math.max(300, columns * itemWidth + 60);
             int menuHeight = 60 + rows * 40;
             
-            // PlacÃƒÂ© en haut ÃƒÂ  gauche, ou dÃƒÂ©calÃƒÂ© (poupÃƒÂ©e russe) si le menu principal est ouvert
+            // PlacÃƒÆ’Ã‚Â© en haut ÃƒÆ’Ã‚Â  gauche, ou dÃƒÆ’Ã‚Â©calÃƒÆ’Ã‚Â© (poupÃƒÆ’Ã‚Â©e russe) si le menu principal est ouvert
             int x = isMenuOpen ? 50 + 350 + 20 : 50; 
             int y = 720 - menuHeight - 50; 
             
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             
-            // FenÃƒÂªtre noire (95% opacitÃƒÂ©)
+            // FenÃƒÆ’Ã‚Âªtre noire (95% opacitÃƒÆ’Ã‚Â©)
             shapeRenderer.setColor(COLOR_MENU_BG);
             shapeRenderer.rect(x, y, menuWidth, menuHeight);
             
-            // Bordure blanche ÃƒÂ©paisse (3px)
+            // Bordure blanche ÃƒÆ’Ã‚Â©paisse (3px)
             shapeRenderer.setColor(COLOR_GOLD_BORDER);
             shapeRenderer.rectLine(x, y, x + menuWidth, y, 3);
             shapeRenderer.rectLine(x, y + menuHeight, x + menuWidth, y + menuHeight, 3);
             shapeRenderer.rectLine(x, y, x, y + menuHeight, 3);
             shapeRenderer.rectLine(x + menuWidth, y, x + menuWidth, y + menuHeight, 3);
             
-            // Curseur de sÃƒÂ©lection (fond de ligne gris transparent)
+            // Curseur de sÃƒÆ’Ã‚Â©lection (fond de ligne gris transparent)
             if (contextMenuSelection < options.length) {
                 int col = contextMenuSelection % columns;
                 int row = contextMenuSelection / columns;
@@ -365,7 +369,7 @@ public class HUDRenderer implements Disposable {
             shapeRenderer.end();
 
             uiBatch.begin();
-            // Titre alignÃƒÂ© ÃƒÂ  gauche
+            // Titre alignÃƒÆ’Ã‚Â© ÃƒÆ’Ã‚Â  gauche
             font.setColor(COLOR_TEXT_BLUE);
             font.draw(uiBatch, title, x + 25, y + menuHeight - 15);
 
@@ -395,7 +399,7 @@ public class HUDRenderer implements Disposable {
     private void renderWorldMapSelection(String[] options) {
         uiBatch.begin();
         if (mapTexture != null) {
-            // Dessiner la carte en plein écran ou presque
+            // Dessiner la carte en plein Ã©cran ou presque
             uiBatch.draw(mapTexture, 0, 0, 1280, 720);
         } else {
             font.setColor(Color.RED);
@@ -404,18 +408,18 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
 
         // 1. Dessiner les "Pins" sur la carte selon le donjon
-        // Coordonnées ajustées pour la résolution 1280x720 (0,0 en bas à gauche)
+        // CoordonnÃ©es ajustÃ©es pour la rÃ©solution 1280x720 (0,0 en bas Ã  gauche)
         // [0] Tutoriel (Valtordu) : Sud-Ouest
         // [1] Donjon de Naheulbeuk : Ouest (gauche)
-        // [2] Forêt de Schlipak : Centre
-        // [3] Ruines : Sud-Est (Désert)
-        // [4] Annuler : Hors de l'écran
+        // [2] ForÃªt de Schlipak : Centre
+        // [3] Ruines : Sud-Est (DÃ©sert)
+        // [4] Annuler : Hors de l'Ã©cran
         float[] pinX = { 200f, 225f, 550f, 850f, -100f }; 
         float[] pinY = { 250f, 280f, 400f, 200f, -100f };
         Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
-        // Assombrir le reste de la carte légèrement
+        // Assombrir le reste de la carte lÃ©gÃ¨rement
         shapeRenderer.setColor(new Color(0, 0, 0, 0.4f));
         shapeRenderer.rect(0, 0, 1280, 720);
 
@@ -426,14 +430,14 @@ public class HUDRenderer implements Disposable {
             float cy = pinY[i % pinY.length];
             
             if (i == contextMenuSelection) {
-                // Pin sélectionné : gros cercle rouge avec bordure dorée (animé)
+                // Pin sÃ©lectionnÃ© : gros cercle rouge avec bordure dorÃ©e (animÃ©)
                 float pulse = 5f * (float)Math.sin(System.currentTimeMillis() / 200.0);
                 shapeRenderer.setColor(Color.GOLD);
                 shapeRenderer.circle(cx, cy, 20 + pulse);
                 shapeRenderer.setColor(Color.RED);
                 shapeRenderer.circle(cx, cy, 15 + pulse);
             } else {
-                // Pin non sélectionné : petit cercle gris
+                // Pin non sÃ©lectionnÃ© : petit cercle gris
                 shapeRenderer.setColor(Color.DARK_GRAY);
                 shapeRenderer.circle(cx, cy, 12);
                 shapeRenderer.setColor(Color.LIGHT_GRAY);
@@ -441,11 +445,11 @@ public class HUDRenderer implements Disposable {
             }
         }
 
-        // 2. Dessiner le menu de liste façon PMD (à droite)
+        // 2. Dessiner le menu de liste faÃ§on PMD (Ã  droite)
         int menuWidth = 380;
         int menuHeight = 60 + options.length * 50;
         int menuX = 1280 - menuWidth - 40;
-        int menuY = (720 - menuHeight) / 2; // Centré verticalement
+        int menuY = (720 - menuHeight) / 2; // CentrÃ© verticalement
 
         shapeRenderer.setColor(COLOR_MENU_BG);
         shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
@@ -456,7 +460,7 @@ public class HUDRenderer implements Disposable {
         shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 4);
         shapeRenderer.rectLine(menuX + menuWidth, menuY, menuX + menuWidth, menuY + menuHeight, 4);
         
-        // Curseur de séléction
+        // Curseur de sÃ©lÃ©ction
         int cursorY = menuY + menuHeight - 90 - contextMenuSelection * 50;
         shapeRenderer.setColor(COLOR_MENU_CURSOR);
         shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 45);
@@ -486,9 +490,9 @@ public class HUDRenderer implements Disposable {
         // Petit encart descriptif en bas
         font.setColor(Color.WHITE);
         String desc = "";
-        if (contextMenuSelection == 0) desc = "Idéal pour apprendre les bases du combat.";
+        if (contextMenuSelection == 0) desc = "IdÃ©al pour apprendre les bases du combat.";
         else if (contextMenuSelection == 1) desc = "Le terrible Donjon de Naheulbeuk !";
-        else if (contextMenuSelection == 2) desc = "Gare aux bandits et aux araignées...";
+        else if (contextMenuSelection == 2) desc = "Gare aux bandits et aux araignÃ©es...";
         else if (contextMenuSelection == 3) desc = "Un lieu sombre et effrayant.";
         font.draw(uiBatch, desc, menuX + 20, menuY - 20);
         
@@ -502,17 +506,17 @@ public class HUDRenderer implements Disposable {
         
         int statusWidth = 600;
         int statusHeight = 450;
-        // PlacÃƒÂ© ÃƒÂ  cÃƒÂ´tÃƒÂ© du menu de gauche (x = 50 + menuWidth (environ 300) + 20)
+        // PlacÃƒÆ’Ã‚Â© ÃƒÆ’Ã‚Â  cÃƒÆ’Ã‚Â´tÃƒÆ’Ã‚Â© du menu de gauche (x = 50 + menuWidth (environ 300) + 20)
         int x = 370;
         int y = 720 - statusHeight - 50;
         
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         
-        // FenÃƒÂªtre Noire (95% opacitÃƒÂ©)
+        // FenÃƒÆ’Ã‚Âªtre Noire (95% opacitÃƒÆ’Ã‚Â©)
         shapeRenderer.setColor(COLOR_MENU_BG);
         shapeRenderer.rect(x, y, statusWidth, statusHeight);
         
-        // Bordure blanche ÃƒÂ©paisse (3px)
+        // Bordure blanche ÃƒÆ’Ã‚Â©paisse (3px)
         shapeRenderer.setColor(COLOR_GOLD_BORDER);
         shapeRenderer.rectLine(x, y, x + statusWidth, y, 3);
         shapeRenderer.rectLine(x, y + statusHeight, x + statusWidth, y + statusHeight, 3);
@@ -530,11 +534,11 @@ public class HUDRenderer implements Disposable {
         font.setColor(Color.WHITE);
         int currentY = y + statusHeight - 60;
         
-        // Section SantÃƒÂ© & Prog
-        font.draw(uiBatch, "SantÃ¢â€Å“Ã‚Â® : " + hero.getHealthPoint() + " / " + hero.getMaxHealthPoint(), x + 30, currentY);
+        // Section SantÃƒÆ’Ã‚Â© & Prog
+        font.draw(uiBatch, "SantÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â® : " + hero.getHealthPoint() + " / " + hero.getMaxHealthPoint(), x + 30, currentY);
         font.draw(uiBatch, hero.getResourceName() + " : " + hero.getCurrentResource() + " / " + hero.getMaxResource(), x + 300, currentY);
         currentY -= 35;
-        font.draw(uiBatch, "ExpÃ¢â€Å“Ã‚Â®rience : " + hero.getXp() + " / " + hero.getXpToNextLevel(), x + 30, currentY);
+        font.draw(uiBatch, "ExpÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â®rience : " + hero.getXp() + " / " + hero.getXpToNextLevel(), x + 30, currentY);
         currentY -= 50;
         
         // Attributs
@@ -543,17 +547,17 @@ public class HUDRenderer implements Disposable {
         font.setColor(Color.WHITE);
         currentY -= 35;
         font.draw(uiBatch, "Attaque : " + hero.getAttack(), x + 30, currentY);
-        font.draw(uiBatch, "DÃ¢â€Å“Ã‚Â®fense : " + hero.getDefense(), x + 300, currentY);
+        font.draw(uiBatch, "DÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â®fense : " + hero.getDefense(), x + 300, currentY);
         currentY -= 35;
         font.draw(uiBatch, "Attaque Mag. : " + hero.getMagicAttack(), x + 30, currentY);
-        font.draw(uiBatch, "DÃ¢â€Å“Ã‚Â®fense Mag. : " + hero.getMagicDefense(), x + 300, currentY);
+        font.draw(uiBatch, "DÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â®fense Mag. : " + hero.getMagicDefense(), x + 300, currentY);
         currentY -= 35;
         font.draw(uiBatch, "Vitesse : " + hero.getSpeed(), x + 30, currentY);
         currentY -= 50;
         
-        //ÃƒÂ©quipements
+        //ÃƒÆ’Ã‚Â©quipements
         font.setColor(COLOR_TEXT_BLUE);
-        font.draw(uiBatch, "Ã¢â€Å“ÃƒÂ«quipement actuel", x + 25, currentY);
+        font.draw(uiBatch, "ÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒÆ’Ã‚Â«quipement actuel", x + 25, currentY);
         font.setColor(Color.WHITE);
         currentY -= 35;
         
@@ -588,7 +592,7 @@ public class HUDRenderer implements Disposable {
         uiBatch.begin();
         font.setColor(Color.WHITE);
         if (state == HD2DGameApp.GameState.EXPLORATION) {
-            font.draw(uiBatch, "Ãƒâ€°TAGE " + currentFloor, 20, 720 - 20);
+            font.draw(uiBatch, "ÃƒÆ’Ã¢â‚¬Â°TAGE " + currentFloor, 20, 720 - 20);
         } else if (state == HD2DGameApp.GameState.VILLAGE) {
             font.draw(uiBatch, "CAMPEMENT", 20, 720 - 20);
         }
@@ -601,12 +605,12 @@ public class HUDRenderer implements Disposable {
         int padding = 15;
         int barWidth = 120;
         int barHeight = 8;
-        int startX = 1280 - 250; // AlignÃ¢â€Å“Ã‚Â® Ã¢â€Å“ÃƒÂ¡ droite
+        int startX = 1280 - 250; // AlignÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â® ÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒÆ’Ã‚Â¡ droite
         
         int memberCount = team.getMembers().size();
-        int startY = (720 + (memberCount * 80)) / 2; // CentrÃƒÂ© verticalement
+        int startY = (720 + (memberCount * 80)) / 2; // CentrÃƒÆ’Ã‚Â© verticalement
         
-        // Optionnel : un fond trÃƒÂ¨s lÃƒÂ©ger semi-transparent derriÃƒÂ¨re tous les statuts pour la lisibilitÃƒÂ©
+        // Optionnel : un fond trÃƒÆ’Ã‚Â¨s lÃƒÆ’Ã‚Â©ger semi-transparent derriÃƒÆ’Ã‚Â¨re tous les statuts pour la lisibilitÃƒÆ’Ã‚Â©
         // shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         // shapeRenderer.setColor(new Color(0f, 0f, 0f, 0.4f));
         // shapeRenderer.rect(startX - 20, startY - (memberCount * 80) + 40, 260, memberCount * 80);
@@ -646,7 +650,7 @@ public class HUDRenderer implements Disposable {
             // Nom du personnage (Blanc ou rouge si mort)
             if (member.getHealthPoint() <= 0) font.setColor(Color.RED);
             else font.setColor(Color.WHITE);
-            font.draw(uiBatch, member.getName(), startX + 110 - (member.getName().length() * 4), currentY); // CentrÃ¢â€Å“Ã‚Â® approximativement
+            font.draw(uiBatch, member.getName(), startX + 110 - (member.getName().length() * 4), currentY); // CentrÃƒÂ¢Ã¢â‚¬ÂÃ…â€œÃƒâ€šÃ‚Â® approximativement
             
             // Textes "PV" et "PM" (Vert et Bleu)
             font.setColor(COLOR_HP);
@@ -655,7 +659,7 @@ public class HUDRenderer implements Disposable {
             font.setColor(COLOR_MP);
             font.draw(uiBatch, member.getResourceName().substring(0, 1) + "M", startX, currentY - 38);
             
-            // Valeurs numÃƒÂ©riques sur le cÃƒÂ´tÃƒÂ© droit des barres
+            // Valeurs numÃƒÆ’Ã‚Â©riques sur le cÃƒÆ’Ã‚Â´tÃƒÆ’Ã‚Â© droit des barres
             font.setColor(Color.WHITE);
             font.draw(uiBatch, String.valueOf(member.getHealthPoint()), startX + 30 + barWidth + 10, currentY - 18);
             font.draw(uiBatch, String.valueOf(member.getCurrentResource()), startX + 30 + barWidth + 10, currentY - 38);
@@ -685,18 +689,18 @@ public class HUDRenderer implements Disposable {
         }
 
         if (state == HD2DGameApp.GameState.BATTLE) {
-            // Affichage ultra ÃƒÂ©purÃƒÂ© type "Texte flottant" (sans fond) pour les combats
+            // Affichage ultra ÃƒÆ’Ã‚Â©purÃƒÆ’Ã‚Â© type "Texte flottant" (sans fond) pour les combats
             int screenWidth = 1280;
             int screenHeight = 720;
             
-            // PlacÃƒÂ© trÃƒÂ¨s bas sur l'ÃƒÂ©cran
+            // PlacÃƒÆ’Ã‚Â© trÃƒÆ’Ã‚Â¨s bas sur l'ÃƒÆ’Ã‚Â©cran
             int textY = screenHeight / 12; 
             
             // Approximation simple du centrage pour le texte
             int textX = (screenWidth / 2) - (dialogueText.length() * 4); 
 
             uiBatch.begin();
-            // Effet d'ombre/contour noir pour la lisibilitÃƒÂ©
+            // Effet d'ombre/contour noir pour la lisibilitÃƒÆ’Ã‚Â©
             font.setColor(Color.BLACK);
             font.draw(uiBatch, dialogueText, textX + 2, textY - 2);
             font.draw(uiBatch, dialogueText, textX - 2, textY + 2);
@@ -711,7 +715,7 @@ public class HUDRenderer implements Disposable {
         }
 
         // Affichage classique pour l'exploration
-        int boxWidth = 1280 - 200; // Marge de 100px de chaque cÃƒÂ´tÃƒÂ©
+        int boxWidth = 1280 - 200; // Marge de 100px de chaque cÃƒÆ’Ã‚Â´tÃƒÆ’Ã‚Â©
         int boxX = 100;
         int boxY = 20;
         int boxHeight = 180;
@@ -809,7 +813,7 @@ public class HUDRenderer implements Disposable {
         }
 
         font.setColor(Color.LIGHT_GRAY);
-        font.draw(uiBatch, "[Q/D]: Modifier   [ENTRÉE]: Valider", menuX + 60, menuY + 25);
+        font.draw(uiBatch, "[Q/D]: Modifier   [ENTRÃ‰E]: Valider", menuX + 60, menuY + 25);
 
         uiBatch.end();
     }
@@ -817,24 +821,24 @@ public class HUDRenderer implements Disposable {
     private void renderDragonQuestWindow(Dungeon dungeon, float playerX, float playerY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        // 1. FenÃƒÂªtre du Menu Principal (Top-Left)
+        // 1. FenÃƒÆ’Ã‚Âªtre du Menu Principal (Top-Left)
         int menuWidth = 350;
         int menuHeight = 60 + menuOptions.length * 40;
         int menuX = 50;
         int menuY = 720 - menuHeight - 50;
 
-        // Fond Noir (95% opacitÃƒÂ©)
+        // Fond Noir (95% opacitÃƒÆ’Ã‚Â©)
         shapeRenderer.setColor(COLOR_MENU_BG);
         shapeRenderer.rect(menuX, menuY, menuWidth, menuHeight);
         
-        // Bordure blanche ÃƒÂ©paisse (3px)
+        // Bordure blanche ÃƒÆ’Ã‚Â©paisse (3px)
         shapeRenderer.setColor(COLOR_GOLD_BORDER);
         shapeRenderer.rectLine(menuX, menuY, menuX + menuWidth, menuY, 3);
         shapeRenderer.rectLine(menuX, menuY + menuHeight, menuX + menuWidth, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX, menuY, menuX, menuY + menuHeight, 3);
         shapeRenderer.rectLine(menuX + menuWidth, menuY, menuX + menuWidth, menuY + menuHeight, 3);
 
-        // Curseur de sÃƒÂ©lection (fond de ligne gris transparent)
+        // Curseur de sÃƒÆ’Ã‚Â©lection (fond de ligne gris transparent)
         int cursorY = menuY + menuHeight - 75 - selectedOption * 40;
         shapeRenderer.setColor(COLOR_MENU_CURSOR);
         shapeRenderer.rect(menuX + 10, cursorY, menuWidth - 20, 35);
@@ -860,7 +864,7 @@ public class HUDRenderer implements Disposable {
             font.draw(uiBatch, menuOptions[i], textX, textY);
         }
         
-        // Aide ÃƒÂ  la navigation en bas ÃƒÂ  droite (trÃƒÂ¨s discret)
+        // Aide ÃƒÆ’Ã‚Â  la navigation en bas ÃƒÆ’Ã‚Â  droite (trÃƒÆ’Ã‚Â¨s discret)
         font.setColor(Color.LIGHT_GRAY);
         font.draw(uiBatch, "[Utilise Z/W/S, ENTREE pour selectionner]", 1280 - 400, 50);
 
@@ -1127,4 +1131,126 @@ public class HUDRenderer implements Disposable {
         }
         uiBatch.end();
     }
+
+    private void renderInventoryUI(fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.InventoryController ic) {
+        uiBatch.begin();
+        
+        // Background dim
+        Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(new Color(0, 0, 0, 0.7f));
+        shapeRenderer.rect(0, 0, 1280, 720);
+        
+        // UI Boxes
+        shapeRenderer.setColor(COLOR_MENU_BG);
+        // Header (Tabs)
+        shapeRenderer.rect(50, 600, 1180, 70);
+        // Main list
+        shapeRenderer.rect(50, 50, 700, 530);
+        // Item Details
+        shapeRenderer.rect(770, 300, 460, 280);
+        // Actions/Status
+        shapeRenderer.rect(770, 50, 460, 230);
+        
+        // Borders
+        shapeRenderer.set(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(COLOR_MENU_BORDER);
+        shapeRenderer.rect(50, 600, 1180, 70);
+        shapeRenderer.rect(50, 50, 700, 530);
+        shapeRenderer.rect(770, 300, 460, 280);
+        shapeRenderer.rect(770, 50, 460, 230);
+        
+        // Selection for Tabs
+        fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.InventoryController.Tab currentTab = ic.getCurrentTab();
+        int tabWidth = 1180 / 4;
+        shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(new Color(1, 1, 0, 0.3f));
+        shapeRenderer.rect(50 + currentTab.ordinal() * tabWidth, 600, tabWidth, 70);
+        shapeRenderer.end();
+        
+        // Draw Text
+        font.getData().setScale(1.0f);
+        font.setColor(Color.WHITE);
+        
+        // Tabs text
+        String[] tabs = {"TOUT", "EQUIPEMENT", "CONSOMMABLES", "MATERIAUX"};
+        for (int i = 0; i < 4; i++) {
+            font.setColor(currentTab.ordinal() == i ? Color.YELLOW : Color.WHITE);
+            font.draw(uiBatch, tabs[i], 50 + i * tabWidth + 20, 645);
+        }
+        
+        // Sort
+        font.setColor(Color.LIGHT_GRAY);
+        font.draw(uiBatch, "Tri (Y) : " + ic.getCurrentSort(), 550, 550);
+        
+        // List items
+        font.setColor(Color.WHITE);
+        java.util.List<fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item> items = ic.getFilteredItems();
+        int startY = 520;
+        int maxVisible = 12;
+        int scrollIndex = Math.max(0, ic.getSelectedItemIndex() - maxVisible / 2);
+        
+        if (items.isEmpty()) {
+            font.draw(uiBatch, "Sac vide.", 100, startY);
+        } else {
+            for (int i = scrollIndex; i < Math.min(items.size(), scrollIndex + maxVisible); i++) {
+                int drawY = startY - (i - scrollIndex) * 40;
+                String prefix = (i == ic.getSelectedItemIndex()) ? "> " : "  ";
+                font.setColor(i == ic.getSelectedItemIndex() ? Color.YELLOW : Color.WHITE);
+                font.draw(uiBatch, prefix + items.get(i).getName(), 70, drawY);
+                // Draw type/stats briefly
+                if (items.get(i) instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) {
+                    font.setColor(Color.CYAN);
+                    font.draw(uiBatch, "[Equipement]", 550, drawY);
+                } else if (items.get(i) instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion) {
+                    font.setColor(Color.GREEN);
+                    font.draw(uiBatch, "[Potion]", 550, drawY);
+                }
+            }
+        }
+        
+        // Detail panel
+        if (!items.isEmpty() && ic.getSelectedItemIndex() < items.size()) {
+            fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item item = items.get(ic.getSelectedItemIndex());
+            font.setColor(Color.GOLD);
+            font.draw(uiBatch, item.getName(), 790, 550);
+            font.setColor(Color.WHITE);
+            // We use simple substrings or just print the description (assuming it fits)
+            font.draw(uiBatch, item.getDescription(), 790, 500);
+            
+            if (item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment eq = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) item;
+                font.setColor(Color.CYAN);
+                font.draw(uiBatch, "Attaque : +" + eq.getAttackBonus(), 790, 450);
+                font.draw(uiBatch, "Defense : +" + eq.getDefenseBonus(), 790, 410);
+            } else if (item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion) {
+                fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion p = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion) item;
+                font.setColor(Color.GREEN);
+                font.draw(uiBatch, "Soin : " + p.getHealAmout() + " PV", 790, 450);
+            }
+        }
+        
+        // Actions panel
+        if (ic.getCurrentState() == fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.InventoryController.State.ITEM_ACTION) {
+            font.setColor(Color.WHITE);
+            font.draw(uiBatch, "Que faire avec cet objet ?", 790, 250);
+            String[] actions = {"Utiliser / Equiper", "Jeter", "Annuler"};
+            for (int i = 0; i < actions.length; i++) {
+                String p = (i == ic.getSelectedActionIndex()) ? "> " : "  ";
+                font.setColor(i == ic.getSelectedActionIndex() ? Color.YELLOW : Color.WHITE);
+                font.draw(uiBatch, p + actions[i], 790, 200 - i * 40);
+            }
+        } else if (ic.getCurrentState() == fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.InventoryController.State.SELECT_TARGET) {
+            font.setColor(Color.WHITE);
+            font.draw(uiBatch, "Sur qui ?", 790, 250);
+            for (int i = 0; i < ic.getTeam().getMembers().size(); i++) {
+                String p = (i == ic.getSelectedTargetIndex()) ? "> " : "  ";
+                font.setColor(i == ic.getSelectedTargetIndex() ? Color.YELLOW : Color.WHITE);
+                font.draw(uiBatch, p + ic.getTeam().getMembers().get(i).getName(), 790, 200 - i * 30);
+            }
+        }
+        
+        uiBatch.end();
+    }
+
 }

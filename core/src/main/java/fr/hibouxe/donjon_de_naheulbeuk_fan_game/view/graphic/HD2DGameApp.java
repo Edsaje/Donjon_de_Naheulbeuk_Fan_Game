@@ -106,6 +106,8 @@ public class HD2DGameApp extends com.badlogic.gdx.Game implements GameSettingsMa
         audioManager.setSettingsManager(settingsManager);
     }
 
+    public fr.hibouxe.donjon_de_naheulbeuk_fan_game.controller.Game getGame() { return game; }
+
     public boolean isAnyMenuOpen() {
         if (currentMenuTitle != null) return true;
         if (currentMessages != null && !currentMessages.isEmpty()) return true;
