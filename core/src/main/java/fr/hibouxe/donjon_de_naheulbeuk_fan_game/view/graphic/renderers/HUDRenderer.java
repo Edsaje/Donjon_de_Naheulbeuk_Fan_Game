@@ -55,7 +55,7 @@ public class HUDRenderer implements Disposable {
     private boolean isMenuOpen = false;
     private int selectedOption = 0;
     private String[] menuOptions = {
-            "Status", "Sac", "ÃƒÆ’Ã¢â‚¬Â°quipement", "Magie", "Sauvegarder", "ParamÃƒÆ’Ã‚Â¨tres", "Fermer"
+            "Status", "Sac", "Équipement", "Magie", "Sauvegarder", "Paramètres", "Fermer"
     };
     
     // --- Settings Menu State ---
@@ -1253,4 +1253,4 @@ public class HUDRenderer implements Disposable {
         uiBatch.end();
     }
 
-}
+}
