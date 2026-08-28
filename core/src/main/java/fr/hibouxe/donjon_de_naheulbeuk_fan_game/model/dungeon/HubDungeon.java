@@ -16,7 +16,7 @@ public class HubDungeon extends Dungeon {
 
     @Override
     public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character getRandomMonster(int floorNumber, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider random, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository) {
-        return null; // Pas de monstres dans le Hub
+        return null;
     }
 
     @Override
@@ -26,7 +26,9 @@ public class HubDungeon extends Dungeon {
 
     @Override
     public java.util.List<String> getFloorIntroDialogues(int floorNumber) {
-        return new java.util.ArrayList<>();
+        java.util.List<String> list = new ArrayList<>();
+        list.add("HUB_INTRO");
+        return list;
     }
 
     @Override
@@ -35,7 +37,6 @@ public class HubDungeon extends Dungeon {
         this.setHeight(30);
         this.setGrid(new Cell[30][30]);
 
-        // Initialisation avec des murs (foret dense autour)
         for (int x = 0; x < 30; x++) {
             for (int y = 0; y < 30; y++) {
                 this.getGrid()[x][y] = new Cell(x, y);
@@ -43,7 +44,6 @@ public class HubDungeon extends Dungeon {
             }
         }
 
-        // Zone centrale degagee
         for (int x = 5; x < 25; x++) {
             for (int y = 5; y < 25; y++) {
                 this.getGrid()[x][y].setWall(false);
@@ -53,16 +53,21 @@ public class HubDungeon extends Dungeon {
         
         this.setPrefabRooms(new ArrayList<>());
 
+        // Point de depart vers les donjons (en bas)
+        this.getGrid()[15][5].setEvent(t -> {
+            EventResult res = new EventResult(true);
+            res.setActionTrigger("ENTER_DUNGEON");
+            return res;
+        });
+        this.getGrid()[15][5].setStairs(true);
+
         // Feu de camp (Base) au centre [15][15]
         this.getGrid()[15][15].setEvent(t -> {
             EventResult res = new EventResult(true);
-            res.setActionTrigger("OPEN_TAVERN"); // Garder l'ancien nom de trigger pour le menu de repos
+            res.setActionTrigger("OPEN_TAVERN"); // Ancien menu
             return res;
         });
-
-        // ======================================
-        // SYSTEME DE CONSTRUCTION / UPGRADES
-        // ======================================
+        this.getGrid()[15][15].setStairs(true); // Indique visuellement qu'il y a un truc
 
         // 1. TAVERNE (En Haut - [15][20])
         int tavernLevel = team.getHubUpgradeLevel("TAVERNE");
@@ -72,10 +77,10 @@ public class HubDungeon extends Dungeon {
                 res.setActionTrigger("BUILD_TAVERNE");
                 return res;
             });
+            this.getGrid()[15][20].setStairs(true);
         } else {
-            // Ajouter le modele 3D de la Taverne
-            Room tavernRoom = new Room(12, 18, 6, 6);
-            tavernRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj"; // Placeholder
+            Room tavernRoom = new Room(13, 20, 5, 5);
+            tavernRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj"; 
             this.getPrefabRooms().add(tavernRoom);
             
             this.getGrid()[15][20].setEvent(t -> {
@@ -83,6 +88,7 @@ public class HubDungeon extends Dungeon {
                 res.setActionTrigger("ENTER_TAVERNE");
                 return res;
             });
+            this.getGrid()[15][20].setStairs(true);
         }
 
         // 2. MARCHAND (A Gauche - [10][15])
@@ -93,10 +99,10 @@ public class HubDungeon extends Dungeon {
                 res.setActionTrigger("BUILD_MARCHAND");
                 return res;
             });
+            this.getGrid()[10][15].setStairs(true);
         } else {
-            // Ajouter le modele 3D du Stand
-            Room marchantRoom = new Room(8, 14, 4, 3);
-            marchantRoom.prefabModel = "assets/models/dungeon/naheulbeuk/wall.obj"; // Placeholder
+            Room marchantRoom = new Room(9, 14, 3, 3);
+            marchantRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj";
             this.getPrefabRooms().add(marchantRoom);
             
             this.getGrid()[10][15].setEvent(t -> {
@@ -104,6 +110,7 @@ public class HubDungeon extends Dungeon {
                 res.setActionTrigger("OPEN_SHOP");
                 return res;
             });
+            this.getGrid()[10][15].setStairs(true);
         }
 
         // 3. AUBERGE (A Droite - [20][15])
@@ -114,10 +121,10 @@ public class HubDungeon extends Dungeon {
                 res.setActionTrigger("BUILD_AUBERGE");
                 return res;
             });
+            this.getGrid()[20][15].setStairs(true);
         } else {
-            // Ajouter le modele 3D de l'auberge
-            Room innRoom = new Room(18, 12, 6, 6);
-            innRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/spawn_room_3x3.obj"; // Placeholder
+            Room innRoom = new Room(18, 13, 5, 5);
+            innRoom.prefabModel = "assets/models/dungeon/naheulbeuk/rooms/test_room_5x5.obj";
             this.getPrefabRooms().add(innRoom);
             
             this.getGrid()[20][15].setEvent(t -> {
@@ -125,7 +132,14 @@ public class HubDungeon extends Dungeon {
                 res.setActionTrigger("OPEN_INN");
                 return res;
             });
+            this.getGrid()[20][15].setStairs(true);
         }
+
+        // IMPORTANT : Fixer le point de spawn de l'equipe !
+        team.setX(15);
+        team.setY(10);
+        team.setPlayerX(15f);
+        team.setPlayerZ(10f);
 
         return true;
     }
