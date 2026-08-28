@@ -14,17 +14,51 @@ allprojects {
     }
 
     repositories {
-            if (changed) {
-                file.setText(content, 'UTF-8')
-                println "Fixed: \\"
+        mavenCentral()
+        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://jitpack.io" }
+    }
+}
+
+project(':core') {
+    apply plugin: 'java-library'
+    
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    dependencies {
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+        api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
+    }
+}
+
+project(':desktop') {
+    apply plugin: 'java'
+    apply plugin: 'application'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    application {
+        mainClass = 'fr.hibouxe.donjon_de_naheulbeuk_fan_game.desktop.DesktopLauncher'
+    }
+
+    dependencies {
+        implementation project(':core')
+        implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
+    }
+
+    sourceSets {
+        main {
+            resources {
+                srcDirs = ['../core/src/main/resources', '../assets']
             }
         }
     }
 }
-
-allprojects {
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
-}
-
