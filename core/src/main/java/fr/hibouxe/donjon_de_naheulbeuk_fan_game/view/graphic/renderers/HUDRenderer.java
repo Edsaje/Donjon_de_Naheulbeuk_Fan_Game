@@ -165,7 +165,7 @@ public class HUDRenderer implements Disposable {
      * @param dungeon Donjon actuel
      * @param playerX Position X du joueur
      * @param playerY Position Y du joueur
-     * @param currentFloor ÃƒÆ’Ã¢â‚¬Â°tage actuel
+     * @param currentFloor etage actuel
      * */
     public void renderHUD(Dungeon dungeon, float playerX, float playerY, int currentFloor, HD2DGameApp.GameState state, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team team, java.util.List<String> messages, String menuTitle, String[] menuOptions, HD2DGameApp gameApp) {
 
@@ -547,17 +547,17 @@ public class HUDRenderer implements Disposable {
         font.setColor(Color.WHITE);
         currentY -= 35;
         font.draw(uiBatch, "Attaque : " + hero.getAttack(), x + 30, currentY);
-        font.Defense : " + hero.getDefense(), x + 300, currentY);
+        font.draw(uiBatch, "Defense : " + hero.getDefense(), x + 300, currentY);
         currentY -= 35;
         font.draw(uiBatch, "Attaque Mag. : " + hero.getMagicAttack(), x + 30, currentY);
-        font.Defense Mag. : " + hero.getMagicDefense(), x + 300, currentY);
+        font.draw(uiBatch, "Defense Mag. : " + hero.getMagicDefense(), x + 300, currentY);
         currentY -= 35;
         font.draw(uiBatch, "Vitesse : " + hero.getSpeed(), x + 30, currentY);
         currentY -= 50;
         
-        //ÃƒÆ’Ã‚Â©quipements
+        // Equipements
         font.setColor(COLOR_TEXT_BLUE);
-Equipement actuel", x + 25, currentY);
+        font.draw(uiBatch, "Equipement actuel", x + 25, currentY);
         font.setColor(Color.WHITE);
         currentY -= 35;
         
@@ -1222,7 +1222,7 @@ Equipement actuel", x + 25, currentY);
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment eq = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.Equipment) item;
                 font.setColor(Color.CYAN);
                 font.draw(uiBatch, "Attaque : +" + eq.getAttackBonus(), 790, 450);
-                font.Defense : +" + eq.getDefenseBonus(), 790, 410);
+                font.draw(uiBatch, "Defense : +" + eq.getDefenseBonus(), 790, 410);
             } else if (item instanceof fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion) {
                 fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion p = (fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.usable.potion.Potion) item;
                 font.setColor(Color.GREEN);
@@ -1253,4 +1253,4 @@ Equipement actuel", x + 25, currentY);
         uiBatch.end();
     }
 
-}
+}
