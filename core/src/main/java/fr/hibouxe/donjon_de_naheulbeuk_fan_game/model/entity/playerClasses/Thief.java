@@ -11,8 +11,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCa
 public class Thief extends Character {
     public Thief() {
         super("Le Voleur", "Voleur", 1, 5, 100, 3, 1, 5, 5, 16);
-        this.equip(new OffensiveEquipment("Dague rouill�e", "Un outil discret pour les coups en tra�tre.", EquipmentCategory.LIGHT_WEAPON, 0, 0));
-        this.setResourceName("Énergie");
+        this.equip(new OffensiveEquipment("Dague rouille", "Un outil discret pour les coups en tratre.", EquipmentCategory.LIGHT_WEAPON, 0, 0));
+        this.setResourceName("nergie");
         this.setMaxResource(100);
         this.setCurrentResource(100);
         this.skills.add(new Skill("Attaque Sournoise", 30, "Une attaque pernicieuse dans le dos.", false) {

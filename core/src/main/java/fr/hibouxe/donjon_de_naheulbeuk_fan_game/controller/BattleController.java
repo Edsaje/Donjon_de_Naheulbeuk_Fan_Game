@@ -119,7 +119,7 @@ public class BattleController implements GameState {
 
     private void promptPlayerAction() {
         menu.displayTurn(currentCombatant.getName());
-        menu.showActionMenu(currentCombatant, Arrays.asList("Attaque", "Compétence", "Objet", "Fuite"));
+        menu.showActionMenu(currentCombatant, Arrays.asList("Attaque", "Comptence", "Objet", "Fuite"));
     }
 
     private void executeEnemyTurn() {
@@ -190,13 +190,13 @@ public class BattleController implements GameState {
             }
             engine.setState(BattleState.NEXT_COMBATANT);
         } else if (index == 1) {
-            menu.displayMessage("Compétence non implémentée.");
+            menu.displayMessage("Comptence non implmente.");
             engine.setState(BattleState.NEXT_COMBATANT);
         } else if (index == 2) {
             menu.displayMessage("Objet (Mock partiel).");
             engine.setState(BattleState.NEXT_COMBATANT);
         } else if (index == 3) {
-            menu.displayMessage("Vous fuyez lâchement !");
+            menu.displayMessage("Vous fuyez lchement !");
             engine.setState(BattleState.END);
             if (onFlee != null) onFlee.run(); // Fleeing
         } else {

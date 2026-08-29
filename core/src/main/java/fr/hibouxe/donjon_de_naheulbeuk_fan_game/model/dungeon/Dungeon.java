@@ -5,9 +5,9 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 import java.io.Serializable;
 
 /**
- * Modèle du Donjon (Carte du Labyrinthe).
- * Stocke la matrice 2D des cellules et délègue la génération à {@link DungeonGenerator}
- * ainsi que le déplacement des monstres à {@link MonsterAI}.
+ * Modle du Donjon (Carte du Labyrinthe).
+ * Stocke la matrice 2D des cellules et dlgue la gnration  {@link DungeonGenerator}
+ * ainsi que le dplacement des monstres  {@link MonsterAI}.
  *
  * @author Hibouxe
  * @version 2.0
@@ -38,7 +38,7 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Construit une grille de labyrinthe aux dimensions spécifiées.
+     * Construit une grille de labyrinthe aux dimensions spcifies.
      * Instancie chaque cellule de la grille.
      *
      * @param width  Largeur du donjon en nombre de colonnes
@@ -67,7 +67,7 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Génère un donjon hybride avec l'algorithme des Salles et Couloirs.
+     * Gnre un donjon hybride avec l'algorithme des Salles et Couloirs.
      */
     public void generateHybridDungeon() {
         getGenerator().generateHybridDungeon(this);
@@ -75,11 +75,11 @@ public abstract class Dungeon implements Serializable {
 
 
     /**
-     * Place aléatoirement un nombre d'ennemis sur les cases du labyrinthe.
+     * Place alatoirement un nombre d'ennemis sur les cases du labyrinthe.
      *
-     * @param count  Nombre de groupes de monstres à générer
-     * @param startX Coordonnée X à épargner (joueur)
-     * @param startY Coordonnée Y à épargner (joueur)
+     * @param count  Nombre de groupes de monstres  gnrer
+     * @param startX Coordonne X  pargner (joueur)
+     * @param startY Coordonne Y  pargner (joueur)
      * @param repository Le repository de monstres
      */
     public void generateMonsters(int count, int startX, int startY, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository, int floorNumber) {
@@ -89,26 +89,26 @@ public abstract class Dungeon implements Serializable {
     /**
      * Place des coffres d'objets dans le donjon.
      *
-     * @param count Nombre de coffres à générer
+     * @param count Nombre de coffres  gnrer
      */
     public void generateItems(int count) {
         getGenerator().generateItems(this, count);
     }
 
     /**
-     * Place des escaliers vers l'étage suivant.
+     * Place des escaliers vers l'tage suivant.
      *
-     * @param count Nombre d'escaliers à placer
+     * @param count Nombre d'escaliers  placer
      */
     public void generateStairs(int count) {
         getGenerator().generateStairs(this, count);
     }
 
     /**
-     * Déplace tous les monstres du donjon d'une case au tour par tour (IA BFS et Line of Sight).
+     * Dplace tous les monstres du donjon d'une case au tour par tour (IA BFS et Line of Sight).
      *
-     * @param team L'équipe de la compagnie
-     * @param ConsoleMenu La vue principale (Injectée)
+     * @param team L'quipe de la compagnie
+     * @param ConsoleMenu La vue principale (Injecte)
      */
     public void moveMonsters(Team team) {
         getMonsterAI().moveMonsters(this, team);
@@ -122,11 +122,11 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Révèle les cases autour du joueur (Brouillard de Guerre).
-     * Délégué au FogOfWarManager (SRP).
+     * Rvle les cases autour du joueur (Brouillard de Guerre).
+     * Dlgu au FogOfWarManager (SRP).
      *
-     * @param playerX Coordonnée X du joueur
-     * @param playerY Coordonnée Y du joueur
+     * @param playerX Coordonne X du joueur
+     * @param playerY Coordonne Y du joueur
      * @param radius Rayon de vision (ex: 2 ou 3 cases)
      */
     public void updateFogOfWar(int playerX, int playerY, int radius) {
@@ -143,7 +143,7 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Définir la largeur du donjon.
+     * Dfinir la largeur du donjon.
      *
      * @param width La nouvelle largeur
      */
@@ -161,7 +161,7 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Définir la hauteur du donjon.
+     * Dfinir la hauteur du donjon.
      *
      * @param height La nouvelle hauteur
      */
@@ -179,7 +179,7 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Définir la grille du donjon.
+     * Dfinir la grille du donjon.
      *
      * @param grid La nouvelle grille 2D
      */
@@ -188,7 +188,7 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Recherche et renvoie les coordonnées (X, Y) de la première case de sol navigable.
+     * Recherche et renvoie les coordonnes (X, Y) de la premire case de sol navigable.
      *
      * @return Tableau [X, Y] de la case navigable
      */
@@ -224,33 +224,33 @@ public abstract class Dungeon implements Serializable {
     }
 
     /**
-     * Prépare le donjon pour un étage spécifique.
-     * C'est ici que chaque sous-classe gère sa taille, son layout et son peuplement selon l'étage.
+     * Prpare le donjon pour un tage spcifique.
+     * C'est ici que chaque sous-classe gre sa taille, son layout et son peuplement selon l'tage.
      *
-     * @param floorNumber Numéro de l'étage actuel
+     * @param floorNumber Numro de l'tage actuel
      * @param team La compagnie du joueur
      * @param repository Le repository de monstres
-     * @return true si l'expédition est terminée (ex: victoire finale sur un boss), false sinon
+     * @return true si l'expdition est termine (ex: victoire finale sur un boss), false sinon
      */
     public abstract boolean prepareFloor(int floorNumber, Team team, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository);
 
     /**
-     * Retourne les dialogues d'introduction d'un étage.
-     * @param floorNumber Numéro de l'étage
-     * @return Liste des textes à afficher
+     * Retourne les dialogues d'introduction d'un tage.
+     * @param floorNumber Numro de l'tage
+     * @return Liste des textes  afficher
      */
     public abstract java.util.List<String> getFloorIntroDialogues(int floorNumber);
 
     /**
-     * Vérifie si les conditions de complétion de l'expédition sont remplies (ex: Boss vaincu).
+     * Vrifie si les conditions de compltion de l'expdition sont remplies (ex: Boss vaincu).
      *
-     * @param floorNumber Numéro de l'étage actuel
-     * @return true si l'expédition doit prendre fin avec succès
+     * @param floorNumber Numro de l'tage actuel
+     * @return true si l'expdition doit prendre fin avec succs
      */
     public abstract boolean isExpeditionComplete(int floorNumber);
 
     /**
-     * Choisit un monstre aléatoire selon la table de spawn de ce donjon pour cet étage.
+     * Choisit un monstre alatoire selon la table de spawn de ce donjon pour cet tage.
      */
     public abstract fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character getRandomMonster(int floorNumber, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider random, fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.data.IMonsterRepository repository);
 }

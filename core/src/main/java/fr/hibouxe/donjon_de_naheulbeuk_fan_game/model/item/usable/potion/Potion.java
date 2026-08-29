@@ -4,7 +4,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.Item;
 
 /**
- * Représente une potion de soin restaurant des points de vie (PV).
+ * Reprsente une potion de soin restaurant des points de vie (PV).
  *
  * @author Hibouxe
  * @version 1.0
@@ -17,7 +17,7 @@ public class Potion extends Item {
      *
      * @param name        Nom de la potion (ex: "Fiole de Soin")
      * @param description Description des effets
-     * @param healAmout   Quantité de points de vie restaurés
+     * @param healAmout   Quantit de points de vie restaurs
      */
     public Potion(String name, String description, int healAmout) {
         super(name, description);
@@ -28,7 +28,7 @@ public class Potion extends Item {
      * Consomme la potion pour restaurer les points de vie du personnage cible.
      *
      * @param target Le personnage qui consomme la potion
-     * @return true car la potion a été consommée avec succès.
+     * @return true car la potion a t consomme avec succs.
      */
     @Override
     public boolean use(Character target) {
@@ -37,7 +37,7 @@ public class Potion extends Item {
     }
 
     /**
-     * @return La quantité de soins apportée par la potion
+     * @return La quantit de soins apporte par la potion
      */
     public int getHealAmout() {
         return healAmount;

@@ -3,8 +3,8 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 
 /**
- * Modèle du Boss Golem de Fer (Garde la porte du bureau de Zangdar à l'étage 5).
- * Possède une défense physique initiale colossale (18), mais sensible au Tir Précis de l'Elfe.
+ * Modle du Boss Golem de Fer (Garde la porte du bureau de Zangdar  l'tage 5).
+ * Possde une dfense physique initiale colossale (18), mais sensible au Tir Prcis de l'Elfe.
  *
  * @author Hibouxe
  * @version 1.0

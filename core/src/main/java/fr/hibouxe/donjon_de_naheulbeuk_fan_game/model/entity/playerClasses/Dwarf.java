@@ -9,7 +9,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.offensiveEq
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory;
 
 /**
- * Modèle de classe du héros Nain.
+ * Modle de classe du hros Nain.
  *
  * @author Hibouxe
  * @version 1.0
@@ -17,11 +17,11 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCa
 public class Dwarf extends Character {
 
     /**
-     * Instancie le héros Nain avec ses statistiques de base et sa ressource Rage.
+     * Instancie le hros Nain avec ses statistiques de base et sa ressource Rage.
      */
     public Dwarf() {
         super("Le Nain", "Nain", 1, 12, 0, 7, 0, 6, 6, 5);
-        this.equip(new OffensiveEquipment("Hache de b�cheron", "Lourde et contondante.", EquipmentCategory.HEAVY_WEAPON, 0, 0));
+        this.equip(new OffensiveEquipment("Hache de bcheron", "Lourde et contondante.", EquipmentCategory.HEAVY_WEAPON, 0, 0));
         this.setResourceName("Rage");
         this.setMaxResource(100);
         this.setCurrentResource(0);

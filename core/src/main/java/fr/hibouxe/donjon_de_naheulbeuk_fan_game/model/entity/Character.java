@@ -12,8 +12,8 @@ import java.util.EnumMap;
 import java.io.Serializable;
 
 /**
- * Classe parente représentant une entité vivante du jeu (Héros, Monstre ou Boss).
- * Gère les caractéristiques fondamentales (points de vie, attaque, défense, ressources).
+ * Classe parente reprsentant une entit vivante du jeu (Hros, Monstre ou Boss).
+ * Gre les caractristiques fondamentales (points de vie, attaque, dfense, ressources).
  *
  * @author Hibouxe
  * @version 1.0
@@ -55,13 +55,13 @@ public class Character implements Serializable {
      *
      * @param name          Nom du personnage (ex: "Le Nain")
      * @param type          Type ou classe (ex: "Dwarf")
-     * @param level         Niveau de départ
+     * @param level         Niveau de dpart
      * @param maxHealthPoint   Points de vie initiaux
-     * @param resourcePoint Points de ressource (Mana / Énergie / Rage)
+     * @param resourcePoint Points de ressource (Mana / nergie / Rage)
      * @param attack        Puissance d'attaque physique
      * @param magicAttack   Puissance d'attaque magique
-     * @param defense       Défense physique
-     * @param magicDefense  Défense magique
+     * @param defense       Dfense physique
+     * @param magicDefense  Dfense magique
      */
     public Character(String name, String type, int level, int healthPoint, int resourcePoint, int attack, int magicAttack, int defense, int magicDefense, int speed) {
         this.name = name;
@@ -76,8 +76,8 @@ public class Character implements Serializable {
     public ProgressionComponent getProgressionComponent() { return progressionComponent; }
 
     /**
-     * Exécute la compétence spéciale choisie.
-     * Cette méthode est destinée à être redéfinie dans les sous-classes.
+     * Excute la comptence spciale choisie.
+     * Cette mthode est destine  tre redfinie dans les sous-classes.
      */
     public SkillResult useSpecialSkill(Skill skill, Team team, Character monster) {
         return skill.execute(this, team, monster);
@@ -89,7 +89,7 @@ public class Character implements Serializable {
 
     /**
      * Ajoute de la ressource au personnage (ex : Rage, Energie)
-     * Cette méthode est destinée à être redéfinie dans les sous-classes.
+     * Cette mthode est destine  tre redfinie dans les sous-classes.
      *
      * @param amount
      */
@@ -151,7 +151,7 @@ public class Character implements Serializable {
     }
 
     /**
-     * @return Valeur de défense magique totale (base + équipements)
+     * @return Valeur de dfense magique totale (base + quipements)
      */
     public int getMagicDefense() {
         int bonus = 0;
@@ -162,14 +162,14 @@ public class Character implements Serializable {
     }
 
     /**
-     * @param magicDefense Nouvelle valeur de défense magique
+     * @param magicDefense Nouvelle valeur de dfense magique
      */
     public void setMagicDefense(int magicDefense) {
         this.statComponent.setMagicDefense(magicDefense);
     }
 
     /**
-     * @return Valeur d'attaque magique totale (base + équipements)
+     * @return Valeur d'attaque magique totale (base + quipements)
      */
     public int getMagicAttack() {
         int bonus = 0;
@@ -187,7 +187,7 @@ public class Character implements Serializable {
     }
 
     /**
-     * @return Valeur de défense physique totale (base + équipements)
+     * @return Valeur de dfense physique totale (base + quipements)
      */
     public int getDefense() {
         int bonus = 0;
@@ -198,14 +198,14 @@ public class Character implements Serializable {
     }
 
     /**
-     * @param defense Nouvelle valeur de défense physique
+     * @param defense Nouvelle valeur de dfense physique
      */
     public void setDefense(int defense) {
         this.statComponent.setDefense(defense);
     }
 
     /**
-     * @return Valeur d'attaque physique totale (base + équipements)
+     * @return Valeur d'attaque physique totale (base + quipements)
      */
     public int getAttack() {
         int bonus = 0;
@@ -216,10 +216,10 @@ public class Character implements Serializable {
     }
 
     /**
-     * Tente d'équiper un objet dans l'emplacement dédié du personnage.
+     * Tente d'quiper un objet dans l'emplacement ddi du personnage.
      *
-     * @param equipment L'équipement à porter
-     * @return true si l'objet a été équipé avec succès, false sinon.
+     * @param equipment L'quipement  porter
+     * @return true si l'objet a t quip avec succs, false sinon.
      */
     public boolean equip(Equipment equipment) {
         return this.equipmentComponent.equip(equipment, this);
@@ -230,12 +230,12 @@ public class Character implements Serializable {
     }
 
     /**
-     * Retire un équipement porté par le personnage et le remet dans le sac à dos de la compagnie.
+     * Retire un quipement port par le personnage et le remet dans le sac  dos de la compagnie.
      *
-     * @param slot L'emplacement à déséquiper
-     * @param team L'équipe de la compagnie
-     * @param ConsoleMenu La vue principale (Injectée)
-     * @return true si l'équipement a été retiré et remis dans le sac, false sinon.
+     * @param slot L'emplacement  dsquiper
+     * @param team L'quipe de la compagnie
+     * @param ConsoleMenu La vue principale (Injecte)
+     * @return true si l'quipement a t retir et remis dans le sac, false sinon.
      */
     public boolean unequip(EquipmentSlot slot, Team team) {
         return this.equipmentComponent.unequip(slot, team);
@@ -250,7 +250,7 @@ public class Character implements Serializable {
     }
 
     /**
-     * @return Points de ressource (Générique)
+     * @return Points de ressource (Gnrique)
      */
     public int getResourcePoint() {
         return this.statComponent.getCurrentResource();
@@ -264,7 +264,7 @@ public class Character implements Serializable {
     }
 
     /**
-     * @return Points de mana (Alias pour compatibilité)
+     * @return Points de mana (Alias pour compatibilit)
      */
     public int getManaPoint() {
         return this.statComponent.getCurrentResource();
@@ -395,7 +395,7 @@ public class Character implements Serializable {
     }
 
     /**
-     * Retourne l'état sous forme textuelle de la ressource (ex: "Mana: 10/10").
+     * Retourne l'tat sous forme textuelle de la ressource (ex: "Mana: 10/10").
      *
      * @return Statut formate de la ressource
      */

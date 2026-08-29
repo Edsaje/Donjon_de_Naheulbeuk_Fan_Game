@@ -34,7 +34,7 @@ public class BattleEngine {
             }
         }
         
-        // Tri d'initiative (Tri à bulles pour 0 allocation)
+        // Tri d'initiative (Tri  bulles pour 0 allocation)
         for (int i = 0; i < turnOrderSize - 1; i++) {
             for (int j = 0; j < turnOrderSize - i - 1; j++) {
                 if (turnOrderCache[j].getSpeed() < turnOrderCache[j + 1].getSpeed()) {

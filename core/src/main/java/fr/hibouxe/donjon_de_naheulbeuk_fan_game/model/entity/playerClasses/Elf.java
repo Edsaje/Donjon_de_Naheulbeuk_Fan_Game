@@ -12,8 +12,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.boss.Golem;
 import java.util.Random;
 
 /**
- * Représente l'Elfe dans la Compagnie de Naheulbeuk.
- * Spécialisée dans les attaques à distance (arc) et quelques sorts mineurs, mais très fragile.
+ * Reprsente l'Elfe dans la Compagnie de Naheulbeuk.
+ * Spcialise dans les attaques  distance (arc) et quelques sorts mineurs, mais trs fragile.
  *
  * @author Hibouxe
  * @version 1.0
@@ -22,16 +22,16 @@ public class Elf extends Character {
     private Random random = new Random();
 
     /**
-     * Initialise l'Elfe avec ses statistiques de départ et sa ressource Mana.
-     * Possède "Soin Magique" et "Tir Précis (ou presque)" dès le niveau 1.
+     * Initialise l'Elfe avec ses statistiques de dpart et sa ressource Mana.
+     * Possde "Soin Magique" et "Tir Prcis (ou presque)" ds le niveau 1.
      */
     public Elf() {
         super("L'Elfe", "Elfe", 1, 6, 100, 6, 3, 5, 5, 20);
-        this.equip(new OffensiveEquipment("Arc de chasse", "Pour tirer de loin, tr�s loin.", EquipmentCategory.RANGE_WEAPON, 0, 0));
+        this.equip(new OffensiveEquipment("Arc de chasse", "Pour tirer de loin, trs loin.", EquipmentCategory.RANGE_WEAPON, 0, 0));
         this.setResourceName("Mana");
         this.setMaxResource(100);
         this.setCurrentResource(100);
-        this.skills.add(new Skill("Soin Magique", 15, "Rend 15 PV à un allié.", true) {
+        this.skills.add(new Skill("Soin Magique", 15, "Rend 15 PV  un alli.", true) {
             @Override
             public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character target) {
                 if (user.getCurrentResource() >= getCost()) {
@@ -45,7 +45,7 @@ public class Elf extends Character {
             }
         });
         
-        this.skills.add(new Skill("Tir Précis (ou presque)", 15, "Un tir à l'arc ajusté. Risque élevé de toucher un coéquipier !", false) {
+        this.skills.add(new Skill("Tir Prcis (ou presque)", 15, "Un tir  l'arc ajust. Risque lev de toucher un coquipier !", false) {
             @Override
             public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character target) {
                 if (user.getCurrentResource() >= getCost()) {

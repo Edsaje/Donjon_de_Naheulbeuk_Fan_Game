@@ -239,7 +239,7 @@ public class Game implements InputListener, GameContext {
     private class MainMenuState implements GameState {
         @Override public void enter() {
             app.switchToHubView();
-            app.getMenuView().setMenuRequest("Menu Principal", new String[]{"Nouvelle Partie", "Charger Partie", "Gérer Sauvegardes", "[TEST] Campement", "Quitter"});
+            app.getMenuView().setMenuRequest("Menu Principal", new String[]{"Nouvelle Partie", "Charger Partie", "Grer Sauvegardes", "[TEST] Campement", "Quitter"});
         }
         @Override public void update(float deltaTime) {}
         @Override public void onInput(String action) {
@@ -327,7 +327,7 @@ public class Game implements InputListener, GameContext {
                 options[i-1] = saveManager.getSlotSummary(i);
             }
             options[3] = "Retour";
-            app.getMenuView().setMenuRequest("Gérer Sauvegardes", options);
+            app.getMenuView().setMenuRequest("Grer Sauvegardes", options);
         }
         @Override public void update(float deltaTime) {}
         @Override public void onInput(String action) {

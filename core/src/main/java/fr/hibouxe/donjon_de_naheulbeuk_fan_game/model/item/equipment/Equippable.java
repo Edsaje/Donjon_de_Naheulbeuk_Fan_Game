@@ -3,27 +3,27 @@ package fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment;
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 
 /**
- * Contrat d'interface définissant le comportement d'un objet équipable.
+ * Contrat d'interface dfinissant le comportement d'un objet quipable.
  *
  * @author Hibouxe
  * @version 1.0
  */
 public interface Equippable {
     /**
-     * @return L'emplacement d'équipement réservé à cet objet
+     * @return L'emplacement d'quipement rserv  cet objet
      */
     EquipmentSlot getSlot();
 
     /**
-     * @return La catégorie d'équipement
+     * @return La catgorie d'quipement
      */
     EquipmentCategory getCategory();
 
     /**
-     * Vérifie si un héros donné remplit les conditions pour porter cet équipement.
+     * Vrifie si un hros donn remplit les conditions pour porter cet quipement.
      *
-     * @param hero Le héros testé
-     * @return true si le héros peut équiper l'objet, false sinon.
+     * @param hero Le hros test
+     * @return true si le hros peut quiper l'objet, false sinon.
      */
     boolean canBeEquippedBy(Character hero);
 }

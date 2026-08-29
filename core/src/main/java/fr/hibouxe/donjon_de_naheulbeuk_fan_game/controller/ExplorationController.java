@@ -98,8 +98,8 @@ public class ExplorationController implements GameState {
                     gameContext.pushState(new InventoryController(team, menu, gameContext, maze));
                 } else if (selection == 1) { // Magie
                     menu.displayDialogue("Pas de magie disponible.");
-                } else if (selection == 2) { // Compétences
-                    menu.displayDialogue("Géré par l'interface dédiée en combat.");
+                } else if (selection == 2) { // Comptences
+                    menu.displayDialogue("Gr par l'interface ddie en combat.");
                 } else if (selection == 3) { // Status
                     subState = SubState.STATUS_MENU;
                     menu.displayStatusScreen(team);

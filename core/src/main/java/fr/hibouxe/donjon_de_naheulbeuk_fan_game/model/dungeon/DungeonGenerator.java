@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Générateur procédural du Donjon avec algorithme Salles & Couloirs.
+ * Gnrateur procdural du Donjon avec algorithme Salles & Couloirs.
  */
 public class DungeonGenerator {
     private final Random random = new Random();
@@ -56,7 +56,7 @@ public class DungeonGenerator {
         }
 
                 List<Room> rooms = new ArrayList<>();
-        int targetRooms = random.nextInt(5) + 8; // 8 à 12 salles
+        int targetRooms = random.nextInt(5) + 8; // 8  12 salles
 
         int spawnSize = 3;
         int spawnRx = random.nextInt(width - spawnSize - 2) + 1;

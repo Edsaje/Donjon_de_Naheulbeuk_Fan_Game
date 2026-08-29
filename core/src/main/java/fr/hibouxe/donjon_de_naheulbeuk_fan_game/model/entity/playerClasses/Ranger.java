@@ -9,8 +9,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.offensiveEq
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory;
 
 /**
- * Représente le Ranger dans la Compagnie de Naheulbeuk.
- * Chef d'équipe autoproclamé, polyvalent mais moyen partout.
+ * Reprsente le Ranger dans la Compagnie de Naheulbeuk.
+ * Chef d'quipe autoproclam, polyvalent mais moyen partout.
  *
  * @author Hibouxe
  * @version 1.0
@@ -18,15 +18,15 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCa
 public class Ranger extends Character {
 
     /**
-     * Initialise le Ranger avec ses statistiques de départ et sa ressource Énergie.
+     * Initialise le Ranger avec ses statistiques de dpart et sa ressource nergie.
      */
     public Ranger() {
         super("Le Ranger", "Ranger", 1, 15, 0, 8, 4, 8, 6, 8);
-        this.equip(new OffensiveEquipment("�p�e en fer", "Une arme basique mais fiable.", EquipmentCategory.LIGHT_WEAPON, 0, 0));
-        this.setResourceName("Énergie");
+        this.equip(new OffensiveEquipment("pe en fer", "Une arme basique mais fiable.", EquipmentCategory.LIGHT_WEAPON, 0, 0));
+        this.setResourceName("nergie");
         this.setMaxResource(100);
         this.setCurrentResource(100);
-        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Tir de Précision", 30, "Un tir ajusté qui inflige de lourds dégâts.", false) {
+        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Tir de Prcision", 30, "Un tir ajust qui inflige de lourds dgts.", false) {
             @Override
             public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character monster) {
                 int cost = getCost();

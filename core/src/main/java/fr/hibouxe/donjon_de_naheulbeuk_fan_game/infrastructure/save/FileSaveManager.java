@@ -11,8 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Contrôleur d'E/S Fichier pour le système de sauvegarde Multi-Slots (Slots 1, 2, 3).
- * Gère la liaison entre Sauvegarde Rapide (quicksave_slotX.sav) et Sauvegarde Permanente (savegame_slotX.sav),
+ * Contrleur d'E/S Fichier pour le systme de sauvegarde Multi-Slots (Slots 1, 2, 3).
+ * Gre la liaison entre Sauvegarde Rapide (quicksave_slotX.sav) et Sauvegarde Permanente (savegame_slotX.sav),
  * ainsi que la suppression et la copie d'emplacements de profil.
  *
  * @author Hibouxe
@@ -25,21 +25,21 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.save.SaveData;
 public class FileSaveManager implements ISaveManager {
 
     /**
-     * Obtenir le nom du fichier de Sauvegarde Rapide pour un slot donné.
+     * Obtenir le nom du fichier de Sauvegarde Rapide pour un slot donn.
      */
     public String getQuickSaveFilename(int slot) {
         return "quicksave_slot" + slot + ".sav";
     }
 
     /**
-     * Obtenir le nom du fichier de Sauvegarde Permanente pour un slot donné.
+     * Obtenir le nom du fichier de Sauvegarde Permanente pour un slot donn.
      */
     public String getHubSaveFilename(int slot) {
         return "savegame_slot" + slot + ".sav";
     }
 
     /**
-     * Effectue une Sauvegarde Rapide liée au slot actif.
+     * Effectue une Sauvegarde Rapide lie au slot actif.
      */
     public boolean saveQuickSave(int slot, Team team, Dungeon dungeon, int currentFloor) {
         SaveData data = new SaveData(team, dungeon, currentFloor, true);
@@ -47,7 +47,7 @@ public class FileSaveManager implements ISaveManager {
     }
 
     /**
-     * Effectue une Sauvegarde Permanente au Campement liée au slot actif.
+     * Effectue une Sauvegarde Permanente au Campement lie au slot actif.
      */
     public boolean saveHubSave(int slot, Team team, int currentFloor) {
         SaveData data = new SaveData(team, null, currentFloor, false);
@@ -55,21 +55,21 @@ public class FileSaveManager implements ISaveManager {
     }
 
     /**
-     * Charge la Sauvegarde Rapide du slot spécifié.
+     * Charge la Sauvegarde Rapide du slot spcifi.
      */
     public SaveData loadQuickSave(int slot) {
         return loadFromFile(getQuickSaveFilename(slot));
     }
 
     /**
-     * Charge la Sauvegarde du Campement du slot spécifié.
+     * Charge la Sauvegarde du Campement du slot spcifi.
      */
     public SaveData loadHubSave(int slot) {
         return loadFromFile(getHubSaveFilename(slot));
     }
 
     /**
-     * Vérifie si une Sauvegarde Rapide existe pour ce slot.
+     * Vrifie si une Sauvegarde Rapide existe pour ce slot.
      */
     public boolean hasQuickSave(int slot) {
         File f = new File(getQuickSaveFilename(slot));
@@ -77,7 +77,7 @@ public class FileSaveManager implements ISaveManager {
     }
 
     /**
-     * Vérifie si une Sauvegarde Permanente de campement existe pour ce slot.
+     * Vrifie si une Sauvegarde Permanente de campement existe pour ce slot.
      */
     public boolean hasHubSave(int slot) {
         File f = new File(getHubSaveFilename(slot));
@@ -85,14 +85,14 @@ public class FileSaveManager implements ISaveManager {
     }
 
     /**
-     * Vérifie si le slot contient au moins une sauvegarde (quicksave ou hubsave).
+     * Vrifie si le slot contient au moins une sauvegarde (quicksave ou hubsave).
      */
     public boolean hasAnySave(int slot) {
         return hasQuickSave(slot) || hasHubSave(slot);
     }
 
     /**
-     * Supprime la Sauvegarde Rapide d'un slot spécifique.
+     * Supprime la Sauvegarde Rapide d'un slot spcifique.
      */
     public boolean deleteQuickSave(int slot) {
         File f = new File(getQuickSaveFilename(slot));
@@ -103,7 +103,7 @@ public class FileSaveManager implements ISaveManager {
     }
 
     /**
-     * Supprime définitivement toutes les données (quicksave et hubsave) d'un slot.
+     * Supprime dfinitivement toutes les donnes (quicksave et hubsave) d'un slot.
      */
     public boolean deleteSlot(int slot) {
         boolean delQuick = deleteQuickSave(slot);
@@ -144,17 +144,17 @@ public class FileSaveManager implements ISaveManager {
     }
 
     /**
-     * Génère un résumé lisible du contenu d'un emplacement de profil.
+     * Gnre un rsum lisible du contenu d'un emplacement de profil.
      *
-     * @param slot Le numéro du slot (1, 2 ou 3)
-     * @return Résumé formraté (ex: "[Slot 1] Compagnie Niv.3 | étage 4 (En Donjon)")
+     * @param slot Le numro du slot (1, 2 ou 3)
+     * @return Rsum formrat (ex: "[Slot 1] Compagnie Niv.3 | tage 4 (En Donjon)")
      */
     public String getSlotSummary(int slot) {
         if (hasQuickSave(slot)) {
             SaveData data = loadQuickSave(slot);
             if (data != null && data.getTeam() != null) {
                 int level = getTeamMaxLevel(data.getTeam());
-                return "[Slot " + slot + "] Compagnie Niv." + level + " | étage " + data.getCurrentFloor() + " (Sauvegarde Rapide en Donjon)";
+                return "[Slot " + slot + "] Compagnie Niv." + level + " | tage " + data.getCurrentFloor() + " (Sauvegarde Rapide en Donjon)";
             }
         }
 

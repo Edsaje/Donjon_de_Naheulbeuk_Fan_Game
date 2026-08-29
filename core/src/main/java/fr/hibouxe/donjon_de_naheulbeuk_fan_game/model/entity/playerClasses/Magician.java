@@ -11,7 +11,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCa
 public class Magician extends Character {
     public Magician() {
         super("La Magicienne", "Magicienne", 1, 5, 100, 2, 8, 3, 3, 12);
-        this.equip(new OffensiveEquipment("B�ton noueux", "Il sert plus � marcher qu'� lancer des sorts.", EquipmentCategory.LIGHT_WEAPON, 0, 0));
+        this.equip(new OffensiveEquipment("Bton noueux", "Il sert plus  marcher qu' lancer des sorts.", EquipmentCategory.LIGHT_WEAPON, 0, 0));
         this.setResourceName("Mana");
         this.setMaxResource(100);
         this.setCurrentResource(100);

@@ -73,7 +73,7 @@ public class ViewProvider {
                 app.displayVictoryUI(xp, gold, loots);
             }
             @Override
-            public void displayDefeat() { app.displayMessage("Défaite !"); }
+            public void displayDefeat() { app.displayMessage("Dfaite !"); }
             @Override
             public void displayMessage(String message) { app.displayMessage(message); }
             @Override
@@ -179,7 +179,7 @@ public class ViewProvider {
             @Override
             public void setMenuRequest(String title, String[] options) { app.setMenuRequest(title, options); }
             @Override
-            public void displaySaveSuccess(int slot) { app.displayMessage("Sauvegardé !"); }
+            public void displaySaveSuccess(int slot) { app.displayMessage("Sauvegard !"); }
             @Override
             public void displaySaveError() { app.displayMessage("Erreur save"); }
         };

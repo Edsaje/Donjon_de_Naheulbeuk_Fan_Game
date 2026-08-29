@@ -17,7 +17,7 @@ public class DungeonSelectionController implements GameState {
         menu.setMenuRequest("SELECTION_DONJON", new String[]{
             "Tutoriel (Cave du Tavernier)", 
             "Donjon de Naheulbeuk", 
-            "Forêt de Schlipak", 
+            "Fort de Schlipak", 
             "Ruines", 
             "Annuler"
         });

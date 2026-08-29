@@ -5,7 +5,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Character;
 import java.io.Serializable;
 
 /**
- * Classe parente représentant tout objet du jeu (Potion, équipement, Trésor).
+ * Classe parente reprsentant tout objet du jeu (Potion, quipement, Trsor).
  *
  * @author Hibouxe
  * @version 1.0
@@ -29,8 +29,8 @@ public class Item implements Serializable {
     /**
      * Utilise l'objet sur un personnage cible.
      *
-     * @param target Le personnage qui bénéficie de l'objet
-     * @return true si l'objet a été utilisé ou équipé avec succès, false sinon.
+     * @param target Le personnage qui bnficie de l'objet
+     * @return true si l'objet a t utilis ou quip avec succs, false sinon.
      */
     public boolean use(Character target) {
         return true;

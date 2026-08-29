@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Gestionnaire de paramètres centralisé (Singleton).
- * Gère la lecture, la sauvegarde et la notification des changements de paramètres.
+ * Gestionnaire de paramtres centralis (Singleton).
+ * Gre la lecture, la sauvegarde et la notification des changements de paramtres.
  * Digne d'une architecture de jeu professionnel.
  */
 public class GameSettingsManager {
@@ -13,7 +13,7 @@ public class GameSettingsManager {
     private final ISettingsRepository repo;
     private final List<SettingsListener> listeners = new ArrayList<>();
 
-    // --- Constantes des clés de sauvegarde ---
+    // --- Constantes des cls de sauvegarde ---
     
     // Affichage
     private static final String KEY_FULLSCREEN = "display_fullscreen";
@@ -28,8 +28,8 @@ public class GameSettingsManager {
     private static final String KEY_MUTE_ALL = "audio_mute_all";
 
     // Gameplay
-    private static final String KEY_TEXT_SPEED = "gameplay_text_speed"; // 0: Lent, 1: Normal, 2: Rapide, 3: Instantané
-    private static final String KEY_AUTO_RUN = "gameplay_auto_run"; // Courir par défaut
+    private static final String KEY_TEXT_SPEED = "gameplay_text_speed"; // 0: Lent, 1: Normal, 2: Rapide, 3: Instantan
+    private static final String KEY_AUTO_RUN = "gameplay_auto_run"; // Courir par dfaut
     private static final String KEY_MOVEMENT_SPEED = "gameplay_movement_speed"; // Multiplicateur de vitesse
 
     // --- Variables en cache (pour la performance) ---
@@ -61,7 +61,7 @@ public class GameSettingsManager {
     }
 
     /**
-     * Charge tous les paramètres depuis le fichier (ou applique les valeurs par défaut).
+     * Charge tous les paramtres depuis le fichier (ou applique les valeurs par dfaut).
      */
     private void loadSettings() {
         fullscreen = repo.getBoolean(KEY_FULLSCREEN, false);
@@ -80,7 +80,7 @@ public class GameSettingsManager {
     }
 
     /**
-     * Sauvegarde tous les paramètres sur le disque.
+     * Sauvegarde tous les paramtres sur le disque.
      */
     public void saveSettings() {
         repo.putBoolean(KEY_FULLSCREEN, fullscreen);
@@ -97,10 +97,10 @@ public class GameSettingsManager {
         repo.putBoolean(KEY_AUTO_RUN, autoRun);
         repo.putFloat(KEY_MOVEMENT_SPEED, movementSpeed);
 
-        repo.flush(); // Écrit physiquement dans le fichier
+        repo.flush(); // crit physiquement dans le fichier
     }
 
-    // --- Système d'Observateur (Listeners) ---
+    // --- Systme d'Observateur (Listeners) ---
 
     public interface SettingsListener {
         void onDisplaySettingsChanged();

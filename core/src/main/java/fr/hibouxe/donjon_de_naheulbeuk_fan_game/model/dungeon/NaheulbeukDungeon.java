@@ -18,16 +18,16 @@ public class NaheulbeukDungeon extends Dungeon {
     private void initBlueprints() {
         // Floor 4 config
         FloorBlueprint f4 = new FloorBlueprint(29, 8, 3, 1);
-        f4.getIntroDialogues().add("Ranger : On est presque devant le bureau de Zangdar ! Préparez vos armes !");
+        f4.getIntroDialogues().add("Ranger : On est presque devant le bureau de Zangdar ! Prparez vos armes !");
         blueprints.put(4, f4);
 
         // Floor 5 config
         FloorBlueprint f5 = new FloorBlueprint(31, 0, 0, 0);
         f5.setBossType("Golem");
-        f5.getIntroDialogues().add("=== ÉTAGE 5 : L'ANTICHAMBRE DU BUREAU DE ZANGDAR ===");
-        f5.getIntroDialogues().add("Magicienne : Attention ! C'est un Golem de Fer ! C'est une machine à baffes insensible aux armes simples !");
+        f5.getIntroDialogues().add("=== TAGE 5 : L'ANTICHAMBRE DU BUREAU DE ZANGDAR ===");
+        f5.getIntroDialogues().add("Magicienne : Attention ! C'est un Golem de Fer ! C'est une machine  baffes insensible aux armes simples !");
         f5.getIntroDialogues().add("Nain : YAAAAAAAAAH ! (Il charge la hache en avant, frappe l'acier et se tord les poignets !)");
-        f5.getIntroDialogues().add("Zangdar (depuis son balcon) : Insolents ! Misérables cloportes ! Vous n'emporterez jamais la statuette de Gladeulfeurh ! Golem de fer, réduis-les en bouillie !");
+        f5.getIntroDialogues().add("Zangdar (depuis son balcon) : Insolents ! Misrables cloportes ! Vous n'emporterez jamais la statuette de Gladeulfeurh ! Golem de fer, rduis-les en bouillie !");
         blueprints.put(5, f5);
     }
 
@@ -37,8 +37,8 @@ public class NaheulbeukDungeon extends Dungeon {
         }
         // Default generated blueprint
         FloorBlueprint bp = new FloorBlueprint(21 + (floorNumber * 2), 5 + floorNumber, 3, 1);
-        bp.getIntroDialogues().add("=== DESCENTE À L'ÉTAGE " + floorNumber + " ===");
-        bp.getIntroDialogues().add("Narrateur : La compagnie avance prudemment dans les ténèbres...");
+        bp.getIntroDialogues().add("=== DESCENTE  L'TAGE " + floorNumber + " ===");
+        bp.getIntroDialogues().add("Narrateur : La compagnie avance prudemment dans les tnbres...");
         return bp;
     }
 
@@ -49,20 +49,20 @@ public class NaheulbeukDungeon extends Dungeon {
         
         // Spawn tables based on floor
         if (floorNumber <= 2) {
-            // Étages 1-2 : Gobelins très communs, un peu de rats et araignées
+            // tages 1-2 : Gobelins trs communs, un peu de rats et araignes
             if (roll < 0.60) monsterId = "goblin";
             else if (roll < 0.80) monsterId = "mutant_rat";
             else if (roll < 0.95) monsterId = "giant_spider";
             else monsterId = "orc"; // 5% chance Orc
         } else if (floorNumber <= 4) {
-            // Étages 3-4 : Orques, Morts-vivants, Squelettes
+            // tages 3-4 : Orques, Morts-vivants, Squelettes
             if (roll < 0.35) monsterId = "orc";
             else if (roll < 0.60) monsterId = "skeleton";
             else if (roll < 0.85) monsterId = "zombie";
             else if (roll < 0.95) monsterId = "giant_spider";
             else monsterId = "easter_egg_tp"; // 5% chance Rouleau PQ
         } else {
-            // Étages 5+ (Post-game ou fin) : Trolls, Sorciers, Guerriers maudits
+            // tages 5+ (Post-game ou fin) : Trolls, Sorciers, Guerriers maudits
             if (roll < 0.30) monsterId = "troll";
             else if (roll < 0.60) monsterId = "cursed_warrior";
             else if (roll < 0.90) monsterId = "sorcerer";
@@ -87,10 +87,10 @@ public class NaheulbeukDungeon extends Dungeon {
             }
         }
 
-        // 2. Générer la structure
+        // 2. Gnrer la structure
         this.generateHybridDungeon();
 
-        // 3. Placer l'équipe
+        // 3. Placer l'quipe
         int[] startPos = getSpawnPosition();
         team.setX(startPos[0]);
         team.setY(startPos[1]);

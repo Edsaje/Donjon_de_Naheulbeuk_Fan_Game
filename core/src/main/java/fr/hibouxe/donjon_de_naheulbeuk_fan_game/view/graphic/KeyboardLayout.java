@@ -15,8 +15,8 @@ public enum KeyboardLayout {
     QWERTY;
 
     /**
-     * Renvoie le code de touche LWJGL3 pour le déplacement vers le Nord.
-     * Sur clavier AZERTY, la touche avec la lettre 'Z' imprimée correspond au code physique Input.Keys.W dans GLFW.
+     * Renvoie le code de touche LWJGL3 pour le dplacement vers le Nord.
+     * Sur clavier AZERTY, la touche avec la lettre 'Z' imprime correspond au code physique Input.Keys.W dans GLFW.
      *
      * @return Code de touche LWJGL3
      */
@@ -25,8 +25,8 @@ public enum KeyboardLayout {
     }
 
     /**
-     * Renvoie le code de touche LWJGL3 pour le déplacement vers l'Ouest.
-     * Sur clavier AZERTY, la touche avec la lettre 'Q' imprimée correspond au code physique Input.Keys.A dans GLFW.
+     * Renvoie le code de touche LWJGL3 pour le dplacement vers l'Ouest.
+     * Sur clavier AZERTY, la touche avec la lettre 'Q' imprime correspond au code physique Input.Keys.A dans GLFW.
      *
      * @return Code de touche LWJGL3
      */
@@ -35,9 +35,9 @@ public enum KeyboardLayout {
     }
 
     /**
-     * Détecte automatiquement la disposition recommandée selon la configuration OS de l'utilisateur.
+     * Dtecte automatiquement la disposition recommande selon la configuration OS de l'utilisateur.
      *
-     * @return AZERTY pour les systèmes francophones (FR, BE), QWERTY pour les autres.
+     * @return AZERTY pour les systmes francophones (FR, BE), QWERTY pour les autres.
      */
     public static KeyboardLayout detectSystemLayout() {
         String lang = Locale.getDefault().getLanguage().toLowerCase();

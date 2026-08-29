@@ -4,7 +4,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Team;
 
 public class HD2DCamera {
     private float cameraX;
-    private float cameraY = 5.0f; //Hauteur de la caméra
+    private float cameraY = 5.0f; //Hauteur de la camra
     private float cameraZ;
     private float pitch = -45.0f; //Angle d'inclinaison HD-2D
 
@@ -17,7 +17,7 @@ public class HD2DCamera {
         this.targetZ = team.getY() * tilseSize + 0.5f;
 
         this.cameraX = targetX;
-        this.cameraZ = targetZ + 4.0f; //recul vers le bas pour l'angle 45°
+        this.cameraZ = targetZ + 4.0f; //recul vers le bas pour l'angle 45
     }
 
     public float getCameraX() { return cameraX; }

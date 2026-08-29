@@ -9,7 +9,7 @@ import java.util.List;
 import java.io.Serializable;
 
 /**
- * Gère la Compagnie de Naheulbeuk (l'équipe des héros).
+ * Gre la Compagnie de Naheulbeuk (l'quipe des hros).
  * Maintient la liste des aventuriers ainsi que la position globale de la compagnie (X, Y) dans le donjon.
  *
  * @author Hibouxe
@@ -17,8 +17,8 @@ import java.io.Serializable;
  */
 public class Team implements Serializable {
     private static final long serialVersionUID = 1L;
-    private int x = 0; // Position X du joueur (départ en 0)
-    private int y = 0; // Position Y du joueur (départ en 0)
+    private int x = 0; // Position X du joueur (dpart en 0)
+    private int y = 0; // Position Y du joueur (dpart en 0)
     private float playerX = 0f;
     private float playerZ = 0f;
     private float moveSpeed = 1.5f;
@@ -38,8 +38,8 @@ public class Team implements Serializable {
     }
 
     /**
-     * Initialise l'équipe en ajoutant tous les membres iconiques de la Compagnie de Naheulbeuk :
-     * Le Ranger, le Nain, l'Élfette, le Barbare, la Magicienne, l'Ogre et le Voleur.
+     * Initialise l'quipe en ajoutant tous les membres iconiques de la Compagnie de Naheulbeuk :
+     * Le Ranger, le Nain, l'lfette, le Barbare, la Magicienne, l'Ogre et le Voleur.
      */
     public Team(fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.random.IRandomProvider randomProvider) {
         this.randomProvider = randomProvider;
@@ -66,10 +66,10 @@ public class Team implements Serializable {
     }
 
     /**
-     * Ajoute un objet au sac à dos de la compagnie s'il reste de la place.
+     * Ajoute un objet au sac  dos de la compagnie s'il reste de la place.
      *
-     * @param item L'objet à ajouter dans l'inventaire
-     * @return true si l'objet a été ajouté, false si le sac est plein.
+     * @param item L'objet  ajouter dans l'inventaire
+     * @return true si l'objet a t ajout, false si le sac est plein.
      */
     public boolean addItem(Item item) {
         if (this.inventory.size() < maxCapacity) {
@@ -80,16 +80,16 @@ public class Team implements Serializable {
     }
 
     /**
-     * Retire un objet du sac à dos de la compagnie.
+     * Retire un objet du sac  dos de la compagnie.
      *
-     * @param item L'objet à retirer
+     * @param item L'objet  retirer
      */
     public void removeItem(Item item) {
         this.inventory.remove(item);
     }
 
     /**
-     * Déplace la compagnie.
+     * Dplace la compagnie.
      */
     public void move(int dx, int dy) {
         this.x += dx;
@@ -97,7 +97,7 @@ public class Team implements Serializable {
     }
 
     /**
-     * @return Position X actuelle de l'équipe
+     * @return Position X actuelle de l'quipe
      */
     public int getX() {
         return x;
@@ -111,7 +111,7 @@ public class Team implements Serializable {
     }
 
     /**
-     * @return Position Y actuelle de l'équipe
+     * @return Position Y actuelle de l'quipe
      */
     public int getY() {
         return y;
@@ -181,7 +181,7 @@ public class Team implements Serializable {
     }
 
     /**
-     * @return Liste des membres de l'équipe
+     * @return Liste des membres de l'quipe
      */
     public List<Character> getMembers() {
         return members;
@@ -195,14 +195,14 @@ public class Team implements Serializable {
     }
 
     /**
-     * @return La liste des objets contenus dans le sac à dos
+     * @return La liste des objets contenus dans le sac  dos
      */
     public List<Item> getInventory() {
         return inventory;
     }
 
     /**
-     * @param inventory Nouveau contenu du sac à dos
+     * @param inventory Nouveau contenu du sac  dos
      */
     public void setInventory(List<Item> inventory) {
         this.inventory = inventory;
@@ -217,11 +217,11 @@ public class Team implements Serializable {
     }
 
     /**
-     * Sélectionne aléatoirement un membre vivant de la Compagnie en excluant le personnage spécifié.
-     * Utile pour les attaques à rebond ou les tirs alliés.
+     * Slectionne alatoirement un membre vivant de la Compagnie en excluant le personnage spcifi.
+     * Utile pour les attaques  rebond ou les tirs allis.
      *
-     * @param excludedMember Le personnage à exclure de la sélection
-     * @return Un membre de l'équipe au hasard (ou null si aucun autre membre n'est vivant).
+     * @param excludedMember Le personnage  exclure de la slection
+     * @return Un membre de l'quipe au hasard (ou null si aucun autre membre n'est vivant).
      */
     public Character getRandomMemberExcept(Character excludedMember) {
         List<Character> candidates = new ArrayList<>();

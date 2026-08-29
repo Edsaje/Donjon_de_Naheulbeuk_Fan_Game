@@ -9,8 +9,8 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.offensiveEq
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCategory;
 
 /**
- * Représente le Barbare dans la Compagnie de Naheulbeuk.
- * Combattant de mâtinage lourd réputé pour sa puissance d'attaque brute.
+ * Reprsente le Barbare dans la Compagnie de Naheulbeuk.
+ * Combattant de mtinage lourd rput pour sa puissance d'attaque brute.
  *
  * @author Hibouxe
  * @version 1.0
@@ -18,15 +18,15 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCa
 public class Barbarian extends Character {
 
     /**
-     * Initialise le Barbare avec ses statistiques de départ.
+     * Initialise le Barbare avec ses statistiques de dpart.
      */
     public Barbarian() {
         super("Le Barbare", "Barbare", 1, 12, 0, 10, 0, 3, 3, 11);
-        this.equip(new OffensiveEquipment("Grosse �p�e", "Une �norme lame �mouss�e.", EquipmentCategory.HEAVY_WEAPON, 0, 0));
+        this.equip(new OffensiveEquipment("Grosse pe", "Une norme lame mousse.", EquipmentCategory.HEAVY_WEAPON, 0, 0));
         this.setResourceName("Rage");
         this.setMaxResource(100);
         this.setCurrentResource(0);
-        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Hurlement Barbare", 30, "Une attaque d'une violence inouïe.", false) {
+        this.skills.add(new fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.Skill("Hurlement Barbare", 30, "Une attaque d'une violence inoue.", false) {
             @Override
             public fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.entity.SkillResult execute(Character user, Team team, Character monster) {
                 int cost = getCost();

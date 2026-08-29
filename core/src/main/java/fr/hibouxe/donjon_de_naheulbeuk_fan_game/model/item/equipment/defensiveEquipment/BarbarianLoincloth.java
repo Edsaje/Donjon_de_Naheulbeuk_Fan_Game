@@ -4,7 +4,7 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentCa
 import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSlot;
 
 /**
- * Le Pagne Sauvage du Barbare : Pagne en peau de loup réservé au Barbare.
+ * Le Pagne Sauvage du Barbare : Pagne en peau de loup rserv au Barbare.
  *
  * @author Hibouxe
  * @version 1.0
@@ -12,10 +12,10 @@ import fr.hibouxe.donjon_de_naheulbeuk_fan_game.model.item.equipment.EquipmentSl
 public class BarbarianLoincloth extends DefensiveEquipment {
 
     /**
-     * Initialise le Pagne Sauvage avec ses bonus de défense et sa restriction de classe (Barbarian).
+     * Initialise le Pagne Sauvage avec ses bonus de dfense et sa restriction de classe (Barbarian).
      */
     public BarbarianLoincloth() {
-        super("Pagne Sauvage en Cuir", "Un pagne en peau de loup tannée à la bière. Réservé au Barbare (+5 Défense, +2 Défense Magique).",
+        super("Pagne Sauvage en Cuir", "Un pagne en peau de loup tanne  la bire. Rserv au Barbare (+5 Dfense, +2 Dfense Magique).",
               EquipmentSlot.CHEST, EquipmentCategory.WRAP_SKIRT, "Barbare", 5, 2);
     }
 }

@@ -126,8 +126,8 @@ public class ExplorationEngine {
     }
 
     /**
-     * Met à jour les animations de la grille (portes, coffres)
-     * @return true si une animation est en cours et a modifié l'état
+     * Met  jour les animations de la grille (portes, coffres)
+     * @return true si une animation est en cours et a modifi l'tat
      */
     public boolean updateAnimations(float deltaTime) {
         float animationSpeed = 2.0f; // 0.5 sec to open

@@ -19,7 +19,7 @@ public class Equipment extends Item implements Equippable {
         super(name, description);
         this.slot = slot;
         this.category = category;
-        this.requiredJob = null; //par défaut
+        this.requiredJob = null; //par dfaut
         this.attackBonus = attackBonus;
         this.magicAttackBonus = magicAttackBonus;
         this.defenseBonus = defenseBonus;
@@ -34,12 +34,12 @@ public class Equipment extends Item implements Equippable {
     }
 
     public boolean canBeEquippedBy(Character hero) {
-        // 1. Si l'objet est exclusif à un héros unique
+        // 1. Si l'objet est exclusif  un hros unique
         if (this.requiredJob != null) {
             return hero.getType().equalsIgnoreCase(this.requiredJob);
         }
 
-        // 2. Sinon, vérification selon la catégorie d'équipement
+        // 2. Sinon, vrification selon la catgorie d'quipement
         String job = hero.getType().toLowerCase();
 
         switch (this.category) {

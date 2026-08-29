@@ -7,7 +7,7 @@ public class BillboardSprite {
     private float worldX;
     private float worldY = 1.0f; //ancrage debout au sol
     private float worldZ;
-    private float rotationY; //rotation face caméra sur l'axe Y
+    private float rotationY; //rotation face camra sur l'axe Y
 
     public BillboardSprite(Character character, float gridX, float gridY) {
         this.character = character;

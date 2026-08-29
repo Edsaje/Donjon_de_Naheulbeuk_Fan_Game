@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Fournit les ressources (sprites, textures) et gère la VRAM proprement via AssetManager.
- * Résout les fuites de mémoire (Correction 2) et applique l'OCP (Correction 4).
+ * Fournit les ressources (sprites, textures) et gre la VRAM proprement via AssetManager.
+ * Rsout les fuites de mmoire (Correction 2) et applique l'OCP (Correction 4).
  */
 public class AssetProvider {
     private final AssetManager assetManager;
@@ -20,7 +20,7 @@ public class AssetProvider {
     public AssetProvider() {
         this.assetManager = new AssetManager();
         
-        // Configuration OCP pour les couleurs de héros
+        // Configuration OCP pour les couleurs de hros
         heroFallbackColors.put("magician", Color.PURPLE);
         heroFallbackColors.put("magicienne", Color.PURPLE);
         heroFallbackColors.put("ranger", Color.GREEN);
@@ -31,8 +31,8 @@ public class AssetProvider {
     }
 
     public void loadAssets() {
-        // Préchargement basique (optionnel si fait en lazy-load)
-        // Les assets spécifiques seront chargés à la volée.
+        // Prchargement basique (optionnel si fait en lazy-load)
+        // Les assets spcifiques seront chargs  la vole.
     }
 
     public void update() {
@@ -95,7 +95,7 @@ public class AssetProvider {
             }
         }
         
-        // Fallback géré proprement sans fuite mémoire
+        // Fallback gr proprement sans fuite mmoire
         if (!fallbackTextures.containsKey(fallbackColor)) {
             Pixmap pixmap = new Pixmap(64, 64, Pixmap.Format.RGBA8888);
             pixmap.setColor(fallbackColor);

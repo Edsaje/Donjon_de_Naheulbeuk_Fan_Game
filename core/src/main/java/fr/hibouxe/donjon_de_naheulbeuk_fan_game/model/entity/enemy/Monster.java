@@ -39,7 +39,7 @@ public class Monster extends Character {
     public int getGoldYield() { return goldYield; }
     
     /**
-     * Calcule aléatoirement le butin lâché par ce monstre.
+     * Calcule alatoirement le butin lch par ce monstre.
      */
     public java.util.List<String> rollLoot() {
         java.util.List<String> dropped = new java.util.ArrayList<>();
