@@ -42,6 +42,7 @@ ew ArrayList<>().
 ## 🏗️ Structure du Projet
 
 `	ext
+
 src/fr/hibouxe/donjon_de_naheulbeuk_fan_game/
 ├── controller/            # Orchestration (Game, Exploration, Battle)
 ├── model/                 # Coeur du moteur (Agnostique de LibGDX)
@@ -56,6 +57,7 @@ src/fr/hibouxe/donjon_de_naheulbeuk_fan_game/
     ├── contract/          # Interfaces (IGameView, ICombatView)
     └── graphic/           # Rendu visuel
         └── renderers/     # SRP : BattleArenaRenderer, DungeonSceneRenderer, HUDRenderer
+        
 `
 
 ---
