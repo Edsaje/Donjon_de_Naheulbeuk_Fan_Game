@@ -108,7 +108,7 @@ public abstract class Dungeon implements Serializable {
      * Dplace tous les monstres du donjon d'une case au tour par tour (IA BFS et Line of Sight).
      *
      * @param team L'quipe de la compagnie
-     * @param ConsoleMenu La vue principale (Injecte)
+     * @param view La vue principale (Injecte)
      */
     public void moveMonsters(Team team) {
         getMonsterAI().moveMonsters(this, team);
